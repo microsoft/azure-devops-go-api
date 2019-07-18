@@ -84,7 +84,7 @@ func (client Client) Send(httpMethod string,
 	}
 	generatedUrl := client.GenerateUrl(location, routeValues, queryParameters)
 	fullUrl := combineUrl(client.baseUrl, generatedUrl)
-	negotiatedVersion, err := client.negotiateRequestVersion(location, apiVersion)
+	negotiatedVersion, err := negotiateRequestVersion(location, apiVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -244,7 +244,7 @@ func (client Client) getResourceLocationsFromServer() ([]ApiResourceLocation, er
 // Examples of api-version: 5.1, 5.1-preview, 5.1-preview.1
 var apiVersionRegEx = regexp.MustCompile(`(\d+(\.\d)?)(-preview(.(\d+))?)?`)
 
-func (client Client) negotiateRequestVersion(location *ApiResourceLocation, apiVersion string) (string, error) {
+func negotiateRequestVersion(location *ApiResourceLocation, apiVersion string) (string, error) {
 	if apiVersion == "" {
 		// if no api-version is sent to the server, the server will decide the version. The server uses the latest
 		// released version if the endpoint has been released, otherwise it will use the latest preview version.
@@ -301,7 +301,7 @@ func (client Client) negotiateRequestVersion(location *ApiResourceLocation, apiV
 				if err != nil {
 					return apiVersion, err
 				}
-				if (locationReleasedVersion.Major == 0 && locationReleasedVersion.Minor == 0) || locationReleasedVersion.CompareTo(*requestedApiVersion) > 0 {
+				if (locationReleasedVersion.Major == 0 && locationReleasedVersion.Minor == 0) || locationReleasedVersion.CompareTo(*requestedApiVersion) < 0 {
 					negotiatedVersion += "-preview"
 				}
 			}
