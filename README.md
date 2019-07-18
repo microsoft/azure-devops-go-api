@@ -17,17 +17,22 @@ func main() {
     organizationUrl := "https://dev.azure.com/myorg"  // todo: replace value with your organization url
     personalAccessToken := "XXXXXXXXXXXXXXXXXXXXXXX"  // todo: replace value with your PAT
 
+    // Create a connection to your organization
     connection := azureDevops.NewConnection(organizationUrl, personalAccessToken)
+
+    // Create a client to interact with the Core area
     coreClient, err := core.NewClient(*connection)
     if err != nil {
         log.Fatal(err)
     }
     
+    // Get a list of all team projects
     teamProjectReferences, err := coreClient.GetProjects(nil, nil, nil, nil, nil)
     if err != nil {
         log.Fatal(err)
     }
     
+    // Print the list of team project names for your organization
     for index, teamProjectReference := range *teamProjectReferences {
         log.Printf("Name[%v] = %v", index, *teamProjectReference.Name)
     }
