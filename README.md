@@ -11,12 +11,11 @@ import (
     "github.com/microsoft/azure-devops-go-api/azureDevops"
     "github.com/microsoft/azure-devops-go-api/azureDevops/core"
     "log"
-    "strconv"
 )
 
 func main() {
-    organizationUrl := "https://dev.azure.com/myorg"
-    personalAccessToken := "XXXXXXXXXXXXXXXXXXXXXXX"
+    organizationUrl := "https://dev.azure.com/myorg"  // todo: replace value with your organization url
+    personalAccessToken := "XXXXXXXXXXXXXXXXXXXXXXX"  // todo: replace value with your PAT
 
     connection := azureDevops.NewConnection(organizationUrl, personalAccessToken)
     coreClient, err := core.NewClient(*connection)
@@ -30,7 +29,7 @@ func main() {
     }
     
     for index, teamProjectReference := range *teamProjectReferences {
-        log.Println("Name[" + strconv.Itoa(index) + "] = " + *teamProjectReference.Name)
+        log.Printf("Name[%v] = %v", index, *teamProjectReference.Name)
     }
 }
 ```
