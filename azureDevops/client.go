@@ -390,11 +390,20 @@ func trimByteOrderMark(body []byte) []byte {
 }
 
 func (client Client) UnwrapError(response *http.Response) (err error) {
+	if response.ContentLength == 0 {
+		message := "Request returned status: " + response.Status
+		return &WrappedError{
+			Message: &message,
+			StatusCode: &response.StatusCode,
+		}
+	}
+
 	defer func() {
 		if closeError := response.Body.Close(); closeError != nil {
 			err = closeError
 		}
 	}()
+
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		return err

@@ -1,3 +1,44 @@
+# Azure DevOps Go API
+This repository contains Go APIs for interacting with and managing Azure DevOps.
+
+## Get started
+To use the API, establish a connection using a [personal access token](https://docs.microsoft.com/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) and the URL to your Azure DevOps organization. Then get a client using the connection and make API calls.
+
+```
+package main
+
+import (
+    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevops/core"
+    "log"
+    "strconv"
+)
+
+func main() {
+    organizationUrl := "https://dev.azure.com/myorg"
+    personalAccessToken := "XXXXXXXXXXXXXXXXXXXXXXX"
+
+    connection := azureDevops.NewConnection(organizationUrl, personalAccessToken)
+    coreClient, err := core.NewClient(*connection)
+    if err != nil {
+        log.Fatal(err)
+    }
+    
+    teamProjectReferences, err := coreClient.GetProjects(nil, nil, nil, nil, nil)
+    if err != nil {
+        log.Fatal(err)
+    }
+    
+    for index, teamProjectReference := range *teamProjectReferences {
+        log.Println("Name[" + strconv.Itoa(index) + "] = " + *teamProjectReference.Name)
+    }
+}
+```
+
+## API documentation
+
+This Go library provides a thin wrapper around the Azure DevOps REST APIs. See the [Azure DevOps REST API reference](https://docs.microsoft.com/en-us/rest/api/azure/devops/?view=azure-devops-rest-5.1) for details on calling different APIs.
+
 
 # Contributing
 
