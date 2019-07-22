@@ -239,7 +239,7 @@ func (client Client) ReadIdentities(ctx context.Context, descriptors *string, id
         queryParams.Add("filterValue", *filterValue)
     }
     if queryMembership != nil {
-        queryParams.Add("queryMembership", *queryMembership)
+        queryParams.Add("queryMembership", string(*queryMembership))
     }
     if properties != nil {
         queryParams.Add("properties", *properties)
@@ -248,7 +248,7 @@ func (client Client) ReadIdentities(ctx context.Context, descriptors *string, id
         queryParams.Add("includeRestrictedVisibility", strconv.FormatBool(*includeRestrictedVisibility))
     }
     if options != nil {
-        queryParams.Add("options", *options)
+        queryParams.Add("options", string(*options))
     }
     locationId, _ := uuid.Parse("28010c54-d0c0-4c89-a5b0-1c9e188b9fb7")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
@@ -272,7 +272,7 @@ func (client Client) ReadIdentitiesByScope(ctx context.Context, scopeId *uuid.UU
     }
     queryParams.Add("scopeId", (*scopeId).String())
     if queryMembership != nil {
-        queryParams.Add("queryMembership", *queryMembership)
+        queryParams.Add("queryMembership", string(*queryMembership))
     }
     if properties != nil {
         queryParams.Add("properties", *properties)
@@ -301,7 +301,7 @@ func (client Client) ReadIdentity(ctx context.Context, identityId *string, query
 
     queryParams := url.Values{}
     if queryMembership != nil {
-        queryParams.Add("queryMembership", *queryMembership)
+        queryParams.Add("queryMembership", string(*queryMembership))
     }
     if properties != nil {
         queryParams.Add("properties", *properties)
@@ -500,7 +500,7 @@ func (client Client) ReadMember(ctx context.Context, containerId *string, member
 
     queryParams := url.Values{}
     if queryMembership != nil {
-        queryParams.Add("queryMembership", *queryMembership)
+        queryParams.Add("queryMembership", string(*queryMembership))
     }
     locationId, _ := uuid.Parse("8ba35978-138e-41f8-8963-7b1ea2c5f775")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -526,7 +526,7 @@ func (client Client) ReadMembers(ctx context.Context, containerId *string, query
 
     queryParams := url.Values{}
     if queryMembership != nil {
-        queryParams.Add("queryMembership", *queryMembership)
+        queryParams.Add("queryMembership", string(*queryMembership))
     }
     locationId, _ := uuid.Parse("8ba35978-138e-41f8-8963-7b1ea2c5f775")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -583,7 +583,7 @@ func (client Client) ReadMemberOf(ctx context.Context, memberId *string, contain
 
     queryParams := url.Values{}
     if queryMembership != nil {
-        queryParams.Add("queryMembership", *queryMembership)
+        queryParams.Add("queryMembership", string(*queryMembership))
     }
     locationId, _ := uuid.Parse("22865b02-9e4a-479e-9e18-e35b8803b8a0")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -609,7 +609,7 @@ func (client Client) ReadMembersOf(ctx context.Context, memberId *string, queryM
 
     queryParams := url.Values{}
     if queryMembership != nil {
-        queryParams.Add("queryMembership", *queryMembership)
+        queryParams.Add("queryMembership", string(*queryMembership))
     }
     locationId, _ := uuid.Parse("22865b02-9e4a-479e-9e18-e35b8803b8a0")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)

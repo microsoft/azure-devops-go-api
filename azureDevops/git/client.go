@@ -1102,7 +1102,7 @@ func (client Client) GetItem(ctx context.Context, repositoryId *string, path *st
         queryParams.Add("scopePath", *scopePath)
     }
     if recursionLevel != nil {
-        queryParams.Add("recursionLevel", *recursionLevel)
+        queryParams.Add("recursionLevel", string(*recursionLevel))
     }
     if includeContentMetadata != nil {
         queryParams.Add("includeContentMetadata", strconv.FormatBool(*includeContentMetadata))
@@ -1173,7 +1173,7 @@ func (client Client) GetItemContent(ctx context.Context, repositoryId *string, p
         queryParams.Add("scopePath", *scopePath)
     }
     if recursionLevel != nil {
-        queryParams.Add("recursionLevel", *recursionLevel)
+        queryParams.Add("recursionLevel", string(*recursionLevel))
     }
     if includeContentMetadata != nil {
         queryParams.Add("includeContentMetadata", strconv.FormatBool(*includeContentMetadata))
@@ -1238,7 +1238,7 @@ func (client Client) GetItems(ctx context.Context, repositoryId *string, project
         queryParams.Add("scopePath", *scopePath)
     }
     if recursionLevel != nil {
-        queryParams.Add("recursionLevel", *recursionLevel)
+        queryParams.Add("recursionLevel", string(*recursionLevel))
     }
     if includeContentMetadata != nil {
         queryParams.Add("includeContentMetadata", strconv.FormatBool(*includeContentMetadata))
@@ -1306,7 +1306,7 @@ func (client Client) GetItemText(ctx context.Context, repositoryId *string, path
         queryParams.Add("scopePath", *scopePath)
     }
     if recursionLevel != nil {
-        queryParams.Add("recursionLevel", *recursionLevel)
+        queryParams.Add("recursionLevel", string(*recursionLevel))
     }
     if includeContentMetadata != nil {
         queryParams.Add("includeContentMetadata", strconv.FormatBool(*includeContentMetadata))
@@ -1377,7 +1377,7 @@ func (client Client) GetItemZip(ctx context.Context, repositoryId *string, path 
         queryParams.Add("scopePath", *scopePath)
     }
     if recursionLevel != nil {
-        queryParams.Add("recursionLevel", *recursionLevel)
+        queryParams.Add("recursionLevel", string(*recursionLevel))
     }
     if includeContentMetadata != nil {
         queryParams.Add("includeContentMetadata", strconv.FormatBool(*includeContentMetadata))

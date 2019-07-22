@@ -414,10 +414,10 @@ func (client Client) GetDeploymentGroup(ctx context.Context, project *string, de
 
     queryParams := url.Values{}
     if actionFilter != nil {
-        queryParams.Add("actionFilter", *actionFilter)
+        queryParams.Add("actionFilter", string(*actionFilter))
     }
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     locationId, _ := uuid.Parse("083c4d89-ab35-45af-aa11-7cf66895c53e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -451,10 +451,10 @@ func (client Client) GetDeploymentGroups(ctx context.Context, project *string, n
         queryParams.Add("name", *name)
     }
     if actionFilter != nil {
-        queryParams.Add("actionFilter", *actionFilter)
+        queryParams.Add("actionFilter", string(*actionFilter))
     }
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     if continuationToken != nil {
         queryParams.Add("continuationToken", *continuationToken)
@@ -574,7 +574,7 @@ func (client Client) GetAgentPool(ctx context.Context, poolId *int, properties *
         queryParams.Add("properties", listAsString)
     }
     if actionFilter != nil {
-        queryParams.Add("actionFilter", *actionFilter)
+        queryParams.Add("actionFilter", string(*actionFilter))
     }
     locationId, _ := uuid.Parse("a8c47e17-4d56-4a56-92bb-de7ea7dc65be")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -603,10 +603,10 @@ func (client Client) GetAgentPools(ctx context.Context, poolName *string, proper
         queryParams.Add("properties", listAsString)
     }
     if poolType != nil {
-        queryParams.Add("poolType", *poolType)
+        queryParams.Add("poolType", string(*poolType))
     }
     if actionFilter != nil {
-        queryParams.Add("actionFilter", *actionFilter)
+        queryParams.Add("actionFilter", string(*actionFilter))
     }
     locationId, _ := uuid.Parse("a8c47e17-4d56-4a56-92bb-de7ea7dc65be")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
@@ -635,7 +635,7 @@ func (client Client) GetAgentPoolsByIds(ctx context.Context, poolIds *[]int, act
     listAsString := strings.Join((stringList)[:], ",")
     queryParams.Add("definitions", listAsString)
     if actionFilter != nil {
-        queryParams.Add("actionFilter", *actionFilter)
+        queryParams.Add("actionFilter", string(*actionFilter))
     }
     locationId, _ := uuid.Parse("a8c47e17-4d56-4a56-92bb-de7ea7dc65be")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
@@ -750,7 +750,7 @@ func (client Client) GetAgentQueue(ctx context.Context, queueId *int, project *s
 
     queryParams := url.Values{}
     if actionFilter != nil {
-        queryParams.Add("actionFilter", *actionFilter)
+        queryParams.Add("actionFilter", string(*actionFilter))
     }
     locationId, _ := uuid.Parse("900fa995-c559-4923-aae7-f8424fe4fbea")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -779,7 +779,7 @@ func (client Client) GetAgentQueues(ctx context.Context, project *string, queueN
         queryParams.Add("queueName", *queueName)
     }
     if actionFilter != nil {
-        queryParams.Add("actionFilter", *actionFilter)
+        queryParams.Add("actionFilter", string(*actionFilter))
     }
     locationId, _ := uuid.Parse("900fa995-c559-4923-aae7-f8424fe4fbea")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -814,7 +814,7 @@ func (client Client) GetAgentQueuesByIds(ctx context.Context, queueIds *[]int, p
     listAsString := strings.Join((stringList)[:], ",")
     queryParams.Add("definitions", listAsString)
     if actionFilter != nil {
-        queryParams.Add("actionFilter", *actionFilter)
+        queryParams.Add("actionFilter", string(*actionFilter))
     }
     locationId, _ := uuid.Parse("900fa995-c559-4923-aae7-f8424fe4fbea")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -845,7 +845,7 @@ func (client Client) GetAgentQueuesByNames(ctx context.Context, queueNames *[]st
     listAsString := strings.Join((*queueNames)[:], ",")
     queryParams.Add("queueNames", listAsString)
     if actionFilter != nil {
-        queryParams.Add("actionFilter", *actionFilter)
+        queryParams.Add("actionFilter", string(*actionFilter))
     }
     locationId, _ := uuid.Parse("900fa995-c559-4923-aae7-f8424fe4fbea")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -931,7 +931,7 @@ func (client Client) GetDeploymentTarget(ctx context.Context, project *string, d
 
     queryParams := url.Values{}
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     locationId, _ := uuid.Parse("2f0aa599-c121-4256-a5fd-ba370e0ae7b6")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -981,13 +981,13 @@ func (client Client) GetDeploymentTargets(ctx context.Context, project *string, 
         queryParams.Add("partialNameMatch", strconv.FormatBool(*partialNameMatch))
     }
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     if agentStatus != nil {
-        queryParams.Add("agentStatus", *agentStatus)
+        queryParams.Add("agentStatus", string(*agentStatus))
     }
     if agentJobResult != nil {
-        queryParams.Add("agentJobResult", *agentJobResult)
+        queryParams.Add("agentJobResult", string(*agentJobResult))
     }
     if continuationToken != nil {
         queryParams.Add("continuationToken", *continuationToken)
@@ -1142,7 +1142,7 @@ func (client Client) GetTaskGroups(ctx context.Context, project *string, taskGro
         queryParams.Add("continuationToken", (*continuationToken).String())
     }
     if queryOrder != nil {
-        queryParams.Add("queryOrder", *queryOrder)
+        queryParams.Add("queryOrder", string(*queryOrder))
     }
     locationId, _ := uuid.Parse("6c08ffbf-dbf1-4f9a-94e5-a1cbd47005e7")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1287,7 +1287,7 @@ func (client Client) GetVariableGroups(ctx context.Context, project *string, gro
         queryParams.Add("groupName", *groupName)
     }
     if actionFilter != nil {
-        queryParams.Add("actionFilter", *actionFilter)
+        queryParams.Add("actionFilter", string(*actionFilter))
     }
     if top != nil {
         queryParams.Add("$top", strconv.Itoa(*top))
@@ -1296,7 +1296,7 @@ func (client Client) GetVariableGroups(ctx context.Context, project *string, gro
         queryParams.Add("continuationToken", strconv.Itoa(*continuationToken))
     }
     if queryOrder != nil {
-        queryParams.Add("queryOrder", *queryOrder)
+        queryParams.Add("queryOrder", string(*queryOrder))
     }
     locationId, _ := uuid.Parse("f5b09dd5-9d54-45a1-8b5a-1c8287d634cc")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)

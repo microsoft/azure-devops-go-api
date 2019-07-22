@@ -217,7 +217,7 @@ func (client Client) GetFeeds(ctx context.Context, project *string, feedRole *Fe
 
     queryParams := url.Values{}
     if feedRole != nil {
-        queryParams.Add("feedRole", *feedRole)
+        queryParams.Add("feedRole", string(*feedRole))
     }
     if includeDeletedUpstreams != nil {
         queryParams.Add("includeDeletedUpstreams", strconv.FormatBool(*includeDeletedUpstreams))

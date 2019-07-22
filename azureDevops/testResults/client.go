@@ -998,7 +998,7 @@ func (client Client) GetTestResultById(ctx context.Context, project *string, run
 
     queryParams := url.Values{}
     if detailsToInclude != nil {
-        queryParams.Add("detailsToInclude", *detailsToInclude)
+        queryParams.Add("detailsToInclude", string(*detailsToInclude))
     }
     locationId, _ := uuid.Parse("02afa165-e79a-4d70-8f0c-2af0f35b4e07")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1032,7 +1032,7 @@ func (client Client) GetTestResults(ctx context.Context, project *string, runId 
 
     queryParams := url.Values{}
     if detailsToInclude != nil {
-        queryParams.Add("detailsToInclude", *detailsToInclude)
+        queryParams.Add("detailsToInclude", string(*detailsToInclude))
     }
     if skip != nil {
         queryParams.Add("$skip", strconv.Itoa(*skip))
@@ -1529,7 +1529,7 @@ func (client Client) QueryTestRuns(ctx context.Context, project *string, minLast
     }
     queryParams.Add("maxLastUpdatedDate", (*maxLastUpdatedDate).String())
     if state != nil {
-        queryParams.Add("state", *state)
+        queryParams.Add("state", string(*state))
     }
     if planIds != nil {
         var stringList []string
@@ -1543,7 +1543,7 @@ func (client Client) QueryTestRuns(ctx context.Context, project *string, minLast
         queryParams.Add("isAutomated", strconv.FormatBool(*isAutomated))
     }
     if publishContext != nil {
-        queryParams.Add("publishContext", *publishContext)
+        queryParams.Add("publishContext", string(*publishContext))
     }
     if buildIds != nil {
         var stringList []string
@@ -1689,7 +1689,7 @@ func (client Client) GetTestResultsSettings(ctx context.Context, project *string
 
     queryParams := url.Values{}
     if settingsType != nil {
-        queryParams.Add("settingsType", *settingsType)
+        queryParams.Add("settingsType", string(*settingsType))
     }
     locationId, _ := uuid.Parse("7319952e-e5a9-4e19-a006-84f3be8b7c68")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.3", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1785,7 +1785,7 @@ func (client Client) GetTestLogsForBuild(ctx context.Context, project *string, b
     if type_ == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "type_"}
     }
-    queryParams.Add("type_", *type_)
+    queryParams.Add("type_", string(*type_))
     if directoryPath != nil {
         queryParams.Add("directoryPath", *directoryPath)
     }
@@ -1843,7 +1843,7 @@ func (client Client) GetTestResultLogs(ctx context.Context, project *string, run
     if type_ == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "type_"}
     }
-    queryParams.Add("type_", *type_)
+    queryParams.Add("type_", string(*type_))
     if directoryPath != nil {
         queryParams.Add("directoryPath", *directoryPath)
     }
@@ -1906,7 +1906,7 @@ func (client Client) GetTestSubResultLogs(ctx context.Context, project *string, 
     if type_ == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "type_"}
     }
-    queryParams.Add("type_", *type_)
+    queryParams.Add("type_", string(*type_))
     if directoryPath != nil {
         queryParams.Add("directoryPath", *directoryPath)
     }
@@ -1959,7 +1959,7 @@ func (client Client) GetTestRunLogs(ctx context.Context, project *string, runId 
     if type_ == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "type_"}
     }
-    queryParams.Add("type_", *type_)
+    queryParams.Add("type_", string(*type_))
     if directoryPath != nil {
         queryParams.Add("directoryPath", *directoryPath)
     }
@@ -2008,7 +2008,7 @@ func (client Client) GetTestLogStoreEndpointDetailsForBuildLog(ctx context.Conte
     if type_ == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "type_"}
     }
-    queryParams.Add("type_", *type_)
+    queryParams.Add("type_", string(*type_))
     if filePath == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "filePath"}
     }
@@ -2044,7 +2044,7 @@ func (client Client) TestLogStoreEndpointDetailsForBuild(ctx context.Context, pr
     if testLogStoreOperationType == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testLogStoreOperationType"}
     }
-    queryParams.Add("testLogStoreOperationType", *testLogStoreOperationType)
+    queryParams.Add("testLogStoreOperationType", string(*testLogStoreOperationType))
     locationId, _ := uuid.Parse("39b09be7-f0c9-4a83-a513-9ae31b45c56f")
     resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -2082,7 +2082,7 @@ func (client Client) GetTestLogStoreEndpointDetailsForResultLog(ctx context.Cont
     if type_ == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "type_"}
     }
-    queryParams.Add("type_", *type_)
+    queryParams.Add("type_", string(*type_))
     if filePath == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "filePath"}
     }
@@ -2129,7 +2129,7 @@ func (client Client) GetTestLogStoreEndpointDetailsForSubResultLog(ctx context.C
     if type_ == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "type_"}
     }
-    queryParams.Add("type_", *type_)
+    queryParams.Add("type_", string(*type_))
     if filePath == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "filePath"}
     }
@@ -2180,7 +2180,7 @@ func (client Client) TestLogStoreEndpointDetailsForResult(ctx context.Context, p
     if type_ == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "type_"}
     }
-    queryParams.Add("type_", *type_)
+    queryParams.Add("type_", string(*type_))
     locationId, _ := uuid.Parse("da630b37-1236-45b5-945e-1d7bdb673850")
     resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -2213,7 +2213,7 @@ func (client Client) GetTestLogStoreEndpointDetailsForRunLog(ctx context.Context
     if type_ == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "type_"}
     }
-    queryParams.Add("type_", *type_)
+    queryParams.Add("type_", string(*type_))
     if filePath == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "filePath"}
     }
@@ -2251,12 +2251,12 @@ func (client Client) TestLogStoreEndpointDetailsForRun(ctx context.Context, proj
     if testLogStoreOperationType == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testLogStoreOperationType"}
     }
-    queryParams.Add("testLogStoreOperationType", *testLogStoreOperationType)
+    queryParams.Add("testLogStoreOperationType", string(*testLogStoreOperationType))
     if filePath != nil {
         queryParams.Add("filePath", *filePath)
     }
     if type_ != nil {
-        queryParams.Add("type_", *type_)
+        queryParams.Add("type_", string(*type_))
     }
     locationId, _ := uuid.Parse("67eb3f92-6c97-4fd9-8b63-6cbdc7e526ea")
     resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)

@@ -60,7 +60,7 @@ func (client Client) GetApprovals(ctx context.Context, project *string, assigned
         queryParams.Add("assignedToFilter", *assignedToFilter)
     }
     if statusFilter != nil {
-        queryParams.Add("statusFilter", *statusFilter)
+        queryParams.Add("statusFilter", string(*statusFilter))
     }
     if releaseIdsFilter != nil {
         var stringList []string
@@ -71,7 +71,7 @@ func (client Client) GetApprovals(ctx context.Context, project *string, assigned
         queryParams.Add("definitions", listAsString)
     }
     if typeFilter != nil {
-        queryParams.Add("typeFilter", *typeFilter)
+        queryParams.Add("typeFilter", string(*typeFilter))
     }
     if top != nil {
         queryParams.Add("top", strconv.Itoa(*top))
@@ -80,7 +80,7 @@ func (client Client) GetApprovals(ctx context.Context, project *string, assigned
         queryParams.Add("continuationToken", strconv.Itoa(*continuationToken))
     }
     if queryOrder != nil {
-        queryParams.Add("queryOrder", *queryOrder)
+        queryParams.Add("queryOrder", string(*queryOrder))
     }
     if includeMyGroupApprovals != nil {
         queryParams.Add("includeMyGroupApprovals", strconv.FormatBool(*includeMyGroupApprovals))
@@ -360,7 +360,7 @@ func (client Client) GetReleaseDefinitions(ctx context.Context, project *string,
         queryParams.Add("searchText", *searchText)
     }
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     if artifactType != nil {
         queryParams.Add("artifactType", *artifactType)
@@ -375,7 +375,7 @@ func (client Client) GetReleaseDefinitions(ctx context.Context, project *string,
         queryParams.Add("continuationToken", *continuationToken)
     }
     if queryOrder != nil {
-        queryParams.Add("queryOrder", *queryOrder)
+        queryParams.Add("queryOrder", string(*queryOrder))
     }
     if path != nil {
         queryParams.Add("path", *path)
@@ -482,16 +482,16 @@ func (client Client) GetDeployments(ctx context.Context, project *string, defini
         queryParams.Add("maxModifiedTime", (*maxModifiedTime).String())
     }
     if deploymentStatus != nil {
-        queryParams.Add("deploymentStatus", *deploymentStatus)
+        queryParams.Add("deploymentStatus", string(*deploymentStatus))
     }
     if operationStatus != nil {
-        queryParams.Add("operationStatus", *operationStatus)
+        queryParams.Add("operationStatus", string(*operationStatus))
     }
     if latestAttemptsOnly != nil {
         queryParams.Add("latestAttemptsOnly", strconv.FormatBool(*latestAttemptsOnly))
     }
     if queryOrder != nil {
-        queryParams.Add("queryOrder", *queryOrder)
+        queryParams.Add("queryOrder", string(*queryOrder))
     }
     if top != nil {
         queryParams.Add("$top", strconv.Itoa(*top))
@@ -633,7 +633,7 @@ func (client Client) GetFolders(ctx context.Context, project *string, path *stri
 
     queryParams := url.Values{}
     if queryOrder != nil {
-        queryParams.Add("queryOrder", *queryOrder)
+        queryParams.Add("queryOrder", string(*queryOrder))
     }
     locationId, _ := uuid.Parse("f7ddf76d-ce0c-4d68-94ff-becaec5d9dea")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -930,7 +930,7 @@ func (client Client) GetReleases(ctx context.Context, project *string, definitio
         queryParams.Add("createdBy", *createdBy)
     }
     if statusFilter != nil {
-        queryParams.Add("statusFilter", *statusFilter)
+        queryParams.Add("statusFilter", string(*statusFilter))
     }
     if environmentStatusFilter != nil {
         queryParams.Add("environmentStatusFilter", strconv.Itoa(*environmentStatusFilter))
@@ -942,7 +942,7 @@ func (client Client) GetReleases(ctx context.Context, project *string, definitio
         queryParams.Add("maxCreatedTime", (*maxCreatedTime).String())
     }
     if queryOrder != nil {
-        queryParams.Add("queryOrder", *queryOrder)
+        queryParams.Add("queryOrder", string(*queryOrder))
     }
     if top != nil {
         queryParams.Add("$top", strconv.Itoa(*top))
@@ -951,7 +951,7 @@ func (client Client) GetReleases(ctx context.Context, project *string, definitio
         queryParams.Add("continuationToken", strconv.Itoa(*continuationToken))
     }
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     if artifactTypeId != nil {
         queryParams.Add("artifactTypeId", *artifactTypeId)
@@ -1048,14 +1048,14 @@ func (client Client) GetRelease(ctx context.Context, project *string, releaseId 
 
     queryParams := url.Values{}
     if approvalFilters != nil {
-        queryParams.Add("approvalFilters", *approvalFilters)
+        queryParams.Add("approvalFilters", string(*approvalFilters))
     }
     if propertyFilters != nil {
         listAsString := strings.Join((*propertyFilters)[:], ",")
         queryParams.Add("propertyFilters", listAsString)
     }
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     if topGateRecords != nil {
         queryParams.Add("$topGateRecords", strconv.Itoa(*topGateRecords))

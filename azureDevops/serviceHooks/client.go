@@ -273,10 +273,10 @@ func (client Client) GetNotifications(ctx context.Context, subscriptionId *uuid.
         queryParams.Add("maxResults", strconv.Itoa(*maxResults))
     }
     if status != nil {
-        queryParams.Add("status", *status)
+        queryParams.Add("status", string(*status))
     }
     if result != nil {
-        queryParams.Add("result", *result)
+        queryParams.Add("result", string(*result))
     }
     locationId, _ := uuid.Parse("0c62d343-21b0-4732-997b-017fde84dc28")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)

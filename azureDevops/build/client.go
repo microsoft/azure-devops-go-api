@@ -563,13 +563,13 @@ func (client Client) GetBuilds(ctx context.Context, project *string, definitions
         queryParams.Add("requestedFor", *requestedFor)
     }
     if reasonFilter != nil {
-        queryParams.Add("reasonFilter", *reasonFilter)
+        queryParams.Add("reasonFilter", string(*reasonFilter))
     }
     if statusFilter != nil {
-        queryParams.Add("statusFilter", *statusFilter)
+        queryParams.Add("statusFilter", string(*statusFilter))
     }
     if resultFilter != nil {
-        queryParams.Add("resultFilter", *resultFilter)
+        queryParams.Add("resultFilter", string(*resultFilter))
     }
     if tagFilters != nil {
         listAsString := strings.Join((*tagFilters)[:], ",")
@@ -589,10 +589,10 @@ func (client Client) GetBuilds(ctx context.Context, project *string, definitions
         queryParams.Add("maxBuildsPerDefinition", strconv.Itoa(*maxBuildsPerDefinition))
     }
     if deletedFilter != nil {
-        queryParams.Add("deletedFilter", *deletedFilter)
+        queryParams.Add("deletedFilter", string(*deletedFilter))
     }
     if queryOrder != nil {
-        queryParams.Add("queryOrder", *queryOrder)
+        queryParams.Add("queryOrder", string(*queryOrder))
     }
     if branchName != nil {
         queryParams.Add("branchName", *branchName)
@@ -988,7 +988,7 @@ func (client Client) GetDefinitions(ctx context.Context, project *string, name *
         queryParams.Add("repositoryType", *repositoryType)
     }
     if queryOrder != nil {
-        queryParams.Add("queryOrder", *queryOrder)
+        queryParams.Add("queryOrder", string(*queryOrder))
     }
     if top != nil {
         queryParams.Add("$top", strconv.Itoa(*top))
@@ -1237,7 +1237,7 @@ func (client Client) GetFolders(ctx context.Context, project *string, path *stri
 
     queryParams := url.Values{}
     if queryOrder != nil {
-        queryParams.Add("queryOrder", *queryOrder)
+        queryParams.Add("queryOrder", string(*queryOrder))
     }
     locationId, _ := uuid.Parse("a906531b-d2da-4f55-bda7-f3e676cc50d9")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1874,7 +1874,7 @@ func (client Client) ListRepositories(ctx context.Context, project *string, prov
         queryParams.Add("repository", *repository)
     }
     if resultSet != nil {
-        queryParams.Add("resultSet", *resultSet)
+        queryParams.Add("resultSet", string(*resultSet))
     }
     if pageResults != nil {
         queryParams.Add("pageResults", strconv.FormatBool(*pageResults))

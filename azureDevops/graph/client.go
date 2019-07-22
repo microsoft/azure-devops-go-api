@@ -69,7 +69,7 @@ func (client Client) GetAvatar(ctx context.Context, subjectDescriptor *string, s
 
     queryParams := url.Values{}
     if size != nil {
-        queryParams.Add("size", *size)
+        queryParams.Add("size", string(*size))
     }
     if format != nil {
         queryParams.Add("format", *format)
@@ -385,7 +385,7 @@ func (client Client) ListMemberships(ctx context.Context, subjectDescriptor *str
 
     queryParams := url.Values{}
     if direction != nil {
-        queryParams.Add("direction", *direction)
+        queryParams.Add("direction", string(*direction))
     }
     if depth != nil {
         queryParams.Add("depth", strconv.Itoa(*depth))

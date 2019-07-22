@@ -229,7 +229,7 @@ func (client Client) GetClassificationNodes(ctx context.Context, project *string
         queryParams.Add("$depth", strconv.Itoa(*depth))
     }
     if errorPolicy != nil {
-        queryParams.Add("errorPolicy", *errorPolicy)
+        queryParams.Add("errorPolicy", string(*errorPolicy))
     }
     locationId, _ := uuid.Parse("a70579d1-f53a-48ee-a5be-7be8659023b9")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -286,7 +286,7 @@ func (client Client) CreateOrUpdateClassificationNode(ctx context.Context, poste
     if structureGroup == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "structureGroup"} 
     }
-    routeValues["structureGroup"] = *structureGroup
+    routeValues["structureGroup"] = string(*structureGroup)
     if path != nil && *path != "" {
         routeValues["path"] = *path
     }
@@ -321,7 +321,7 @@ func (client Client) DeleteClassificationNode(ctx context.Context, project *stri
     if structureGroup == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "structureGroup"} 
     }
-    routeValues["structureGroup"] = *structureGroup
+    routeValues["structureGroup"] = string(*structureGroup)
     if path != nil && *path != "" {
         routeValues["path"] = *path
     }
@@ -354,7 +354,7 @@ func (client Client) GetClassificationNode(ctx context.Context, project *string,
     if structureGroup == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "structureGroup"} 
     }
-    routeValues["structureGroup"] = *structureGroup
+    routeValues["structureGroup"] = string(*structureGroup)
     if path != nil && *path != "" {
         routeValues["path"] = *path
     }
@@ -392,7 +392,7 @@ func (client Client) UpdateClassificationNode(ctx context.Context, postedNode *W
     if structureGroup == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "structureGroup"} 
     }
-    routeValues["structureGroup"] = *structureGroup
+    routeValues["structureGroup"] = string(*structureGroup)
     if path != nil && *path != "" {
         routeValues["path"] = *path
     }
@@ -437,7 +437,7 @@ func (client Client) GetEngagedUsers(ctx context.Context, project *string, workI
     if reactionType == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "reactionType"} 
     }
-    routeValues["reactionType"] = *reactionType
+    routeValues["reactionType"] = string(*reactionType)
 
     queryParams := url.Values{}
     if top != nil {
@@ -547,7 +547,7 @@ func (client Client) GetComment(ctx context.Context, project *string, workItemId
         queryParams.Add("includeDeleted", strconv.FormatBool(*includeDeleted))
     }
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     locationId, _ := uuid.Parse("608aac0a-32e1-4493-a863-b9cf4566d257")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.3", routeValues, queryParams, nil, "", "application/json", nil)
@@ -591,10 +591,10 @@ func (client Client) GetComments(ctx context.Context, project *string, workItemI
         queryParams.Add("includeDeleted", strconv.FormatBool(*includeDeleted))
     }
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     if order != nil {
-        queryParams.Add("order", *order)
+        queryParams.Add("order", string(*order))
     }
     locationId, _ := uuid.Parse("608aac0a-32e1-4493-a863-b9cf4566d257")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.3", routeValues, queryParams, nil, "", "application/json", nil)
@@ -639,7 +639,7 @@ func (client Client) GetCommentsBatch(ctx context.Context, project *string, work
         queryParams.Add("includeDeleted", strconv.FormatBool(*includeDeleted))
     }
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     locationId, _ := uuid.Parse("608aac0a-32e1-4493-a863-b9cf4566d257")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.3", routeValues, queryParams, nil, "", "application/json", nil)
@@ -714,7 +714,7 @@ func (client Client) CreateCommentReaction(ctx context.Context, project *string,
     if reactionType == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "reactionType"} 
     }
-    routeValues["reactionType"] = *reactionType
+    routeValues["reactionType"] = string(*reactionType)
 
     locationId, _ := uuid.Parse("f6cb3f27-1028-4851-af96-887e570dc21f")
     resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -750,7 +750,7 @@ func (client Client) DeleteCommentReaction(ctx context.Context, project *string,
     if reactionType == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "reactionType"} 
     }
-    routeValues["reactionType"] = *reactionType
+    routeValues["reactionType"] = string(*reactionType)
 
     locationId, _ := uuid.Parse("f6cb3f27-1028-4851-af96-887e570dc21f")
     resp, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -949,7 +949,7 @@ func (client Client) GetFields(ctx context.Context, project *string, expand *Get
 
     queryParams := url.Values{}
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     locationId, _ := uuid.Parse("b51fd764-e5c2-4b9b-aaf7-3395cf4bdd94")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1040,7 +1040,7 @@ func (client Client) GetQueries(ctx context.Context, project *string, expand *Qu
 
     queryParams := url.Values{}
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     if depth != nil {
         queryParams.Add("$depth", strconv.Itoa(*depth))
@@ -1079,7 +1079,7 @@ func (client Client) GetQuery(ctx context.Context, project *string, query *strin
 
     queryParams := url.Values{}
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     if depth != nil {
         queryParams.Add("$depth", strconv.Itoa(*depth))
@@ -1121,7 +1121,7 @@ func (client Client) SearchQueries(ctx context.Context, project *string, filter 
         queryParams.Add("$top", strconv.Itoa(*top))
     }
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     if includeDeleted != nil {
         queryParams.Add("$includeDeleted", strconv.FormatBool(*includeDeleted))
@@ -1359,7 +1359,7 @@ func (client Client) GetRevision(ctx context.Context, id *int, revisionNumber *i
 
     queryParams := url.Values{}
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     locationId, _ := uuid.Parse("a00c85a5-80fa-4565-99c3-bcd2181434bb")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1397,7 +1397,7 @@ func (client Client) GetRevisions(ctx context.Context, id *int, project *string,
         queryParams.Add("$skip", strconv.Itoa(*skip))
     }
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     locationId, _ := uuid.Parse("a00c85a5-80fa-4565-99c3-bcd2181434bb")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1981,7 +1981,7 @@ func (client Client) ReadReportingRevisionsGet(ctx context.Context, project *str
         queryParams.Add("includeLatestOnly", strconv.FormatBool(*includeLatestOnly))
     }
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     if includeDiscussionChangesOnly != nil {
         queryParams.Add("includeDiscussionChangesOnly", strconv.FormatBool(*includeDiscussionChangesOnly))
@@ -2024,7 +2024,7 @@ func (client Client) ReadReportingRevisionsPost(ctx context.Context, filter *Rep
         queryParams.Add("startDateTime", (*startDateTime).String())
     }
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     body, marshalErr := json.Marshal(*filter)
     if marshalErr != nil {
@@ -2104,7 +2104,7 @@ func (client Client) CreateWorkItem(ctx context.Context, document *[]JsonPatchOp
         queryParams.Add("suppressNotifications", strconv.FormatBool(*suppressNotifications))
     }
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     body, marshalErr := json.Marshal(*document)
     if marshalErr != nil {
@@ -2147,7 +2147,7 @@ func (client Client) GetWorkItemTemplate(ctx context.Context, project *string, t
         queryParams.Add("asOf", (*asOf).String())
     }
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     locationId, _ := uuid.Parse("62d3d110-0047-428c-ad3c-4fe872c91c74")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -2216,7 +2216,7 @@ func (client Client) GetWorkItem(ctx context.Context, id *int, project *string, 
         queryParams.Add("asOf", (*asOf).String())
     }
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     locationId, _ := uuid.Parse("72c7ddf8-2cdc-4f60-90cd-ab71c14a399b")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -2261,10 +2261,10 @@ func (client Client) GetWorkItems(ctx context.Context, ids *[]int, project *stri
         queryParams.Add("asOf", (*asOf).String())
     }
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     if errorPolicy != nil {
-        queryParams.Add("errorPolicy", *errorPolicy)
+        queryParams.Add("errorPolicy", string(*errorPolicy))
     }
     locationId, _ := uuid.Parse("72c7ddf8-2cdc-4f60-90cd-ab71c14a399b")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -2310,7 +2310,7 @@ func (client Client) UpdateWorkItem(ctx context.Context, document *[]JsonPatchOp
         queryParams.Add("suppressNotifications", strconv.FormatBool(*suppressNotifications))
     }
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     body, marshalErr := json.Marshal(*document)
     if marshalErr != nil {
@@ -2496,7 +2496,7 @@ func (client Client) GetWorkItemTypeFieldsWithReferences(ctx context.Context, pr
 
     queryParams := url.Values{}
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     locationId, _ := uuid.Parse("bd293ce5-3d25-4192-8e67-e8092e879efb")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -2532,7 +2532,7 @@ func (client Client) GetWorkItemTypeFieldWithReferences(ctx context.Context, pro
 
     queryParams := url.Values{}
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     locationId, _ := uuid.Parse("bd293ce5-3d25-4192-8e67-e8092e879efb")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)

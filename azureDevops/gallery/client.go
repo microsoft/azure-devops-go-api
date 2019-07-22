@@ -1111,7 +1111,7 @@ func (client Client) GetExtensionById(ctx context.Context, extensionId *uuid.UUI
         queryParams.Add("version", *version)
     }
     if flags != nil {
-        queryParams.Add("flags", *flags)
+        queryParams.Add("flags", string(*flags))
     }
     locationId, _ := uuid.Parse("a41192c8-9525-4b58-bc86-179fa549d80d")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1227,7 +1227,7 @@ func (client Client) GetExtension(ctx context.Context, publisherName *string, ex
         queryParams.Add("version", *version)
     }
     if flags != nil {
-        queryParams.Add("flags", *flags)
+        queryParams.Add("flags", string(*flags))
     }
     if accountToken != nil {
         queryParams.Add("accountToken", *accountToken)
@@ -1306,7 +1306,7 @@ func (client Client) UpdateExtensionProperties(ctx context.Context, publisherNam
     if flags == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "flags"}
     }
-    queryParams.Add("flags", *flags)
+    queryParams.Add("flags", string(*flags))
     locationId, _ := uuid.Parse("e11ea35a-16fe-4b80-ab11-c4cab88a0966")
     resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -2126,7 +2126,7 @@ func (client Client) GetReviews(ctx context.Context, publisherName *string, exte
         queryParams.Add("count", strconv.Itoa(*count))
     }
     if filterOptions != nil {
-        queryParams.Add("filterOptions", *filterOptions)
+        queryParams.Add("filterOptions", string(*filterOptions))
     }
     if beforeDate != nil {
         queryParams.Add("beforeDate", (*beforeDate).String())
@@ -2456,7 +2456,7 @@ func (client Client) GetExtensionDailyStats(ctx context.Context, publisherName *
         queryParams.Add("days", strconv.Itoa(*days))
     }
     if aggregate != nil {
-        queryParams.Add("aggregate", *aggregate)
+        queryParams.Add("aggregate", string(*aggregate))
     }
     if afterDate != nil {
         queryParams.Add("afterDate", (*afterDate).String())

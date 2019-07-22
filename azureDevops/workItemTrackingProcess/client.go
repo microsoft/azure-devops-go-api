@@ -105,7 +105,7 @@ func (client Client) GetProcessBehavior(ctx context.Context, processId *uuid.UUI
 
     queryParams := url.Values{}
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     locationId, _ := uuid.Parse("d1800200-f184-4e75-a5f2-ad0b04b4373e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -131,7 +131,7 @@ func (client Client) GetProcessBehaviors(ctx context.Context, processId *uuid.UU
 
     queryParams := url.Values{}
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     locationId, _ := uuid.Parse("d1800200-f184-4e75-a5f2-ad0b04b4373e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1054,7 +1054,7 @@ func (client Client) EditProcess(ctx context.Context, updateRequest *UpdateProce
 func (client Client) GetListOfProcesses(ctx context.Context, expand *GetProcessExpandLevel) (*[]ProcessInfo, error) {
     queryParams := url.Values{}
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     locationId, _ := uuid.Parse("02cc6a73-5cfb-427d-8c8e-b49fb086e8af")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", nil, queryParams, nil, "", "application/json", nil)
@@ -1080,7 +1080,7 @@ func (client Client) GetProcessByItsId(ctx context.Context, processTypeId *uuid.
 
     queryParams := url.Values{}
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     locationId, _ := uuid.Parse("02cc6a73-5cfb-427d-8c8e-b49fb086e8af")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1521,7 +1521,7 @@ func (client Client) GetProcessWorkItemType(ctx context.Context, processId *uuid
 
     queryParams := url.Values{}
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     locationId, _ := uuid.Parse("e2e9d1a6-432d-4062-8870-bfcb8c324ad7")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1547,7 +1547,7 @@ func (client Client) GetProcessWorkItemTypes(ctx context.Context, processId *uui
 
     queryParams := url.Values{}
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     locationId, _ := uuid.Parse("e2e9d1a6-432d-4062-8870-bfcb8c324ad7")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)

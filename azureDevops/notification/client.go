@@ -311,7 +311,7 @@ func (client Client) GetSubscription(ctx context.Context, subscriptionId *string
 
     queryParams := url.Values{}
     if queryFlags != nil {
-        queryParams.Add("queryFlags", *queryFlags)
+        queryParams.Add("queryFlags", string(*queryFlags))
     }
     locationId, _ := uuid.Parse("70f911d6-abac-488c-85b3-a206bf57e165")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -339,7 +339,7 @@ func (client Client) ListSubscriptions(ctx context.Context, targetId *uuid.UUID,
         queryParams.Add("ids", listAsString)
     }
     if queryFlags != nil {
-        queryParams.Add("queryFlags", *queryFlags)
+        queryParams.Add("queryFlags", string(*queryFlags))
     }
     locationId, _ := uuid.Parse("70f911d6-abac-488c-85b3-a206bf57e165")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)

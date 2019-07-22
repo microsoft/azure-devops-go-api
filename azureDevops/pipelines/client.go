@@ -58,7 +58,7 @@ func (client Client) GetLog(ctx context.Context, project *string, pipelineId *in
 
     queryParams := url.Values{}
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     locationId, _ := uuid.Parse("fb1b6d27-3957-43d5-a14b-a2d70403e545")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -94,7 +94,7 @@ func (client Client) ListLogs(ctx context.Context, project *string, pipelineId *
 
     queryParams := url.Values{}
     if expand != nil {
-        queryParams.Add("$expand", *expand)
+        queryParams.Add("$expand", string(*expand))
     }
     locationId, _ := uuid.Parse("fb1b6d27-3957-43d5-a14b-a2d70403e545")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)

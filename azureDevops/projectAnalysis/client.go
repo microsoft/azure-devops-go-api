@@ -75,7 +75,7 @@ func (client Client) GetProjectActivityMetrics(ctx context.Context, project *str
     if aggregationType == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "aggregationType"}
     }
-    queryParams.Add("aggregationType", *aggregationType)
+    queryParams.Add("aggregationType", string(*aggregationType))
     locationId, _ := uuid.Parse("e40ae584-9ea6-4f06-a7c7-6284651b466b")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -109,7 +109,7 @@ func (client Client) GetGitRepositoriesActivityMetrics(ctx context.Context, proj
     if aggregationType == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "aggregationType"}
     }
-    queryParams.Add("aggregationType", *aggregationType)
+    queryParams.Add("aggregationType", string(*aggregationType))
     if skip == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "skip"}
     }
@@ -154,7 +154,7 @@ func (client Client) GetRepositoryActivityMetrics(ctx context.Context, project *
     if aggregationType == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "aggregationType"}
     }
-    queryParams.Add("aggregationType", *aggregationType)
+    queryParams.Add("aggregationType", string(*aggregationType))
     locationId, _ := uuid.Parse("df7fbbca-630a-40e3-8aa3-7a3faf66947e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {

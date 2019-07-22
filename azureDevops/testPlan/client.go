@@ -340,7 +340,7 @@ func (client Client) GetSuiteEntries(ctx context.Context, project *string, suite
 
     queryParams := url.Values{}
     if suiteEntryType != nil {
-        queryParams.Add("suiteEntryType", *suiteEntryType)
+        queryParams.Add("suiteEntryType", string(*suiteEntryType))
     }
     locationId, _ := uuid.Parse("d6733edf-72f1-4252-925b-c560dfe9b75a")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -473,7 +473,7 @@ func (client Client) GetTestSuiteById(ctx context.Context, project *string, plan
 
     queryParams := url.Values{}
     if expand != nil {
-        queryParams.Add("expand", *expand)
+        queryParams.Add("expand", string(*expand))
     }
     locationId, _ := uuid.Parse("1046d5d3-ab61-4ca7-a65a-36118a978256")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -506,7 +506,7 @@ func (client Client) GetTestSuitesForPlan(ctx context.Context, project *string, 
 
     queryParams := url.Values{}
     if expand != nil {
-        queryParams.Add("expand", *expand)
+        queryParams.Add("expand", string(*expand))
     }
     if continuationToken != nil {
         queryParams.Add("continuationToken", *continuationToken)

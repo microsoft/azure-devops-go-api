@@ -121,7 +121,7 @@ func (client Client) GetDetectedBuildFrameworks(ctx context.Context, project *st
         queryParams.Add("branch", *branch)
     }
     if detectionType != nil {
-        queryParams.Add("detectionType", *detectionType)
+        queryParams.Add("detectionType", string(*detectionType))
     }
     if serviceConnectionId != nil {
         queryParams.Add("serviceConnectionId", (*serviceConnectionId).String())

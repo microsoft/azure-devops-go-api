@@ -382,6 +382,28 @@ type PipelineReference struct {
     StageReference *StageReference `json:"stageReference,omitempty"`
 }
 
+type ProjectState string
+
+type projectStateValuesType struct {
+    Deleting ProjectState
+    New ProjectState
+    WellFormed ProjectState
+    CreatePending ProjectState
+    All ProjectState
+    Unchanged ProjectState
+    Deleted ProjectState
+}
+
+var ProjectStateValues = projectStateValuesType{
+    Deleting: "deleting",
+    New: "new",
+    WellFormed: "wellFormed",
+    CreatePending: "createPending",
+    All: "all",
+    Unchanged: "unchanged",
+    Deleted: "deleted",
+}
+
 type ProjectVisibility string
 
 type projectVisibilityValuesType struct {
@@ -726,7 +748,7 @@ type TeamProjectReference struct {
     LastUpdateTime *time.Time `json:"lastUpdateTime,omitempty"`
     Name *string `json:"name,omitempty"`
     Revision *uint64 `json:"revision,omitempty"`
-    State *interface{} `json:"state,omitempty"`
+    State *ProjectState `json:"state,omitempty"`
     Url *string `json:"url,omitempty"`
     Visibility *ProjectVisibility `json:"visibility,omitempty"`
 }

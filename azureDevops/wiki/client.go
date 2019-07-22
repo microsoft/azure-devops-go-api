@@ -225,7 +225,7 @@ func (client Client) GetPageById(ctx context.Context, project *string, wikiIdent
 
     queryParams := url.Values{}
     if recursionLevel != nil {
-        queryParams.Add("recursionLevel", *recursionLevel)
+        queryParams.Add("recursionLevel", string(*recursionLevel))
     }
     if includeContent != nil {
         queryParams.Add("includeContent", strconv.FormatBool(*includeContent))
@@ -274,7 +274,7 @@ func (client Client) GetPageByIdText(ctx context.Context, project *string, wikiI
 
     queryParams := url.Values{}
     if recursionLevel != nil {
-        queryParams.Add("recursionLevel", *recursionLevel)
+        queryParams.Add("recursionLevel", string(*recursionLevel))
     }
     if includeContent != nil {
         queryParams.Add("includeContent", strconv.FormatBool(*includeContent))
@@ -314,7 +314,7 @@ func (client Client) GetPageByIdZip(ctx context.Context, project *string, wikiId
 
     queryParams := url.Values{}
     if recursionLevel != nil {
-        queryParams.Add("recursionLevel", *recursionLevel)
+        queryParams.Add("recursionLevel", string(*recursionLevel))
     }
     if includeContent != nil {
         queryParams.Add("includeContent", strconv.FormatBool(*includeContent))
@@ -539,7 +539,7 @@ func (client Client) GetPage(ctx context.Context, project *string, wikiIdentifie
         queryParams.Add("path", *path)
     }
     if recursionLevel != nil {
-        queryParams.Add("recursionLevel", *recursionLevel)
+        queryParams.Add("recursionLevel", string(*recursionLevel))
     }
     if versionDescriptor != nil {
         if versionDescriptor.VersionType != nil {
@@ -599,7 +599,7 @@ func (client Client) GetPageText(ctx context.Context, project *string, wikiIdent
         queryParams.Add("path", *path)
     }
     if recursionLevel != nil {
-        queryParams.Add("recursionLevel", *recursionLevel)
+        queryParams.Add("recursionLevel", string(*recursionLevel))
     }
     if versionDescriptor != nil {
         if versionDescriptor.VersionType != nil {
@@ -650,7 +650,7 @@ func (client Client) GetPageZip(ctx context.Context, project *string, wikiIdenti
         queryParams.Add("path", *path)
     }
     if recursionLevel != nil {
-        queryParams.Add("recursionLevel", *recursionLevel)
+        queryParams.Add("recursionLevel", string(*recursionLevel))
     }
     if versionDescriptor != nil {
         if versionDescriptor.VersionType != nil {

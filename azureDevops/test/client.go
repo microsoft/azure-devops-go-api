@@ -979,7 +979,7 @@ func (client Client) GetTestResultById(ctx context.Context, project *string, run
 
     queryParams := url.Values{}
     if detailsToInclude != nil {
-        queryParams.Add("detailsToInclude", *detailsToInclude)
+        queryParams.Add("detailsToInclude", string(*detailsToInclude))
     }
     locationId, _ := uuid.Parse("4637d869-3a76-4468-8057-0bb02aa385cf")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1013,7 +1013,7 @@ func (client Client) GetTestResults(ctx context.Context, project *string, runId 
 
     queryParams := url.Values{}
     if detailsToInclude != nil {
-        queryParams.Add("detailsToInclude", *detailsToInclude)
+        queryParams.Add("detailsToInclude", string(*detailsToInclude))
     }
     if skip != nil {
         queryParams.Add("$skip", strconv.Itoa(*skip))
@@ -1274,7 +1274,7 @@ func (client Client) QueryTestRuns(ctx context.Context, project *string, minLast
     }
     queryParams.Add("maxLastUpdatedDate", (*maxLastUpdatedDate).String())
     if state != nil {
-        queryParams.Add("state", *state)
+        queryParams.Add("state", string(*state))
     }
     if planIds != nil {
         var stringList []string
@@ -1288,7 +1288,7 @@ func (client Client) QueryTestRuns(ctx context.Context, project *string, minLast
         queryParams.Add("isAutomated", strconv.FormatBool(*isAutomated))
     }
     if publishContext != nil {
-        queryParams.Add("publishContext", *publishContext)
+        queryParams.Add("publishContext", string(*publishContext))
     }
     if buildIds != nil {
         var stringList []string
@@ -1458,7 +1458,7 @@ func (client Client) GetTestSessions(ctx context.Context, project *string, team 
         queryParams.Add("includeAllProperties", strconv.FormatBool(*includeAllProperties))
     }
     if source != nil {
-        queryParams.Add("source", *source)
+        queryParams.Add("source", string(*source))
     }
     if includeOnlyCompletedSessions != nil {
         queryParams.Add("includeOnlyCompletedSessions", strconv.FormatBool(*includeOnlyCompletedSessions))

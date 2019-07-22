@@ -270,7 +270,7 @@ type ProjectInfo struct {
     // The current revision of the project.
     Revision *uint64 `json:"revision,omitempty"`
     // The current state of the project.
-    State *interface{} `json:"state,omitempty"`
+    State *ProjectState `json:"state,omitempty"`
     // A Uri that can be used to refer to this project.
     Uri *string `json:"uri,omitempty"`
     // The version number of the project.
@@ -298,6 +298,35 @@ type ProjectProperty struct {
     Name *string `json:"name,omitempty"`
     // The value of the property.
     Value *interface{} `json:"value,omitempty"`
+}
+
+type ProjectState string
+
+type projectStateValuesType struct {
+    Deleting ProjectState
+    New ProjectState
+    WellFormed ProjectState
+    CreatePending ProjectState
+    All ProjectState
+    Unchanged ProjectState
+    Deleted ProjectState
+}
+
+var ProjectStateValues = projectStateValuesType{
+    // Project is in the process of being deleted.
+    Deleting: "deleting",
+    // Project is in the process of being created.
+    New: "new",
+    // Project is completely created and ready to use.
+    WellFormed: "wellFormed",
+    // Project has been queued for creation, but the process has not yet started.
+    CreatePending: "createPending",
+    // All projects regardless of state.
+    All: "all",
+    // Project has not been changed.
+    Unchanged: "unchanged",
+    // Project has been deleted.
+    Deleted: "deleted",
 }
 
 type ProjectVisibility string
@@ -399,7 +428,7 @@ type TeamProject struct {
     // Project revision.
     Revision *uint64 `json:"revision,omitempty"`
     // Project state.
-    State *interface{} `json:"state,omitempty"`
+    State *ProjectState `json:"state,omitempty"`
     // Url to the full version of the object.
     Url *string `json:"url,omitempty"`
     // Project visibility.
@@ -457,7 +486,7 @@ type TeamProjectReference struct {
     // Project revision.
     Revision *uint64 `json:"revision,omitempty"`
     // Project state.
-    State *interface{} `json:"state,omitempty"`
+    State *ProjectState `json:"state,omitempty"`
     // Url to the full version of the object.
     Url *string `json:"url,omitempty"`
     // Project visibility.
@@ -545,7 +574,7 @@ type WebApiProject struct {
     // Project revision.
     Revision *uint64 `json:"revision,omitempty"`
     // Project state.
-    State *interface{} `json:"state,omitempty"`
+    State *ProjectState `json:"state,omitempty"`
     // Url to the full version of the object.
     Url *string `json:"url,omitempty"`
     // Project visibility.

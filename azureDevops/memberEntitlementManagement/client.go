@@ -45,7 +45,7 @@ func (client Client) AddGroupEntitlement(ctx context.Context, groupEntitlement *
     }
     queryParams := url.Values{}
     if ruleOption != nil {
-        queryParams.Add("ruleOption", *ruleOption)
+        queryParams.Add("ruleOption", string(*ruleOption))
     }
     body, marshalErr := json.Marshal(*groupEntitlement)
     if marshalErr != nil {
@@ -76,7 +76,7 @@ func (client Client) DeleteGroupEntitlement(ctx context.Context, groupId *uuid.U
 
     queryParams := url.Values{}
     if ruleOption != nil {
-        queryParams.Add("ruleOption", *ruleOption)
+        queryParams.Add("ruleOption", string(*ruleOption))
     }
     if removeGroupMembership != nil {
         queryParams.Add("removeGroupMembership", strconv.FormatBool(*removeGroupMembership))
@@ -144,7 +144,7 @@ func (client Client) UpdateGroupEntitlement(ctx context.Context, document *[]Jso
 
     queryParams := url.Values{}
     if ruleOption != nil {
-        queryParams.Add("ruleOption", *ruleOption)
+        queryParams.Add("ruleOption", string(*ruleOption))
     }
     body, marshalErr := json.Marshal(*document)
     if marshalErr != nil {

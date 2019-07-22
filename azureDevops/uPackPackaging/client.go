@@ -94,7 +94,7 @@ func (client Client) GetPackageMetadata(ctx context.Context, feedId *string, pac
 
     queryParams := url.Values{}
     if intent != nil {
-        queryParams.Add("intent", *intent)
+        queryParams.Add("intent", string(*intent))
     }
     locationId, _ := uuid.Parse("4cdb2ced-0758-4651-8032-010f070dd7e5")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)

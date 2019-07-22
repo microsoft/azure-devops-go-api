@@ -150,7 +150,7 @@ func (client Client) GetConnectedServices(ctx context.Context, projectId *string
 
     queryParams := url.Values{}
     if kind != nil {
-        queryParams.Add("kind", *kind)
+        queryParams.Add("kind", string(*kind))
     }
     locationId, _ := uuid.Parse("b4f70219-e18b-42c5-abe3-98b07d35525e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -314,10 +314,10 @@ func (client Client) GetProject(ctx context.Context, projectId *string, includeC
 // skip (optional)
 // continuationToken (optional)
 // getDefaultTeamImageUrl (optional)
-func (client Client) GetProjects(ctx context.Context, stateFilter *interface{}, top *int, skip *int, continuationToken *string, getDefaultTeamImageUrl *bool) (*[]TeamProjectReference, error) {
+func (client Client) GetProjects(ctx context.Context, stateFilter *ProjectState, top *int, skip *int, continuationToken *string, getDefaultTeamImageUrl *bool) (*[]TeamProjectReference, error) {
     queryParams := url.Values{}
     if stateFilter != nil {
-        queryParams.Add("stateFilter", *stateFilter)
+        queryParams.Add("stateFilter", string(*stateFilter))
     }
     if top != nil {
         queryParams.Add("$top", strconv.Itoa(*top))

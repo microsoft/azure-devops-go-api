@@ -602,7 +602,7 @@ func (client Client) GetWidgetTypes(ctx context.Context, scope *WidgetScope, pro
     if scope == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "scope"}
     }
-    queryParams.Add("$scope", *scope)
+    queryParams.Add("$scope", string(*scope))
     locationId, _ := uuid.Parse("6b3628d3-e96f-4fc7-b176-50240b03b515")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {

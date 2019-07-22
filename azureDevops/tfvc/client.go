@@ -475,7 +475,7 @@ func (client Client) GetItem(ctx context.Context, path *string, project *string,
         queryParams.Add("scopePath", *scopePath)
     }
     if recursionLevel != nil {
-        queryParams.Add("recursionLevel", *recursionLevel)
+        queryParams.Add("recursionLevel", string(*recursionLevel))
     }
     if versionDescriptor != nil {
         if versionDescriptor.VersionOption != nil {
@@ -533,7 +533,7 @@ func (client Client) GetItemContent(ctx context.Context, path *string, project *
         queryParams.Add("scopePath", *scopePath)
     }
     if recursionLevel != nil {
-        queryParams.Add("recursionLevel", *recursionLevel)
+        queryParams.Add("recursionLevel", string(*recursionLevel))
     }
     if versionDescriptor != nil {
         if versionDescriptor.VersionOption != nil {
@@ -578,7 +578,7 @@ func (client Client) GetItems(ctx context.Context, project *string, scopePath *s
         queryParams.Add("scopePath", *scopePath)
     }
     if recursionLevel != nil {
-        queryParams.Add("recursionLevel", *recursionLevel)
+        queryParams.Add("recursionLevel", string(*recursionLevel))
     }
     if includeLinks != nil {
         queryParams.Add("includeLinks", strconv.FormatBool(*includeLinks))
@@ -636,7 +636,7 @@ func (client Client) GetItemText(ctx context.Context, path *string, project *str
         queryParams.Add("scopePath", *scopePath)
     }
     if recursionLevel != nil {
-        queryParams.Add("recursionLevel", *recursionLevel)
+        queryParams.Add("recursionLevel", string(*recursionLevel))
     }
     if versionDescriptor != nil {
         if versionDescriptor.VersionOption != nil {
@@ -694,7 +694,7 @@ func (client Client) GetItemZip(ctx context.Context, path *string, project *stri
         queryParams.Add("scopePath", *scopePath)
     }
     if recursionLevel != nil {
-        queryParams.Add("recursionLevel", *recursionLevel)
+        queryParams.Add("recursionLevel", string(*recursionLevel))
     }
     if versionDescriptor != nil {
         if versionDescriptor.VersionOption != nil {
