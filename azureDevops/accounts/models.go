@@ -64,6 +64,62 @@ type AccountPreferencesInternal struct {
 
 type AccountStatus string
 
+type accountStatusValuesType struct {
+    None AccountStatus
+    Enabled AccountStatus
+    Disabled AccountStatus
+    Deleted AccountStatus
+    Moved AccountStatus
+}
+
+var AccountStatusValues = accountStatusValuesType{
+    None: "none",
+    // This hosting account is active and assigned to a customer.
+    Enabled: "enabled",
+    // This hosting account is disabled.
+    Disabled: "disabled",
+    // This account is part of deletion batch and scheduled for deletion.
+    Deleted: "deleted",
+    // This account is not mastered locally and has physically moved.
+    Moved: "moved",
+}
+
 type AccountType string
 
+type accountTypeValuesType struct {
+    Personal AccountType
+    Organization AccountType
+}
+
+var AccountTypeValues = accountTypeValuesType{
+    Personal: "personal",
+    Organization: "organization",
+}
+
 type AccountUserStatus string
+
+type accountUserStatusValuesType struct {
+    None AccountUserStatus
+    Active AccountUserStatus
+    Disabled AccountUserStatus
+    Deleted AccountUserStatus
+    Pending AccountUserStatus
+    Expired AccountUserStatus
+    PendingDisabled AccountUserStatus
+}
+
+var AccountUserStatusValues = accountUserStatusValuesType{
+    None: "none",
+    // User has signed in at least once to the VSTS account
+    Active: "active",
+    // User cannot sign in; primarily used by admin to temporarily remove a user due to absence or license reallocation
+    Disabled: "disabled",
+    // User is removed from the VSTS account by the VSTS account admin
+    Deleted: "deleted",
+    // User is invited to join the VSTS account by the VSTS account admin, but has not signed up/signed in yet
+    Pending: "pending",
+    // User can sign in; primarily used when license is in expired state and we give a grace period
+    Expired: "expired",
+    // User is disabled; if reenabled, they will still be in the Pending state
+    PendingDisabled: "pendingDisabled",
+}

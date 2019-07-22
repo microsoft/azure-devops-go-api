@@ -111,6 +111,21 @@ type ContributionConstraint struct {
 // Represents different ways of including contributions based on licensing
 type ContributionLicensingBehaviorType string
 
+type contributionLicensingBehaviorTypeValuesType struct {
+    OnlyIfLicensed ContributionLicensingBehaviorType
+    OnlyIfUnlicensed ContributionLicensingBehaviorType
+    AlwaysInclude ContributionLicensingBehaviorType
+}
+
+var ContributionLicensingBehaviorTypeValues = contributionLicensingBehaviorTypeValuesType{
+    // Default value - only include the contribution if the user is licensed for the extension
+    OnlyIfLicensed: "onlyIfLicensed",
+    // Only include the contribution if the user is NOT licensed for the extension
+    OnlyIfUnlicensed: "onlyIfUnlicensed",
+    // Always include the contribution regardless of whether or not the user is licensed for the extension
+    AlwaysInclude: "alwaysInclude",
+}
+
 // A query that can be issued for contribution nodes
 type ContributionNodeQuery struct {
     // The contribution ids of the nodes to find.
@@ -146,8 +161,70 @@ type ContributionPropertyDescription struct {
 // The type of value used for a property
 type ContributionPropertyType string
 
+type contributionPropertyTypeValuesType struct {
+    Unknown ContributionPropertyType
+    String ContributionPropertyType
+    Uri ContributionPropertyType
+    Guid ContributionPropertyType
+    Boolean ContributionPropertyType
+    Integer ContributionPropertyType
+    Double ContributionPropertyType
+    DateTime ContributionPropertyType
+    Dictionary ContributionPropertyType
+    Array ContributionPropertyType
+    Object ContributionPropertyType
+}
+
+var ContributionPropertyTypeValues = contributionPropertyTypeValuesType{
+    // Contribution type is unknown (value may be anything)
+    Unknown: "unknown",
+    // Value is a string
+    String: "string",
+    // Value is a Uri
+    Uri: "uri",
+    // Value is a GUID
+    Guid: "guid",
+    // Value is True or False
+    Boolean: "boolean",
+    // Value is an integer
+    Integer: "integer",
+    // Value is a double
+    Double: "double",
+    // Value is a DateTime object
+    DateTime: "dateTime",
+    // Value is a generic Dictionary/JObject/property bag
+    Dictionary: "dictionary",
+    // Value is an array
+    Array: "array",
+    // Value is an arbitrary/custom object
+    Object: "object",
+}
+
 // Options that control the contributions to include in a query
 type ContributionQueryOptions string
+
+type contributionQueryOptionsValuesType struct {
+    None ContributionQueryOptions
+    IncludeSelf ContributionQueryOptions
+    IncludeChildren ContributionQueryOptions
+    IncludeSubTree ContributionQueryOptions
+    IncludeAll ContributionQueryOptions
+    IgnoreConstraints ContributionQueryOptions
+}
+
+var ContributionQueryOptionsValues = contributionQueryOptionsValuesType{
+    None: "none",
+    // Include the direct contributions that have the ids queried.
+    IncludeSelf: "includeSelf",
+    // Include the contributions that directly target the contributions queried.
+    IncludeChildren: "includeChildren",
+    // Include the contributions from the entire sub-tree targeting the contributions queried.
+    IncludeSubTree: "includeSubTree",
+    // Include the contribution being queried as well as all contributions that target them recursively.
+    IncludeAll: "includeAll",
+    // Some callers may want the entire tree back without constraint evaluation being performed.
+    IgnoreConstraints: "ignoreConstraints",
+}
 
 // A contribution type, given by a json schema
 type ContributionType struct {
@@ -239,6 +316,18 @@ type ExtensionFile struct {
 // Set of flags applied to extensions that are relevant to contribution consumers
 type ExtensionFlags string
 
+type extensionFlagsValuesType struct {
+    BuiltIn ExtensionFlags
+    Trusted ExtensionFlags
+}
+
+var ExtensionFlagsValues = extensionFlagsValuesType{
+    // A built-in extension is installed for all VSTS accounts by default
+    BuiltIn: "builtIn",
+    // The extension comes from a fully-trusted publisher
+    Trusted: "trusted",
+}
+
 // How an extension should handle including contributions based on licensing
 type ExtensionLicensing struct {
     // A list of contributions which deviate from the default licensing behavior
@@ -277,6 +366,45 @@ type ExtensionManifest struct {
 
 // States of an extension Note:  If you add value to this enum, you need to do 2 other things.  First add the back compat enum in value src\Vssf\Sdk\Server\Contributions\InstalledExtensionMessage.cs.  Second, you can not send the new value on the message bus.  You need to remove it from the message bus event prior to being sent.
 type ExtensionStateFlags string
+
+type extensionStateFlagsValuesType struct {
+    None ExtensionStateFlags
+    Disabled ExtensionStateFlags
+    BuiltIn ExtensionStateFlags
+    MultiVersion ExtensionStateFlags
+    UnInstalled ExtensionStateFlags
+    VersionCheckError ExtensionStateFlags
+    Trusted ExtensionStateFlags
+    Error ExtensionStateFlags
+    NeedsReauthorization ExtensionStateFlags
+    AutoUpgradeError ExtensionStateFlags
+    Warning ExtensionStateFlags
+}
+
+var ExtensionStateFlagsValues = extensionStateFlagsValuesType{
+    // No flags set
+    None: "none",
+    // Extension is disabled
+    Disabled: "disabled",
+    // Extension is a built in
+    BuiltIn: "builtIn",
+    // Extension has multiple versions
+    MultiVersion: "multiVersion",
+    // Extension is not installed.  This is for builtin extensions only and can not otherwise be set.
+    UnInstalled: "unInstalled",
+    // Error performing version check
+    VersionCheckError: "versionCheckError",
+    // Trusted extensions are ones that are given special capabilities. These tend to come from Microsoft and can't be published by the general public.  Note: BuiltIn extensions are always trusted.
+    Trusted: "trusted",
+    // Extension is currently in an error state
+    Error: "error",
+    // Extension scopes have changed and the extension requires re-authorization
+    NeedsReauthorization: "needsReauthorization",
+    // Error performing auto-upgrade. For example, if the new version has demands not supported the extension cannot be auto-upgraded.
+    AutoUpgradeError: "autoUpgradeError",
+    // Extension is currently in a warning state, that can cause a degraded experience. The degraded experience can be caused for example by some installation issues detected such as implicit demands not supported.
+    Warning: "warning",
+}
 
 // Represents a VSTS extension along with its installation state
 type InstalledExtension struct {
@@ -350,6 +478,18 @@ type InstalledExtensionStateIssue struct {
 
 // Installation issue type (Warning, Error)
 type InstalledExtensionStateIssueType string
+
+type installedExtensionStateIssueTypeValuesType struct {
+    Warning InstalledExtensionStateIssueType
+    Error InstalledExtensionStateIssueType
+}
+
+var InstalledExtensionStateIssueTypeValues = installedExtensionStateIssueTypeValuesType{
+    // Represents an installation warning, for example an implicit demand not supported
+    Warning: "warning",
+    // Represents an installation error, for example an explicit demand not supported
+    Error: "error",
+}
 
 // Maps a contribution to a licensing behavior
 type LicensingOverride struct {

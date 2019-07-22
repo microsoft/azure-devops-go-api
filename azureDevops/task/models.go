@@ -22,6 +22,16 @@ type Issue struct {
 
 type IssueType string
 
+type issueTypeValuesType struct {
+    Error IssueType
+    Warning IssueType
+}
+
+var IssueTypeValues = issueTypeValuesType{
+    Error: "error",
+    Warning: "warning",
+}
+
 // Represents an option that may affect the way an agent runs the job.
 type JobOption struct {
     Data *map[string]string `json:"data,omitempty"`
@@ -36,6 +46,16 @@ type MaskHint struct {
 
 type MaskType string
 
+type maskTypeValuesType struct {
+    Variable MaskType
+    Regex MaskType
+}
+
+var MaskTypeValues = maskTypeValuesType{
+    Variable: "variable",
+    Regex: "regex",
+}
+
 type PlanEnvironment struct {
     Mask *[]MaskHint `json:"mask,omitempty"`
     Options *map[uuid.UUID]JobOption `json:"options,omitempty"`
@@ -43,6 +63,18 @@ type PlanEnvironment struct {
 }
 
 type PlanGroupStatus string
+
+type planGroupStatusValuesType struct {
+    Running PlanGroupStatus
+    Queued PlanGroupStatus
+    All PlanGroupStatus
+}
+
+var PlanGroupStatusValues = planGroupStatusValuesType{
+    Running: "running",
+    Queued: "queued",
+    All: "all",
+}
 
 type ProjectReference struct {
     Id *uuid.UUID `json:"id,omitempty"`
@@ -78,6 +110,16 @@ type TaskAgentJobStep struct {
 }
 
 type TaskAgentJobStepType string
+
+type taskAgentJobStepTypeValuesType struct {
+    Task TaskAgentJobStepType
+    Action TaskAgentJobStepType
+}
+
+var TaskAgentJobStepTypeValues = taskAgentJobStepTypeValuesType{
+    Task: "task",
+    Action: "action",
+}
 
 type TaskAgentJobTask struct {
     Id *uuid.UUID `json:"id,omitempty"`
@@ -133,6 +175,16 @@ type TaskOrchestrationItem struct {
 
 type TaskOrchestrationItemType string
 
+type taskOrchestrationItemTypeValuesType struct {
+    Container TaskOrchestrationItemType
+    Job TaskOrchestrationItemType
+}
+
+var TaskOrchestrationItemTypeValues = taskOrchestrationItemTypeValuesType{
+    Container: "container",
+    Job: "job",
+}
+
 type TaskOrchestrationOwner struct {
     Links *ReferenceLinks `json:"_links,omitempty"`
     Id *int `json:"id,omitempty"`
@@ -181,6 +233,20 @@ type TaskOrchestrationPlanReference struct {
 
 type TaskOrchestrationPlanState string
 
+type taskOrchestrationPlanStateValuesType struct {
+    InProgress TaskOrchestrationPlanState
+    Queued TaskOrchestrationPlanState
+    Completed TaskOrchestrationPlanState
+    Throttled TaskOrchestrationPlanState
+}
+
+var TaskOrchestrationPlanStateValues = taskOrchestrationPlanStateValuesType{
+    InProgress: "inProgress",
+    Queued: "queued",
+    Completed: "completed",
+    Throttled: "throttled",
+}
+
 type TaskOrchestrationQueuedPlan struct {
     AssignTime *time.Time `json:"assignTime,omitempty"`
     Definition *TaskOrchestrationOwner `json:"definition,omitempty"`
@@ -210,6 +276,24 @@ type TaskReference struct {
 }
 
 type TaskResult string
+
+type taskResultValuesType struct {
+    Succeeded TaskResult
+    SucceededWithIssues TaskResult
+    Failed TaskResult
+    Canceled TaskResult
+    Skipped TaskResult
+    Abandoned TaskResult
+}
+
+var TaskResultValues = taskResultValuesType{
+    Succeeded: "succeeded",
+    SucceededWithIssues: "succeededWithIssues",
+    Failed: "failed",
+    Canceled: "canceled",
+    Skipped: "skipped",
+    Abandoned: "abandoned",
+}
 
 type Timeline struct {
     ChangeId *int `json:"changeId,omitempty"`
@@ -268,6 +352,18 @@ type TimelineRecordFeedLinesWrapper struct {
 }
 
 type TimelineRecordState string
+
+type timelineRecordStateValuesType struct {
+    Pending TimelineRecordState
+    InProgress TimelineRecordState
+    Completed TimelineRecordState
+}
+
+var TimelineRecordStateValues = timelineRecordStateValuesType{
+    Pending: "pending",
+    InProgress: "inProgress",
+    Completed: "completed",
+}
 
 type TimelineReference struct {
     ChangeId *int `json:"changeId,omitempty"`

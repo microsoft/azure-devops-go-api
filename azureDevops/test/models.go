@@ -99,6 +99,21 @@ type AggregatedRunsByState struct {
 // The types of test attachments.
 type AttachmentType string
 
+type attachmentTypeValuesType struct {
+    GeneralAttachment AttachmentType
+    CodeCoverage AttachmentType
+    ConsoleLog AttachmentType
+}
+
+var AttachmentTypeValues = attachmentTypeValuesType{
+    // Attachment type GeneralAttachment , use this as default type unless you have other type.
+    GeneralAttachment: "generalAttachment",
+    // Attachment type CodeCoverage.
+    CodeCoverage: "codeCoverage",
+    // Attachment type ConsoleLog.
+    ConsoleLog: "consoleLog",
+}
+
 type BatchResponse struct {
     Error *string `json:"error,omitempty"`
     Responses *[]Response `json:"responses,omitempty"`
@@ -230,6 +245,24 @@ type CloneOperationInformation struct {
 // Enum of type Clone Operation Type.
 type CloneOperationState string
 
+type cloneOperationStateValuesType struct {
+    Failed CloneOperationState
+    InProgress CloneOperationState
+    Queued CloneOperationState
+    Succeeded CloneOperationState
+}
+
+var CloneOperationStateValues = cloneOperationStateValuesType{
+    // value for Failed State
+    Failed: "failed",
+    // value for Inprogress state
+    InProgress: "inProgress",
+    // Value for Queued State
+    Queued: "queued",
+    // value for Success state
+    Succeeded: "succeeded",
+}
+
 // Clone options for cloning the test suite.
 type CloneOptions struct {
     // If set to true requirements will be cloned
@@ -318,6 +351,21 @@ type Coverage2 struct {
 // Used to choose which coverage data is returned by a QueryXXXCoverage() call.
 type CoverageQueryFlags string
 
+type coverageQueryFlagsValuesType struct {
+    Modules CoverageQueryFlags
+    Functions CoverageQueryFlags
+    BlockData CoverageQueryFlags
+}
+
+var CoverageQueryFlagsValues = coverageQueryFlagsValuesType{
+    // If set, the Coverage.Modules property will be populated.
+    Modules: "modules",
+    // If set, the ModuleCoverage.Functions properties will be populated.
+    Functions: "functions",
+    // If set, the ModuleCoverage.CoverageData field will be populated.
+    BlockData: "blockData",
+}
+
 type CoverageStatistics struct {
     BlocksCovered *int `json:"blocksCovered,omitempty"`
     BlocksNotCovered *int `json:"blocksNotCovered,omitempty"`
@@ -328,8 +376,41 @@ type CoverageStatistics struct {
 
 type CoverageStatus string
 
+type coverageStatusValuesType struct {
+    Covered CoverageStatus
+    NotCovered CoverageStatus
+    PartiallyCovered CoverageStatus
+}
+
+var CoverageStatusValues = coverageStatusValuesType{
+    Covered: "covered",
+    NotCovered: "notCovered",
+    PartiallyCovered: "partiallyCovered",
+}
+
 // Represents status of code coverage summary for a build
 type CoverageSummaryStatus string
+
+type coverageSummaryStatusValuesType struct {
+    None CoverageSummaryStatus
+    InProgress CoverageSummaryStatus
+    Completed CoverageSummaryStatus
+    Finalized CoverageSummaryStatus
+    Pending CoverageSummaryStatus
+}
+
+var CoverageSummaryStatusValues = coverageSummaryStatusValuesType{
+    // No coverage status
+    None: "none",
+    // The summary evaluation is in progress
+    InProgress: "inProgress",
+    // The summary evaluation for the previous request is completed. Summary can change in future
+    Completed: "completed",
+    // The summary evaluation is finalized and won't change
+    Finalized: "finalized",
+    // The summary evaluation is pending
+    Pending: "pending",
+}
 
 type CreateTestMessageLogEntryRequest struct {
     ProjectName *string `json:"projectName,omitempty"`
@@ -366,7 +447,41 @@ type CustomTestFieldDefinition struct {
 
 type CustomTestFieldScope string
 
+type customTestFieldScopeValuesType struct {
+    None CustomTestFieldScope
+    TestRun CustomTestFieldScope
+    TestResult CustomTestFieldScope
+    System CustomTestFieldScope
+    All CustomTestFieldScope
+}
+
+var CustomTestFieldScopeValues = customTestFieldScopeValuesType{
+    None: "none",
+    TestRun: "testRun",
+    TestResult: "testResult",
+    System: "system",
+    All: "all",
+}
+
 type CustomTestFieldType string
+
+type customTestFieldTypeValuesType struct {
+    Bit CustomTestFieldType
+    DateTime CustomTestFieldType
+    Int CustomTestFieldType
+    Float CustomTestFieldType
+    String CustomTestFieldType
+    Guid CustomTestFieldType
+}
+
+var CustomTestFieldTypeValues = customTestFieldTypeValuesType{
+    Bit: "bit",
+    DateTime: "dateTime",
+    Int: "int",
+    Float: "float",
+    String: "string",
+    Guid: "guid",
+}
 
 type DatedTestFieldData struct {
     Date *time.Time `json:"date,omitempty"`
@@ -464,6 +579,18 @@ type FlakyDetectionPipelines struct {
 }
 
 type FlakyDetectionType string
+
+type flakyDetectionTypeValuesType struct {
+    Custom FlakyDetectionType
+    System FlakyDetectionType
+}
+
+var FlakyDetectionTypeValues = flakyDetectionTypeValuesType{
+    // Custom defines manual detection type.
+    Custom: "custom",
+    // Defines System detection type.
+    System: "system",
+}
 
 type FlakySettings struct {
     // FlakyDetection defines types of detection.
@@ -824,6 +951,16 @@ type NameValuePair struct {
 
 type OperationType string
 
+type operationTypeValuesType struct {
+    Add OperationType
+    Delete OperationType
+}
+
+var OperationTypeValues = operationTypeValuesType{
+    Add: "add",
+    Delete: "delete",
+}
+
 // Phase in pipeline
 type PhaseReference struct {
     // Attempt number of the phase
@@ -933,6 +1070,18 @@ type PointWorkItemProperty struct {
 }
 
 type ProjectVisibility string
+
+type projectVisibilityValuesType struct {
+    Private ProjectVisibility
+    Public ProjectVisibility
+}
+
+var ProjectVisibilityValues = projectVisibilityValuesType{
+    // The project is only visible to users with explicit access.
+    Private: "private",
+    // The project is visible to all.
+    Public: "public",
+}
 
 // The class to represent a Generic store for test session data.
 type PropertyBag struct {
@@ -1077,14 +1226,80 @@ type Response struct {
 // Additional details with test result
 type ResultDetails string
 
+type resultDetailsValuesType struct {
+    None ResultDetails
+    Iterations ResultDetails
+    WorkItems ResultDetails
+    SubResults ResultDetails
+    Point ResultDetails
+}
+
+var ResultDetailsValues = resultDetailsValuesType{
+    // Core fields of test result. Core fields includes State, Outcome, Priority, AutomatedTestName, AutomatedTestStorage, Comments, ErrorMessage etc.
+    None: "none",
+    // Test iteration details in a test result.
+    Iterations: "iterations",
+    // Workitems associated with a test result.
+    WorkItems: "workItems",
+    // Subresults in a test result.
+    SubResults: "subResults",
+    // Point and plan detail in a test result.
+    Point: "point",
+}
+
 // Hierarchy type of the result/subresults.
 type ResultGroupType string
+
+type resultGroupTypeValuesType struct {
+    None ResultGroupType
+    Rerun ResultGroupType
+    DataDriven ResultGroupType
+    OrderedTest ResultGroupType
+    Generic ResultGroupType
+}
+
+var ResultGroupTypeValues = resultGroupTypeValuesType{
+    // Leaf node of test result.
+    None: "none",
+    // Hierarchy type of test result.
+    Rerun: "rerun",
+    // Hierarchy type of test result.
+    DataDriven: "dataDriven",
+    // Hierarchy type of test result.
+    OrderedTest: "orderedTest",
+    // Unknown hierarchy type.
+    Generic: "generic",
+}
 
 // Additional details with test result metadata
 type ResultMetaDataDetails string
 
+type resultMetaDataDetailsValuesType struct {
+    None ResultMetaDataDetails
+    FlakyIdentifiers ResultMetaDataDetails
+}
+
+var ResultMetaDataDetailsValues = resultMetaDataDetailsValuesType{
+    // Core fields of test result metadata.
+    None: "none",
+    // Test FlakyIdentifiers details in test result metadata.
+    FlakyIdentifiers: "flakyIdentifiers",
+}
+
 // The top level entity that is being cloned as part of a Clone operation
 type ResultObjectType string
+
+type resultObjectTypeValuesType struct {
+    TestSuite ResultObjectType
+    TestPlan ResultObjectType
+}
+
+var ResultObjectTypeValues = resultObjectTypeValuesType{
+    // Suite Clone
+    TestSuite: "testSuite",
+    // Plan Clone
+    TestPlan: "testPlan",
+}
 
 // Test result retention settings
 type ResultRetentionSettings struct {
@@ -1272,6 +1487,33 @@ type RunSummaryModel struct {
 
 type RunType string
 
+type runTypeValuesType struct {
+    Unspecified RunType
+    Normal RunType
+    Blocking RunType
+    Web RunType
+    MtrRunInitiatedFromWeb RunType
+    RunWithDtlEnv RunType
+    NoConfigRun RunType
+}
+
+var RunTypeValues = runTypeValuesType{
+    // Only used during an update to preserve the existing value.
+    Unspecified: "unspecified",
+    // Normal test run.
+    Normal: "normal",
+    // Test run created for the blocked result when a test point is blocked.
+    Blocking: "blocking",
+    // Test run created from Web.
+    Web: "web",
+    // Run initiated from web through MTR
+    MtrRunInitiatedFromWeb: "mtrRunInitiatedFromWeb",
+    // These test run would require DTL environment. These could be either of automated or manual test run.
+    RunWithDtlEnv: "runWithDtlEnv",
+    // These test run may or may not have published test results but it will have summary like total test, passed test, failed test etc. These are automated tests.
+    NoConfigRun: "noConfigRun",
+}
+
 type RunUpdateModel struct {
     // An abstracted reference to the build that it belongs.
     Build *ShallowReference `json:"build,omitempty"`
@@ -1328,6 +1570,18 @@ type RunUpdateModel struct {
 
 type Service string
 
+type serviceValuesType struct {
+    Any Service
+    Tcm Service
+    Tfs Service
+}
+
+var ServiceValues = serviceValuesType{
+    Any: "any",
+    Tcm: "tcm",
+    Tfs: "tfs",
+}
+
 // An abstracted reference to some other resource. This class is used to provide the build data contracts with a uniform way to reference other resources in a way that provides easy traversal through links.
 type ShallowReference struct {
     // ID of the resource
@@ -1362,6 +1616,74 @@ type SharedStepModel struct {
 }
 
 type SqlDbType string
+
+type sqlDbTypeValuesType struct {
+    BigInt SqlDbType
+    Binary SqlDbType
+    Bit SqlDbType
+    Char SqlDbType
+    DateTime SqlDbType
+    Decimal SqlDbType
+    Float SqlDbType
+    Image SqlDbType
+    Int SqlDbType
+    Money SqlDbType
+    NChar SqlDbType
+    NText SqlDbType
+    NVarChar SqlDbType
+    Real SqlDbType
+    UniqueIdentifier SqlDbType
+    SmallDateTime SqlDbType
+    SmallInt SqlDbType
+    SmallMoney SqlDbType
+    Text SqlDbType
+    Timestamp SqlDbType
+    TinyInt SqlDbType
+    VarBinary SqlDbType
+    VarChar SqlDbType
+    Variant SqlDbType
+    Xml SqlDbType
+    Udt SqlDbType
+    Structured SqlDbType
+    Date SqlDbType
+    Time SqlDbType
+    DateTime2 SqlDbType
+    DateTimeOffset SqlDbType
+}
+
+var SqlDbTypeValues = sqlDbTypeValuesType{
+    BigInt: "bigInt",
+    Binary: "binary",
+    Bit: "bit",
+    Char: "char",
+    DateTime: "dateTime",
+    Decimal: "decimal",
+    Float: "float",
+    Image: "image",
+    Int: "int",
+    Money: "money",
+    NChar: "nChar",
+    NText: "nText",
+    NVarChar: "nVarChar",
+    Real: "real",
+    UniqueIdentifier: "uniqueIdentifier",
+    SmallDateTime: "smallDateTime",
+    SmallInt: "smallInt",
+    SmallMoney: "smallMoney",
+    Text: "text",
+    Timestamp: "timestamp",
+    TinyInt: "tinyInt",
+    VarBinary: "varBinary",
+    VarChar: "varChar",
+    Variant: "variant",
+    Xml: "xml",
+    Udt: "udt",
+    Structured: "structured",
+    Date: "date",
+    Time: "time",
+    DateTime2: "dateTime2",
+    DateTimeOffset: "dateTimeOffset",
+}
 
 // Stage in pipeline
 type StageReference struct {
@@ -1408,6 +1730,18 @@ type SuiteEntryUpdateModel struct {
 // Option to get details in response
 type SuiteExpand string
 
+type suiteExpandValuesType struct {
+    Children SuiteExpand
+    DefaultTesters SuiteExpand
+}
+
+var SuiteExpandValues = suiteExpandValuesType{
+    // Include children in response.
+    Children: "children",
+    // Include default testers in response.
+    DefaultTesters: "defaultTesters",
+}
+
 // Test case for the suite.
 type SuiteTestCase struct {
     // Point Assignment for test suite's test case.
@@ -1446,6 +1780,24 @@ type TCMPropertyBag2 struct {
 }
 
 type TCMServiceDataMigrationStatus string
+
+type tcmServiceDataMigrationStatusValuesType struct {
+    NotStarted TCMServiceDataMigrationStatus
+    InProgress TCMServiceDataMigrationStatus
+    Completed TCMServiceDataMigrationStatus
+    Failed TCMServiceDataMigrationStatus
+}
+
+var TCMServiceDataMigrationStatusValues = tcmServiceDataMigrationStatusValuesType{
+    // Migration Not Started
+    NotStarted: "notStarted",
+    // Migration InProgress
+    InProgress: "inProgress",
+    // Migration Completed
+    Completed: "completed",
+    // Migration Failed
+    Failed: "failed",
+}
 
 // The Team Context for an operation.
 type TeamContext struct {
@@ -1804,6 +2156,18 @@ type TestConfiguration struct {
 // Represents the state of an ITestConfiguration object.
 type TestConfigurationState string
 
+type testConfigurationStateValuesType struct {
+    Active TestConfigurationState
+    Inactive TestConfigurationState
+}
+
+var TestConfigurationStateValues = testConfigurationStateValuesType{
+    // The configuration can be used for new test runs.
+    Active: "active",
+    // The configuration has been retired and should not be used for new test runs.
+    Inactive: "inactive",
+}
+
 // Test environment Detail.
 type TestEnvironment struct {
     // Test Environment Id.
@@ -1956,6 +2320,21 @@ type TestLogReference struct {
 // Test Log Context
 type TestLogScope string
 
+type testLogScopeValuesType struct {
+    Run TestLogScope
+    Build TestLogScope
+    Release TestLogScope
+}
+
+var TestLogScopeValues = testLogScopeValuesType{
+    // Log file is associated with Run, result, subresult
+    Run: "run",
+    // Log File associated with Build
+    Build: "build",
+    // Log File associated with Release
+    Release: "release",
+}
+
 // Represents Test Log Status object.
 type TestLogStatus struct {
     // Exception message
@@ -1969,6 +2348,44 @@ type TestLogStatus struct {
 // Test Log Status codes.
 type TestLogStatusCode string
 
+type testLogStatusCodeValuesType struct {
+    Success TestLogStatusCode
+    Failed TestLogStatusCode
+    FileAlreadyExists TestLogStatusCode
+    InvalidInput TestLogStatusCode
+    InvalidFileName TestLogStatusCode
+    InvalidContainer TestLogStatusCode
+    TransferFailed TestLogStatusCode
+    FeatureDisabled TestLogStatusCode
+    BuildDoesNotExist TestLogStatusCode
+    RunDoesNotExist TestLogStatusCode
+    ContainerNotCreated TestLogStatusCode
+    ApiNotSupported TestLogStatusCode
+    FileSizeExceeds TestLogStatusCode
+    ContainerNotFound TestLogStatusCode
+    FileNotFound TestLogStatusCode
+    DirectoryNotFound TestLogStatusCode
+}
+
+var TestLogStatusCodeValues = testLogStatusCodeValuesType{
+    Success: "success",
+    Failed: "failed",
+    FileAlreadyExists: "fileAlreadyExists",
+    InvalidInput: "invalidInput",
+    InvalidFileName: "invalidFileName",
+    InvalidContainer: "invalidContainer",
+    TransferFailed: "transferFailed",
+    FeatureDisabled: "featureDisabled",
+    BuildDoesNotExist: "buildDoesNotExist",
+    RunDoesNotExist: "runDoesNotExist",
+    ContainerNotCreated: "containerNotCreated",
+    ApiNotSupported: "apiNotSupported",
+    FileSizeExceeds: "fileSizeExceeds",
+    ContainerNotFound: "containerNotFound",
+    FileNotFound: "fileNotFound",
+    DirectoryNotFound: "directoryNotFound",
+}
+
 // Represents Test Log store endpoint details.
 type TestLogStoreEndpointDetails struct {
     // Test log store connection Uri.
@@ -1981,10 +2398,50 @@ type TestLogStoreEndpointDetails struct {
 
 type TestLogStoreEndpointType string
 
+type testLogStoreEndpointTypeValuesType struct {
+    Root TestLogStoreEndpointType
+    File TestLogStoreEndpointType
+}
+
+var TestLogStoreEndpointTypeValues = testLogStoreEndpointTypeValuesType{
+    Root: "root",
+    File: "file",
+}
+
 type TestLogStoreOperationType string
+
+type testLogStoreOperationTypeValuesType struct {
+    Read TestLogStoreOperationType
+    Create TestLogStoreOperationType
+    ReadAndCreate TestLogStoreOperationType
+}
+
+var TestLogStoreOperationTypeValues = testLogStoreOperationTypeValuesType{
+    Read: "read",
+    Create: "create",
+    ReadAndCreate: "readAndCreate",
+}
 
 // Test Log Types
 type TestLogType string
+
+type testLogTypeValuesType struct {
+    GeneralAttachment TestLogType
+    CodeCoverage TestLogType
+    TestImpact TestLogType
+    Intermediate TestLogType
+}
+
+var TestLogTypeValues = testLogTypeValuesType{
+    // Any gereric attachment.
+    GeneralAttachment: "generalAttachment",
+    // Code Coverage files
+    CodeCoverage: "codeCoverage",
+    // Test Impact details.
+    TestImpact: "testImpact",
+    // Temporary files
+    Intermediate: "intermediate",
+}
 
 type TestMessageLog2 struct {
     TestMessageLogId *int `json:"testMessageLogId,omitempty"`
@@ -2033,6 +2490,57 @@ type TestOperationReference struct {
 
 // Valid TestOutcome values.
 type TestOutcome string
+
+type testOutcomeValuesType struct {
+    Unspecified TestOutcome
+    None TestOutcome
+    Passed TestOutcome
+    Failed TestOutcome
+    Inconclusive TestOutcome
+    Timeout TestOutcome
+    Aborted TestOutcome
+    Blocked TestOutcome
+    NotExecuted TestOutcome
+    Warning TestOutcome
+    Error TestOutcome
+    NotApplicable TestOutcome
+    Paused TestOutcome
+    InProgress TestOutcome
+    NotImpacted TestOutcome
+}
+
+var TestOutcomeValues = testOutcomeValuesType{
+    // Only used during an update to preserve the existing value.
+    Unspecified: "unspecified",
+    // Test has not been completed, or the test type does not report pass/failure.
+    None: "none",
+    // Test was executed w/o any issues.
+    Passed: "passed",
+    // Test was executed, but there were issues. Issues may involve exceptions or failed assertions.
+    Failed: "failed",
+    // Test has completed, but we can't say if it passed or failed. May be used for aborted tests...
+    Inconclusive: "inconclusive",
+    // The test timed out
+    Timeout: "timeout",
+    // Test was aborted. This was not caused by a user gesture, but rather by a framework decision.
+    Aborted: "aborted",
+    // Test had it chance for been executed but was not, as ITestElement.IsRunnable == false.
+    Blocked: "blocked",
+    // Test was not executed. This was caused by a user gesture - e.g. user hit stop button.
+    NotExecuted: "notExecuted",
+    // To be used by Run level results. This is not a failure.
+    Warning: "warning",
+    // There was a system error while we were trying to execute a test.
+    Error: "error",
+    // Test is Not Applicable for execution.
+    NotApplicable: "notApplicable",
+    // Test is paused.
+    Paused: "paused",
+    // Test is currently executing. Added this for TCM charts
+    InProgress: "inProgress",
+    // Test is not impacted. Added fot TIA.
+    NotImpacted: "notImpacted",
+}
 
 // Test outcome settings
 type TestOutcomeSettings struct {
@@ -2188,6 +2696,29 @@ type TestPointsQuery struct {
 
 type TestPointState string
 
+type testPointStateValuesType struct {
+    None TestPointState
+    Ready TestPointState
+    Completed TestPointState
+    NotReady TestPointState
+    InProgress TestPointState
+    MaxValue TestPointState
+}
+
+var TestPointStateValues = testPointStateValuesType{
+    // Default
+    None: "none",
+    // The test point needs to be executed in order for the test pass to be considered complete.  Either the test has not been run before or the previous run failed.
+    Ready: "ready",
+    // The test has passed successfully and does not need to be re-run for the test pass to be considered complete.
+    Completed: "completed",
+    // The test point needs to be executed but is not able to.
+    NotReady: "notReady",
+    // The test is being executed.
+    InProgress: "inProgress",
+    MaxValue: "maxValue",
+}
+
 type TestPointsUpdatedEvent struct {
     ProjectName *string `json:"projectName,omitempty"`
     TestPoints *[]TestPointReference `json:"testPoints,omitempty"`
@@ -2290,6 +2821,18 @@ type TestResultDocument struct {
 
 // Group by for results
 type TestResultGroupBy string
+
+type testResultGroupByValuesType struct {
+    Branch TestResultGroupBy
+    Environment TestResultGroupBy
+}
+
+var TestResultGroupByValues = testResultGroupByValuesType{
+    // Group the results by branches
+    Branch: "branch",
+    // Group the results by environment
+    Environment: "environment",
+}
 
 type TestResultHistory struct {
     GroupByField *string `json:"groupByField,omitempty"`
@@ -2404,6 +2947,16 @@ type TestResultsContext struct {
 
 type TestResultsContextType string
 
+type testResultsContextTypeValuesType struct {
+    Build TestResultsContextType
+    Release TestResultsContextType
+}
+
+var TestResultsContextTypeValues = testResultsContextTypeValuesType{
+    Build: "build",
+    Release: "release",
+}
+
 type TestResultsDetails struct {
     GroupByField *string `json:"groupByField,omitempty"`
     ResultsForGroup *[]TestResultsDetailsForGroup `json:"resultsForGroup,omitempty"`
@@ -2459,6 +3012,18 @@ type TestResultsSettings struct {
 }
 
 type TestResultsSettingsType string
+
+type testResultsSettingsTypeValuesType struct {
+    All TestResultsSettingsType
+    Flaky TestResultsSettingsType
+}
+
+var TestResultsSettingsTypeValues = testResultsSettingsTypeValuesType{
+    // Returns All Test Settings.
+    All: "all",
+    // Returns Flaky Test Settings.
+    Flaky: "flaky",
+}
 
 type TestResultSummary struct {
     AggregatedResultsAnalysis *AggregatedResultsAnalysis `json:"aggregatedResultsAnalysis,omitempty"`
@@ -2686,8 +3251,41 @@ type TestRunExtended2 struct {
 // The types of outcomes for test run.
 type TestRunOutcome string
 
+type testRunOutcomeValuesType struct {
+    Passed TestRunOutcome
+    Failed TestRunOutcome
+    NotImpacted TestRunOutcome
+    Others TestRunOutcome
+}
+
+var TestRunOutcomeValues = testRunOutcomeValuesType{
+    // Run with zero failed tests and has at least one impacted test
+    Passed: "passed",
+    // Run with at-least one failed test.
+    Failed: "failed",
+    // Run with no impacted tests.
+    NotImpacted: "notImpacted",
+    // Runs with All tests in other category.
+    Others: "others",
+}
+
 // The types of publish context for run.
 type TestRunPublishContext string
+
+type testRunPublishContextValuesType struct {
+    Build TestRunPublishContext
+    Release TestRunPublishContext
+    All TestRunPublishContext
+}
+
+var TestRunPublishContextValues = testRunPublishContextValuesType{
+    // Run is published for Build Context.
+    Build: "build",
+    // Run is published for Release Context.
+    Release: "release",
+    // Run is published for any Context.
+    All: "all",
+}
 
 type TestRunStartedEvent struct {
     TestRun *TestRun `json:"testRun,omitempty"`
@@ -2695,6 +3293,33 @@ type TestRunStartedEvent struct {
 
 // The types of states for test run.
 type TestRunState string
+
+type testRunStateValuesType struct {
+    Unspecified TestRunState
+    NotStarted TestRunState
+    InProgress TestRunState
+    Completed TestRunState
+    Aborted TestRunState
+    Waiting TestRunState
+    NeedsInvestigation TestRunState
+}
+
+var TestRunStateValues = testRunStateValuesType{
+    // Only used during an update to preserve the existing value.
+    Unspecified: "unspecified",
+    // The run is still being created.  No tests have started yet.
+    NotStarted: "notStarted",
+    // Tests are running.
+    InProgress: "inProgress",
+    // All tests have completed or been skipped.
+    Completed: "completed",
+    // Run is stopped and remaining tests have been aborted
+    Aborted: "aborted",
+    // Run is currently initializing This is a legacy state and should not be used any more
+    Waiting: "waiting",
+    // Run requires investigation because of a test point failure This is a legacy state and should not be used any more
+    NeedsInvestigation: "needsInvestigation",
+}
 
 // Test run statistics.
 type TestRunStatistic struct {
@@ -2704,6 +3329,39 @@ type TestRunStatistic struct {
 
 // The types of sub states for test run. It gives the user more info about the test run beyond the high level test run state
 type TestRunSubstate string
+
+type testRunSubstateValuesType struct {
+    None TestRunSubstate
+    CreatingEnvironment TestRunSubstate
+    RunningTests TestRunSubstate
+    CanceledByUser TestRunSubstate
+    AbortedBySystem TestRunSubstate
+    TimedOut TestRunSubstate
+    PendingAnalysis TestRunSubstate
+    Analyzed TestRunSubstate
+    CancellationInProgress TestRunSubstate
+}
+
+var TestRunSubstateValues = testRunSubstateValuesType{
+    // Run with noState.
+    None: "none",
+    // Run state while Creating Environment.
+    CreatingEnvironment: "creatingEnvironment",
+    // Run state while Running Tests.
+    RunningTests: "runningTests",
+    // Run state while Creating Environment.
+    CanceledByUser: "canceledByUser",
+    // Run state when it is Aborted By the System.
+    AbortedBySystem: "abortedBySystem",
+    // Run state when run has timedOut.
+    TimedOut: "timedOut",
+    // Run state while Pending Analysis.
+    PendingAnalysis: "pendingAnalysis",
+    // Run state after being Analysed.
+    Analyzed: "analyzed",
+    // Run state when cancellation is in Progress.
+    CancellationInProgress: "cancellationInProgress",
+}
 
 type TestRunSummary2 struct {
     IsRerun *bool `json:"isRerun,omitempty"`
@@ -2776,8 +3434,59 @@ type TestSessionExploredWorkItemReference struct {
 // Represents the source from which the test session was created
 type TestSessionSource string
 
+type testSessionSourceValuesType struct {
+    Unknown TestSessionSource
+    XtDesktop TestSessionSource
+    FeedbackDesktop TestSessionSource
+    XtWeb TestSessionSource
+    FeedbackWeb TestSessionSource
+    XtDesktop2 TestSessionSource
+    SessionInsightsForAll TestSessionSource
+}
+
+var TestSessionSourceValues = testSessionSourceValuesType{
+    // Source of test session uncertain as it is stale
+    Unknown: "unknown",
+    // The session was created from Microsoft Test Manager exploratory desktop tool.
+    XtDesktop: "xtDesktop",
+    // The session was created from feedback client.
+    FeedbackDesktop: "feedbackDesktop",
+    // The session was created from browser extension.
+    XtWeb: "xtWeb",
+    // The session was created from browser extension.
+    FeedbackWeb: "feedbackWeb",
+    // The session was created from web access using Microsoft Test Manager exploratory desktop tool.
+    XtDesktop2: "xtDesktop2",
+    // To show sessions from all supported sources.
+    SessionInsightsForAll: "sessionInsightsForAll",
+}
+
 // Represents the state of the test session.
 type TestSessionState string
+
+type testSessionStateValuesType struct {
+    Unspecified TestSessionState
+    NotStarted TestSessionState
+    InProgress TestSessionState
+    Paused TestSessionState
+    Completed TestSessionState
+    Declined TestSessionState
+}
+
+var TestSessionStateValues = testSessionStateValuesType{
+    // Only used during an update to preserve the existing value.
+    Unspecified: "unspecified",
+    // The session is still being created.
+    NotStarted: "notStarted",
+    // The session is running.
+    InProgress: "inProgress",
+    // The session has paused.
+    Paused: "paused",
+    // The session has completed.
+    Completed: "completed",
+    // This is required for Feedback session which are declined
+    Declined: "declined",
+}
 
 type TestSessionWorkItemReference struct {
     // Id of the workitem

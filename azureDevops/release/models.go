@@ -29,6 +29,45 @@ type AgentArtifactDefinition struct {
 
 type AgentArtifactType string
 
+type agentArtifactTypeValuesType struct {
+    XamlBuild AgentArtifactType
+    Build AgentArtifactType
+    Jenkins AgentArtifactType
+    FileShare AgentArtifactType
+    Nuget AgentArtifactType
+    TfsOnPrem AgentArtifactType
+    GitHub AgentArtifactType
+    TfGit AgentArtifactType
+    ExternalTfsBuild AgentArtifactType
+    Custom AgentArtifactType
+    Tfvc AgentArtifactType
+}
+
+var AgentArtifactTypeValues = agentArtifactTypeValuesType{
+    // Indicates XamlBuild artifact
+    XamlBuild: "xamlBuild",
+    // Indicates Build artifact
+    Build: "build",
+    // Indicates Jenkins artifact
+    Jenkins: "jenkins",
+    // Indicates FileShare artifact
+    FileShare: "fileShare",
+    // Indicates Nuget artifact
+    Nuget: "nuget",
+    // Indicates TfsOnPrem artifact
+    TfsOnPrem: "tfsOnPrem",
+    // Indicates GitHub artifact
+    GitHub: "gitHub",
+    // Indicates TFGit artifact
+    TfGit: "tfGit",
+    // Indicates ExternalTfsBuild artifact
+    ExternalTfsBuild: "externalTfsBuild",
+    // Indicates Custom artifact
+    Custom: "custom",
+    // Indicates Tfvc artifact
+    Tfvc: "tfvc",
+}
+
 type AgentBasedDeployPhase struct {
     // Gets and sets the agent job deployment input
     DeploymentInput *AgentDeploymentInput `json:"deploymentInput,omitempty"`
@@ -77,7 +116,43 @@ type AgentSpecification struct {
 
 type ApprovalExecutionOrder string
 
+type approvalExecutionOrderValuesType struct {
+    BeforeGates ApprovalExecutionOrder
+    AfterSuccessfulGates ApprovalExecutionOrder
+    AfterGatesAlways ApprovalExecutionOrder
+}
+
+var ApprovalExecutionOrderValues = approvalExecutionOrderValuesType{
+    // Approvals shown before gates.
+    BeforeGates: "beforeGates",
+    // Approvals shown after successful execution of gates.
+    AfterSuccessfulGates: "afterSuccessfulGates",
+    // Approvals shown always after execution of gates.
+    AfterGatesAlways: "afterGatesAlways",
+}
+
 type ApprovalFilters string
+
+type approvalFiltersValuesType struct {
+    None ApprovalFilters
+    ManualApprovals ApprovalFilters
+    AutomatedApprovals ApprovalFilters
+    ApprovalSnapshots ApprovalFilters
+    All ApprovalFilters
+}
+
+var ApprovalFiltersValues = approvalFiltersValuesType{
+    // No approvals or approval snapshots.
+    None: "none",
+    // Manual approval steps but no approval snapshots (Use with ApprovalSnapshots for snapshots).
+    ManualApprovals: "manualApprovals",
+    // Automated approval steps but no approval snapshots (Use with ApprovalSnapshots for snapshots).
+    AutomatedApprovals: "automatedApprovals",
+    // No approval steps, but approval snapshots (Use with either ManualApprovals or AutomatedApprovals for approval steps).
+    ApprovalSnapshots: "approvalSnapshots",
+    // All approval steps and approval snapshots.
+    All: "all",
+}
 
 type ApprovalOptions struct {
     // Specify whether the approval can be skipped if the same approver approved the previous stage.
@@ -96,7 +171,52 @@ type ApprovalOptions struct {
 
 type ApprovalStatus string
 
+type approvalStatusValuesType struct {
+    Undefined ApprovalStatus
+    Pending ApprovalStatus
+    Approved ApprovalStatus
+    Rejected ApprovalStatus
+    Reassigned ApprovalStatus
+    Canceled ApprovalStatus
+    Skipped ApprovalStatus
+}
+
+var ApprovalStatusValues = approvalStatusValuesType{
+    // Indicates the approval does not have the status set.
+    Undefined: "undefined",
+    // Indicates the approval is pending.
+    Pending: "pending",
+    // Indicates the approval is approved.
+    Approved: "approved",
+    // Indicates the approval is rejected.
+    Rejected: "rejected",
+    // Indicates the approval is reassigned.
+    Reassigned: "reassigned",
+    // Indicates the approval is canceled.
+    Canceled: "canceled",
+    // Indicates the approval is skipped.
+    Skipped: "skipped",
+}
+
 type ApprovalType string
+
+type approvalTypeValuesType struct {
+    Undefined ApprovalType
+    PreDeploy ApprovalType
+    PostDeploy ApprovalType
+    All ApprovalType
+}
+
+var ApprovalTypeValues = approvalTypeValuesType{
+    // Indicates the approval type does not set.
+    Undefined: "undefined",
+    // Indicates the approvals which executed before deployment.
+    PreDeploy: "preDeploy",
+    // Indicates the approvals which executed after deployment.
+    PostDeploy: "postDeploy",
+    // Indicates all approvals.
+    All: "all",
+}
 
 type Artifact struct {
     // Gets or sets alias.
@@ -258,12 +378,40 @@ type ArtifactVersionQueryResult struct {
 
 type AuditAction string
 
+type auditActionValuesType struct {
+    Add AuditAction
+    Update AuditAction
+    Delete AuditAction
+    Undelete AuditAction
+}
+
+var AuditActionValues = auditActionValuesType{
+    // Indicates the audit add.
+    Add: "add",
+    // Indicates the audit update.
+    Update: "update",
+    // Indicates the audit delete.
+    Delete: "delete",
+    // Indicates the audit undelete.
+    Undelete: "undelete",
+}
+
 type AuthorizationHeader struct {
     Name *string `json:"name,omitempty"`
     Value *string `json:"value,omitempty"`
 }
 
 type AuthorizationHeaderFor string
+
+type authorizationHeaderForValuesType struct {
+    RevalidateApproverIdentity AuthorizationHeaderFor
+    OnBehalfOf AuthorizationHeaderFor
+}
+
+var AuthorizationHeaderForValues = authorizationHeaderForValuesType{
+    RevalidateApproverIdentity: "revalidateApproverIdentity",
+    OnBehalfOf: "onBehalfOf",
+}
 
 type AutoTriggerIssue struct {
     Issue *Issue `json:"issue,omitempty"`
@@ -387,6 +535,24 @@ type Condition struct {
 
 type ConditionType string
 
+type conditionTypeValuesType struct {
+    Undefined ConditionType
+    Event ConditionType
+    EnvironmentState ConditionType
+    Artifact ConditionType
+}
+
+var ConditionTypeValues = conditionTypeValuesType{
+    // The condition type is undefined.
+    Undefined: "undefined",
+    // The condition type is event.
+    Event: "event",
+    // The condition type is environment state.
+    EnvironmentState: "environmentState",
+    // The condition type is artifact.
+    Artifact: "artifact",
+}
+
 type ConfigurationVariableValue struct {
     // Gets and sets if a variable can be overridden at deployment time or not.
     AllowOverride *bool `json:"allowOverride,omitempty"`
@@ -427,7 +593,7 @@ type ContinuousDeploymentTriggerIssue struct {
 type ControlOptions struct {
     // Always run the job.
     AlwaysRun *bool `json:"alwaysRun,omitempty"`
-    // Indicates whether to continuer job on error or not.
+    // Indicates whether to continue job on error or not.
     ContinueOnError *bool `json:"continueOnError,omitempty"`
     // Indicates the job enabled or not.
     Enabled *bool `json:"enabled,omitempty"`
@@ -633,6 +799,18 @@ type DeploymentAuthorizationInfo struct {
 
 type DeploymentAuthorizationOwner string
 
+type deploymentAuthorizationOwnerValuesType struct {
+    Automatic DeploymentAuthorizationOwner
+    DeploymentSubmitter DeploymentAuthorizationOwner
+    FirstPreDeploymentApprover DeploymentAuthorizationOwner
+}
+
+var DeploymentAuthorizationOwnerValues = deploymentAuthorizationOwnerValuesType{
+    Automatic: "automatic",
+    DeploymentSubmitter: "deploymentSubmitter",
+    FirstPreDeploymentApprover: "firstPreDeploymentApprover",
+}
+
 type DeploymentCompletedEvent struct {
     Comment *string `json:"comment,omitempty"`
     Data *map[string]interface{} `json:"data,omitempty"`
@@ -642,6 +820,20 @@ type DeploymentCompletedEvent struct {
 }
 
 type DeploymentExpands string
+
+type deploymentExpandsValuesType struct {
+    All DeploymentExpands
+    DeploymentOnly DeploymentExpands
+    Approvals DeploymentExpands
+    Artifacts DeploymentExpands
+}
+
+var DeploymentExpandsValues = deploymentExpandsValuesType{
+    All: "all",
+    DeploymentOnly: "deploymentOnly",
+    Approvals: "approvals",
+    Artifacts: "artifacts",
+}
 
 type DeploymentInput struct {
     // Gets or sets the job condition.
@@ -682,6 +874,72 @@ type DeploymentManualInterventionPendingEvent struct {
 
 type DeploymentOperationStatus string
 
+type deploymentOperationStatusValuesType struct {
+    Undefined DeploymentOperationStatus
+    Queued DeploymentOperationStatus
+    Scheduled DeploymentOperationStatus
+    Pending DeploymentOperationStatus
+    Approved DeploymentOperationStatus
+    Rejected DeploymentOperationStatus
+    Deferred DeploymentOperationStatus
+    QueuedForAgent DeploymentOperationStatus
+    PhaseInProgress DeploymentOperationStatus
+    PhaseSucceeded DeploymentOperationStatus
+    PhasePartiallySucceeded DeploymentOperationStatus
+    PhaseFailed DeploymentOperationStatus
+    Canceled DeploymentOperationStatus
+    PhaseCanceled DeploymentOperationStatus
+    ManualInterventionPending DeploymentOperationStatus
+    QueuedForPipeline DeploymentOperationStatus
+    Cancelling DeploymentOperationStatus
+    EvaluatingGates DeploymentOperationStatus
+    GateFailed DeploymentOperationStatus
+    All DeploymentOperationStatus
+}
+
+var DeploymentOperationStatusValues = deploymentOperationStatusValuesType{
+    // The deployment operation status is undefined.
+    Undefined: "undefined",
+    // The deployment operation status is queued.
+    Queued: "queued",
+    // The deployment operation status is scheduled.
+    Scheduled: "scheduled",
+    // The deployment operation status is pending.
+    Pending: "pending",
+    // The deployment operation status is approved.
+    Approved: "approved",
+    // The deployment operation status is rejected.
+    Rejected: "rejected",
+    // The deployment operation status is deferred.
+    Deferred: "deferred",
+    // The deployment operation status is queued for agent.
+    QueuedForAgent: "queuedForAgent",
+    // The deployment operation status is phase in progress.
+    PhaseInProgress: "phaseInProgress",
+    // The deployment operation status is phase succeeded.
+    PhaseSucceeded: "phaseSucceeded",
+    // The deployment operation status is phase partially succeeded.
+    PhasePartiallySucceeded: "phasePartiallySucceeded",
+    // The deployment operation status is phase failed.
+    PhaseFailed: "phaseFailed",
+    // The deployment operation status is canceled.
+    Canceled: "canceled",
+    // The deployment operation status is phase canceled.
+    PhaseCanceled: "phaseCanceled",
+    // The deployment operation status is manualintervention pending.
+    ManualInterventionPending: "manualInterventionPending",
+    // The deployment operation status is queued for pipeline.
+    QueuedForPipeline: "queuedForPipeline",
+    // The deployment operation status is cancelling.
+    Cancelling: "cancelling",
+    // The deployment operation status is EvaluatingGates.
+    EvaluatingGates: "evaluatingGates",
+    // The deployment operation status is GateFailed.
+    GateFailed: "gateFailed",
+    // The deployment operation status is all.
+    All: "all",
+}
+
 type DeploymentQueryParameters struct {
     // Query deployments based specified artifact source id.
     ArtifactSourceId *string `json:"artifactSourceId,omitempty"`
@@ -719,7 +977,38 @@ type DeploymentQueryParameters struct {
 
 type DeploymentReason string
 
+type deploymentReasonValuesType struct {
+    None DeploymentReason
+    Manual DeploymentReason
+    Automated DeploymentReason
+    Scheduled DeploymentReason
+    RedeployTrigger DeploymentReason
+}
+
+var DeploymentReasonValues = deploymentReasonValuesType{
+    // The deployment reason is none.
+    None: "none",
+    // The deployment reason is manual.
+    Manual: "manual",
+    // The deployment reason is automated.
+    Automated: "automated",
+    // The deployment reason is scheduled.
+    Scheduled: "scheduled",
+    // The deployment reason is RedeployTrigger.
+    RedeployTrigger: "redeployTrigger",
+}
+
 type DeploymentsQueryType string
+
+type deploymentsQueryTypeValuesType struct {
+    Regular DeploymentsQueryType
+    FailingSince DeploymentsQueryType
+}
+
+var DeploymentsQueryTypeValues = deploymentsQueryTypeValuesType{
+    Regular: "regular",
+    FailingSince: "failingSince",
+}
 
 type DeploymentStartedEvent struct {
     Environment *ReleaseEnvironment `json:"environment,omitempty"`
@@ -729,9 +1018,90 @@ type DeploymentStartedEvent struct {
 
 type DeploymentStatus string
 
+type deploymentStatusValuesType struct {
+    Undefined DeploymentStatus
+    NotDeployed DeploymentStatus
+    InProgress DeploymentStatus
+    Succeeded DeploymentStatus
+    PartiallySucceeded DeploymentStatus
+    Failed DeploymentStatus
+    All DeploymentStatus
+}
+
+var DeploymentStatusValues = deploymentStatusValuesType{
+    // The deployment status is undefined.
+    Undefined: "undefined",
+    // The deployment status is not deployed.
+    NotDeployed: "notDeployed",
+    // The deployment status is in progress.
+    InProgress: "inProgress",
+    // The deployment status is succeeded.
+    Succeeded: "succeeded",
+    // The deployment status is partiallysucceeded.
+    PartiallySucceeded: "partiallySucceeded",
+    // The deployment status is failed.
+    Failed: "failed",
+    // The deployment status is all.
+    All: "all",
+}
+
 type DeployPhaseStatus string
 
+type deployPhaseStatusValuesType struct {
+    Undefined DeployPhaseStatus
+    NotStarted DeployPhaseStatus
+    InProgress DeployPhaseStatus
+    PartiallySucceeded DeployPhaseStatus
+    Succeeded DeployPhaseStatus
+    Failed DeployPhaseStatus
+    Canceled DeployPhaseStatus
+    Skipped DeployPhaseStatus
+    Cancelling DeployPhaseStatus
+}
+
+var DeployPhaseStatusValues = deployPhaseStatusValuesType{
+    // Phase status not set.
+    Undefined: "undefined",
+    // Phase execution not started.
+    NotStarted: "notStarted",
+    // Phase execution in progress.
+    InProgress: "inProgress",
+    // Phase execution partially succeeded.
+    PartiallySucceeded: "partiallySucceeded",
+    // Phase execution succeeded.
+    Succeeded: "succeeded",
+    // Phase execution failed.
+    Failed: "failed",
+    // Phase execution canceled.
+    Canceled: "canceled",
+    // Phase execution skipped.
+    Skipped: "skipped",
+    // Phase is in cancelling state.
+    Cancelling: "cancelling",
+}
+
 type DeployPhaseTypes string
+
+type deployPhaseTypesValuesType struct {
+    Undefined DeployPhaseTypes
+    AgentBasedDeployment DeployPhaseTypes
+    RunOnServer DeployPhaseTypes
+    MachineGroupBasedDeployment DeployPhaseTypes
+    DeploymentGates DeployPhaseTypes
+}
+
+var DeployPhaseTypesValues = deployPhaseTypesValuesType{
+    // Phase type not defined. Don't use this.
+    Undefined: "undefined",
+    // Phase type which contains tasks executed on agent.
+    AgentBasedDeployment: "agentBasedDeployment",
+    // Phase type which contains tasks executed by server.
+    RunOnServer: "runOnServer",
+    // Phase type which contains tasks executed on deployment group machines.
+    MachineGroupBasedDeployment: "machineGroupBasedDeployment",
+    // Phase type which contains tasks which acts as Gates for the deployment to go forward.
+    DeploymentGates: "deploymentGates",
+}
 
 type EmailRecipients struct {
     // List of email addresses.
@@ -780,6 +1150,39 @@ type EnvironmentRetentionPolicy struct {
 
 type EnvironmentStatus string
 
+type environmentStatusValuesType struct {
+    Undefined EnvironmentStatus
+    NotStarted EnvironmentStatus
+    InProgress EnvironmentStatus
+    Succeeded EnvironmentStatus
+    Canceled EnvironmentStatus
+    Rejected EnvironmentStatus
+    Queued EnvironmentStatus
+    Scheduled EnvironmentStatus
+    PartiallySucceeded EnvironmentStatus
+}
+
+var EnvironmentStatusValues = environmentStatusValuesType{
+    // Environment status not set.
+    Undefined: "undefined",
+    // Environment is in not started state.
+    NotStarted: "notStarted",
+    // Environment is in progress state.
+    InProgress: "inProgress",
+    // Environment is in succeeded state.
+    Succeeded: "succeeded",
+    // Environment is in canceled state.
+    Canceled: "canceled",
+    // Environment is in rejected state.
+    Rejected: "rejected",
+    // Environment is in queued state.
+    Queued: "queued",
+    // Environment is in scheduled state.
+    Scheduled: "scheduled",
+    // Environment is in partially succeeded state.
+    PartiallySucceeded: "partiallySucceeded",
+}
+
 type EnvironmentTrigger struct {
     // Definition environment ID on which this trigger applicable.
     DefinitionEnvironmentId *int `json:"definitionEnvironmentId,omitempty"`
@@ -799,6 +1202,21 @@ type EnvironmentTriggerContent struct {
 }
 
 type EnvironmentTriggerType string
+
+type environmentTriggerTypeValuesType struct {
+    Undefined EnvironmentTriggerType
+    DeploymentGroupRedeploy EnvironmentTriggerType
+    RollbackRedeploy EnvironmentTriggerType
+}
+
+var EnvironmentTriggerTypeValues = environmentTriggerTypeValuesType{
+    // Environment trigger type undefined.
+    Undefined: "undefined",
+    // Environment trigger type is deployment group redeploy.
+    DeploymentGroupRedeploy: "deploymentGroupRedeploy",
+    // Environment trigger type is Rollback.
+    RollbackRedeploy: "rollbackRedeploy",
+}
 
 type ExecutionInput struct {
     // Parallel execution type, for example MultiConfiguration or MultiMachine.
@@ -834,6 +1252,21 @@ type Folder struct {
 
 type FolderPathQueryOrder string
 
+type folderPathQueryOrderValuesType struct {
+    None FolderPathQueryOrder
+    Ascending FolderPathQueryOrder
+    Descending FolderPathQueryOrder
+}
+
+var FolderPathQueryOrderValues = folderPathQueryOrderValuesType{
+    // No order.
+    None: "none",
+    // Order by folder name and path ascending.
+    Ascending: "ascending",
+    // Order by folder name and path descending.
+    Descending: "descending",
+}
+
 type GatesDeploymentInput struct {
     // Gets or sets the job condition.
     Condition *string `json:"condition,omitempty"`
@@ -857,6 +1290,30 @@ type GatesDeployPhase struct {
 }
 
 type GateStatus string
+
+type gateStatusValuesType struct {
+    None GateStatus
+    Pending GateStatus
+    InProgress GateStatus
+    Succeeded GateStatus
+    Failed GateStatus
+    Canceled GateStatus
+}
+
+var GateStatusValues = gateStatusValuesType{
+    // The gate does not have the status set.
+    None: "none",
+    // The gate is in pending state.
+    Pending: "pending",
+    // The gate is currently in progress.
+    InProgress: "inProgress",
+    // The gate completed successfully.
+    Succeeded: "succeeded",
+    // The gate execution failed.
+    Failed: "failed",
+    // The gate execution cancelled.
+    Canceled: "canceled",
+}
 
 type GateUpdateMetadata struct {
     // Comment.
@@ -935,6 +1392,30 @@ type IgnoredGate struct {
 // Enumerates data types that are supported as subscription input values.
 type InputDataType string
 
+type inputDataTypeValuesType struct {
+    None InputDataType
+    String InputDataType
+    Number InputDataType
+    Boolean InputDataType
+    Guid InputDataType
+    Uri InputDataType
+}
+
+var InputDataTypeValues = inputDataTypeValuesType{
+    // No data type is specified.
+    None: "none",
+    // Represents a textual value.
+    String: "string",
+    // Represents a numeric value.
+    Number: "number",
+    // Represents a value of true or false.
+    Boolean: "boolean",
+    // Represents a Guid.
+    Guid: "guid",
+    // Represents a URI.
+    Uri: "uri",
+}
+
 // Describes an input for subscriptions.
 type InputDescriptor struct {
     // The ids of all inputs that the value of this input is dependent on.
@@ -969,6 +1450,33 @@ type InputDescriptor struct {
 
 // Mode in which a subscription input should be entered (in a UI)
 type InputMode string
+
+type inputModeValuesType struct {
+    None InputMode
+    TextBox InputMode
+    PasswordBox InputMode
+    Combo InputMode
+    RadioButtons InputMode
+    CheckBox InputMode
+    TextArea InputMode
+}
+
+var InputModeValues = inputModeValuesType{
+    // This input should not be shown in the UI
+    None: "none",
+    // An input text box should be shown
+    TextBox: "textBox",
+    // An password input box should be shown
+    PasswordBox: "passwordBox",
+    // A select/combo control should be shown
+    Combo: "combo",
+    // Radio buttons should be shown
+    RadioButtons: "radioButtons",
+    // Checkbox should be shown(for true/false values)
+    CheckBox: "checkBox",
+    // A multi-line text area should be shown
+    TextArea: "textArea",
+}
 
 // Describes what values are valid for a subscription input
 type InputValidation struct {
@@ -1043,6 +1551,18 @@ type Issue struct {
 
 type IssueSource string
 
+type issueSourceValuesType struct {
+    None IssueSource
+    User IssueSource
+    System IssueSource
+}
+
+var IssueSourceValues = issueSourceValuesType{
+    None: "none",
+    User: "user",
+    System: "system",
+}
+
 type JenkinsArtifactDownloadInput struct {
     // Gets or sets the alias of artifact.
     Alias *string `json:"alias,omitempty"`
@@ -1090,7 +1610,7 @@ type MailMessage struct {
     // Body of mail.
     Body *string `json:"body,omitempty"`
     // Mail CC recipients.
-    CC *EmailRecipients `json:"cc,omitempty"`
+    Cc *EmailRecipients `json:"cc,omitempty"`
     // Reply to.
     InReplyTo *string `json:"inReplyTo,omitempty"`
     // Message ID of the mail.
@@ -1110,6 +1630,24 @@ type MailMessage struct {
 }
 
 type MailSectionType string
+
+type mailSectionTypeValuesType struct {
+    Details MailSectionType
+    Environments MailSectionType
+    Issues MailSectionType
+    TestResults MailSectionType
+    WorkItems MailSectionType
+    ReleaseInfo MailSectionType
+}
+
+var MailSectionTypeValues = mailSectionTypeValuesType{
+    Details: "details",
+    Environments: "environments",
+    Issues: "issues",
+    TestResults: "testResults",
+    WorkItems: "workItems",
+    ReleaseInfo: "releaseInfo",
+}
 
 type ManualIntervention struct {
     // Gets or sets the identity who should approve.
@@ -1142,6 +1680,27 @@ type ManualIntervention struct {
 
 // Describes manual intervention status
 type ManualInterventionStatus string
+
+type manualInterventionStatusValuesType struct {
+    Unknown ManualInterventionStatus
+    Pending ManualInterventionStatus
+    Rejected ManualInterventionStatus
+    Approved ManualInterventionStatus
+    Canceled ManualInterventionStatus
+}
+
+var ManualInterventionStatusValues = manualInterventionStatusValuesType{
+    // The manual intervention does not have the status set.
+    Unknown: "unknown",
+    // The manual intervention is pending.
+    Pending: "pending",
+    // The manual intervention is rejected.
+    Rejected: "rejected",
+    // The manual intervention is approved.
+    Approved: "approved",
+    // The manual intervention is canceled.
+    Canceled: "canceled",
+}
 
 type ManualInterventionUpdateMetadata struct {
     // Sets the comment for manual intervention update.
@@ -1197,12 +1756,34 @@ type ParallelExecutionInputBase struct {
 
 type ParallelExecutionTypes string
 
+type parallelExecutionTypesValuesType struct {
+    None ParallelExecutionTypes
+    MultiConfiguration ParallelExecutionTypes
+    MultiMachine ParallelExecutionTypes
+}
+
+var ParallelExecutionTypesValues = parallelExecutionTypesValuesType{
+    None: "none",
+    MultiConfiguration: "multiConfiguration",
+    MultiMachine: "multiMachine",
+}
+
 type PipelineProcess struct {
     // Pipeline process type.
     Type *PipelineProcessTypes `json:"type,omitempty"`
 }
 
 type PipelineProcessTypes string
+
+type pipelineProcessTypesValuesType struct {
+    Designer PipelineProcessTypes
+    Yaml PipelineProcessTypes
+}
+
+var PipelineProcessTypesValues = pipelineProcessTypesValuesType{
+    Designer: "designer",
+    Yaml: "yaml",
+}
 
 type ProcessParameters struct {
     DataSourceBindings *[]DataSourceBindingBase `json:"dataSourceBindings,omitempty"`
@@ -1226,6 +1807,18 @@ type PropertySelector struct {
 
 type PropertySelectorType string
 
+type propertySelectorTypeValuesType struct {
+    Inclusion PropertySelectorType
+    Exclusion PropertySelectorType
+}
+
+var PropertySelectorTypeValues = propertySelectorTypeValuesType{
+    // Include in property selector.
+    Inclusion: "inclusion",
+    // Exclude in property selector.
+    Exclusion: "exclusion",
+}
+
 type PullRequestConfiguration struct {
     // Code repository reference.
     CodeRepositoryReference *CodeRepositoryReference `json:"codeRepositoryReference,omitempty"`
@@ -1241,6 +1834,18 @@ type PullRequestFilter struct {
 }
 
 type PullRequestSystemType string
+
+type pullRequestSystemTypeValuesType struct {
+    None PullRequestSystemType
+    TfsGit PullRequestSystemType
+    GitHub PullRequestSystemType
+}
+
+var PullRequestSystemTypeValues = pullRequestSystemTypeValuesType{
+    None: "none",
+    TfsGit: "tfsGit",
+    GitHub: "gitHub",
+}
 
 type PullRequestTrigger struct {
     // Artifact alias trigger is linked to.
@@ -1617,6 +2222,33 @@ type ReleaseDefinitionEnvironmentTemplate struct {
 
 type ReleaseDefinitionExpands string
 
+type releaseDefinitionExpandsValuesType struct {
+    None ReleaseDefinitionExpands
+    Environments ReleaseDefinitionExpands
+    Artifacts ReleaseDefinitionExpands
+    Triggers ReleaseDefinitionExpands
+    Variables ReleaseDefinitionExpands
+    Tags ReleaseDefinitionExpands
+    LastRelease ReleaseDefinitionExpands
+}
+
+var ReleaseDefinitionExpandsValues = releaseDefinitionExpandsValuesType{
+    // Returns top level properties of object.
+    None: "none",
+    // Include environments in return object.
+    Environments: "environments",
+    // Include artifacts in return object.
+    Artifacts: "artifacts",
+    // Include triggers in return object.
+    Triggers: "triggers",
+    // Include variables in return object.
+    Variables: "variables",
+    // Include tags in return object.
+    Tags: "tags",
+    // Include last release in return object.
+    LastRelease: "lastRelease",
+}
+
 type ReleaseDefinitionGate struct {
     // Gets or sets the gates workflow.
     Tasks *[]WorkflowTask `json:"tasks,omitempty"`
@@ -1645,6 +2277,24 @@ type ReleaseDefinitionGatesStep struct {
 }
 
 type ReleaseDefinitionQueryOrder string
+
+type releaseDefinitionQueryOrderValuesType struct {
+    IdAscending ReleaseDefinitionQueryOrder
+    IdDescending ReleaseDefinitionQueryOrder
+    NameAscending ReleaseDefinitionQueryOrder
+    NameDescending ReleaseDefinitionQueryOrder
+}
+
+var ReleaseDefinitionQueryOrderValues = releaseDefinitionQueryOrderValuesType{
+    // Return results based on release definition Id ascending order.
+    IdAscending: "idAscending",
+    // Return results based on release definition Id descending order.
+    IdDescending: "idDescending",
+    // Return results based on release definition name ascending order.
+    NameAscending: "nameAscending",
+    // Return results based on release definition name descending order.
+    NameDescending: "nameDescending",
+}
 
 type ReleaseDefinitionRevision struct {
     // Gets api-version for revision object.
@@ -1681,6 +2331,27 @@ type ReleaseDefinitionShallowReference struct {
 }
 
 type ReleaseDefinitionSource string
+
+type releaseDefinitionSourceValuesType struct {
+    Undefined ReleaseDefinitionSource
+    RestApi ReleaseDefinitionSource
+    UserInterface ReleaseDefinitionSource
+    Ibiza ReleaseDefinitionSource
+    PortalExtensionApi ReleaseDefinitionSource
+}
+
+var ReleaseDefinitionSourceValues = releaseDefinitionSourceValuesType{
+    // Indicates ReleaseDefinition source not defined.
+    Undefined: "undefined",
+    // Indicates ReleaseDefinition created using REST API.
+    RestApi: "restApi",
+    // Indicates ReleaseDefinition created using UI.
+    UserInterface: "userInterface",
+    // Indicates ReleaseDefinition created from Ibiza.
+    Ibiza: "ibiza",
+    // Indicates ReleaseDefinition created from PortalExtension API.
+    PortalExtensionApi: "portalExtensionApi",
+}
 
 type ReleaseDefinitionSummary struct {
     // List of Release Definition environment summary.
@@ -1842,6 +2513,26 @@ type ReleaseEnvironmentUpdateMetadata struct {
 
 type ReleaseExpands string
 
+type releaseExpandsValuesType struct {
+    None ReleaseExpands
+    Environments ReleaseExpands
+    Artifacts ReleaseExpands
+    Approvals ReleaseExpands
+    ManualInterventions ReleaseExpands
+    Variables ReleaseExpands
+    Tags ReleaseExpands
+}
+
+var ReleaseExpandsValues = releaseExpandsValuesType{
+    None: "none",
+    Environments: "environments",
+    Artifacts: "artifacts",
+    Approvals: "approvals",
+    ManualInterventions: "manualInterventions",
+    Variables: "variables",
+    Tags: "tags",
+}
+
 type ReleaseGates struct {
     // Contains the gates job details of each evaluation.
     DeploymentJobs *[]DeploymentJob `json:"deploymentJobs,omitempty"`
@@ -1910,7 +2601,40 @@ type ReleaseNotCreatedEvent struct {
 
 type ReleaseQueryOrder string
 
+type releaseQueryOrderValuesType struct {
+    Descending ReleaseQueryOrder
+    Ascending ReleaseQueryOrder
+}
+
+var ReleaseQueryOrderValues = releaseQueryOrderValuesType{
+    // Return results in descending order.
+    Descending: "descending",
+    // Return results in ascending order.
+    Ascending: "ascending",
+}
+
 type ReleaseReason string
+
+type releaseReasonValuesType struct {
+    None ReleaseReason
+    Manual ReleaseReason
+    ContinuousIntegration ReleaseReason
+    Schedule ReleaseReason
+    PullRequest ReleaseReason
+}
+
+var ReleaseReasonValues = releaseReasonValuesType{
+    // Indicates the release triggered reason not set.
+    None: "none",
+    // Indicates the release triggered manually.
+    Manual: "manual",
+    // Indicates the release triggered by continuous integration.
+    ContinuousIntegration: "continuousIntegration",
+    // Indicates the release triggered by schedule.
+    Schedule: "schedule",
+    // Indicates the release triggered by PullRequest.
+    PullRequest: "pullRequest",
+}
 
 type ReleaseReference struct {
     // Gets links to access the release.
@@ -2018,6 +2742,24 @@ type ReleaseStartMetadata struct {
 
 type ReleaseStatus string
 
+type releaseStatusValuesType struct {
+    Undefined ReleaseStatus
+    Draft ReleaseStatus
+    Active ReleaseStatus
+    Abandoned ReleaseStatus
+}
+
+var ReleaseStatusValues = releaseStatusValuesType{
+    // Release status not set.
+    Undefined: "undefined",
+    // Release is in draft state.
+    Draft: "draft",
+    // Release status is in active.
+    Active: "active",
+    // Release status is in abandoned.
+    Abandoned: "abandoned",
+}
+
 type ReleaseTask struct {
     // Agent name on which task executed.
     AgentName *string `json:"agentName,omitempty"`
@@ -2095,6 +2837,33 @@ type ReleaseTasksUpdatedEvent struct {
 
 type ReleaseTriggerType string
 
+type releaseTriggerTypeValuesType struct {
+    Undefined ReleaseTriggerType
+    ArtifactSource ReleaseTriggerType
+    Schedule ReleaseTriggerType
+    SourceRepo ReleaseTriggerType
+    ContainerImage ReleaseTriggerType
+    Package ReleaseTriggerType
+    PullRequest ReleaseTriggerType
+}
+
+var ReleaseTriggerTypeValues = releaseTriggerTypeValuesType{
+    // Release trigger type not set.
+    Undefined: "undefined",
+    // Artifact based release trigger.
+    ArtifactSource: "artifactSource",
+    // Schedule based release trigger.
+    Schedule: "schedule",
+    // Source repository based release trigger.
+    SourceRepo: "sourceRepo",
+    // Container image based release trigger.
+    ContainerImage: "containerImage",
+    // Package based release trigger.
+    Package: "package",
+    // Pull request based release trigger.
+    PullRequest: "pullRequest",
+}
+
 type ReleaseUpdatedEvent struct {
     EnvironmentId *int `json:"environmentId,omitempty"`
     ProjectId *uuid.UUID `json:"projectId,omitempty"`
@@ -2157,12 +2926,55 @@ type RunOnServerDeployPhase struct {
 
 type ScheduleDays string
 
+type scheduleDaysValuesType struct {
+    None ScheduleDays
+    Monday ScheduleDays
+    Tuesday ScheduleDays
+    Wednesday ScheduleDays
+    Thursday ScheduleDays
+    Friday ScheduleDays
+    Saturday ScheduleDays
+    Sunday ScheduleDays
+    All ScheduleDays
+}
+
+var ScheduleDaysValues = scheduleDaysValuesType{
+    // Scheduled day not set.
+    None: "none",
+    // Scheduled on Monday.
+    Monday: "monday",
+    // Scheduled on Tuesday.
+    Tuesday: "tuesday",
+    // Scheduled on Wednesday.
+    Wednesday: "wednesday",
+    // Scheduled on Thursday.
+    Thursday: "thursday",
+    // Scheduled on Friday.
+    Friday: "friday",
+    // Scheduled on Saturday.
+    Saturday: "saturday",
+    // Scheduled on Sunday.
+    Sunday: "sunday",
+    // Scheduled on all the days in week.
+    All: "all",
+}
+
 type ScheduledReleaseTrigger struct {
     // Release schedule for Scheduled Release trigger type.
     Schedule *ReleaseSchedule `json:"schedule,omitempty"`
 }
 
 type SenderType string
+
+type senderTypeValuesType struct {
+    ServiceAccount SenderType
+    RequestingUser SenderType
+}
+
+var SenderTypeValues = senderTypeValuesType{
+    ServiceAccount: "serviceAccount",
+    RequestingUser: "requestingUser",
+}
 
 type ServerDeploymentInput struct {
     // Gets or sets the job condition.
@@ -2186,6 +2998,18 @@ type ServiceEndpointReference struct {
 }
 
 type SingleReleaseExpands string
+
+type singleReleaseExpandsValuesType struct {
+    None SingleReleaseExpands
+    Tasks SingleReleaseExpands
+}
+
+var SingleReleaseExpandsValues = singleReleaseExpandsValuesType{
+    // Return top level properties of object.
+    None: "none",
+    // Expand release with tasks.
+    Tasks: "tasks",
+}
 
 type SourceIdInput struct {
     // ID of source.
@@ -2274,6 +3098,42 @@ type TaskSourceDefinitionBase struct {
 
 type TaskStatus string
 
+type taskStatusValuesType struct {
+    Unknown TaskStatus
+    Pending TaskStatus
+    InProgress TaskStatus
+    Success TaskStatus
+    Failure TaskStatus
+    Canceled TaskStatus
+    Skipped TaskStatus
+    Succeeded TaskStatus
+    Failed TaskStatus
+    PartiallySucceeded TaskStatus
+}
+
+var TaskStatusValues = taskStatusValuesType{
+    // The task does not have the status set.
+    Unknown: "unknown",
+    // The task is in pending status.
+    Pending: "pending",
+    // The task is currently in progress.
+    InProgress: "inProgress",
+    // The task completed successfully.
+    Success: "success",
+    // The task execution failed.
+    Failure: "failure",
+    // The task execution canceled.
+    Canceled: "canceled",
+    // The task execution skipped.
+    Skipped: "skipped",
+    // The task completed successfully.
+    Succeeded: "succeeded",
+    // The task execution failed.
+    Failed: "failed",
+    // The task execution partially succeeded.
+    PartiallySucceeded: "partiallySucceeded",
+}
+
 type TfvcArtifactDownloadInput struct {
     // Gets or sets the alias of artifact.
     Alias *string `json:"alias,omitempty"`
@@ -2325,6 +3185,18 @@ type VariableGroup struct {
 }
 
 type VariableGroupActionFilter string
+
+type variableGroupActionFilterValuesType struct {
+    None VariableGroupActionFilter
+    Manage VariableGroupActionFilter
+    Use VariableGroupActionFilter
+}
+
+var VariableGroupActionFilterValues = variableGroupActionFilterValuesType{
+    None: "none",
+    Manage: "manage",
+    Use: "use",
+}
 
 type VariableGroupProviderData struct {
 }
@@ -2381,6 +3253,16 @@ type YamlFileSource struct {
 }
 
 type YamlFileSourceTypes string
+
+type yamlFileSourceTypesValuesType struct {
+    None YamlFileSourceTypes
+    TfsGit YamlFileSourceTypes
+}
+
+var YamlFileSourceTypesValues = yamlFileSourceTypesValuesType{
+    None: "none",
+    TfsGit: "tfsGit",
+}
 
 type YamlPipelineProcess struct {
     // Pipeline process type.

@@ -97,6 +97,21 @@ type BacklogLevelWorkItems struct {
 // Definition of the type of backlog level
 type BacklogType string
 
+type backlogTypeValuesType struct {
+    Portfolio BacklogType
+    Requirement BacklogType
+    Task BacklogType
+}
+
+var BacklogTypeValues = backlogTypeValuesType{
+    // Portfolio backlog level
+    Portfolio: "portfolio",
+    // Requirement backlog level
+    Requirement: "requirement",
+    // Task backlog level
+    Task: "task",
+}
+
 type Board struct {
     // Id of the resource
     Id *uuid.UUID `json:"id,omitempty"`
@@ -124,6 +139,21 @@ type BoardBadge struct {
 
 // Determines what columns to include on the board badge
 type BoardBadgeColumnOptions string
+
+type boardBadgeColumnOptionsValuesType struct {
+    InProgressColumns BoardBadgeColumnOptions
+    AllColumns BoardBadgeColumnOptions
+    CustomColumns BoardBadgeColumnOptions
+}
+
+var BoardBadgeColumnOptionsValues = boardBadgeColumnOptionsValuesType{
+    // Only include In Progress columns
+    InProgressColumns: "inProgressColumns",
+    // Include all columns
+    AllColumns: "allColumns",
+    // Include a custom set of columns
+    CustomColumns: "customColumns",
+}
 
 type BoardCardRuleSettings struct {
     Links *ReferenceLinks `json:"_links,omitempty"`
@@ -165,6 +195,18 @@ type BoardColumn struct {
 
 type BoardColumnType string
 
+type boardColumnTypeValuesType struct {
+    Incoming BoardColumnType
+    InProgress BoardColumnType
+    Outgoing BoardColumnType
+}
+
+var BoardColumnTypeValues = boardColumnTypeValuesType{
+    Incoming: "incoming",
+    InProgress: "inProgress",
+    Outgoing: "outgoing",
+}
+
 type BoardFields struct {
     ColumnField *FieldReference `json:"columnField,omitempty"`
     DoneField *FieldReference `json:"doneField,omitempty"`
@@ -195,6 +237,18 @@ type BoardUserSettings struct {
 
 // The behavior of the work item types that are in the work item category specified in the BugWorkItems section in the Process Configuration
 type BugsBehavior string
+
+type bugsBehaviorValuesType struct {
+    Off BugsBehavior
+    AsRequirements BugsBehavior
+    AsTasks BugsBehavior
+}
+
+var BugsBehaviorValues = bugsBehaviorValuesType{
+    Off: "off",
+    AsRequirements: "asRequirements",
+    AsTasks: "asTasks",
+}
 
 type CapacityContractBase struct {
     // Collection of links relevant to resource
@@ -322,6 +376,26 @@ type FieldSetting struct {
 
 type FieldType string
 
+type fieldTypeValuesType struct {
+    String FieldType
+    PlainText FieldType
+    Integer FieldType
+    DateTime FieldType
+    TreePath FieldType
+    Boolean FieldType
+    Double FieldType
+}
+
+var FieldTypeValues = fieldTypeValuesType{
+    String: "string",
+    PlainText: "plainText",
+    Integer: "integer",
+    DateTime: "dateTime",
+    TreePath: "treePath",
+    Boolean: "boolean",
+    Double: "double",
+}
+
 type FilterClause struct {
     FieldName *string `json:"fieldName,omitempty"`
     Index *int `json:"index,omitempty"`
@@ -349,6 +423,21 @@ type GraphSubjectBase struct {
 
 // Enum for the various modes of identity picker
 type IdentityDisplayFormat string
+
+type identityDisplayFormatValuesType struct {
+    AvatarOnly IdentityDisplayFormat
+    FullName IdentityDisplayFormat
+    AvatarAndFullName IdentityDisplayFormat
+}
+
+var IdentityDisplayFormatValues = identityDisplayFormatValuesType{
+    // Display avatar only
+    AvatarOnly: "avatarOnly",
+    // Display Full name only
+    FullName: "fullName",
+    // Display Avatar and Full name
+    AvatarAndFullName: "avatarAndFullName",
+}
 
 type IdentityRef struct {
     // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
@@ -464,8 +553,40 @@ type PlanMetadata struct {
 // Enum for the various types of plans
 type PlanType string
 
+type planTypeValuesType struct {
+    DeliveryTimelineView PlanType
+}
+
+var PlanTypeValues = planTypeValuesType{
+    DeliveryTimelineView: "deliveryTimelineView",
+}
+
 // Flag for permissions a user can have for this plan.
 type PlanUserPermissions string
+
+type planUserPermissionsValuesType struct {
+    None PlanUserPermissions
+    View PlanUserPermissions
+    Edit PlanUserPermissions
+    Delete PlanUserPermissions
+    Manage PlanUserPermissions
+    AllPermissions PlanUserPermissions
+}
+
+var PlanUserPermissionsValues = planUserPermissionsValuesType{
+    // None
+    None: "none",
+    // Permission to view this plan.
+    View: "view",
+    // Permission to update this plan.
+    Edit: "edit",
+    // Permission to delete this plan.
+    Delete: "delete",
+    // Permission to manage this plan.
+    Manage: "manage",
+    // Full control permission for this plan.
+    AllPermissions: "allPermissions",
+}
 
 // Base class for plan view data contracts. Anything common goes here.
 type PlanViewData struct {
@@ -689,6 +810,18 @@ type TeamSettingsPatch struct {
 
 type TimeFrame string
 
+type timeFrameValuesType struct {
+    Past TimeFrame
+    Current TimeFrame
+    Future TimeFrame
+}
+
+var TimeFrameValues = timeFrameValuesType{
+    Past: "past",
+    Current: "current",
+    Future: "future",
+}
+
 type TimelineCriteriaStatus struct {
     Message *string `json:"message,omitempty"`
     Type *TimelineCriteriaStatusCode `json:"type,omitempty"`
@@ -696,12 +829,39 @@ type TimelineCriteriaStatus struct {
 
 type TimelineCriteriaStatusCode string
 
+type timelineCriteriaStatusCodeValuesType struct {
+    Ok TimelineCriteriaStatusCode
+    InvalidFilterClause TimelineCriteriaStatusCode
+    Unknown TimelineCriteriaStatusCode
+}
+
+var TimelineCriteriaStatusCodeValues = timelineCriteriaStatusCodeValuesType{
+    // No error - filter is good.
+    Ok: "ok",
+    // One of the filter clause is invalid.
+    InvalidFilterClause: "invalidFilterClause",
+    // Unknown error.
+    Unknown: "unknown",
+}
+
 type TimelineIterationStatus struct {
     Message *string `json:"message,omitempty"`
     Type *TimelineIterationStatusCode `json:"type,omitempty"`
 }
 
 type TimelineIterationStatusCode string
+
+type timelineIterationStatusCodeValuesType struct {
+    Ok TimelineIterationStatusCode
+    IsOverlapping TimelineIterationStatusCode
+}
+
+var TimelineIterationStatusCodeValues = timelineIterationStatusCodeValuesType{
+    // No error - iteration data is good.
+    Ok: "ok",
+    // This iteration overlaps with another iteration, no data is returned for this iteration.
+    IsOverlapping: "isOverlapping",
+}
 
 type TimelineTeamData struct {
     // Backlog matching the mapped backlog associated with this team.
@@ -759,6 +919,33 @@ type TimelineTeamStatus struct {
 }
 
 type TimelineTeamStatusCode string
+
+type timelineTeamStatusCodeValuesType struct {
+    Ok TimelineTeamStatusCode
+    DoesntExistOrAccessDenied TimelineTeamStatusCode
+    MaxTeamsExceeded TimelineTeamStatusCode
+    MaxTeamFieldsExceeded TimelineTeamStatusCode
+    BacklogInError TimelineTeamStatusCode
+    MissingTeamFieldValue TimelineTeamStatusCode
+    NoIterationsExist TimelineTeamStatusCode
+}
+
+var TimelineTeamStatusCodeValues = timelineTeamStatusCodeValuesType{
+    // No error - all data for team is good.
+    Ok: "ok",
+    // Team does not exist or access is denied.
+    DoesntExistOrAccessDenied: "doesntExistOrAccessDenied",
+    // Maximum number of teams was exceeded. No team data will be returned for this team.
+    MaxTeamsExceeded: "maxTeamsExceeded",
+    // Maximum number of team fields (ie Area paths) have been exceeded. No team data will be returned for this team.
+    MaxTeamFieldsExceeded: "maxTeamFieldsExceeded",
+    // Backlog does not exist or is missing crucial information.
+    BacklogInError: "backlogInError",
+    // Team field value is not set for this team. No team data will be returned for this team
+    MissingTeamFieldValue: "missingTeamFieldValue",
+    // Team does not have a single iteration with date range.
+    NoIterationsExist: "noIterationsExist",
+}
 
 type UpdatePlan struct {
     // Description of the plan

@@ -68,7 +68,37 @@ type FrameworkIdentityInfo struct {
 
 type FrameworkIdentityType string
 
+type frameworkIdentityTypeValuesType struct {
+    None FrameworkIdentityType
+    ServiceIdentity FrameworkIdentityType
+    AggregateIdentity FrameworkIdentityType
+    ImportedIdentity FrameworkIdentityType
+}
+
+var FrameworkIdentityTypeValues = frameworkIdentityTypeValuesType{
+    None: "none",
+    ServiceIdentity: "serviceIdentity",
+    AggregateIdentity: "aggregateIdentity",
+    ImportedIdentity: "importedIdentity",
+}
+
 type GrantType string
+
+type grantTypeValuesType struct {
+    None GrantType
+    JwtBearer GrantType
+    RefreshToken GrantType
+    Implicit GrantType
+    ClientCredentials GrantType
+}
+
+var GrantTypeValues = grantTypeValuesType{
+    None: "none",
+    JwtBearer: "jwtBearer",
+    RefreshToken: "refreshToken",
+    Implicit: "implicit",
+    ClientCredentials: "clientCredentials",
+}
 
 type GroupMembership struct {
     Active *bool `json:"active,omitempty"`
@@ -78,6 +108,18 @@ type GroupMembership struct {
 }
 
 type GroupScopeType string
+
+type groupScopeTypeValuesType struct {
+    Generic GroupScopeType
+    ServiceHost GroupScopeType
+    TeamProject GroupScopeType
+}
+
+var GroupScopeTypeValues = groupScopeTypeValuesType{
+    Generic: "generic",
+    ServiceHost: "serviceHost",
+    TeamProject: "teamProject",
+}
 
 type Identity struct {
     // The custom display name for the identity (if any). Setting this property to an empty string will clear the existing custom display name. Setting this property to null will not affect the existing persisted value (since null values do not get sent over the wire or to the database)
@@ -194,9 +236,58 @@ type JsonWebToken struct {
 
 type Operation string
 
+type operationValuesType struct {
+    Add Operation
+    Remove Operation
+    Replace Operation
+    Move Operation
+    Copy Operation
+    Test Operation
+}
+
+var OperationValues = operationValuesType{
+    Add: "add",
+    Remove: "remove",
+    Replace: "replace",
+    Move: "move",
+    Copy: "copy",
+    Test: "test",
+}
+
 type QueryMembership string
 
+type queryMembershipValuesType struct {
+    None QueryMembership
+    Direct QueryMembership
+    Expanded QueryMembership
+    ExpandedUp QueryMembership
+    ExpandedDown QueryMembership
+}
+
+var QueryMembershipValues = queryMembershipValuesType{
+    // Query will not return any membership data
+    None: "none",
+    // Query will return only direct membership data
+    Direct: "direct",
+    // Query will return expanded membership data
+    Expanded: "expanded",
+    // Query will return expanded up membership data (parents only)
+    ExpandedUp: "expandedUp",
+    // Query will return expanded down membership data (children only)
+    ExpandedDown: "expandedDown",
+}
+
 type ReadIdentitiesOptions string
+
+type readIdentitiesOptionsValuesType struct {
+    None ReadIdentitiesOptions
+    FilterIllegalMemberships ReadIdentitiesOptions
+}
+
+var ReadIdentitiesOptionsValues = readIdentitiesOptionsValuesType{
+    None: "none",
+    FilterIllegalMemberships: "filterIllegalMemberships",
+}
 
 type RefreshTokenGrant struct {
     GrantType *GrantType `json:"grantType,omitempty"`
@@ -216,3 +307,73 @@ type TenantInfo struct {
 }
 
 type TokenError string
+
+type tokenErrorValuesType struct {
+    None TokenError
+    GrantTypeRequired TokenError
+    AuthorizationGrantRequired TokenError
+    ClientSecretRequired TokenError
+    RedirectUriRequired TokenError
+    InvalidAuthorizationGrant TokenError
+    InvalidAuthorizationScopes TokenError
+    InvalidRefreshToken TokenError
+    AuthorizationNotFound TokenError
+    AuthorizationGrantExpired TokenError
+    AccessAlreadyIssued TokenError
+    InvalidRedirectUri TokenError
+    AccessTokenNotFound TokenError
+    InvalidAccessToken TokenError
+    AccessTokenAlreadyRefreshed TokenError
+    InvalidClientSecret TokenError
+    ClientSecretExpired TokenError
+    ServerError TokenError
+    AccessDenied TokenError
+    AccessTokenKeyRequired TokenError
+    InvalidAccessTokenKey TokenError
+    FailedToGetAccessToken TokenError
+    InvalidClientId TokenError
+    InvalidClient TokenError
+    InvalidValidTo TokenError
+    InvalidUserId TokenError
+    FailedToIssueAccessToken TokenError
+    AuthorizationGrantScopeMissing TokenError
+    InvalidPublicAccessTokenKey TokenError
+    InvalidPublicAccessToken TokenError
+    PublicFeatureFlagNotEnabled TokenError
+    SshPolicyDisabled TokenError
+}
+
+var TokenErrorValues = tokenErrorValuesType{
+    None: "none",
+    GrantTypeRequired: "grantTypeRequired",
+    AuthorizationGrantRequired: "authorizationGrantRequired",
+    ClientSecretRequired: "clientSecretRequired",
+    RedirectUriRequired: "redirectUriRequired",
+    InvalidAuthorizationGrant: "invalidAuthorizationGrant",
+    InvalidAuthorizationScopes: "invalidAuthorizationScopes",
+    InvalidRefreshToken: "invalidRefreshToken",
+    AuthorizationNotFound: "authorizationNotFound",
+    AuthorizationGrantExpired: "authorizationGrantExpired",
+    AccessAlreadyIssued: "accessAlreadyIssued",
+    InvalidRedirectUri: "invalidRedirectUri",
+    AccessTokenNotFound: "accessTokenNotFound",
+    InvalidAccessToken: "invalidAccessToken",
+    AccessTokenAlreadyRefreshed: "accessTokenAlreadyRefreshed",
+    InvalidClientSecret: "invalidClientSecret",
+    ClientSecretExpired: "clientSecretExpired",
+    ServerError: "serverError",
+    AccessDenied: "accessDenied",
+    AccessTokenKeyRequired: "accessTokenKeyRequired",
+    InvalidAccessTokenKey: "invalidAccessTokenKey",
+    FailedToGetAccessToken: "failedToGetAccessToken",
+    InvalidClientId: "invalidClientId",
+    InvalidClient: "invalidClient",
+    InvalidValidTo: "invalidValidTo",
+    InvalidUserId: "invalidUserId",
+    FailedToIssueAccessToken: "failedToIssueAccessToken",
+    AuthorizationGrantScopeMissing: "authorizationGrantScopeMissing",
+    InvalidPublicAccessTokenKey: "invalidPublicAccessTokenKey",
+    InvalidPublicAccessToken: "invalidPublicAccessToken",
+    PublicFeatureFlagNotEnabled: "publicFeatureFlagNotEnabled",
+    SshPolicyDisabled: "sshPolicyDisabled",
+}

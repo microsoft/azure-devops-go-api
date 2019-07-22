@@ -17,6 +17,20 @@ import (
 // How the acquisition is assigned
 type AcquisitionAssignmentType string
 
+type acquisitionAssignmentTypeValuesType struct {
+    None AcquisitionAssignmentType
+    Me AcquisitionAssignmentType
+    All AcquisitionAssignmentType
+}
+
+var AcquisitionAssignmentTypeValues = acquisitionAssignmentTypeValuesType{
+    None: "none",
+    // Just assign for me
+    Me: "me",
+    // Assign for all users in the account
+    All: "all",
+}
+
 type AcquisitionOperation struct {
     // State of the the AcquisitionOperation for the current user
     OperationState *AcquisitionOperationState `json:"operationState,omitempty"`
@@ -37,8 +51,50 @@ type AcquisitionOperationDisallowReason struct {
 
 type AcquisitionOperationState string
 
+type acquisitionOperationStateValuesType struct {
+    Disallow AcquisitionOperationState
+    Allow AcquisitionOperationState
+    Completed AcquisitionOperationState
+}
+
+var AcquisitionOperationStateValues = acquisitionOperationStateValuesType{
+    // Not allowed to use this AcquisitionOperation
+    Disallow: "disallow",
+    // Allowed to use this AcquisitionOperation
+    Allow: "allow",
+    // Operation has already been completed and is no longer available
+    Completed: "completed",
+}
+
 // Set of different types of operations that can be requested.
 type AcquisitionOperationType string
+
+type acquisitionOperationTypeValuesType struct {
+    Get AcquisitionOperationType
+    Install AcquisitionOperationType
+    Buy AcquisitionOperationType
+    Try AcquisitionOperationType
+    Request AcquisitionOperationType
+    None AcquisitionOperationType
+    PurchaseRequest AcquisitionOperationType
+}
+
+var AcquisitionOperationTypeValues = acquisitionOperationTypeValuesType{
+    // Not yet used
+    Get: "get",
+    // Install this extension into the host provided
+    Install: "install",
+    // Buy licenses for this extension and install into the host provided
+    Buy: "buy",
+    // Try this extension
+    Try: "try",
+    // Request this extension for installation
+    Request: "request",
+    // No action found
+    None: "none",
+    // Request admins for purchasing extension
+    PurchaseRequest: "purchaseRequest",
+}
 
 // Market item acquisition options (install, buy, etc) for an installation target.
 type AcquisitionOptions struct {
@@ -152,6 +208,21 @@ type ContributionConstraint struct {
 // Represents different ways of including contributions based on licensing
 type ContributionLicensingBehaviorType string
 
+type contributionLicensingBehaviorTypeValuesType struct {
+    OnlyIfLicensed ContributionLicensingBehaviorType
+    OnlyIfUnlicensed ContributionLicensingBehaviorType
+    AlwaysInclude ContributionLicensingBehaviorType
+}
+
+var ContributionLicensingBehaviorTypeValues = contributionLicensingBehaviorTypeValuesType{
+    // Default value - only include the contribution if the user is licensed for the extension
+    OnlyIfLicensed: "onlyIfLicensed",
+    // Only include the contribution if the user is NOT licensed for the extension
+    OnlyIfUnlicensed: "onlyIfUnlicensed",
+    // Always include the contribution regardless of whether or not the user is licensed for the extension
+    AlwaysInclude: "alwaysInclude",
+}
+
 // A query that can be issued for contribution nodes
 type ContributionNodeQuery struct {
     // The contribution ids of the nodes to find.
@@ -187,6 +258,45 @@ type ContributionPropertyDescription struct {
 // The type of value used for a property
 type ContributionPropertyType string
 
+type contributionPropertyTypeValuesType struct {
+    Unknown ContributionPropertyType
+    String ContributionPropertyType
+    Uri ContributionPropertyType
+    Guid ContributionPropertyType
+    Boolean ContributionPropertyType
+    Integer ContributionPropertyType
+    Double ContributionPropertyType
+    DateTime ContributionPropertyType
+    Dictionary ContributionPropertyType
+    Array ContributionPropertyType
+    Object ContributionPropertyType
+}
+
+var ContributionPropertyTypeValues = contributionPropertyTypeValuesType{
+    // Contribution type is unknown (value may be anything)
+    Unknown: "unknown",
+    // Value is a string
+    String: "string",
+    // Value is a Uri
+    Uri: "uri",
+    // Value is a GUID
+    Guid: "guid",
+    // Value is True or False
+    Boolean: "boolean",
+    // Value is an integer
+    Integer: "integer",
+    // Value is a double
+    Double: "double",
+    // Value is a DateTime object
+    DateTime: "dateTime",
+    // Value is a generic Dictionary/JObject/property bag
+    Dictionary: "dictionary",
+    // Value is an array
+    Array: "array",
+    // Value is an arbitrary/custom object
+    Object: "object",
+}
+
 type ContributionProviderDetails struct {
     // Friendly name for the provider.
     DisplayName *string `json:"displayName,omitempty"`
@@ -200,6 +310,29 @@ type ContributionProviderDetails struct {
 
 // Options that control the contributions to include in a query
 type ContributionQueryOptions string
+
+type contributionQueryOptionsValuesType struct {
+    None ContributionQueryOptions
+    IncludeSelf ContributionQueryOptions
+    IncludeChildren ContributionQueryOptions
+    IncludeSubTree ContributionQueryOptions
+    IncludeAll ContributionQueryOptions
+    IgnoreConstraints ContributionQueryOptions
+}
+
+var ContributionQueryOptionsValues = contributionQueryOptionsValuesType{
+    None: "none",
+    // Include the direct contributions that have the ids queried.
+    IncludeSelf: "includeSelf",
+    // Include the contributions that directly target the contributions queried.
+    IncludeChildren: "includeChildren",
+    // Include the contributions from the entire sub-tree targeting the contributions queried.
+    IncludeSubTree: "includeSubTree",
+    // Include the contribution being queried as well as all contributions that target them recursively.
+    IncludeAll: "includeAll",
+    // Some callers may want the entire tree back without constraint evaluation being performed.
+    IgnoreConstraints: "ignoreConstraints",
+}
 
 // A contribution type, given by a json schema
 type ContributionType struct {
@@ -331,6 +464,20 @@ type ExtensionDataCollectionQuery struct {
 
 type ExtensionDeploymentTechnology string
 
+type extensionDeploymentTechnologyValuesType struct {
+    Exe ExtensionDeploymentTechnology
+    Msi ExtensionDeploymentTechnology
+    Vsix ExtensionDeploymentTechnology
+    ReferralLink ExtensionDeploymentTechnology
+}
+
+var ExtensionDeploymentTechnologyValues = extensionDeploymentTechnologyValuesType{
+    Exe: "exe",
+    Msi: "msi",
+    Vsix: "vsix",
+    ReferralLink: "referralLink",
+}
+
 type ExtensionEvent struct {
     // The extension which has been updated
     Extension *PublishedExtension `json:"extension,omitempty"`
@@ -387,6 +534,18 @@ type ExtensionFile struct {
 
 // Set of flags applied to extensions that are relevant to contribution consumers
 type ExtensionFlags string
+
+type extensionFlagsValuesType struct {
+    BuiltIn ExtensionFlags
+    Trusted ExtensionFlags
+}
+
+var ExtensionFlagsValues = extensionFlagsValuesType{
+    // A built-in extension is installed for all VSTS accounts by default
+    BuiltIn: "builtIn",
+    // The extension comes from a fully-trusted publisher
+    Trusted: "trusted",
+}
 
 type ExtensionHost struct {
     Id *uuid.UUID `json:"id,omitempty"`
@@ -448,6 +607,33 @@ type ExtensionPolicy struct {
 // Set of flags that can be associated with a given permission over an extension
 type ExtensionPolicyFlags string
 
+type extensionPolicyFlagsValuesType struct {
+    None ExtensionPolicyFlags
+    Private ExtensionPolicyFlags
+    Public ExtensionPolicyFlags
+    Preview ExtensionPolicyFlags
+    Released ExtensionPolicyFlags
+    FirstParty ExtensionPolicyFlags
+    All ExtensionPolicyFlags
+}
+
+var ExtensionPolicyFlagsValues = extensionPolicyFlagsValuesType{
+    // No permission
+    None: "none",
+    // Permission on private extensions
+    Private: "private",
+    // Permission on public extensions
+    Public: "public",
+    // Permission in extensions that are in preview
+    Preview: "preview",
+    // Permission in released extensions
+    Released: "released",
+    // Permission in 1st party extensions
+    FirstParty: "firstParty",
+    // Mask that defines all permissions
+    All: "all",
+}
+
 // A request for an extension (to be installed or have a license assigned)
 type ExtensionRequest struct {
     // Required message supplied if the request is rejected
@@ -497,7 +683,36 @@ type ExtensionRequestsEvent struct {
 // Represents the state of an extension request
 type ExtensionRequestState string
 
+type extensionRequestStateValuesType struct {
+    Open ExtensionRequestState
+    Accepted ExtensionRequestState
+    Rejected ExtensionRequestState
+}
+
+var ExtensionRequestStateValues = extensionRequestStateValuesType{
+    // The request has been opened, but not yet responded to
+    Open: "open",
+    // The request was accepted (extension installed or license assigned)
+    Accepted: "accepted",
+    // The request was rejected (extension not installed or license not assigned)
+    Rejected: "rejected",
+}
+
 type ExtensionRequestUpdateType string
+
+type extensionRequestUpdateTypeValuesType struct {
+    Created ExtensionRequestUpdateType
+    Approved ExtensionRequestUpdateType
+    Rejected ExtensionRequestUpdateType
+    Deleted ExtensionRequestUpdateType
+}
+
+var ExtensionRequestUpdateTypeValues = extensionRequestUpdateTypeValuesType{
+    Created: "created",
+    Approved: "approved",
+    Rejected: "rejected",
+    Deleted: "deleted",
+}
 
 type ExtensionRequestUrls struct {
     // Url of the extension icon
@@ -533,12 +748,71 @@ type ExtensionState struct {
 // States of an extension Note:  If you add value to this enum, you need to do 2 other things.  First add the back compat enum in value src\Vssf\Sdk\Server\Contributions\InstalledExtensionMessage.cs.  Second, you can not send the new value on the message bus.  You need to remove it from the message bus event prior to being sent.
 type ExtensionStateFlags string
 
+type extensionStateFlagsValuesType struct {
+    None ExtensionStateFlags
+    Disabled ExtensionStateFlags
+    BuiltIn ExtensionStateFlags
+    MultiVersion ExtensionStateFlags
+    UnInstalled ExtensionStateFlags
+    VersionCheckError ExtensionStateFlags
+    Trusted ExtensionStateFlags
+    Error ExtensionStateFlags
+    NeedsReauthorization ExtensionStateFlags
+    AutoUpgradeError ExtensionStateFlags
+    Warning ExtensionStateFlags
+}
+
+var ExtensionStateFlagsValues = extensionStateFlagsValuesType{
+    // No flags set
+    None: "none",
+    // Extension is disabled
+    Disabled: "disabled",
+    // Extension is a built in
+    BuiltIn: "builtIn",
+    // Extension has multiple versions
+    MultiVersion: "multiVersion",
+    // Extension is not installed.  This is for builtin extensions only and can not otherwise be set.
+    UnInstalled: "unInstalled",
+    // Error performing version check
+    VersionCheckError: "versionCheckError",
+    // Trusted extensions are ones that are given special capabilities. These tend to come from Microsoft and can't be published by the general public.  Note: BuiltIn extensions are always trusted.
+    Trusted: "trusted",
+    // Extension is currently in an error state
+    Error: "error",
+    // Extension scopes have changed and the extension requires re-authorization
+    NeedsReauthorization: "needsReauthorization",
+    // Error performing auto-upgrade. For example, if the new version has demands not supported the extension cannot be auto-upgraded.
+    AutoUpgradeError: "autoUpgradeError",
+    // Extension is currently in a warning state, that can cause a degraded experience. The degraded experience can be caused for example by some installation issues detected such as implicit demands not supported.
+    Warning: "warning",
+}
+
 type ExtensionStatistic struct {
     StatisticName *string `json:"statisticName,omitempty"`
     Value *float64 `json:"value,omitempty"`
 }
 
 type ExtensionUpdateType string
+
+type extensionUpdateTypeValuesType struct {
+    Installed ExtensionUpdateType
+    Uninstalled ExtensionUpdateType
+    Enabled ExtensionUpdateType
+    Disabled ExtensionUpdateType
+    VersionUpdated ExtensionUpdateType
+    ActionRequired ExtensionUpdateType
+    ActionResolved ExtensionUpdateType
+}
+
+var ExtensionUpdateTypeValues = extensionUpdateTypeValuesType{
+    Installed: "installed",
+    Uninstalled: "uninstalled",
+    Enabled: "enabled",
+    Disabled: "disabled",
+    VersionUpdated: "versionUpdated",
+    ActionRequired: "actionRequired",
+    ActionResolved: "actionResolved",
+}
 
 type ExtensionUrls struct {
     // Url of the extension icon
@@ -562,6 +836,18 @@ type ExtensionVersion struct {
 
 // Set of flags that can be associated with a given extension version. These flags apply to a specific version of the extension.
 type ExtensionVersionFlags string
+
+type extensionVersionFlagsValuesType struct {
+    None ExtensionVersionFlags
+    Validated ExtensionVersionFlags
+}
+
+var ExtensionVersionFlagsValues = extensionVersionFlagsValuesType{
+    // No flags exist for this version.
+    None: "none",
+    // The Validated flag for a version means the extension version has passed validation and can be used..
+    Validated: "validated",
+}
 
 type GraphSubjectBase struct {
     // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
@@ -684,6 +970,18 @@ type InstalledExtensionStateIssue struct {
 // Installation issue type (Warning, Error)
 type InstalledExtensionStateIssueType string
 
+type installedExtensionStateIssueTypeValuesType struct {
+    Warning InstalledExtensionStateIssueType
+    Error InstalledExtensionStateIssueType
+}
+
+var InstalledExtensionStateIssueTypeValues = installedExtensionStateIssueTypeValuesType{
+    // Represents an installation warning, for example an implicit demand not supported
+    Warning: "warning",
+    // Represents an installation error, for example an explicit demand not supported
+    Error: "error",
+}
+
 // Maps a contribution to a licensing behavior
 type LicensingOverride struct {
     // How the inclusion of this contribution should change based on licensing
@@ -717,6 +1015,54 @@ type PublishedExtension struct {
 // Set of flags that can be associated with a given extension. These flags apply to all versions of the extension and not to a specific version.
 type PublishedExtensionFlags string
 
+type publishedExtensionFlagsValuesType struct {
+    None PublishedExtensionFlags
+    Disabled PublishedExtensionFlags
+    BuiltIn PublishedExtensionFlags
+    Validated PublishedExtensionFlags
+    Trusted PublishedExtensionFlags
+    Paid PublishedExtensionFlags
+    Public PublishedExtensionFlags
+    MultiVersion PublishedExtensionFlags
+    System PublishedExtensionFlags
+    Preview PublishedExtensionFlags
+    Unpublished PublishedExtensionFlags
+    Trial PublishedExtensionFlags
+    Locked PublishedExtensionFlags
+    Hidden PublishedExtensionFlags
+}
+
+var PublishedExtensionFlagsValues = publishedExtensionFlagsValuesType{
+    // No flags exist for this extension.
+    None: "none",
+    // The Disabled flag for an extension means the extension can't be changed and won't be used by consumers. The disabled flag is managed by the service and can't be supplied by the Extension Developers.
+    Disabled: "disabled",
+    // BuiltIn Extension are available to all Tenants. An explicit registration is not required. This attribute is reserved and can't be supplied by Extension Developers.  BuiltIn extensions are by definition Public. There is no need to set the public flag for extensions marked BuiltIn.
+    BuiltIn: "builtIn",
+    // This extension has been validated by the service. The extension meets the requirements specified. This attribute is reserved and can't be supplied by the Extension Developers. Validation is a process that ensures that all contributions are well formed. They meet the requirements defined by the contribution type they are extending. Note this attribute will be updated asynchronously as the extension is validated by the developer of the contribution type. There will be restricted access to the extension while this process is performed.
+    Validated: "validated",
+    // Trusted extensions are ones that are given special capabilities. These tend to come from Microsoft and can't be published by the general public.  Note: BuiltIn extensions are always trusted.
+    Trusted: "trusted",
+    // The Paid flag indicates that the commerce can be enabled for this extension. Publisher needs to setup Offer/Pricing plan in Azure. If Paid flag is set and a corresponding Offer is not available, the extension will automatically be marked as Preview. If the publisher intends to make the extension Paid in the future, it is mandatory to set the Preview flag. This is currently available only for VSTS extensions only.
+    Paid: "paid",
+    // This extension registration is public, making its visibility open to the public. This means all tenants have the ability to install this extension. Without this flag the extension will be private and will need to be shared with the tenants that can install it.
+    Public: "public",
+    // This extension has multiple versions active at one time and version discovery should be done using the defined "Version Discovery" protocol to determine the version available to a specific user or tenant.  @TODO: Link to Version Discovery Protocol.
+    MultiVersion: "multiVersion",
+    // The system flag is reserved, and cant be used by publishers.
+    System: "system",
+    // The Preview flag indicates that the extension is still under preview (not yet of "release" quality). These extensions may be decorated differently in the gallery and may have different policies applied to them.
+    Preview: "preview",
+    // The Unpublished flag indicates that the extension can't be installed/downloaded. Users who have installed such an extension can continue to use the extension.
+    Unpublished: "unpublished",
+    // The Trial flag indicates that the extension is in Trial version. The flag is right now being used only with respect to Visual Studio extensions.
+    Trial: "trial",
+    // The Locked flag indicates that extension has been locked from Marketplace. Further updates/acquisitions are not allowed on the extension until this is present. This should be used along with making the extension private/unpublished.
+    Locked: "locked",
+    // This flag is set for extensions we want to hide from Marketplace home and search pages. This will be used to override the exposure of builtIn flags.
+    Hidden: "hidden",
+}
+
 // High-level information about the publisher, like id's and names
 type PublisherFacts struct {
     DisplayName *string `json:"displayName,omitempty"`
@@ -726,6 +1072,30 @@ type PublisherFacts struct {
 }
 
 type PublisherFlags string
+
+type publisherFlagsValuesType struct {
+    UnChanged PublisherFlags
+    None PublisherFlags
+    Disabled PublisherFlags
+    Verified PublisherFlags
+    Certified PublisherFlags
+    ServiceFlags PublisherFlags
+}
+
+var PublisherFlagsValues = publisherFlagsValuesType{
+    // This should never be returned, it is used to represent a publisher who's flags haven't changed during update calls.
+    UnChanged: "unChanged",
+    // No flags exist for this publisher.
+    None: "none",
+    // The Disabled flag for a publisher means the publisher can't be changed and won't be used by consumers, this extends to extensions owned by the publisher as well. The disabled flag is managed by the service and can't be supplied by the Extension Developers.
+    Disabled: "disabled",
+    // A verified publisher is one that Microsoft has done some review of and ensured the publisher meets a set of requirements. The requirements to become a verified publisher are not listed here.  They can be found in public documentation (TBD).
+    Verified: "verified",
+    // A Certified publisher is one that is Microsoft verified and in addition meets a set of requirements for its published extensions. The requirements to become a certified publisher are not listed here.  They can be found in public documentation (TBD).
+    Certified: "certified",
+    // This is the set of flags that can't be supplied by the developer and is managed by the service itself.
+    ServiceFlags: "serviceFlags",
+}
 
 // The class to represent a collection of REST reference links.
 type ReferenceLinks struct {

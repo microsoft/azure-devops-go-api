@@ -57,6 +57,21 @@ type AgentSpecification struct {
 
 type AgentStatus string
 
+type agentStatusValuesType struct {
+    Unavailable AgentStatus
+    Available AgentStatus
+    Offline AgentStatus
+}
+
+var AgentStatusValues = agentStatusValuesType{
+    // Indicates that the build agent cannot be contacted.
+    Unavailable: "unavailable",
+    // Indicates that the build agent is currently available.
+    Available: "available",
+    // Indicates that the build agent has taken itself offline.
+    Offline: "offline",
+}
+
 // Additional options for running phases against an agent queue.
 type AgentTargetExecutionOptions struct {
     // Indicates the type of execution options.
@@ -136,6 +151,18 @@ type Attachment struct {
 }
 
 type AuditAction string
+
+type auditActionValuesType struct {
+    Add AuditAction
+    Update AuditAction
+    Delete AuditAction
+}
+
+var AuditActionValues = auditActionValuesType{
+    Add: "add",
+    Update: "update",
+    Delete: "delete",
+}
 
 type AuthorizationHeader struct {
     Name *string `json:"name,omitempty"`
@@ -271,6 +298,18 @@ type BuildArtifact struct {
 
 // Represents the desired scope of authorization for a build.
 type BuildAuthorizationScope string
+
+type buildAuthorizationScopeValuesType struct {
+    ProjectCollection BuildAuthorizationScope
+    Project BuildAuthorizationScope
+}
+
+var BuildAuthorizationScopeValues = buildAuthorizationScopeValuesType{
+    // The identity used should have build service account permissions scoped to the project collection. This is useful when resources for a single build are spread across multiple projects.
+    ProjectCollection: "projectCollection",
+    // The identity used should have build service account permissions scoped to the project in which the build definition resides. This is useful for isolation of build jobs to a particular team project to avoid any unintentional escalation of privilege attacks during a build.
+    Project: "project",
+}
 
 // Represents a build badge.
 type BuildBadge struct {
@@ -748,7 +787,42 @@ type BuildOptionInputDefinition struct {
 
 type BuildOptionInputType string
 
+type buildOptionInputTypeValuesType struct {
+    String BuildOptionInputType
+    Boolean BuildOptionInputType
+    StringList BuildOptionInputType
+    Radio BuildOptionInputType
+    PickList BuildOptionInputType
+    MultiLine BuildOptionInputType
+    BranchFilter BuildOptionInputType
+}
+
+var BuildOptionInputTypeValues = buildOptionInputTypeValuesType{
+    String: "string",
+    Boolean: "boolean",
+    StringList: "stringList",
+    Radio: "radio",
+    PickList: "pickList",
+    MultiLine: "multiLine",
+    BranchFilter: "branchFilter",
+}
+
 type BuildPhaseStatus string
+
+type buildPhaseStatusValuesType struct {
+    Unknown BuildPhaseStatus
+    Failed BuildPhaseStatus
+    Succeeded BuildPhaseStatus
+}
+
+var BuildPhaseStatusValues = buildPhaseStatusValuesType{
+    // The state is not known.
+    Unknown: "unknown",
+    // The build phase completed unsuccessfully.
+    Failed: "failed",
+    // The build phase completed successfully.
+    Succeeded: "succeeded",
+}
 
 // Represents resources used by a build process.
 type BuildProcessResources struct {
@@ -774,12 +848,81 @@ type BuildProcessTemplate struct {
 // Specifies the desired ordering of builds.
 type BuildQueryOrder string
 
+type buildQueryOrderValuesType struct {
+    FinishTimeAscending BuildQueryOrder
+    FinishTimeDescending BuildQueryOrder
+    QueueTimeDescending BuildQueryOrder
+    QueueTimeAscending BuildQueryOrder
+    StartTimeDescending BuildQueryOrder
+    StartTimeAscending BuildQueryOrder
+}
+
+var BuildQueryOrderValues = buildQueryOrderValuesType{
+    // Order by finish time ascending.
+    FinishTimeAscending: "finishTimeAscending",
+    // Order by finish time descending.
+    FinishTimeDescending: "finishTimeDescending",
+    // Order by queue time descending.
+    QueueTimeDescending: "queueTimeDescending",
+    // Order by queue time ascending.
+    QueueTimeAscending: "queueTimeAscending",
+    // Order by start time descending.
+    StartTimeDescending: "startTimeDescending",
+    // Order by start time ascending.
+    StartTimeAscending: "startTimeAscending",
+}
+
 type BuildQueuedEvent struct {
     BuildId *int `json:"buildId,omitempty"`
     Build *Build `json:"build,omitempty"`
 }
 
 type BuildReason string
+
+type buildReasonValuesType struct {
+    None BuildReason
+    Manual BuildReason
+    IndividualCI BuildReason
+    BatchedCI BuildReason
+    Schedule BuildReason
+    ScheduleForced BuildReason
+    UserCreated BuildReason
+    ValidateShelveset BuildReason
+    CheckInShelveset BuildReason
+    PullRequest BuildReason
+    BuildCompletion BuildReason
+    Triggered BuildReason
+    All BuildReason
+}
+
+var BuildReasonValues = buildReasonValuesType{
+    // No reason. This value should not be used.
+    None: "none",
+    // The build was started manually.
+    Manual: "manual",
+    // The build was started for the trigger TriggerType.ContinuousIntegration.
+    IndividualCI: "individualCI",
+    // The build was started for the trigger TriggerType.BatchedContinuousIntegration.
+    BatchedCI: "batchedCI",
+    // The build was started for the trigger TriggerType.Schedule.
+    Schedule: "schedule",
+    // The build was started for the trigger TriggerType.ScheduleForced.
+    ScheduleForced: "scheduleForced",
+    // The build was created by a user.
+    UserCreated: "userCreated",
+    // The build was started manually for private validation.
+    ValidateShelveset: "validateShelveset",
+    // The build was started for the trigger ContinuousIntegrationType.Gated.
+    CheckInShelveset: "checkInShelveset",
+    // The build was started by a pull request. Added in resource version 3.
+    PullRequest: "pullRequest",
+    // The build was started when another build completed.
+    BuildCompletion: "buildCompletion",
+    // The build was triggered for retention policy purposes.
+    Triggered: "triggered",
+    // All reasons.
+    All: "all",
+}
 
 // Represents a reference to a build.
 type BuildReference struct {
@@ -858,6 +1001,27 @@ type BuildResourceUsage struct {
 // This is not a Flags enum because we don't want to set multiple statuses on a build. However, when adding values, please stick to powers of 2 as if it were a Flags enum This will ensure that things that key off multiple result types (like labelling sources) continue to work
 type BuildResult string
 
+type buildResultValuesType struct {
+    None BuildResult
+    Succeeded BuildResult
+    PartiallySucceeded BuildResult
+    Failed BuildResult
+    Canceled BuildResult
+}
+
+var BuildResultValues = buildResultValuesType{
+    // No result
+    None: "none",
+    // The build completed successfully.
+    Succeeded: "succeeded",
+    // The build completed compilation successfully but had other errors.
+    PartiallySucceeded: "partiallySucceeded",
+    // The build completed unsuccessfully.
+    Failed: "failed",
+    // The build was canceled before starting.
+    Canceled: "canceled",
+}
+
 type BuildsDeletedEvent struct {
     BuildIds *[]int `json:"buildIds,omitempty"`
     // The ID of the definition.
@@ -900,6 +1064,33 @@ type BuildSettings struct {
 }
 
 type BuildStatus string
+
+type buildStatusValuesType struct {
+    None BuildStatus
+    InProgress BuildStatus
+    Completed BuildStatus
+    Cancelling BuildStatus
+    Postponed BuildStatus
+    NotStarted BuildStatus
+    All BuildStatus
+}
+
+var BuildStatusValues = buildStatusValuesType{
+    // No status.
+    None: "none",
+    // The build is currently in progress.
+    InProgress: "inProgress",
+    // The build has completed.
+    Completed: "completed",
+    // The build is cancelling
+    Cancelling: "cancelling",
+    // The build is inactive in the queue.
+    Postponed: "postponed",
+    // The build has not yet started.
+    NotStarted: "notStarted",
+    // All status.
+    All: "all",
+}
 
 type BuildSummary struct {
     Build *XamlBuildReference `json:"build,omitempty"`
@@ -991,6 +1182,21 @@ type ContinuousIntegrationTrigger struct {
 
 type ControllerStatus string
 
+type controllerStatusValuesType struct {
+    Unavailable ControllerStatus
+    Available ControllerStatus
+    Offline ControllerStatus
+}
+
+var ControllerStatusValues = controllerStatusValuesType{
+    // Indicates that the build controller cannot be contacted.
+    Unavailable: "unavailable",
+    // Indicates that the build controller is currently available.
+    Available: "available",
+    // Indicates that the build controller has taken itself offline.
+    Offline: "offline",
+}
+
 // Represents binding of data source for the service endpoint request.
 type DataSourceBindingBase struct {
     // Pagination format supported by this data source(ContinuationToken/SkipTop).
@@ -1023,10 +1229,56 @@ type DataSourceBindingBase struct {
 
 type DefinitionQuality string
 
+type definitionQualityValuesType struct {
+    Definition DefinitionQuality
+    Draft DefinitionQuality
+}
+
+var DefinitionQualityValues = definitionQualityValuesType{
+    Definition: "definition",
+    Draft: "draft",
+}
+
 // Specifies the desired ordering of definitions.
 type DefinitionQueryOrder string
 
+type definitionQueryOrderValuesType struct {
+    None DefinitionQueryOrder
+    LastModifiedAscending DefinitionQueryOrder
+    LastModifiedDescending DefinitionQueryOrder
+    DefinitionNameAscending DefinitionQueryOrder
+    DefinitionNameDescending DefinitionQueryOrder
+}
+
+var DefinitionQueryOrderValues = definitionQueryOrderValuesType{
+    // No order
+    None: "none",
+    // Order by created on/last modified time ascending.
+    LastModifiedAscending: "lastModifiedAscending",
+    // Order by created on/last modified time descending.
+    LastModifiedDescending: "lastModifiedDescending",
+    // Order by definition name ascending.
+    DefinitionNameAscending: "definitionNameAscending",
+    // Order by definition name descending.
+    DefinitionNameDescending: "definitionNameDescending",
+}
+
 type DefinitionQueueStatus string
+
+type definitionQueueStatusValuesType struct {
+    Enabled DefinitionQueueStatus
+    Paused DefinitionQueueStatus
+    Disabled DefinitionQueueStatus
+}
+
+var DefinitionQueueStatusValues = definitionQueueStatusValuesType{
+    // When enabled the definition queue allows builds to be queued by users, the system will queue scheduled, gated and continuous integration builds, and the queued builds will be started by the system.
+    Enabled: "enabled",
+    // When paused the definition queue allows builds to be queued by users and the system will queue scheduled, gated and continuous integration builds. Builds in the queue will not be started by the system.
+    Paused: "paused",
+    // When disabled the definition queue will not allow builds to be queued by users and the system will not queue scheduled, gated or continuous integration builds. Builds already in the queue will not be started by the system.
+    Disabled: "disabled",
+}
 
 // Represents a reference to a definition.
 type DefinitionReference struct {
@@ -1065,9 +1317,79 @@ type DefinitionResourceReference struct {
 
 type DefinitionTriggerType string
 
+type definitionTriggerTypeValuesType struct {
+    None DefinitionTriggerType
+    ContinuousIntegration DefinitionTriggerType
+    BatchedContinuousIntegration DefinitionTriggerType
+    Schedule DefinitionTriggerType
+    GatedCheckIn DefinitionTriggerType
+    BatchedGatedCheckIn DefinitionTriggerType
+    PullRequest DefinitionTriggerType
+    BuildCompletion DefinitionTriggerType
+    All DefinitionTriggerType
+}
+
+var DefinitionTriggerTypeValues = definitionTriggerTypeValuesType{
+    // Manual builds only.
+    None: "none",
+    // A build should be started for each changeset.
+    ContinuousIntegration: "continuousIntegration",
+    // A build should be started for multiple changesets at a time at a specified interval.
+    BatchedContinuousIntegration: "batchedContinuousIntegration",
+    // A build should be started on a specified schedule whether or not changesets exist.
+    Schedule: "schedule",
+    // A validation build should be started for each check-in.
+    GatedCheckIn: "gatedCheckIn",
+    // A validation build should be started for each batch of check-ins.
+    BatchedGatedCheckIn: "batchedGatedCheckIn",
+    // A build should be triggered when a GitHub pull request is created or updated. Added in resource version 3
+    PullRequest: "pullRequest",
+    // A build should be triggered when another build completes.
+    BuildCompletion: "buildCompletion",
+    // All types.
+    All: "all",
+}
+
 type DefinitionType string
 
+type definitionTypeValuesType struct {
+    Xaml DefinitionType
+    Build DefinitionType
+}
+
+var DefinitionTypeValues = definitionTypeValuesType{
+    Xaml: "xaml",
+    Build: "build",
+}
+
 type DeleteOptions string
+
+type deleteOptionsValuesType struct {
+    None DeleteOptions
+    DropLocation DeleteOptions
+    TestResults DeleteOptions
+    Label DeleteOptions
+    Details DeleteOptions
+    Symbols DeleteOptions
+    All DeleteOptions
+}
+
+var DeleteOptionsValues = deleteOptionsValuesType{
+    // No data should be deleted. This value should not be used.
+    None: "none",
+    // The drop location should be deleted.
+    DropLocation: "dropLocation",
+    // The test results should be deleted.
+    TestResults: "testResults",
+    // The version control label should be deleted.
+    Label: "label",
+    // The build should be deleted.
+    Details: "details",
+    // Published symbols should be deleted.
+    Symbols: "symbols",
+    // All data should be deleted.
+    All: "all",
+}
 
 // Represents a dependency.
 type Dependency struct {
@@ -1144,6 +1466,21 @@ type Folder struct {
 // Specifies the desired ordering of folders.
 type FolderQueryOrder string
 
+type folderQueryOrderValuesType struct {
+    None FolderQueryOrder
+    FolderAscending FolderQueryOrder
+    FolderDescending FolderQueryOrder
+}
+
+var FolderQueryOrderValues = folderQueryOrderValuesType{
+    // No order
+    None: "none",
+    // Order by folder name and path ascending.
+    FolderAscending: "folderAscending",
+    // Order by folder name and path descending.
+    FolderDescending: "folderDescending",
+}
+
 // Represents the ability to build forks of the selected repository.
 type Forks struct {
     // Indicates whether a build should use secrets when building forks of the selected repository.
@@ -1162,6 +1499,21 @@ type GatedCheckInTrigger struct {
 }
 
 type GetOption string
+
+type getOptionValuesType struct {
+    LatestOnQueue GetOption
+    LatestOnBuild GetOption
+    Custom GetOption
+}
+
+var GetOptionValues = getOptionValuesType{
+    // Use the latest changeset at the time the build is queued.
+    LatestOnQueue: "latestOnQueue",
+    // Use the latest changeset at the time the build is started.
+    LatestOnBuild: "latestOnBuild",
+    // A user-specified version has been supplied.
+    Custom: "custom",
+}
 
 type GraphSubjectBase struct {
     // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
@@ -1230,6 +1582,16 @@ type Issue struct {
 
 type IssueType string
 
+type issueTypeValuesType struct {
+    Error IssueType
+    Warning IssueType
+}
+
+var IssueTypeValues = issueTypeValuesType{
+    Error: "error",
+    Warning: "warning",
+}
+
 // The JSON model for a JSON Patch operation
 type JsonPatchOperation struct {
     // The path to copy from for the Move/Copy operation.
@@ -1267,6 +1629,24 @@ type MultipleAgentExecutionOptions struct {
 
 type Operation string
 
+type operationValuesType struct {
+    Add Operation
+    Remove Operation
+    Replace Operation
+    Move Operation
+    Copy Operation
+    Test Operation
+}
+
+var OperationValues = operationValuesType{
+    Add: "add",
+    Remove: "remove",
+    Replace: "replace",
+    Move: "move",
+    Copy: "copy",
+    Test: "test",
+}
+
 // Represents a phase of a build definition.
 type Phase struct {
     // The condition that must be true for this phase to execute.
@@ -1302,7 +1682,34 @@ type ProcessParameters struct {
 
 type ProcessTemplateType string
 
+type processTemplateTypeValuesType struct {
+    Custom ProcessTemplateType
+    Default ProcessTemplateType
+    Upgrade ProcessTemplateType
+}
+
+var ProcessTemplateTypeValues = processTemplateTypeValuesType{
+    // Indicates a custom template.
+    Custom: "custom",
+    // Indicates a default template.
+    Default: "default",
+    // Indicates an upgrade template.
+    Upgrade: "upgrade",
+}
+
 type ProjectVisibility string
+
+type projectVisibilityValuesType struct {
+    Private ProjectVisibility
+    Public ProjectVisibility
+}
+
+var ProjectVisibilityValues = projectVisibilityValuesType{
+    // The project is only visible to users with explicit access.
+    Private: "private",
+    // The project is visible to all.
+    Public: "public",
+}
 
 // Represents a pull request object.  These are retrieved from Source Providers.
 type PullRequest struct {
@@ -1344,9 +1751,57 @@ type PullRequestTrigger struct {
 
 type QueryDeletedOption string
 
+type queryDeletedOptionValuesType struct {
+    ExcludeDeleted QueryDeletedOption
+    IncludeDeleted QueryDeletedOption
+    OnlyDeleted QueryDeletedOption
+}
+
+var QueryDeletedOptionValues = queryDeletedOptionValuesType{
+    // Include only non-deleted builds.
+    ExcludeDeleted: "excludeDeleted",
+    // Include deleted and non-deleted builds.
+    IncludeDeleted: "includeDeleted",
+    // Include only deleted builds.
+    OnlyDeleted: "onlyDeleted",
+}
+
 type QueueOptions string
 
+type queueOptionsValuesType struct {
+    None QueueOptions
+    DoNotRun QueueOptions
+}
+
+var QueueOptionsValues = queueOptionsValuesType{
+    // No queue options
+    None: "none",
+    // Create a plan Id for the build, do not run it
+    DoNotRun: "doNotRun",
+}
+
 type QueuePriority string
+
+type queuePriorityValuesType struct {
+    Low QueuePriority
+    BelowNormal QueuePriority
+    Normal QueuePriority
+    AboveNormal QueuePriority
+    High QueuePriority
+}
+
+var QueuePriorityValues = queuePriorityValuesType{
+    // Low priority.
+    Low: "low",
+    // Below normal priority.
+    BelowNormal: "belowNormal",
+    // Normal priority.
+    Normal: "normal",
+    // Above normal priority.
+    AboveNormal: "aboveNormal",
+    // High priority.
+    High: "high",
+}
 
 type RealtimeBuildEvent struct {
     BuildId *int `json:"buildId,omitempty"`
@@ -1384,6 +1839,22 @@ type ReleaseReference struct {
 
 type RepositoryCleanOptions string
 
+type repositoryCleanOptionsValuesType struct {
+    Source RepositoryCleanOptions
+    SourceAndOutputDir RepositoryCleanOptions
+    SourceDir RepositoryCleanOptions
+    AllBuildDir RepositoryCleanOptions
+}
+
+var RepositoryCleanOptionsValues = repositoryCleanOptionsValuesType{
+    Source: "source",
+    SourceAndOutputDir: "sourceAndOutputDir",
+    // Re-create $(build.sourcesDirectory)
+    SourceDir: "sourceDir",
+    // Re-create $(agnet.buildDirectory) which contains $(build.sourcesDirectory), $(build.binariesDirectory) and any folders that left from previous build.
+    AllBuildDir: "allBuildDir",
+}
+
 // Represents a repository's webhook returned from a source provider.
 type RepositoryWebhook struct {
     // The friendly name of the repository.
@@ -1405,6 +1876,18 @@ type ResourceReference struct {
 }
 
 type ResultSet string
+
+type resultSetValuesType struct {
+    All ResultSet
+    Top ResultSet
+}
+
+var ResultSetValues = resultSetValuesType{
+    // Include all repositories
+    All: "all",
+    // Include most relevant repositories for user
+    Top: "top",
+}
 
 // Represents a retention policy for a build definition.
 type RetentionPolicy struct {
@@ -1438,6 +1921,39 @@ type Schedule struct {
 }
 
 type ScheduleDays string
+
+type scheduleDaysValuesType struct {
+    None ScheduleDays
+    Monday ScheduleDays
+    Tuesday ScheduleDays
+    Wednesday ScheduleDays
+    Thursday ScheduleDays
+    Friday ScheduleDays
+    Saturday ScheduleDays
+    Sunday ScheduleDays
+    All ScheduleDays
+}
+
+var ScheduleDaysValues = scheduleDaysValuesType{
+    // Do not run.
+    None: "none",
+    // Run on Monday.
+    Monday: "monday",
+    // Run on Tuesday.
+    Tuesday: "tuesday",
+    // Run on Wednesday.
+    Wednesday: "wednesday",
+    // Run on Thursday.
+    Thursday: "thursday",
+    // Run on Friday.
+    Friday: "friday",
+    // Run on Saturday.
+    Saturday: "saturday",
+    // Run on Sunday.
+    Sunday: "sunday",
+    // Run on all days of the week.
+    All: "all",
+}
 
 // Represents a schedule trigger.
 type ScheduleTrigger struct {
@@ -1476,6 +1992,18 @@ type ServiceEndpointReference struct {
 
 type ServiceHostStatus string
 
+type serviceHostStatusValuesType struct {
+    Online ServiceHostStatus
+    Offline ServiceHostStatus
+}
+
+var ServiceHostStatusValues = serviceHostStatusValuesType{
+    // The service host is currently connected and accepting commands.
+    Online: "online",
+    // The service host is currently disconnected and not accepting commands.
+    Offline: "offline",
+}
+
 type SourceProviderAttributes struct {
     // The name of the source provider.
     Name *string `json:"name,omitempty"`
@@ -1486,6 +2014,21 @@ type SourceProviderAttributes struct {
 }
 
 type SourceProviderAvailability string
+
+type sourceProviderAvailabilityValuesType struct {
+    Hosted SourceProviderAvailability
+    OnPremises SourceProviderAvailability
+    All SourceProviderAvailability
+}
+
+var SourceProviderAvailabilityValues = sourceProviderAvailabilityValuesType{
+    // The source provider is available in the hosted environment.
+    Hosted: "hosted",
+    // The source provider is available in the on-premises environment.
+    OnPremises: "onPremises",
+    // The source provider is available in all environments.
+    All: "all",
+}
 
 // Represents a work item related to some source item. These are retrieved from Source Providers.
 type SourceRelatedWorkItem struct {
@@ -1559,6 +2102,21 @@ type SupportedTrigger struct {
 }
 
 type SupportLevel string
+
+type supportLevelValuesType struct {
+    Unsupported SupportLevel
+    Supported SupportLevel
+    Required SupportLevel
+}
+
+var SupportLevelValues = supportLevelValuesType{
+    // The functionality is not supported.
+    Unsupported: "unsupported",
+    // The functionality is supported.
+    Supported: "supported",
+    // The functionality is required.
+    Required: "required",
+}
 
 // Represents a Subversion mapping entry.
 type SvnMappingDetails struct {
@@ -1653,6 +2211,24 @@ type TaskReference struct {
 
 type TaskResult string
 
+type taskResultValuesType struct {
+    Succeeded TaskResult
+    SucceededWithIssues TaskResult
+    Failed TaskResult
+    Canceled TaskResult
+    Skipped TaskResult
+    Abandoned TaskResult
+}
+
+var TaskResultValues = taskResultValuesType{
+    Succeeded: "succeeded",
+    SucceededWithIssues: "succeededWithIssues",
+    Failed: "failed",
+    Canceled: "canceled",
+    Skipped: "skipped",
+    Abandoned: "abandoned",
+}
+
 type TaskSourceDefinitionBase struct {
     AuthKey *string `json:"authKey,omitempty"`
     Endpoint *string `json:"endpoint,omitempty"`
@@ -1688,6 +2264,57 @@ type TeamProjectReference struct {
 // Valid TestOutcome values.
 type TestOutcome string
 
+type testOutcomeValuesType struct {
+    Unspecified TestOutcome
+    None TestOutcome
+    Passed TestOutcome
+    Failed TestOutcome
+    Inconclusive TestOutcome
+    Timeout TestOutcome
+    Aborted TestOutcome
+    Blocked TestOutcome
+    NotExecuted TestOutcome
+    Warning TestOutcome
+    Error TestOutcome
+    NotApplicable TestOutcome
+    Paused TestOutcome
+    InProgress TestOutcome
+    NotImpacted TestOutcome
+}
+
+var TestOutcomeValues = testOutcomeValuesType{
+    // Only used during an update to preserve the existing value.
+    Unspecified: "unspecified",
+    // Test has not been completed, or the test type does not report pass/failure.
+    None: "none",
+    // Test was executed w/o any issues.
+    Passed: "passed",
+    // Test was executed, but there were issues. Issues may involve exceptions or failed assertions.
+    Failed: "failed",
+    // Test has completed, but we can't say if it passed or failed. May be used for aborted tests...
+    Inconclusive: "inconclusive",
+    // The test timed out
+    Timeout: "timeout",
+    // Test was aborted. This was not caused by a user gesture, but rather by a framework decision.
+    Aborted: "aborted",
+    // Test had it chance for been executed but was not, as ITestElement.IsRunnable == false.
+    Blocked: "blocked",
+    // Test was not executed. This was caused by a user gesture - e.g. user hit stop button.
+    NotExecuted: "notExecuted",
+    // To be used by Run level results. This is not a failure.
+    Warning: "warning",
+    // There was a system error while we were trying to execute a test.
+    Error: "error",
+    // Test is Not Applicable for execution.
+    NotApplicable: "notApplicable",
+    // Test is paused.
+    Paused: "paused",
+    // Test is currently executing. Added this for TCM charts
+    InProgress: "inProgress",
+    // Test is not impacted. Added fot TIA.
+    NotImpacted: "notImpacted",
+}
+
 type TestResultsContext struct {
     Build *BuildReference `json:"build,omitempty"`
     ContextType *TestResultsContextType `json:"contextType,omitempty"`
@@ -1696,11 +2323,66 @@ type TestResultsContext struct {
 
 type TestResultsContextType string
 
+type testResultsContextTypeValuesType struct {
+    Build TestResultsContextType
+    Release TestResultsContextType
+}
+
+var TestResultsContextTypeValues = testResultsContextTypeValuesType{
+    Build: "build",
+    Release: "release",
+}
+
 // The types of outcomes for test run.
 type TestRunOutcome string
 
+type testRunOutcomeValuesType struct {
+    Passed TestRunOutcome
+    Failed TestRunOutcome
+    NotImpacted TestRunOutcome
+    Others TestRunOutcome
+}
+
+var TestRunOutcomeValues = testRunOutcomeValuesType{
+    // Run with zero failed tests and has at least one impacted test
+    Passed: "passed",
+    // Run with at-least one failed test.
+    Failed: "failed",
+    // Run with no impacted tests.
+    NotImpacted: "notImpacted",
+    // Runs with All tests in other category.
+    Others: "others",
+}
+
 // The types of states for test run.
 type TestRunState string
+
+type testRunStateValuesType struct {
+    Unspecified TestRunState
+    NotStarted TestRunState
+    InProgress TestRunState
+    Completed TestRunState
+    Aborted TestRunState
+    Waiting TestRunState
+    NeedsInvestigation TestRunState
+}
+
+var TestRunStateValues = testRunStateValuesType{
+    // Only used during an update to preserve the existing value.
+    Unspecified: "unspecified",
+    // The run is still being created.  No tests have started yet.
+    NotStarted: "notStarted",
+    // Tests are running.
+    InProgress: "inProgress",
+    // All tests have completed or been skipped.
+    Completed: "completed",
+    // Run is stopped and remaining tests have been aborted
+    Aborted: "aborted",
+    // Run is currently initializing This is a legacy state and should not be used any more
+    Waiting: "waiting",
+    // Run requires investigation because of a test point failure This is a legacy state and should not be used any more
+    NeedsInvestigation: "needsInvestigation",
+}
 
 // Represents the timeline of a build.
 type Timeline struct {
@@ -1781,6 +2463,18 @@ type TimelineRecord struct {
 
 type TimelineRecordState string
 
+type timelineRecordStateValuesType struct {
+    Pending TimelineRecordState
+    InProgress TimelineRecordState
+    Completed TimelineRecordState
+}
+
+var TimelineRecordStateValues = timelineRecordStateValuesType{
+    Pending: "pending",
+    InProgress: "inProgress",
+    Completed: "completed",
+}
+
 type TimelineRecordsUpdatedEvent struct {
     BuildId *int `json:"buildId,omitempty"`
     TimelineRecords *[]TimelineRecord `json:"timelineRecords,omitempty"`
@@ -1797,6 +2491,18 @@ type TimelineReference struct {
 }
 
 type ValidationResult string
+
+type validationResultValuesType struct {
+    Ok ValidationResult
+    Warning ValidationResult
+    Error ValidationResult
+}
+
+var ValidationResultValues = validationResultValuesType{
+    Ok: "ok",
+    Warning: "warning",
+    Error: "error",
+}
 
 // Represents a variable group.
 type VariableGroup struct {
@@ -1865,6 +2571,18 @@ type WorkspaceMapping struct {
 }
 
 type WorkspaceMappingType string
+
+type workspaceMappingTypeValuesType struct {
+    Map WorkspaceMappingType
+    Cloak WorkspaceMappingType
+}
+
+var WorkspaceMappingTypeValues = workspaceMappingTypeValuesType{
+    // The path is mapped in the workspace.
+    Map: "map",
+    // The path is cloaked in the workspace.
+    Cloak: "cloak",
+}
 
 type WorkspaceTemplate struct {
     // Uri of the associated definition

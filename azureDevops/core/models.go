@@ -15,6 +15,24 @@ import (
 
 type ConnectedServiceKind string
 
+type connectedServiceKindValuesType struct {
+    Custom ConnectedServiceKind
+    AzureSubscription ConnectedServiceKind
+    Chef ConnectedServiceKind
+    Generic ConnectedServiceKind
+}
+
+var ConnectedServiceKindValues = connectedServiceKindValuesType{
+    // Custom or unknown service
+    Custom: "custom",
+    // Azure Subscription
+    AzureSubscription: "azureSubscription",
+    // Chef Connection
+    Chef: "chef",
+    // Generic Connection
+    Generic: "generic",
+}
+
 type GraphSubjectBase struct {
     // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
     Links *ReferenceLinks `json:"_links,omitempty"`
@@ -114,6 +132,24 @@ type JsonPatchOperation struct {
 
 type Operation string
 
+type operationValuesType struct {
+    Add Operation
+    Remove Operation
+    Replace Operation
+    Move Operation
+    Copy Operation
+    Test Operation
+}
+
+var OperationValues = operationValuesType{
+    Add: "add",
+    Remove: "remove",
+    Replace: "replace",
+    Move: "move",
+    Copy: "copy",
+    Test: "test",
+}
+
 // Reference for an async operation.
 type OperationReference struct {
     // Unique identifier for the operation.
@@ -129,6 +165,30 @@ type OperationReference struct {
 // The status of an operation.
 type OperationStatus string
 
+type operationStatusValuesType struct {
+    NotSet OperationStatus
+    Queued OperationStatus
+    InProgress OperationStatus
+    Cancelled OperationStatus
+    Succeeded OperationStatus
+    Failed OperationStatus
+}
+
+var OperationStatusValues = operationStatusValuesType{
+    // The operation does not have a status set.
+    NotSet: "notSet",
+    // The operation has been queued.
+    Queued: "queued",
+    // The operation is in progress.
+    InProgress: "inProgress",
+    // The operation was cancelled by the user.
+    Cancelled: "cancelled",
+    // The operation completed successfully.
+    Succeeded: "succeeded",
+    // The operation completed with a failure.
+    Failed: "failed",
+}
+
 type Process struct {
     Name *string `json:"name,omitempty"`
     Url *string `json:"url,omitempty"`
@@ -142,12 +202,36 @@ type Process struct {
 // Type of process customization on a collection.
 type ProcessCustomizationType string
 
+type processCustomizationTypeValuesType struct {
+    Xml ProcessCustomizationType
+    Inherited ProcessCustomizationType
+}
+
+var ProcessCustomizationTypeValues = processCustomizationTypeValuesType{
+    // Customization based on project-scoped xml customization
+    Xml: "xml",
+    // Customization based on process inheritance
+    Inherited: "inherited",
+}
+
 type ProcessReference struct {
     Name *string `json:"name,omitempty"`
     Url *string `json:"url,omitempty"`
 }
 
 type ProcessType string
+
+type processTypeValuesType struct {
+    System ProcessType
+    Custom ProcessType
+    Inherited ProcessType
+}
+
+var ProcessTypeValues = processTypeValuesType{
+    System: "system",
+    Custom: "custom",
+    Inherited: "inherited",
+}
 
 // Contains the image data for project avatar.
 type ProjectAvatar struct {
@@ -156,6 +240,18 @@ type ProjectAvatar struct {
 }
 
 type ProjectChangeType string
+
+type projectChangeTypeValuesType struct {
+    Modified ProjectChangeType
+    Deleted ProjectChangeType
+    Added ProjectChangeType
+}
+
+var ProjectChangeTypeValues = projectChangeTypeValuesType{
+    Modified: "modified",
+    Deleted: "deleted",
+    Added: "added",
+}
 
 // Contains information describing a project.
 type ProjectInfo struct {
@@ -206,6 +302,18 @@ type ProjectProperty struct {
 
 type ProjectVisibility string
 
+type projectVisibilityValuesType struct {
+    Private ProjectVisibility
+    Public ProjectVisibility
+}
+
+var ProjectVisibilityValues = projectVisibilityValuesType{
+    // The project is only visible to users with explicit access.
+    Private: "private",
+    // The project is visible to all.
+    Public: "public",
+}
+
 type Proxy struct {
     Authorization *ProxyAuthorization `json:"authorization,omitempty"`
     // This is a description string
@@ -246,6 +354,16 @@ type ReferenceLinks struct {
 }
 
 type SourceControlTypes string
+
+type sourceControlTypesValuesType struct {
+    Tfvc SourceControlTypes
+    Git SourceControlTypes
+}
+
+var SourceControlTypesValues = sourceControlTypesValuesType{
+    Tfvc: "tfvc",
+    Git: "git",
+}
 
 // The Team Context for an operation.
 type TeamContext struct {

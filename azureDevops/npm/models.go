@@ -46,6 +46,30 @@ type MinimalPackageDetails struct {
 // Describes Npm batch operation types.
 type NpmBatchOperationType string
 
+type npmBatchOperationTypeValuesType struct {
+    Promote NpmBatchOperationType
+    Deprecate NpmBatchOperationType
+    Unpublish NpmBatchOperationType
+    PermanentDelete NpmBatchOperationType
+    RestoreToFeed NpmBatchOperationType
+    Delete NpmBatchOperationType
+}
+
+var NpmBatchOperationTypeValues = npmBatchOperationTypeValuesType{
+    // Promote package versions to a release view. If constructing a NpmPackagesBatchRequest object with this type, use BatchPromoteData for its Data property. Not supported in the Recycle Bin.
+    Promote: "promote",
+    // Deprecate or undeprecate package versions. Not supported in the Recycle Bin.
+    Deprecate: "deprecate",
+    // Unpublish package versions. Npm-specific alias for the Delete operation. Not supported in the Recycle Bin.
+    Unpublish: "unpublish",
+    // Permanently delete package versions. Only supported in the Recycle Bin.
+    PermanentDelete: "permanentDelete",
+    // Restore unpublished package versions to the feed. Only supported in the Recycle Bin.
+    RestoreToFeed: "restoreToFeed",
+    // Delete package versions (equivalent to Unpublish). Not supported in the Recycle Bin.
+    Delete: "delete",
+}
+
 // A batch of operations to apply to package versions.
 type NpmPackagesBatchRequest struct {
     // Data required to perform the operation. This is optional based on type of operation. Use BatchPromoteData if performing a promote operation.
@@ -72,6 +96,24 @@ type NpmRecycleBinPackageVersionDetails struct {
 }
 
 type Operation string
+
+type operationValuesType struct {
+    Add Operation
+    Remove Operation
+    Replace Operation
+    Move Operation
+    Copy Operation
+    Test Operation
+}
+
+var OperationValues = operationValuesType{
+    Add: "add",
+    Remove: "remove",
+    Replace: "replace",
+    Move: "move",
+    Copy: "copy",
+    Test: "test",
+}
 
 // Package version metadata for an npm package
 type Package struct {
@@ -102,6 +144,18 @@ type PackageVersionDetails struct {
 
 // Type of an upstream source, such as Public or Internal.
 type PackagingSourceType string
+
+type packagingSourceTypeValuesType struct {
+    Public PackagingSourceType
+    Internal PackagingSourceType
+}
+
+var PackagingSourceTypeValues = packagingSourceTypeValuesType{
+    // Publicly available source.
+    Public: "public",
+    // Azure DevOps upstream source.
+    Internal: "internal",
+}
 
 // The class to represent a collection of REST reference links.
 type ReferenceLinks struct {

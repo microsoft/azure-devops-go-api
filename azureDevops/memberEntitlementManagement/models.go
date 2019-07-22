@@ -34,9 +34,65 @@ type AccessLevel struct {
 
 type AccountLicenseType string
 
+type accountLicenseTypeValuesType struct {
+    None AccountLicenseType
+    EarlyAdopter AccountLicenseType
+    Express AccountLicenseType
+    Professional AccountLicenseType
+    Advanced AccountLicenseType
+    Stakeholder AccountLicenseType
+}
+
+var AccountLicenseTypeValues = accountLicenseTypeValuesType{
+    None: "none",
+    EarlyAdopter: "earlyAdopter",
+    Express: "express",
+    Professional: "professional",
+    Advanced: "advanced",
+    Stakeholder: "stakeholder",
+}
+
 type AccountUserStatus string
 
+type accountUserStatusValuesType struct {
+    None AccountUserStatus
+    Active AccountUserStatus
+    Disabled AccountUserStatus
+    Deleted AccountUserStatus
+    Pending AccountUserStatus
+    Expired AccountUserStatus
+    PendingDisabled AccountUserStatus
+}
+
+var AccountUserStatusValues = accountUserStatusValuesType{
+    None: "none",
+    // User has signed in at least once to the VSTS account
+    Active: "active",
+    // User cannot sign in; primarily used by admin to temporarily remove a user due to absence or license reallocation
+    Disabled: "disabled",
+    // User is removed from the VSTS account by the VSTS account admin
+    Deleted: "deleted",
+    // User is invited to join the VSTS account by the VSTS account admin, but has not signed up/signed in yet
+    Pending: "pending",
+    // User can sign in; primarily used when license is in expired state and we give a grace period
+    Expired: "expired",
+    // User is disabled; if reenabled, they will still be in the Pending state
+    PendingDisabled: "pendingDisabled",
+}
+
 type AssignmentSource string
+
+type assignmentSourceValuesType struct {
+    None AssignmentSource
+    Unknown AssignmentSource
+    GroupRule AssignmentSource
+}
+
+var AssignmentSourceValues = assignmentSourceValuesType{
+    None: "none",
+    Unknown: "unknown",
+    GroupRule: "groupRule",
+}
 
 type BaseOperationResult struct {
     // List of error codes paired with their corresponding error messages
@@ -246,6 +302,24 @@ type GroupEntitlementOperationReference struct {
 
 type GroupLicensingRuleStatus string
 
+type groupLicensingRuleStatusValuesType struct {
+    ApplyPending GroupLicensingRuleStatus
+    Applied GroupLicensingRuleStatus
+    Incompatible GroupLicensingRuleStatus
+    UnableToApply GroupLicensingRuleStatus
+}
+
+var GroupLicensingRuleStatusValues = groupLicensingRuleStatusValuesType{
+    // Rule is created or updated, but apply is pending
+    ApplyPending: "applyPending",
+    // Rule is applied
+    Applied: "applied",
+    // The group rule was incompatible
+    Incompatible: "incompatible",
+    // Rule failed to apply unexpectedly and should be retried
+    UnableToApply: "unableToApply",
+}
+
 type GroupOperationResult struct {
     // List of error codes paired with their corresponding error messages
     Errors *[]azureDevops.KeyValuePair `json:"errors,omitempty"`
@@ -267,6 +341,22 @@ type GroupOption struct {
 
 // Used when adding users to a project. Each GroupType maps to a well-known group. The lowest GroupType should always be ProjectStakeholder
 type GroupType string
+
+type groupTypeValuesType struct {
+    ProjectStakeholder GroupType
+    ProjectReader GroupType
+    ProjectContributor GroupType
+    ProjectAdministrator GroupType
+    Custom GroupType
+}
+
+var GroupTypeValues = groupTypeValuesType{
+    ProjectStakeholder: "projectStakeholder",
+    ProjectReader: "projectReader",
+    ProjectContributor: "projectContributor",
+    ProjectAdministrator: "projectAdministrator",
+    Custom: "custom",
+}
 
 // The JSON model for a JSON Patch operation
 type JsonPatchOperation struct {
@@ -309,6 +399,24 @@ type LicenseSummaryData struct {
 }
 
 type LicensingSource string
+
+type licensingSourceValuesType struct {
+    None LicensingSource
+    Account LicensingSource
+    Msdn LicensingSource
+    Profile LicensingSource
+    Auto LicensingSource
+    Trial LicensingSource
+}
+
+var LicensingSourceValues = licensingSourceValuesType{
+    None: "none",
+    Account: "account",
+    Msdn: "msdn",
+    Profile: "profile",
+    Auto: "auto",
+    Trial: "trial",
+}
 
 // Deprecated: Use UserEntitlement instead
 type MemberEntitlement struct {
@@ -376,9 +484,70 @@ type MemberEntitlementsResponseBase struct {
 
 type MinimumRequiredServiceLevel string
 
+type minimumRequiredServiceLevelValuesType struct {
+    None MinimumRequiredServiceLevel
+    Express MinimumRequiredServiceLevel
+    Advanced MinimumRequiredServiceLevel
+    AdvancedPlus MinimumRequiredServiceLevel
+    Stakeholder MinimumRequiredServiceLevel
+}
+
+var MinimumRequiredServiceLevelValues = minimumRequiredServiceLevelValuesType{
+    // No service rights. The user cannot access the account
+    None: "none",
+    // Default or minimum service level
+    Express: "express",
+    // Premium service level - either by purchasing on the Azure portal or by purchasing the appropriate MSDN subscription
+    Advanced: "advanced",
+    // Only available to a specific set of MSDN Subscribers
+    AdvancedPlus: "advancedPlus",
+    // Stakeholder service level
+    Stakeholder: "stakeholder",
+}
+
 type MsdnLicenseType string
 
+type msdnLicenseTypeValuesType struct {
+    None MsdnLicenseType
+    Eligible MsdnLicenseType
+    Professional MsdnLicenseType
+    Platforms MsdnLicenseType
+    TestProfessional MsdnLicenseType
+    Premium MsdnLicenseType
+    Ultimate MsdnLicenseType
+    Enterprise MsdnLicenseType
+}
+
+var MsdnLicenseTypeValues = msdnLicenseTypeValuesType{
+    None: "none",
+    Eligible: "eligible",
+    Professional: "professional",
+    Platforms: "platforms",
+    TestProfessional: "testProfessional",
+    Premium: "premium",
+    Ultimate: "ultimate",
+    Enterprise: "enterprise",
+}
+
 type Operation string
+
+type operationValuesType struct {
+    Add Operation
+    Remove Operation
+    Replace Operation
+    Move Operation
+    Copy Operation
+    Test Operation
+}
+
+var OperationValues = operationValuesType{
+    Add: "add",
+    Remove: "remove",
+    Replace: "replace",
+    Move: "move",
+    Copy: "copy",
+    Test: "test",
+}
 
 // Reference for an async operation.
 type OperationReference struct {
@@ -405,6 +574,30 @@ type OperationResult struct {
 
 // The status of an operation.
 type OperationStatus string
+
+type operationStatusValuesType struct {
+    NotSet OperationStatus
+    Queued OperationStatus
+    InProgress OperationStatus
+    Cancelled OperationStatus
+    Succeeded OperationStatus
+    Failed OperationStatus
+}
+
+var OperationStatusValues = operationStatusValuesType{
+    // The operation does not have a status set.
+    NotSet: "notSet",
+    // The operation has been queued.
+    Queued: "queued",
+    // The operation is in progress.
+    InProgress: "inProgress",
+    // The operation was cancelled by the user.
+    Cancelled: "cancelled",
+    // The operation completed successfully.
+    Succeeded: "succeeded",
+    // The operation completed with a failure.
+    Failed: "failed",
+}
 
 // A page of users
 type PagedGraphMemberList struct {
@@ -435,6 +628,18 @@ type ProjectEntitlement struct {
 
 type ProjectPermissionInherited string
 
+type projectPermissionInheritedValuesType struct {
+    NotSet ProjectPermissionInherited
+    NotInherited ProjectPermissionInherited
+    Inherited ProjectPermissionInherited
+}
+
+var ProjectPermissionInheritedValues = projectPermissionInheritedValuesType{
+    NotSet: "notSet",
+    NotInherited: "notInherited",
+    Inherited: "inherited",
+}
+
 // A reference to a project
 type ProjectRef struct {
     // Project ID.
@@ -451,6 +656,16 @@ type ReferenceLinks struct {
 
 type RuleOption string
 
+type ruleOptionValuesType struct {
+    ApplyGroupRule RuleOption
+    TestApplyGroupRule RuleOption
+}
+
+var RuleOptionValues = ruleOptionValuesType{
+    ApplyGroupRule: "applyGroupRule",
+    TestApplyGroupRule: "testApplyGroupRule",
+}
+
 type SummaryData struct {
     // Count of Licenses already assigned.
     Assigned *int `json:"assigned,omitempty"`
@@ -463,6 +678,24 @@ type SummaryData struct {
 }
 
 type SummaryPropertyName string
+
+type summaryPropertyNameValuesType struct {
+    AccessLevels SummaryPropertyName
+    Licenses SummaryPropertyName
+    Extensions SummaryPropertyName
+    Projects SummaryPropertyName
+    Groups SummaryPropertyName
+    All SummaryPropertyName
+}
+
+var SummaryPropertyNameValues = summaryPropertyNameValuesType{
+    AccessLevels: "accessLevels",
+    Licenses: "licenses",
+    Extensions: "extensions",
+    Projects: "projects",
+    Groups: "groups",
+    All: "all",
+}
 
 // A reference to a team
 type TeamRef struct {
@@ -521,6 +754,22 @@ type UserEntitlementOperationResult struct {
 }
 
 type UserEntitlementProperty string
+
+type userEntitlementPropertyValuesType struct {
+    License UserEntitlementProperty
+    Extensions UserEntitlementProperty
+    Projects UserEntitlementProperty
+    GroupRules UserEntitlementProperty
+    All UserEntitlementProperty
+}
+
+var UserEntitlementPropertyValues = userEntitlementPropertyValuesType{
+    License: "license",
+    Extensions: "extensions",
+    Projects: "projects",
+    GroupRules: "groupRules",
+    All: "all",
+}
 
 type UserEntitlementsPatchResponse struct {
     // True if all operations were successful.

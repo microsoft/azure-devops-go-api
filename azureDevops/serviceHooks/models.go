@@ -17,6 +17,21 @@ import (
 // Enumerates consumer authentication types.
 type AuthenticationType string
 
+type authenticationTypeValuesType struct {
+    None AuthenticationType
+    OAuth AuthenticationType
+    External AuthenticationType
+}
+
+var AuthenticationTypeValues = authenticationTypeValuesType{
+    // No authentication is required.
+    None: "none",
+    // OAuth authentication.
+    OAuth: "oAuth",
+    // Externally-configured authentication.
+    External: "external",
+}
+
 // Defines the data contract of a consumer.
 type Consumer struct {
     // Reference Links
@@ -170,6 +185,30 @@ type IdentityRef struct {
 // Enumerates data types that are supported as subscription input values.
 type InputDataType string
 
+type inputDataTypeValuesType struct {
+    None InputDataType
+    String InputDataType
+    Number InputDataType
+    Boolean InputDataType
+    Guid InputDataType
+    Uri InputDataType
+}
+
+var InputDataTypeValues = inputDataTypeValuesType{
+    // No data type is specified.
+    None: "none",
+    // Represents a textual value.
+    String: "string",
+    // Represents a numeric value.
+    Number: "number",
+    // Represents a value of true or false.
+    Boolean: "boolean",
+    // Represents a Guid.
+    Guid: "guid",
+    // Represents a URI.
+    Uri: "uri",
+}
+
 // Describes an input for subscriptions.
 type InputDescriptor struct {
     // The ids of all inputs that the value of this input is dependent on.
@@ -222,8 +261,45 @@ type InputFilterCondition struct {
 
 type InputFilterOperator string
 
+type inputFilterOperatorValuesType struct {
+    Equals InputFilterOperator
+    NotEquals InputFilterOperator
+}
+
+var InputFilterOperatorValues = inputFilterOperatorValuesType{
+    Equals: "equals",
+    NotEquals: "notEquals",
+}
+
 // Mode in which a subscription input should be entered (in a UI)
 type InputMode string
+
+type inputModeValuesType struct {
+    None InputMode
+    TextBox InputMode
+    PasswordBox InputMode
+    Combo InputMode
+    RadioButtons InputMode
+    CheckBox InputMode
+    TextArea InputMode
+}
+
+var InputModeValues = inputModeValuesType{
+    // This input should not be shown in the UI
+    None: "none",
+    // An input text box should be shown
+    TextBox: "textBox",
+    // An password input box should be shown
+    PasswordBox: "passwordBox",
+    // A select/combo control should be shown
+    Combo: "combo",
+    // Radio buttons should be shown
+    RadioButtons: "radioButtons",
+    // Checkbox should be shown(for true/false values)
+    CheckBox: "checkBox",
+    // A multi-line text area should be shown
+    TextArea: "textArea",
+}
 
 // Describes what values are valid for a subscription input
 type InputValidation struct {
@@ -350,6 +426,24 @@ type NotificationDetails struct {
 // Enumerates possible result types of a notification.
 type NotificationResult string
 
+type notificationResultValuesType struct {
+    Pending NotificationResult
+    Succeeded NotificationResult
+    Failed NotificationResult
+    Filtered NotificationResult
+}
+
+var NotificationResultValues = notificationResultValuesType{
+    // The notification has not yet completed
+    Pending: "pending",
+    // The notification was sent successfully
+    Succeeded: "succeeded",
+    // The notification failed to be sent successfully to the consumer
+    Failed: "failed",
+    // The notification was filtered by the Delivery Job
+    Filtered: "filtered",
+}
+
 // Summary of a particular result and count.
 type NotificationResultsSummaryDetail struct {
     // Count of notification sent out with a matching result.
@@ -388,6 +482,24 @@ type NotificationsQuery struct {
 
 // Enumerates possible status' of a notification.
 type NotificationStatus string
+
+type notificationStatusValuesType struct {
+    Queued NotificationStatus
+    Processing NotificationStatus
+    RequestInProgress NotificationStatus
+    Completed NotificationStatus
+}
+
+var NotificationStatusValues = notificationStatusValuesType{
+    // The notification has been queued
+    Queued: "queued",
+    // The notification has been dequeued and has begun processing.
+    Processing: "processing",
+    // The consumer action has processed the notification. The request is in progress.
+    RequestInProgress: "requestInProgress",
+    // The request completed
+    Completed: "completed",
+}
 
 // Summary of the notifications for a subscription.
 type NotificationSummary struct {
@@ -431,7 +543,7 @@ type PublisherEvent struct {
     OtherResourceVersions *[]VersionedResource `json:"otherResourceVersions,omitempty"`
     // Optional publisher-input filters which restricts the set of subscriptions which are triggered by the event
     PublisherInputFilters *[]InputFilter `json:"publisherInputFilters,omitempty"`
-    // Gets or sets matchd hooks subscription which caused this event.
+    // Gets or sets matched hooks subscription which caused this event.
     Subscription *Subscription `json:"subscription,omitempty"`
 }
 
@@ -508,6 +620,18 @@ type SubscriptionDiagnostics struct {
 // The scope to which a subscription input applies
 type SubscriptionInputScope string
 
+type subscriptionInputScopeValuesType struct {
+    Publisher SubscriptionInputScope
+    Consumer SubscriptionInputScope
+}
+
+var SubscriptionInputScopeValues = subscriptionInputScopeValuesType{
+    // An input defined and consumed by a Publisher or Publisher Event Type
+    Publisher: "publisher",
+    // An input defined and consumed by a Consumer or Consumer Action
+    Consumer: "consumer",
+}
+
 // Query for obtaining information about the possible/allowed values for one or more subscription inputs
 type SubscriptionInputValuesQuery struct {
     // The input values to return on input, and the result from the consumer on output.
@@ -540,6 +664,27 @@ type SubscriptionsQuery struct {
 
 // Enumerates possible states of a subscription.
 type SubscriptionStatus string
+
+type subscriptionStatusValuesType struct {
+    Enabled SubscriptionStatus
+    OnProbation SubscriptionStatus
+    DisabledByUser SubscriptionStatus
+    DisabledBySystem SubscriptionStatus
+    DisabledByInactiveIdentity SubscriptionStatus
+}
+
+var SubscriptionStatusValues = subscriptionStatusValuesType{
+    // The subscription is enabled.
+    Enabled: "enabled",
+    // The subscription is temporarily on probation by the system.
+    OnProbation: "onProbation",
+    // The subscription is disabled by a user.
+    DisabledByUser: "disabledByUser",
+    // The subscription is disabled by the system.
+    DisabledBySystem: "disabledBySystem",
+    // The subscription is disabled because the owner is inactive or is missing permissions.
+    DisabledByInactiveIdentity: "disabledByInactiveIdentity",
+}
 
 type SubscriptionTracing struct {
     Enabled *bool `json:"enabled,omitempty"`

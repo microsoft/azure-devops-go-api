@@ -16,6 +16,18 @@ import (
 // Type of operation last performed.
 type ChangeType string
 
+type changeTypeValuesType struct {
+    AddOrUpdate ChangeType
+    Delete ChangeType
+}
+
+var ChangeTypeValues = changeTypeValuesType{
+    // A package version was added or updated.
+    AddOrUpdate: "addOrUpdate",
+    // A package version was deleted.
+    Delete: "delete",
+}
+
 // A container for artifacts.
 type Feed struct {
     // Supported capabilities of a feed.
@@ -69,11 +81,37 @@ type FeedBatchData struct {
 
 type FeedBatchOperation string
 
+type feedBatchOperationValuesType struct {
+    SaveCachedPackages FeedBatchOperation
+}
+
+var FeedBatchOperationValues = feedBatchOperationValuesType{
+    SaveCachedPackages: "saveCachedPackages",
+}
+
 type FeedBatchOperationData struct {
 }
 
 // Capabilities are used to track features that are available to individual feeds. In general, newly created feeds should be given all available capabilities. These flags track breaking changes in behaviour to feeds, or changes that require user reaction.
 type FeedCapabilities string
+
+type feedCapabilitiesValuesType struct {
+    None FeedCapabilities
+    UpstreamV2 FeedCapabilities
+    UnderMaintenance FeedCapabilities
+    DefaultCapabilities FeedCapabilities
+}
+
+var FeedCapabilitiesValues = feedCapabilitiesValuesType{
+    // No flags exist for this feed
+    None: "none",
+    // This feed can serve packages from upstream sources Upstream packages must be manually promoted to views
+    UpstreamV2: "upstreamV2",
+    // This feed is currently under maintenance and may have reduced functionality
+    UnderMaintenance: "underMaintenance",
+    // The capabilities given to a newly created feed
+    DefaultCapabilities: "defaultCapabilities",
+}
 
 // A container that encapsulates the state of the feed after a create, update, or delete.
 type FeedChange struct {
@@ -150,6 +188,30 @@ type FeedRetentionPolicy struct {
 
 type FeedRole string
 
+type feedRoleValuesType struct {
+    Custom FeedRole
+    None FeedRole
+    Reader FeedRole
+    Contributor FeedRole
+    Administrator FeedRole
+    Collaborator FeedRole
+}
+
+var FeedRoleValues = feedRoleValuesType{
+    // Unsupported.
+    Custom: "custom",
+    // Unsupported.
+    None: "none",
+    // Readers can only read packages and view settings.
+    Reader: "reader",
+    // Contributors can do anything to packages in the feed including adding new packages, but they may not modify feed settings.
+    Contributor: "contributor",
+    // Administrators have total control over the feed.
+    Administrator: "administrator",
+    // Collaborators have the same permissions as readers, but can also ingest packages from configured upstream sources.
+    Collaborator: "collaborator",
+}
+
 // Update a feed definition with these new values.
 type FeedUpdate struct {
     // If set, the feed will allow upload of packages that exist on the upstream
@@ -191,8 +253,38 @@ type FeedView struct {
 // The type of view, often used to control capabilities and exposure to options such as promote.  Implicit views are internally created only.
 type FeedViewType string
 
+type feedViewTypeValuesType struct {
+    None FeedViewType
+    Release FeedViewType
+    Implicit FeedViewType
+}
+
+var FeedViewTypeValues = feedViewTypeValuesType{
+    // Default, unspecified view type.
+    None: "none",
+    // View used as a promotion destination to classify released artifacts.
+    Release: "release",
+    // Internal view type that is automatically created and managed by the system.
+    Implicit: "implicit",
+}
+
 // Feed visibility controls the scope in which a certain feed is accessible by a particular user
 type FeedVisibility string
+
+type feedVisibilityValuesType struct {
+    Private FeedVisibility
+    Collection FeedVisibility
+    Organization FeedVisibility
+}
+
+var FeedVisibilityValues = feedVisibilityValuesType{
+    // Only accessible by the permissions explicitly set by the feed administrator.
+    Private: "private",
+    // Feed is accessible by all the valid users present in the organization where the feed resides (for example across organization 'myorg' at 'dev.azure.com/myorg')
+    Collection: "collection",
+    // Feed is accessible by all the valid users present in the enterprise where the feed resides.  Note that legacy naming and back compat leaves the name of this value out of sync with its new meaning.
+    Organization: "organization",
+}
 
 // Permissions for feed service-wide operations such as the creation of new feeds.
 type GlobalPermission struct {
@@ -205,6 +297,24 @@ type GlobalPermission struct {
 }
 
 type GlobalRole string
+
+type globalRoleValuesType struct {
+    Custom GlobalRole
+    None GlobalRole
+    FeedCreator GlobalRole
+    Administrator GlobalRole
+}
+
+var GlobalRoleValues = globalRoleValuesType{
+    // Invalid default value.
+    Custom: "custom",
+    // Explicit no permissions.
+    None: "none",
+    // Ability to create new feeds.
+    FeedCreator: "feedCreator",
+    // Read and manage any feed
+    Administrator: "administrator",
+}
 
 // The JSON model for a JSON Patch operation
 type JsonPatchOperation struct {
@@ -247,6 +357,24 @@ type MinimalPackageVersion struct {
 }
 
 type Operation string
+
+type operationValuesType struct {
+    Add Operation
+    Remove Operation
+    Replace Operation
+    Move Operation
+    Copy Operation
+    Test Operation
+}
+
+var OperationValues = operationValuesType{
+    Add: "add",
+    Remove: "remove",
+    Replace: "replace",
+    Move: "move",
+    Copy: "copy",
+    Test: "test",
+}
 
 // A package, which is a container for one or more package versions.
 type Package struct {
@@ -542,3 +670,15 @@ type UpstreamSource struct {
 
 // Type of an upstream source, such as Public or Internal.
 type UpstreamSourceType string
+
+type upstreamSourceTypeValuesType struct {
+    Public UpstreamSourceType
+    Internal UpstreamSourceType
+}
+
+var UpstreamSourceTypeValues = upstreamSourceTypeValuesType{
+    // Publicly available source.
+    Public: "public",
+    // Azure DevOps upstream source.
+    Internal: "internal",
+}

@@ -21,3 +21,19 @@ type ClientTraceEvent struct {
 }
 
 type Level string
+
+type levelValuesType struct {
+    Off Level
+    Error Level
+    Warning Level
+    Info Level
+    Verbose Level
+}
+
+var LevelValues = levelValuesType{
+    Off: "off",
+    Error: "error",
+    Warning: "warning",
+    Info: "info",
+    Verbose: "verbose",
+}

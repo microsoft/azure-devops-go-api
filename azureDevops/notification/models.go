@@ -61,6 +61,16 @@ type BlockSubscriptionChannel struct {
 // Default delivery preference for group subscribers. Indicates how the subscriber should be notified.
 type DefaultGroupDeliveryPreference string
 
+type defaultGroupDeliveryPreferenceValuesType struct {
+    NoDelivery DefaultGroupDeliveryPreference
+    EachMember DefaultGroupDeliveryPreference
+}
+
+var DefaultGroupDeliveryPreferenceValues = defaultGroupDeliveryPreferenceValuesType{
+    NoDelivery: "noDelivery",
+    EachMember: "eachMember",
+}
+
 type DiagnosticIdentity struct {
     DisplayName *string `json:"displayName,omitempty"`
     EmailAddress *string `json:"emailAddress,omitempty"`
@@ -97,6 +107,36 @@ type EmailPlaintextSubscriptionChannel struct {
 
 // Describes the subscription evaluation operation status.
 type EvaluationOperationStatus string
+
+type evaluationOperationStatusValuesType struct {
+    NotSet EvaluationOperationStatus
+    Queued EvaluationOperationStatus
+    InProgress EvaluationOperationStatus
+    Cancelled EvaluationOperationStatus
+    Succeeded EvaluationOperationStatus
+    Failed EvaluationOperationStatus
+    TimedOut EvaluationOperationStatus
+    NotFound EvaluationOperationStatus
+}
+
+var EvaluationOperationStatusValues = evaluationOperationStatusValuesType{
+    // The operation object does not have the status set.
+    NotSet: "notSet",
+    // The operation has been queued.
+    Queued: "queued",
+    // The operation is in progress.
+    InProgress: "inProgress",
+    // The operation was cancelled by the user.
+    Cancelled: "cancelled",
+    // The operation completed successfully.
+    Succeeded: "succeeded",
+    // The operation completed with a failure.
+    Failed: "failed",
+    // The operation timed out.
+    TimedOut: "timedOut",
+    // The operation could not be found.
+    NotFound: "notFound",
+}
 
 // Defines an "actor" for an event.
 type EventActor struct {
@@ -155,6 +195,17 @@ type EventProcessingLog struct {
 // Set of flags used to determine which set of information is retrieved when querying for event publishers
 type EventPublisherQueryFlags string
 
+type eventPublisherQueryFlagsValuesType struct {
+    None EventPublisherQueryFlags
+    IncludeRemoteServices EventPublisherQueryFlags
+}
+
+var EventPublisherQueryFlagsValues = eventPublisherQueryFlagsValuesType{
+    None: "none",
+    // Include event types from the remote services too
+    IncludeRemoteServices: "includeRemoteServices",
+}
+
 // Defines a scope for an event.
 type EventScope struct {
     // Required: This is the identity of the scope for the type.
@@ -195,6 +246,17 @@ type EventTransformResult struct {
 
 // Set of flags used to determine which set of information is retrieved when querying for eventtypes
 type EventTypeQueryFlags string
+
+type eventTypeQueryFlagsValuesType struct {
+    None EventTypeQueryFlags
+    IncludeFields EventTypeQueryFlags
+}
+
+var EventTypeQueryFlagsValues = eventTypeQueryFlagsValuesType{
+    None: "none",
+    // IncludeFields will include all fields and their types
+    IncludeFields: "includeFields",
+}
 
 type ExpressionFilter struct {
     EventType *string `json:"eventType,omitempty"`
@@ -563,6 +625,16 @@ type NotificationJobDiagnosticLog struct {
 
 type NotificationOperation string
 
+type notificationOperationValuesType struct {
+    None NotificationOperation
+    SuspendUnprocessed NotificationOperation
+}
+
+var NotificationOperationValues = notificationOperationValuesType{
+    None: "none",
+    SuspendUnprocessed: "suspendUnprocessed",
+}
+
 type NotificationQueryCondition struct {
     EventInitiator *uuid.UUID `json:"eventInitiator,omitempty"`
     EventType *string `json:"eventType,omitempty"`
@@ -576,6 +648,36 @@ type NotificationReason struct {
 }
 
 type NotificationReasonType string
+
+type notificationReasonTypeValuesType struct {
+    Unknown NotificationReasonType
+    Follows NotificationReasonType
+    Personal NotificationReasonType
+    PersonalAlias NotificationReasonType
+    DirectMember NotificationReasonType
+    IndirectMember NotificationReasonType
+    GroupAlias NotificationReasonType
+    SubscriptionAlias NotificationReasonType
+    SingleRole NotificationReasonType
+    DirectMemberGroupRole NotificationReasonType
+    InDirectMemberGroupRole NotificationReasonType
+    AliasMemberGroupRole NotificationReasonType
+}
+
+var NotificationReasonTypeValues = notificationReasonTypeValuesType{
+    Unknown: "unknown",
+    Follows: "follows",
+    Personal: "personal",
+    PersonalAlias: "personalAlias",
+    DirectMember: "directMember",
+    IndirectMember: "indirectMember",
+    GroupAlias: "groupAlias",
+    SubscriptionAlias: "subscriptionAlias",
+    SingleRole: "singleRole",
+    DirectMemberGroupRole: "directMemberGroupRole",
+    InDirectMemberGroupRole: "inDirectMemberGroupRole",
+    AliasMemberGroupRole: "aliasMemberGroupRole",
+}
 
 // Encapsulates notifications result properties. It defines the number of notifications and the recipients of notifications.
 type NotificationsEvaluationResult struct {
@@ -606,6 +708,70 @@ type NotificationStatisticsQueryConditions struct {
 
 type NotificationStatisticType string
 
+type notificationStatisticTypeValuesType struct {
+    NotificationBySubscription NotificationStatisticType
+    EventsByEventType NotificationStatisticType
+    NotificationByEventType NotificationStatisticType
+    EventsByEventTypePerUser NotificationStatisticType
+    NotificationByEventTypePerUser NotificationStatisticType
+    Events NotificationStatisticType
+    Notifications NotificationStatisticType
+    NotificationFailureBySubscription NotificationStatisticType
+    UnprocessedRangeStart NotificationStatisticType
+    UnprocessedEventsByPublisher NotificationStatisticType
+    UnprocessedEventDelayByPublisher NotificationStatisticType
+    UnprocessedNotificationsByChannelByPublisher NotificationStatisticType
+    UnprocessedNotificationDelayByChannelByPublisher NotificationStatisticType
+    DelayRangeStart NotificationStatisticType
+    TotalPipelineTime NotificationStatisticType
+    NotificationPipelineTime NotificationStatisticType
+    EventPipelineTime NotificationStatisticType
+    HourlyRangeStart NotificationStatisticType
+    HourlyNotificationBySubscription NotificationStatisticType
+    HourlyEventsByEventTypePerUser NotificationStatisticType
+    HourlyEvents NotificationStatisticType
+    HourlyNotifications NotificationStatisticType
+    HourlyUnprocessedEventsByPublisher NotificationStatisticType
+    HourlyUnprocessedEventDelayByPublisher NotificationStatisticType
+    HourlyUnprocessedNotificationsByChannelByPublisher NotificationStatisticType
+    HourlyUnprocessedNotificationDelayByChannelByPublisher NotificationStatisticType
+    HourlyTotalPipelineTime NotificationStatisticType
+    HourlyNotificationPipelineTime NotificationStatisticType
+    HourlyEventPipelineTime NotificationStatisticType
+}
+
+var NotificationStatisticTypeValues = notificationStatisticTypeValuesType{
+    NotificationBySubscription: "notificationBySubscription",
+    EventsByEventType: "eventsByEventType",
+    NotificationByEventType: "notificationByEventType",
+    EventsByEventTypePerUser: "eventsByEventTypePerUser",
+    NotificationByEventTypePerUser: "notificationByEventTypePerUser",
+    Events: "events",
+    Notifications: "notifications",
+    NotificationFailureBySubscription: "notificationFailureBySubscription",
+    UnprocessedRangeStart: "unprocessedRangeStart",
+    UnprocessedEventsByPublisher: "unprocessedEventsByPublisher",
+    UnprocessedEventDelayByPublisher: "unprocessedEventDelayByPublisher",
+    UnprocessedNotificationsByChannelByPublisher: "unprocessedNotificationsByChannelByPublisher",
+    UnprocessedNotificationDelayByChannelByPublisher: "unprocessedNotificationDelayByChannelByPublisher",
+    DelayRangeStart: "delayRangeStart",
+    TotalPipelineTime: "totalPipelineTime",
+    NotificationPipelineTime: "notificationPipelineTime",
+    EventPipelineTime: "eventPipelineTime",
+    HourlyRangeStart: "hourlyRangeStart",
+    HourlyNotificationBySubscription: "hourlyNotificationBySubscription",
+    HourlyEventsByEventTypePerUser: "hourlyEventsByEventTypePerUser",
+    HourlyEvents: "hourlyEvents",
+    HourlyNotifications: "hourlyNotifications",
+    HourlyUnprocessedEventsByPublisher: "hourlyUnprocessedEventsByPublisher",
+    HourlyUnprocessedEventDelayByPublisher: "hourlyUnprocessedEventDelayByPublisher",
+    HourlyUnprocessedNotificationsByChannelByPublisher: "hourlyUnprocessedNotificationsByChannelByPublisher",
+    HourlyUnprocessedNotificationDelayByChannelByPublisher: "hourlyUnprocessedNotificationDelayByChannelByPublisher",
+    HourlyTotalPipelineTime: "hourlyTotalPipelineTime",
+    HourlyNotificationPipelineTime: "hourlyNotificationPipelineTime",
+    HourlyEventPipelineTime: "hourlyEventPipelineTime",
+}
+
 // A subscriber is a user or group that has the potential to receive notifications.
 type NotificationSubscriber struct {
     // Indicates how the subscriber should be notified by default.
@@ -619,6 +785,21 @@ type NotificationSubscriber struct {
 
 // Delivery preference for a subscriber. Indicates how the subscriber should be notified.
 type NotificationSubscriberDeliveryPreference string
+
+type notificationSubscriberDeliveryPreferenceValuesType struct {
+    NoDelivery NotificationSubscriberDeliveryPreference
+    PreferredEmailAddress NotificationSubscriberDeliveryPreference
+    EachMember NotificationSubscriberDeliveryPreference
+    UseDefault NotificationSubscriberDeliveryPreference
+}
+
+var NotificationSubscriberDeliveryPreferenceValues = notificationSubscriberDeliveryPreferenceValuesType{
+    NoDelivery: "noDelivery",
+    // Deliver notifications to the subscriber's preferred email address.
+    PreferredEmailAddress: "preferredEmailAddress",
+    EachMember: "eachMember",
+    UseDefault: "useDefault",
+}
 
 // Updates to a subscriber. Typically used to change (or set) a preferred email address or default delivery preference.
 type NotificationSubscriberUpdateParameters struct {
@@ -781,6 +962,35 @@ type SoapSubscriptionChannel struct {
 
 type SubscriberFlags string
 
+type subscriberFlagsValuesType struct {
+    None SubscriberFlags
+    DeliveryPreferencesEditable SubscriberFlags
+    SupportsPreferredEmailAddressDelivery SubscriberFlags
+    SupportsEachMemberDelivery SubscriberFlags
+    SupportsNoDelivery SubscriberFlags
+    IsUser SubscriberFlags
+    IsGroup SubscriberFlags
+    IsTeam SubscriberFlags
+}
+
+var SubscriberFlagsValues = subscriberFlagsValuesType{
+    None: "none",
+    // Subscriber's delivery preferences could be updated
+    DeliveryPreferencesEditable: "deliveryPreferencesEditable",
+    // Subscriber's delivery preferences supports email delivery
+    SupportsPreferredEmailAddressDelivery: "supportsPreferredEmailAddressDelivery",
+    // Subscriber's delivery preferences supports individual members delivery(group expansion)
+    SupportsEachMemberDelivery: "supportsEachMemberDelivery",
+    // Subscriber's delivery preferences supports no delivery
+    SupportsNoDelivery: "supportsNoDelivery",
+    // Subscriber is a user
+    IsUser: "isUser",
+    // Subscriber is a group
+    IsGroup: "isGroup",
+    // Subscriber is a team
+    IsTeam: "isTeam",
+}
+
 // Admin-managed settings for a group subscription.
 type SubscriptionAdminSettings struct {
     // If true, members of the group subscribed to the associated subscription cannot opt (choose not to get notified)
@@ -818,7 +1028,7 @@ type SubscriptionEvaluationRequest struct {
     SubscriptionCreateParameters *NotificationSubscriptionCreateParameters `json:"subscriptionCreateParameters,omitempty"`
 }
 
-// Ecapsulates the subscription evaluation results. It defines the Date Interval that was used, number of events evaluated and events and notifications results
+// Encapsulates the subscription evaluation results. It defines the Date Interval that was used, number of events evaluated and events and notifications results
 type SubscriptionEvaluationResult struct {
     // Subscription evaluation job status
     EvaluationJobStatus *EvaluationOperationStatus `json:"evaluationJobStatus,omitempty"`
@@ -844,8 +1054,68 @@ type SubscriptionEvaluationSettings struct {
 
 type SubscriptionFieldType string
 
+type subscriptionFieldTypeValuesType struct {
+    String SubscriptionFieldType
+    Integer SubscriptionFieldType
+    DateTime SubscriptionFieldType
+    PlainText SubscriptionFieldType
+    Html SubscriptionFieldType
+    TreePath SubscriptionFieldType
+    History SubscriptionFieldType
+    Double SubscriptionFieldType
+    Guid SubscriptionFieldType
+    Boolean SubscriptionFieldType
+    Identity SubscriptionFieldType
+    PicklistInteger SubscriptionFieldType
+    PicklistString SubscriptionFieldType
+    PicklistDouble SubscriptionFieldType
+    TeamProject SubscriptionFieldType
+}
+
+var SubscriptionFieldTypeValues = subscriptionFieldTypeValuesType{
+    String: "string",
+    Integer: "integer",
+    DateTime: "dateTime",
+    PlainText: "plainText",
+    Html: "html",
+    TreePath: "treePath",
+    History: "history",
+    Double: "double",
+    Guid: "guid",
+    Boolean: "boolean",
+    Identity: "identity",
+    PicklistInteger: "picklistInteger",
+    PicklistString: "picklistString",
+    PicklistDouble: "picklistDouble",
+    TeamProject: "teamProject",
+}
+
 // Read-only indicators that further describe the subscription.
 type SubscriptionFlags string
+
+type subscriptionFlagsValuesType struct {
+    None SubscriptionFlags
+    GroupSubscription SubscriptionFlags
+    ContributedSubscription SubscriptionFlags
+    CanOptOut SubscriptionFlags
+    TeamSubscription SubscriptionFlags
+    OneActorMatches SubscriptionFlags
+}
+
+var SubscriptionFlagsValues = subscriptionFlagsValuesType{
+    // None
+    None: "none",
+    // Subscription's subscriber is a group, not a user
+    GroupSubscription: "groupSubscription",
+    // Subscription is contributed and not persisted. This means certain fields of the subscription, like Filter, are read-only.
+    ContributedSubscription: "contributedSubscription",
+    // A user that is member of the subscription's subscriber group can opt in/out of the subscription.
+    CanOptOut: "canOptOut",
+    // If the subscriber is a group, is it a team.
+    TeamSubscription: "teamSubscription",
+    // For role based subscriptions, there is an expectation that there will always be at least one actor that matches
+    OneActorMatches: "oneActorMatches",
+}
 
 // Encapsulates the properties needed to manage subscriptions, opt in and out of subscriptions.
 type SubscriptionManagement struct {
@@ -855,6 +1125,24 @@ type SubscriptionManagement struct {
 
 // The permissions that a user has to a certain subscription
 type SubscriptionPermissions string
+
+type subscriptionPermissionsValuesType struct {
+    None SubscriptionPermissions
+    View SubscriptionPermissions
+    Edit SubscriptionPermissions
+    Delete SubscriptionPermissions
+}
+
+var SubscriptionPermissionsValues = subscriptionPermissionsValuesType{
+    // None
+    None: "none",
+    // full view of description, filters, etc. Not limited.
+    View: "view",
+    // update subscription
+    Edit: "edit",
+    // delete subscription
+    Delete: "delete",
+}
 
 // Notification subscriptions query input.
 type SubscriptionQuery struct {
@@ -881,6 +1169,29 @@ type SubscriptionQueryCondition struct {
 // Flags that influence the result set of a subscription query.
 type SubscriptionQueryFlags string
 
+type subscriptionQueryFlagsValuesType struct {
+    None SubscriptionQueryFlags
+    IncludeInvalidSubscriptions SubscriptionQueryFlags
+    IncludeDeletedSubscriptions SubscriptionQueryFlags
+    IncludeFilterDetails SubscriptionQueryFlags
+    AlwaysReturnBasicInformation SubscriptionQueryFlags
+    IncludeSystemSubscriptions SubscriptionQueryFlags
+}
+
+var SubscriptionQueryFlagsValues = subscriptionQueryFlagsValuesType{
+    None: "none",
+    // Include subscriptions with invalid subscribers.
+    IncludeInvalidSubscriptions: "includeInvalidSubscriptions",
+    // Include subscriptions marked for deletion.
+    IncludeDeletedSubscriptions: "includeDeletedSubscriptions",
+    // Include the full filter details with each subscription.
+    IncludeFilterDetails: "includeFilterDetails",
+    // For a subscription the caller does not have permission to view, return basic (non-confidential) information.
+    AlwaysReturnBasicInformation: "alwaysReturnBasicInformation",
+    // Include system subscriptions.
+    IncludeSystemSubscriptions: "includeSystemSubscriptions",
+}
+
 // A resource, typically an account or project, in which events are published from.
 type SubscriptionScope struct {
     // Required: This is the identity of the scope for the type.
@@ -894,10 +1205,98 @@ type SubscriptionScope struct {
 // Subscription status values. A value greater than or equal to zero indicates the subscription is enabled. A negative value indicates the subscription is disabled.
 type SubscriptionStatus string
 
+type subscriptionStatusValuesType struct {
+    JailedByNotificationsVolume SubscriptionStatus
+    PendingDeletion SubscriptionStatus
+    DisabledArgumentException SubscriptionStatus
+    DisabledProjectInvalid SubscriptionStatus
+    DisabledMissingPermissions SubscriptionStatus
+    DisabledFromProbation SubscriptionStatus
+    DisabledInactiveIdentity SubscriptionStatus
+    DisabledMessageQueueNotSupported SubscriptionStatus
+    DisabledMissingIdentity SubscriptionStatus
+    DisabledInvalidRoleExpression SubscriptionStatus
+    DisabledInvalidPathClause SubscriptionStatus
+    DisabledAsDuplicateOfDefault SubscriptionStatus
+    DisabledByAdmin SubscriptionStatus
+    Disabled SubscriptionStatus
+    Enabled SubscriptionStatus
+    EnabledOnProbation SubscriptionStatus
+}
+
+var SubscriptionStatusValues = subscriptionStatusValuesType{
+    // Subscription is disabled because it generated a high volume of notifications.
+    JailedByNotificationsVolume: "jailedByNotificationsVolume",
+    // Subscription is disabled and will be deleted.
+    PendingDeletion: "pendingDeletion",
+    // Subscription is disabled because of an Argument Exception while processing the subscription
+    DisabledArgumentException: "disabledArgumentException",
+    // Subscription is disabled because the project is invalid
+    DisabledProjectInvalid: "disabledProjectInvalid",
+    // Subscription is disabled because the identity does not have the appropriate permissions
+    DisabledMissingPermissions: "disabledMissingPermissions",
+    // Subscription is disabled service due to failures.
+    DisabledFromProbation: "disabledFromProbation",
+    // Subscription is disabled because the identity is no longer active
+    DisabledInactiveIdentity: "disabledInactiveIdentity",
+    // Subscription is disabled because message queue is not supported.
+    DisabledMessageQueueNotSupported: "disabledMessageQueueNotSupported",
+    // Subscription is disabled because its subscriber is unknown.
+    DisabledMissingIdentity: "disabledMissingIdentity",
+    // Subscription is disabled because it has an invalid role expression.
+    DisabledInvalidRoleExpression: "disabledInvalidRoleExpression",
+    // Subscription is disabled because it has an invalid filter expression.
+    DisabledInvalidPathClause: "disabledInvalidPathClause",
+    // Subscription is disabled because it is a duplicate of a default subscription.
+    DisabledAsDuplicateOfDefault: "disabledAsDuplicateOfDefault",
+    // Subscription is disabled by an administrator, not the subscription's subscriber.
+    DisabledByAdmin: "disabledByAdmin",
+    // Subscription is disabled, typically by the owner of the subscription, and will not produce any notifications.
+    Disabled: "disabled",
+    // Subscription is active.
+    Enabled: "enabled",
+    // Subscription is active, but is on probation due to failed deliveries or other issues with the subscription.
+    EnabledOnProbation: "enabledOnProbation",
+}
+
 // Set of flags used to determine which set of templates is retrieved when querying for subscription templates
 type SubscriptionTemplateQueryFlags string
 
+type subscriptionTemplateQueryFlagsValuesType struct {
+    None SubscriptionTemplateQueryFlags
+    IncludeUser SubscriptionTemplateQueryFlags
+    IncludeGroup SubscriptionTemplateQueryFlags
+    IncludeUserAndGroup SubscriptionTemplateQueryFlags
+    IncludeEventTypeInformation SubscriptionTemplateQueryFlags
+}
+
+var SubscriptionTemplateQueryFlagsValues = subscriptionTemplateQueryFlagsValuesType{
+    None: "none",
+    // Include user templates
+    IncludeUser: "includeUser",
+    // Include group templates
+    IncludeGroup: "includeGroup",
+    // Include user and group templates
+    IncludeUserAndGroup: "includeUserAndGroup",
+    // Include the event type details like the fields and operators
+    IncludeEventTypeInformation: "includeEventTypeInformation",
+}
+
 type SubscriptionTemplateType string
+
+type subscriptionTemplateTypeValuesType struct {
+    User SubscriptionTemplateType
+    Team SubscriptionTemplateType
+    Both SubscriptionTemplateType
+    None SubscriptionTemplateType
+}
+
+var SubscriptionTemplateTypeValues = subscriptionTemplateTypeValuesType{
+    User: "user",
+    Team: "team",
+    Both: "both",
+    None: "none",
+}
 
 type SubscriptionTraceDiagnosticLog struct {
     // Identifier used for correlating to other diagnostics that may have been recorded elsewhere.

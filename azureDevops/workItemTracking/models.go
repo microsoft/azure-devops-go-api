@@ -138,6 +138,16 @@ type AttachmentReference struct {
 // Flag to control error policy in a batch classification nodes get request.
 type ClassificationNodesErrorPolicy string
 
+type classificationNodesErrorPolicyValuesType struct {
+    Fail ClassificationNodesErrorPolicy
+    Omit ClassificationNodesErrorPolicy
+}
+
+var ClassificationNodesErrorPolicyValues = classificationNodesErrorPolicyValuesType{
+    Fail: "fail",
+    Omit: "omit",
+}
+
 // Comment on a Work Item.
 type Comment struct {
     Url *string `json:"url,omitempty"`
@@ -179,6 +189,28 @@ type CommentCreate struct {
 
 // Specifies the additional data retrieval options for work item comments.
 type CommentExpandOptions string
+
+type commentExpandOptionsValuesType struct {
+    None CommentExpandOptions
+    Reactions CommentExpandOptions
+    Mentions CommentExpandOptions
+    RenderedText CommentExpandOptions
+    RenderedTextOnly CommentExpandOptions
+    All CommentExpandOptions
+}
+
+var CommentExpandOptionsValues = commentExpandOptionsValuesType{
+    None: "none",
+    // Include comment reactions.
+    Reactions: "reactions",
+    // Include comment mentions.
+    Mentions: "mentions",
+    // Include the rendered text (html) in addition to MD text.
+    RenderedText: "renderedText",
+    // If specified, then ONLY rendered text (html) will be returned, w/o markdown. Supposed to be used internally from data provides for optimization purposes.
+    RenderedTextOnly: "renderedTextOnly",
+    All: "all",
+}
 
 // Represents a list of work item comments.
 type CommentList struct {
@@ -229,7 +261,37 @@ type CommentReaction struct {
 // Represents different reaction types for a work item comment.
 type CommentReactionType string
 
+type commentReactionTypeValuesType struct {
+    Like CommentReactionType
+    Dislike CommentReactionType
+    Heart CommentReactionType
+    Hooray CommentReactionType
+    Smile CommentReactionType
+    Confused CommentReactionType
+}
+
+var CommentReactionTypeValues = commentReactionTypeValuesType{
+    Like: "like",
+    Dislike: "dislike",
+    Heart: "heart",
+    Hooray: "hooray",
+    Smile: "smile",
+    Confused: "confused",
+}
+
 type CommentSortOrder string
+
+type commentSortOrderValuesType struct {
+    Asc CommentSortOrder
+    Desc CommentSortOrder
+}
+
+var CommentSortOrderValues = commentSortOrderValuesType{
+    // The results will be sorted in Ascending order.
+    Asc: "asc",
+    // The results will be sorted in Descending order.
+    Desc: "desc",
+}
 
 // Represents a request to update a work item comment.
 type CommentUpdate struct {
@@ -290,11 +352,92 @@ type FieldsToEvaluate struct {
 // Enum for field types.
 type FieldType string
 
+type fieldTypeValuesType struct {
+    String FieldType
+    Integer FieldType
+    DateTime FieldType
+    PlainText FieldType
+    Html FieldType
+    TreePath FieldType
+    History FieldType
+    Double FieldType
+    Guid FieldType
+    Boolean FieldType
+    Identity FieldType
+    PicklistString FieldType
+    PicklistInteger FieldType
+    PicklistDouble FieldType
+}
+
+var FieldTypeValues = fieldTypeValuesType{
+    // String field type.
+    String: "string",
+    // Integer field type.
+    Integer: "integer",
+    // Datetime field type.
+    DateTime: "dateTime",
+    // Plain text field type.
+    PlainText: "plainText",
+    // HTML (Multiline) field type.
+    Html: "html",
+    // Treepath field type.
+    TreePath: "treePath",
+    // History field type.
+    History: "history",
+    // Double field type.
+    Double: "double",
+    // Guid field type.
+    Guid: "guid",
+    // Boolean field type.
+    Boolean: "boolean",
+    // Identity field type.
+    Identity: "identity",
+    // String picklist field type. When creating a string picklist field from REST API, use "String" FieldType.
+    PicklistString: "picklistString",
+    // Integer picklist field type. When creating a integer picklist field from REST API, use "Integer" FieldType.
+    PicklistInteger: "picklistInteger",
+    // Double picklist field type. When creating a double picklist field from REST API, use "Double" FieldType.
+    PicklistDouble: "picklistDouble",
+}
+
 // Enum for field usages.
 type FieldUsage string
 
+type fieldUsageValuesType struct {
+    None FieldUsage
+    WorkItem FieldUsage
+    WorkItemLink FieldUsage
+    Tree FieldUsage
+    WorkItemTypeExtension FieldUsage
+}
+
+var FieldUsageValues = fieldUsageValuesType{
+    // Empty usage.
+    None: "none",
+    // Work item field usage.
+    WorkItem: "workItem",
+    // Work item link field usage.
+    WorkItemLink: "workItemLink",
+    // Treenode field usage.
+    Tree: "tree",
+    // Work Item Type Extension usage.
+    WorkItemTypeExtension: "workItemTypeExtension",
+}
+
 // Flag to expand types of fields.
 type GetFieldsExpand string
+
+type getFieldsExpandValuesType struct {
+    None GetFieldsExpand
+    ExtensionFields GetFieldsExpand
+}
+
+var GetFieldsExpandValues = getFieldsExpandValuesType{
+    // Default behavior.
+    None: "none",
+    // Adds extension fields to the response.
+    ExtensionFields: "extensionFields",
+}
 
 type GraphSubjectBase struct {
     // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
@@ -389,9 +532,64 @@ type Link struct {
 // The link query mode which determines the behavior of the query.
 type LinkQueryMode string
 
+type linkQueryModeValuesType struct {
+    WorkItems LinkQueryMode
+    LinksOneHopMustContain LinkQueryMode
+    LinksOneHopMayContain LinkQueryMode
+    LinksOneHopDoesNotContain LinkQueryMode
+    LinksRecursiveMustContain LinkQueryMode
+    LinksRecursiveMayContain LinkQueryMode
+    LinksRecursiveDoesNotContain LinkQueryMode
+}
+
+var LinkQueryModeValues = linkQueryModeValuesType{
+    // Returns flat list of work items.
+    WorkItems: "workItems",
+    // Returns work items where the source, target, and link criteria are all satisfied.
+    LinksOneHopMustContain: "linksOneHopMustContain",
+    // Returns work items that satisfy the source and link criteria, even if no linked work item satisfies the target criteria.
+    LinksOneHopMayContain: "linksOneHopMayContain",
+    // Returns work items that satisfy the source, only if no linked work item satisfies the link and target criteria.
+    LinksOneHopDoesNotContain: "linksOneHopDoesNotContain",
+    LinksRecursiveMustContain: "linksRecursiveMustContain",
+    // Returns work items a hierarchy of work items that by default satisfy the source
+    LinksRecursiveMayContain: "linksRecursiveMayContain",
+    LinksRecursiveDoesNotContain: "linksRecursiveDoesNotContain",
+}
+
 type LogicalOperation string
 
+type logicalOperationValuesType struct {
+    None LogicalOperation
+    And LogicalOperation
+    Or LogicalOperation
+}
+
+var LogicalOperationValues = logicalOperationValuesType{
+    None: "none",
+    And: "and",
+    Or: "or",
+}
+
 type Operation string
+
+type operationValuesType struct {
+    Add Operation
+    Remove Operation
+    Replace Operation
+    Move Operation
+    Copy Operation
+    Test Operation
+}
+
+var OperationValues = operationValuesType{
+    Add: "add",
+    Remove: "remove",
+    Replace: "replace",
+    Move: "move",
+    Copy: "copy",
+    Test: "test",
+}
 
 // Project work item type state colors
 type ProjectWorkItemStateColors struct {
@@ -403,6 +601,16 @@ type ProjectWorkItemStateColors struct {
 
 // Enumerates the possible provisioning actions that can be triggered on process template update.
 type ProvisioningActionType string
+
+type provisioningActionTypeValuesType struct {
+    Import ProvisioningActionType
+    Validate ProvisioningActionType
+}
+
+var ProvisioningActionTypeValues = provisioningActionTypeValuesType{
+    Import: "import",
+    Validate: "validate",
+}
 
 // Result of an update work item type XML update operation.
 type ProvisioningResult struct {
@@ -423,8 +631,39 @@ type QueryBatchGetRequest struct {
 // Enum to control error policy in a query batch request.
 type QueryErrorPolicy string
 
+type queryErrorPolicyValuesType struct {
+    Fail QueryErrorPolicy
+    Omit QueryErrorPolicy
+}
+
+var QueryErrorPolicyValues = queryErrorPolicyValuesType{
+    Fail: "fail",
+    Omit: "omit",
+}
+
 // Determines which set of additional query properties to display
 type QueryExpand string
+
+type queryExpandValuesType struct {
+    None QueryExpand
+    Wiql QueryExpand
+    Clauses QueryExpand
+    All QueryExpand
+    Minimal QueryExpand
+}
+
+var QueryExpandValues = queryExpandValuesType{
+    // Expands Columns, Links and ChangeInfo
+    None: "none",
+    // Expands Columns, Links,  ChangeInfo and WIQL text
+    Wiql: "wiql",
+    // Expands Columns, Links, ChangeInfo, WIQL text and clauses
+    Clauses: "clauses",
+    // Expands all properties
+    All: "all",
+    // Displays minimal properties and the WIQL text
+    Minimal: "minimal",
+}
 
 // Represents an item in the work item query hierarchy. This can be either a query or a folder.
 type QueryHierarchyItem struct {
@@ -494,14 +733,65 @@ type QueryHierarchyItemsResult struct {
 
 type QueryOption string
 
+type queryOptionValuesType struct {
+    Doing QueryOption
+    Done QueryOption
+    Followed QueryOption
+}
+
+var QueryOptionValues = queryOptionValuesType{
+    Doing: "doing",
+    Done: "done",
+    Followed: "followed",
+}
+
 // Determines whether a tree query matches parents or children first.
 type QueryRecursionOption string
+
+type queryRecursionOptionValuesType struct {
+    ParentFirst QueryRecursionOption
+    ChildFirst QueryRecursionOption
+}
+
+var QueryRecursionOptionValues = queryRecursionOptionValuesType{
+    // Returns work items that satisfy the source, even if no linked work item satisfies the target and link criteria.
+    ParentFirst: "parentFirst",
+    // Returns work items that satisfy the target criteria, even if no work item satisfies the source and link criteria.
+    ChildFirst: "childFirst",
+}
 
 // The query result type
 type QueryResultType string
 
+type queryResultTypeValuesType struct {
+    WorkItem QueryResultType
+    WorkItemLink QueryResultType
+}
+
+var QueryResultTypeValues = queryResultTypeValuesType{
+    // A list of work items (for flat queries).
+    WorkItem: "workItem",
+    // A list of work item links (for OneHop and Tree queries).
+    WorkItemLink: "workItemLink",
+}
+
 // The type of query.
 type QueryType string
+
+type queryTypeValuesType struct {
+    Flat QueryType
+    Tree QueryType
+    OneHop QueryType
+}
+
+var QueryTypeValues = queryTypeValuesType{
+    // Gets a flat list of work items.
+    Flat: "flat",
+    // Gets a tree of work items showing their link hierarchy.
+    Tree: "tree",
+    // Gets a list of work items and their direct links.
+    OneHop: "oneHop",
+}
 
 // The class to represent a collection of REST reference links.
 type ReferenceLinks struct {
@@ -511,6 +801,18 @@ type ReferenceLinks struct {
 
 // The reporting revision expand level.
 type ReportingRevisionsExpand string
+
+type reportingRevisionsExpandValuesType struct {
+    None ReportingRevisionsExpand
+    Fields ReportingRevisionsExpand
+}
+
+var ReportingRevisionsExpandValues = reportingRevisionsExpandValuesType{
+    // Default behavior.
+    None: "none",
+    // Add fields to the response.
+    Fields: "fields",
+}
 
 type ReportingWorkItemLinksBatch struct {
 }
@@ -561,11 +863,43 @@ type TeamContext struct {
 // Enumerates types of supported xml templates used for customization.
 type TemplateType string
 
+type templateTypeValuesType struct {
+    WorkItemType TemplateType
+    GlobalWorkflow TemplateType
+}
+
+var TemplateTypeValues = templateTypeValuesType{
+    WorkItemType: "workItemType",
+    GlobalWorkflow: "globalWorkflow",
+}
+
 // Types of tree node structures.
 type TreeNodeStructureType string
 
+type treeNodeStructureTypeValuesType struct {
+    Area TreeNodeStructureType
+    Iteration TreeNodeStructureType
+}
+
+var TreeNodeStructureTypeValues = treeNodeStructureTypeValuesType{
+    // Area type.
+    Area: "area",
+    // Iteration type.
+    Iteration: "iteration",
+}
+
 // Types of tree structures groups.
 type TreeStructureGroup string
+
+type treeStructureGroupValuesType struct {
+    Areas TreeStructureGroup
+    Iterations TreeStructureGroup
+}
+
+var TreeStructureGroupValues = treeStructureGroupValuesType{
+    Areas: "areas",
+    Iterations: "iterations",
+}
 
 // A WIQL query
 type Wiql struct {
@@ -745,8 +1079,41 @@ type WorkItemDeleteUpdate struct {
 // Enum to control error policy in a bulk get work items request.
 type WorkItemErrorPolicy string
 
+type workItemErrorPolicyValuesType struct {
+    Fail WorkItemErrorPolicy
+    Omit WorkItemErrorPolicy
+}
+
+var WorkItemErrorPolicyValues = workItemErrorPolicyValuesType{
+    // Fail work error policy.
+    Fail: "fail",
+    // Omit work error policy.
+    Omit: "omit",
+}
+
 // Flag to control payload properties from get work item command.
 type WorkItemExpand string
+
+type workItemExpandValuesType struct {
+    None WorkItemExpand
+    Relations WorkItemExpand
+    Fields WorkItemExpand
+    Links WorkItemExpand
+    All WorkItemExpand
+}
+
+var WorkItemExpandValues = workItemExpandValuesType{
+    // Default behavior.
+    None: "none",
+    // Relations work item expand.
+    Relations: "relations",
+    // Fields work item expand.
+    Fields: "fields",
+    // Links work item expand.
+    Links: "links",
+    // Expands all.
+    All: "all",
+}
 
 // Describes a field on a work item and it's properties specific to that work item type.
 type WorkItemField struct {
@@ -893,6 +1260,20 @@ type WorkItemQuerySortColumn struct {
 
 // Type of the activity
 type WorkItemRecentActivityType string
+
+type workItemRecentActivityTypeValuesType struct {
+    Visited WorkItemRecentActivityType
+    Edited WorkItemRecentActivityType
+    Deleted WorkItemRecentActivityType
+    Restored WorkItemRecentActivityType
+}
+
+var WorkItemRecentActivityTypeValues = workItemRecentActivityTypeValuesType{
+    Visited: "visited",
+    Edited: "edited",
+    Deleted: "deleted",
+    Restored: "restored",
+}
 
 // Contains reference to a work item.
 type WorkItemReference struct {
@@ -1108,6 +1489,24 @@ type WorkItemTypeFieldInstanceBase struct {
 
 // Expand options for the work item field(s) request.
 type WorkItemTypeFieldsExpandLevel string
+
+type workItemTypeFieldsExpandLevelValuesType struct {
+    None WorkItemTypeFieldsExpandLevel
+    AllowedValues WorkItemTypeFieldsExpandLevel
+    DependentFields WorkItemTypeFieldsExpandLevel
+    All WorkItemTypeFieldsExpandLevel
+}
+
+var WorkItemTypeFieldsExpandLevelValues = workItemTypeFieldsExpandLevelValuesType{
+    // Includes only basic properties of the field.
+    None: "none",
+    // Includes allowed values for the field.
+    AllowedValues: "allowedValues",
+    // Includes dependent fields of the field.
+    DependentFields: "dependentFields",
+    // Includes allowed values and dependent fields of the field.
+    All: "all",
+}
 
 // Field Instance of a workItemype with detailed references.
 type WorkItemTypeFieldWithReferences struct {

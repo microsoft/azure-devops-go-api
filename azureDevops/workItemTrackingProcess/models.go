@@ -99,6 +99,21 @@ type CreateProcessWorkItemTypeRequest struct {
 // Indicates the customization-type. Customization-type is System if is system generated or by default. Customization-type is Inherited if the existing workitemtype of inherited process is customized. Customization-type is Custom if the newly created workitemtype is customized.
 type CustomizationType string
 
+type customizationTypeValuesType struct {
+    System CustomizationType
+    Inherited CustomizationType
+    Custom CustomizationType
+}
+
+var CustomizationTypeValues = customizationTypeValuesType{
+    // Customization-type is System if is system generated workitemtype.
+    System: "system",
+    // Customization-type is Inherited if the existing workitemtype of inherited process is customized.
+    Inherited: "inherited",
+    // Customization-type is Custom if the newly created workitemtype is customized.
+    Custom: "custom",
+}
+
 // Represents the extensions part of the layout
 type Extension struct {
     // Id of the extension
@@ -126,6 +141,54 @@ type FieldRuleModel struct {
 // Enum for the type of a field.
 type FieldType string
 
+type fieldTypeValuesType struct {
+    String FieldType
+    Integer FieldType
+    DateTime FieldType
+    PlainText FieldType
+    Html FieldType
+    TreePath FieldType
+    History FieldType
+    Double FieldType
+    Guid FieldType
+    Boolean FieldType
+    Identity FieldType
+    PicklistInteger FieldType
+    PicklistString FieldType
+    PicklistDouble FieldType
+}
+
+var FieldTypeValues = fieldTypeValuesType{
+    // String field type.
+    String: "string",
+    // Integer field type.
+    Integer: "integer",
+    // DateTime field type.
+    DateTime: "dateTime",
+    // Plain text field type.
+    PlainText: "plainText",
+    // HTML (Multiline) field type.
+    Html: "html",
+    // Treepath field type.
+    TreePath: "treePath",
+    // History field type.
+    History: "history",
+    // Double field type.
+    Double: "double",
+    // Guid field type.
+    Guid: "guid",
+    // Boolean field type.
+    Boolean: "boolean",
+    // Identity field type.
+    Identity: "identity",
+    // Integer picklist field type.
+    PicklistInteger: "picklistInteger",
+    // String picklist field type.
+    PicklistString: "picklistString",
+    // Double picklist field type.
+    PicklistDouble: "picklistDouble",
+}
+
 // Describes the layout of a work item type
 type FormLayout struct {
     // Gets and sets extensions list.
@@ -139,11 +202,56 @@ type FormLayout struct {
 // Expand options to fetch fields for behaviors API.
 type GetBehaviorsExpand string
 
+type getBehaviorsExpandValuesType struct {
+    None GetBehaviorsExpand
+    Fields GetBehaviorsExpand
+    CombinedFields GetBehaviorsExpand
+}
+
+var GetBehaviorsExpandValues = getBehaviorsExpandValuesType{
+    // Default none option.
+    None: "none",
+    // This option returns fields associated with a behavior.
+    Fields: "fields",
+    // This option returns fields associated with this behavior and all behaviors from which it inherits.
+    CombinedFields: "combinedFields",
+}
+
 // The expand level of returned processes.
 type GetProcessExpandLevel string
 
+type getProcessExpandLevelValuesType struct {
+    None GetProcessExpandLevel
+    Projects GetProcessExpandLevel
+}
+
+var GetProcessExpandLevelValues = getProcessExpandLevelValuesType{
+    // No expand level.
+    None: "none",
+    // Projects expand level.
+    Projects: "projects",
+}
+
 // Flag to define what properties to return in get work item type response.
 type GetWorkItemTypeExpand string
+
+type getWorkItemTypeExpandValuesType struct {
+    None GetWorkItemTypeExpand
+    States GetWorkItemTypeExpand
+    Behaviors GetWorkItemTypeExpand
+    Layout GetWorkItemTypeExpand
+}
+
+var GetWorkItemTypeExpandValues = getWorkItemTypeExpandValuesType{
+    // Returns no properties in get work item type response.
+    None: "none",
+    // Returns states property in get work item type response.
+    States: "states",
+    // Returns behaviors property in get work item type response.
+    Behaviors: "behaviors",
+    // Returns layout property in get work item type response.
+    Layout: "layout",
+}
 
 // Represent a group in the form that holds controls in it.
 type Group struct {
@@ -203,6 +311,24 @@ type Page struct {
 
 // Enum for the types of pages in the work item form layout
 type PageType string
+
+type pageTypeValuesType struct {
+    Custom PageType
+    History PageType
+    Links PageType
+    Attachments PageType
+}
+
+var PageTypeValues = pageTypeValuesType{
+    // Custom page type.
+    Custom: "custom",
+    // History page type.
+    History: "history",
+    // Link page type.
+    Links: "links",
+    // Attachment page type.
+    Attachments: "attachments",
+}
 
 // Picklist.
 type PickList struct {
@@ -295,6 +421,18 @@ type ProcessBehaviorUpdateRequest struct {
 }
 
 type ProcessClass string
+
+type processClassValuesType struct {
+    System ProcessClass
+    Derived ProcessClass
+    Custom ProcessClass
+}
+
+var ProcessClassValues = processClassValuesType{
+    System: "system",
+    Derived: "derived",
+    Custom: "custom",
+}
 
 // Process.
 type ProcessInfo struct {
@@ -446,6 +584,51 @@ type RuleActionModel struct {
 // Type of action to take when the rule is triggered.
 type RuleActionType string
 
+type ruleActionTypeValuesType struct {
+    MakeRequired RuleActionType
+    MakeReadOnly RuleActionType
+    SetDefaultValue RuleActionType
+    SetDefaultFromClock RuleActionType
+    SetDefaultFromCurrentUser RuleActionType
+    SetDefaultFromField RuleActionType
+    CopyValue RuleActionType
+    CopyFromClock RuleActionType
+    CopyFromCurrentUser RuleActionType
+    CopyFromField RuleActionType
+    SetValueToEmpty RuleActionType
+    CopyFromServerClock RuleActionType
+    CopyFromServerCurrentUser RuleActionType
+}
+
+var RuleActionTypeValues = ruleActionTypeValuesType{
+    // Make the target field required. Example : {"actionType":"$makeRequired","targetField":"Microsoft.VSTS.Common.Activity","value":""}
+    MakeRequired: "makeRequired",
+    // Make the target field read-only. Example : {"actionType":"$makeReadOnly","targetField":"Microsoft.VSTS.Common.Activity","value":""}
+    MakeReadOnly: "makeReadOnly",
+    // Set a default value on the target field. This is used if the user creates a integer/string field and sets a default value of this field.
+    SetDefaultValue: "setDefaultValue",
+    // Set the default value on the target field from server clock. This is used if user creates the field like Date/Time and uses default value.
+    SetDefaultFromClock: "setDefaultFromClock",
+    // Set the default current user value on the target field. This is used if the user creates the field of type identity and uses default value.
+    SetDefaultFromCurrentUser: "setDefaultFromCurrentUser",
+    // Set the default value on from existing field to the target field.  This used wants to set a existing field value to the current field.
+    SetDefaultFromField: "setDefaultFromField",
+    // Set the value of target field to given value. Example : {actionType: "$copyValue", targetField: "ScrumInherited.mypicklist", value: "samplevalue"}
+    CopyValue: "copyValue",
+    // Set the value from clock.
+    CopyFromClock: "copyFromClock",
+    // Set the current user to the target field. Example : {"actionType":"$copyFromCurrentUser","targetField":"System.AssignedTo","value":""}.
+    CopyFromCurrentUser: "copyFromCurrentUser",
+    // Copy the value from a specified field and set to target field. Example : {actionType: "$copyFromField", targetField: "System.AssignedTo", value:"System.ChangedBy"}. Here, value is copied from "System.ChangedBy" and set to "System.AssingedTo" field.
+    CopyFromField: "copyFromField",
+    // Set the value of the target field to empty.
+    SetValueToEmpty: "setValueToEmpty",
+    // Use the current time to set the value of the target field. Example : {actionType: "$copyFromServerClock", targetField: "System.CreatedDate", value: ""}
+    CopyFromServerClock: "copyFromServerClock",
+    // Use the current user to set the value of the target field.
+    CopyFromServerCurrentUser: "copyFromServerCurrentUser",
+}
+
 // Defines a condition on a field when the rule should be triggered.
 type RuleCondition struct {
     // Type of condition. $When. This condition limits the execution of its children to cases when another field has a particular value, i.e. when the Is value of the referenced field is equal to the given literal value. $WhenNot.This condition limits the execution of its children to cases when another field does not have a particular value, i.e.when the Is value of the referenced field is not equal to the given literal value. $WhenChanged.This condition limits the execution of its children to cases when another field has changed, i.e.when the Is value of the referenced field is not equal to the Was value of that field. $WhenNotChanged.This condition limits the execution of its children to cases when another field has not changed, i.e.when the Is value of the referenced field is equal to the Was value of that field.
@@ -464,6 +647,36 @@ type RuleConditionModel struct {
 
 // Type of rule condition.
 type RuleConditionType string
+
+type ruleConditionTypeValuesType struct {
+    When RuleConditionType
+    WhenNot RuleConditionType
+    WhenChanged RuleConditionType
+    WhenNotChanged RuleConditionType
+    WhenWas RuleConditionType
+    WhenStateChangedTo RuleConditionType
+    WhenStateChangedFromAndTo RuleConditionType
+    WhenWorkItemIsCreated RuleConditionType
+    WhenValueIsDefined RuleConditionType
+    WhenValueIsNotDefined RuleConditionType
+}
+
+var RuleConditionTypeValues = ruleConditionTypeValuesType{
+    // $When. This condition limits the execution of its children to cases when another field has a particular value, i.e. when the Is value of the referenced field is equal to the given literal value.
+    When: "when",
+    // $WhenNot.This condition limits the execution of its children to cases when another field does not have a particular value, i.e.when the Is value of the referenced field is not equal to the given literal value.
+    WhenNot: "whenNot",
+    // $WhenChanged.This condition limits the execution of its children to cases when another field has changed, i.e.when the Is value of the referenced field is not equal to the Was value of that field.
+    WhenChanged: "whenChanged",
+    // $WhenNotChanged.This condition limits the execution of its children to cases when another field has not changed, i.e.when the Is value of the referenced field is equal to the Was value of that field.
+    WhenNotChanged: "whenNotChanged",
+    WhenWas: "whenWas",
+    WhenStateChangedTo: "whenStateChangedTo",
+    WhenStateChangedFromAndTo: "whenStateChangedFromAndTo",
+    WhenWorkItemIsCreated: "whenWorkItemIsCreated",
+    WhenValueIsDefined: "whenValueIsDefined",
+    WhenValueIsNotDefined: "whenValueIsNotDefined",
+}
 
 // Defines a section of the work item form layout
 type Section struct {
@@ -607,6 +820,18 @@ type WorkItemTypeBehavior struct {
 }
 
 type WorkItemTypeClass string
+
+type workItemTypeClassValuesType struct {
+    System WorkItemTypeClass
+    Derived WorkItemTypeClass
+    Custom WorkItemTypeClass
+}
+
+var WorkItemTypeClassValues = workItemTypeClassValuesType{
+    System: "system",
+    Derived: "derived",
+    Custom: "custom",
+}
 
 type WorkItemTypeModel struct {
     Behaviors *[]WorkItemTypeBehavior `json:"behaviors,omitempty"`

@@ -129,6 +129,16 @@ type ItemContent struct {
 
 type ItemContentType string
 
+type itemContentTypeValuesType struct {
+    RawText ItemContentType
+    Base64Encoded ItemContentType
+}
+
+var ItemContentTypeValues = itemContentTypeValuesType{
+    RawText: "rawText",
+    Base64Encoded: "base64Encoded",
+}
+
 type ItemModel struct {
     Links *ReferenceLinks `json:"_links,omitempty"`
     Content *string `json:"content,omitempty"`
@@ -141,6 +151,18 @@ type ItemModel struct {
 
 type ProjectVisibility string
 
+type projectVisibilityValuesType struct {
+    Private ProjectVisibility
+    Public ProjectVisibility
+}
+
+var ProjectVisibilityValues = projectVisibilityValuesType{
+    // The project is only visible to users with explicit access.
+    Private: "private",
+    // The project is visible to all.
+    Public: "public",
+}
+
 // The class to represent a collection of REST reference links.
 type ReferenceLinks struct {
     // The readonly view of the links.  Because Reference links are readonly, we only want to expose them as read only.
@@ -148,6 +170,16 @@ type ReferenceLinks struct {
 }
 
 type SourceControlTypes string
+
+type sourceControlTypesValuesType struct {
+    Tfvc SourceControlTypes
+    Git SourceControlTypes
+}
+
+var SourceControlTypesValues = sourceControlTypesValuesType{
+    Tfvc: "tfvc",
+    Git: "git",
+}
 
 // Reference object for a TeamProjectCollection.
 type TeamProjectCollectionReference struct {
@@ -487,9 +519,79 @@ type TfvcVersionDescriptor struct {
 
 type TfvcVersionOption string
 
+type tfvcVersionOptionValuesType struct {
+    None TfvcVersionOption
+    Previous TfvcVersionOption
+    UseRename TfvcVersionOption
+}
+
+var TfvcVersionOptionValues = tfvcVersionOptionValuesType{
+    None: "none",
+    Previous: "previous",
+    UseRename: "useRename",
+}
+
 type TfvcVersionType string
 
+type tfvcVersionTypeValuesType struct {
+    None TfvcVersionType
+    Changeset TfvcVersionType
+    Shelveset TfvcVersionType
+    Change TfvcVersionType
+    Date TfvcVersionType
+    Latest TfvcVersionType
+    Tip TfvcVersionType
+    MergeSource TfvcVersionType
+}
+
+var TfvcVersionTypeValues = tfvcVersionTypeValuesType{
+    None: "none",
+    Changeset: "changeset",
+    Shelveset: "shelveset",
+    Change: "change",
+    Date: "date",
+    Latest: "latest",
+    Tip: "tip",
+    MergeSource: "mergeSource",
+}
+
 type VersionControlChangeType string
+
+type versionControlChangeTypeValuesType struct {
+    None VersionControlChangeType
+    Add VersionControlChangeType
+    Edit VersionControlChangeType
+    Encoding VersionControlChangeType
+    Rename VersionControlChangeType
+    Delete VersionControlChangeType
+    Undelete VersionControlChangeType
+    Branch VersionControlChangeType
+    Merge VersionControlChangeType
+    Lock VersionControlChangeType
+    Rollback VersionControlChangeType
+    SourceRename VersionControlChangeType
+    TargetRename VersionControlChangeType
+    Property VersionControlChangeType
+    All VersionControlChangeType
+}
+
+var VersionControlChangeTypeValues = versionControlChangeTypeValuesType{
+    None: "none",
+    Add: "add",
+    Edit: "edit",
+    Encoding: "encoding",
+    Rename: "rename",
+    Delete: "delete",
+    Undelete: "undelete",
+    Branch: "branch",
+    Merge: "merge",
+    Lock: "lock",
+    Rollback: "rollback",
+    SourceRename: "sourceRename",
+    TargetRename: "targetRename",
+    Property: "property",
+    All: "all",
+}
 
 type VersionControlProjectInfo struct {
     DefaultSourceControlType *SourceControlTypes `json:"defaultSourceControlType,omitempty"`
@@ -499,3 +601,21 @@ type VersionControlProjectInfo struct {
 }
 
 type VersionControlRecursionType string
+
+type versionControlRecursionTypeValuesType struct {
+    None VersionControlRecursionType
+    OneLevel VersionControlRecursionType
+    OneLevelPlusNestedEmptyFolders VersionControlRecursionType
+    Full VersionControlRecursionType
+}
+
+var VersionControlRecursionTypeValues = versionControlRecursionTypeValuesType{
+    // Only return the specified item.
+    None: "none",
+    // Return the specified item and its direct children.
+    OneLevel: "oneLevel",
+    // Return the specified item and its direct children, as well as recursive chains of nested child folders that only contain a single folder.
+    OneLevelPlusNestedEmptyFolders: "oneLevelPlusNestedEmptyFolders",
+    // Return specified item and all descendants
+    Full: "full",
+}

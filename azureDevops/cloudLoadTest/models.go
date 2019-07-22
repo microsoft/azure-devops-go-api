@@ -183,6 +183,18 @@ type LoadTestErrors struct {
 
 type LoadTestMachineType string
 
+type loadTestMachineTypeValuesType struct {
+    Default LoadTestMachineType
+    CltLoadAgent LoadTestMachineType
+    UserLoadAgent LoadTestMachineType
+}
+
+var LoadTestMachineTypeValues = loadTestMachineTypeValuesType{
+    Default: "default",
+    CltLoadAgent: "cltLoadAgent",
+    UserLoadAgent: "userLoadAgent",
+}
+
 type LoadTestRunDetails struct {
     AgentCount *int `json:"agentCount,omitempty"`
     CoreCount *int `json:"coreCount,omitempty"`
@@ -206,9 +218,53 @@ type LoadTestRunSettings struct {
 
 type LoadTestTypes string
 
+type loadTestTypesValuesType struct {
+    VisualStudioLoadTest LoadTestTypes
+    JMeter LoadTestTypes
+    OldLoadTestFile LoadTestTypes
+}
+
+var LoadTestTypesValues = loadTestTypesValuesType{
+    VisualStudioLoadTest: "visualStudioLoadTest",
+    JMeter: "jMeter",
+    OldLoadTestFile: "oldLoadTestFile",
+}
+
 type MessageSource string
 
+type messageSourceValuesType struct {
+    SetupScript MessageSource
+    CleanupScript MessageSource
+    Validation MessageSource
+    Other MessageSource
+    AutCounterCollection MessageSource
+}
+
+var MessageSourceValues = messageSourceValuesType{
+    SetupScript: "setupScript",
+    CleanupScript: "cleanupScript",
+    Validation: "validation",
+    Other: "other",
+    AutCounterCollection: "autCounterCollection",
+}
+
 type MessageType string
+
+type messageTypeValuesType struct {
+    Info MessageType
+    Output MessageType
+    Error MessageType
+    Warning MessageType
+    Critical MessageType
+}
+
+var MessageTypeValues = messageTypeValuesType{
+    Info: "info",
+    Output: "output",
+    Error: "error",
+    Warning: "warning",
+    Critical: "critical",
+}
 
 type OverridableRunSettings struct {
     LoadGeneratorMachinesType *LoadTestMachineType `json:"loadGeneratorMachinesType,omitempty"`
@@ -226,6 +282,24 @@ type PageSummary struct {
 }
 
 type ProcessorArchitecture string
+
+type processorArchitectureValuesType struct {
+    None ProcessorArchitecture
+    Msil ProcessorArchitecture
+    X86 ProcessorArchitecture
+    Ia64 ProcessorArchitecture
+    Amd64 ProcessorArchitecture
+    Arm ProcessorArchitecture
+}
+
+var ProcessorArchitectureValues = processorArchitectureValuesType{
+    None: "none",
+    Msil: "msil",
+    X86: "x86",
+    Ia64: "ia64",
+    Amd64: "amd64",
+    Arm: "arm",
+}
 
 type ReferenceLinks struct {
     Links *map[string]interface{} `json:"links,omitempty"`
@@ -428,11 +502,83 @@ type TestRunMessage struct {
 
 type TestRunRetentionState string
 
+type testRunRetentionStateValuesType struct {
+    None TestRunRetentionState
+    MarkedForDeletion TestRunRetentionState
+    Deleted TestRunRetentionState
+    Retain TestRunRetentionState
+}
+
+var TestRunRetentionStateValues = testRunRetentionStateValuesType{
+    None: "none",
+    MarkedForDeletion: "markedForDeletion",
+    Deleted: "deleted",
+    Retain: "retain",
+}
+
 type TestRunState string
+
+type testRunStateValuesType struct {
+    Pending TestRunState
+    Queued TestRunState
+    InProgress TestRunState
+    Stopping TestRunState
+    Completed TestRunState
+    Aborted TestRunState
+    Error TestRunState
+}
+
+var TestRunStateValues = testRunStateValuesType{
+    Pending: "pending",
+    Queued: "queued",
+    InProgress: "inProgress",
+    Stopping: "stopping",
+    Completed: "completed",
+    Aborted: "aborted",
+    Error: "error",
+}
 
 type TestRunSubState string
 
+type testRunSubStateValuesType struct {
+    None TestRunSubState
+    ValidatingTestRun TestRunSubState
+    AcquiringResources TestRunSubState
+    ConfiguringAgents TestRunSubState
+    ExecutingSetupScript TestRunSubState
+    WarmingUp TestRunSubState
+    RunningTest TestRunSubState
+    ExecutingCleanupScript TestRunSubState
+    CollectingResults TestRunSubState
+    Success TestRunSubState
+    PartialSuccess TestRunSubState
+}
+
+var TestRunSubStateValues = testRunSubStateValuesType{
+    None: "none",
+    ValidatingTestRun: "validatingTestRun",
+    AcquiringResources: "acquiringResources",
+    ConfiguringAgents: "configuringAgents",
+    ExecutingSetupScript: "executingSetupScript",
+    WarmingUp: "warmingUp",
+    RunningTest: "runningTest",
+    ExecutingCleanupScript: "executingCleanupScript",
+    CollectingResults: "collectingResults",
+    Success: "success",
+    PartialSuccess: "partialSuccess",
+}
+
 type TestRunType string
+
+type testRunTypeValuesType struct {
+    VisualStudioLoadTest TestRunType
+    JMeterLoadTest TestRunType
+}
+
+var TestRunTypeValues = testRunTypeValuesType{
+    VisualStudioLoadTest: "visualStudioLoadTest",
+    JMeterLoadTest: "jMeterLoadTest",
+}
 
 type TestSettings struct {
     CleanupCommand *string `json:"cleanupCommand,omitempty"`
@@ -469,6 +615,20 @@ type WebApiLoadTestMachineInput struct {
 
 type WebApiMachineConfiguration string
 
+type webApiMachineConfigurationValuesType struct {
+    UseXcopyTmiAgent WebApiMachineConfiguration
+    DisablingStrongNameVerification WebApiMachineConfiguration
+    TempFolderPath WebApiMachineConfiguration
+    ConfigureTcpParameters WebApiMachineConfiguration
+}
+
+var WebApiMachineConfigurationValues = webApiMachineConfigurationValuesType{
+    UseXcopyTmiAgent: "useXcopyTmiAgent",
+    DisablingStrongNameVerification: "disablingStrongNameVerification",
+    TempFolderPath: "tempFolderPath",
+    ConfigureTcpParameters: "configureTcpParameters",
+}
+
 type WebApiSetupParamaters struct {
     Configurations *map[WebApiMachineConfiguration]string `json:"configurations,omitempty"`
 }
@@ -487,7 +647,7 @@ type WebApiUserLoadTestMachineInput struct {
     AgentGroupName *string `json:"agentGroupName,omitempty"`
     TenantId *string `json:"tenantId,omitempty"`
     UserLoadAgentResourcesUri *string `json:"userLoadAgentResourcesUri,omitempty"`
-    VSTSAccountUri *string `json:"vstsAccountUri,omitempty"`
+    VstsAccountUri *string `json:"vstsAccountUri,omitempty"`
 }
 
 type WebInstanceSummaryData struct {

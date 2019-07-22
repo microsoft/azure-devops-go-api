@@ -17,6 +17,27 @@ import (
 
 type AadLoginPromptOption string
 
+type aadLoginPromptOptionValuesType struct {
+    NoOption AadLoginPromptOption
+    Login AadLoginPromptOption
+    SelectAccount AadLoginPromptOption
+    FreshLogin AadLoginPromptOption
+    FreshLoginWithMfa AadLoginPromptOption
+}
+
+var AadLoginPromptOptionValues = aadLoginPromptOptionValuesType{
+    // Do not provide a prompt option
+    NoOption: "noOption",
+    // Force the user to login again.
+    Login: "login",
+    // Force the user to select which account they are logging in with instead of automatically picking the user up from the session state. NOTE: This does not work for switching between the variants of a dual-homed user.
+    SelectAccount: "selectAccount",
+    // Force the user to login again. <remarks> Ignore current authentication state and force the user to authenticate again. This option should be used instead of Login. </remarks>
+    FreshLogin: "freshLogin",
+    // Force the user to login again with mfa. <remarks> Ignore current authentication state and force the user to authenticate again. This option should be used instead of Login, if MFA is required. </remarks>
+    FreshLoginWithMfa: "freshLoginWithMfa",
+}
+
 type AadOauthTokenRequest struct {
     Refresh *bool `json:"refresh,omitempty"`
     Resource *string `json:"resource,omitempty"`
@@ -79,6 +100,20 @@ type AgentRefreshMessage struct {
 }
 
 type AuditAction string
+
+type auditActionValuesType struct {
+    Add AuditAction
+    Update AuditAction
+    Delete AuditAction
+    Undelete AuditAction
+}
+
+var AuditActionValues = auditActionValuesType{
+    Add: "add",
+    Update: "update",
+    Delete: "delete",
+    Undelete: "undelete",
+}
 
 type AuthenticationSchemeReference struct {
     Inputs *map[string]string `json:"inputs,omitempty"`
@@ -306,6 +341,21 @@ type DeploymentGroup struct {
 // This is useful in getting a list of deployment groups, filtered for which caller has permissions to take a particular action.
 type DeploymentGroupActionFilter string
 
+type deploymentGroupActionFilterValuesType struct {
+    None DeploymentGroupActionFilter
+    Manage DeploymentGroupActionFilter
+    Use DeploymentGroupActionFilter
+}
+
+var DeploymentGroupActionFilterValues = deploymentGroupActionFilterValuesType{
+    // All deployment groups.
+    None: "none",
+    // Only deployment groups for which caller has **manage** permission.
+    Manage: "manage",
+    // Only deployment groups for which caller has **use** permission.
+    Use: "use",
+}
+
 // Properties to create Deployment group.
 type DeploymentGroupCreateParameter struct {
     // Description of the deployment group.
@@ -324,6 +374,21 @@ type DeploymentGroupCreateParameterPoolProperty struct {
 
 // Properties to be included or expanded in deployment group objects. This is useful when getting a single or list of deployment grouops.
 type DeploymentGroupExpands string
+
+type deploymentGroupExpandsValuesType struct {
+    None DeploymentGroupExpands
+    Machines DeploymentGroupExpands
+    Tags DeploymentGroupExpands
+}
+
+var DeploymentGroupExpandsValues = deploymentGroupExpandsValuesType{
+    // No additional properties.
+    None: "none",
+    // Deprecated: Include all the deployment targets.
+    Machines: "machines",
+    // Include unique list of tags across all deployment targets.
+    Tags: "tags",
+}
 
 // Deployment group metrics.
 type DeploymentGroupMetrics struct {
@@ -382,6 +447,18 @@ type DeploymentMachineChangedData struct {
 
 type DeploymentMachineExpands string
 
+type deploymentMachineExpandsValuesType struct {
+    None DeploymentMachineExpands
+    Capabilities DeploymentMachineExpands
+    AssignedRequest DeploymentMachineExpands
+}
+
+var DeploymentMachineExpandsValues = deploymentMachineExpandsValuesType{
+    None: "none",
+    Capabilities: "capabilities",
+    AssignedRequest: "assignedRequest",
+}
+
 type DeploymentMachineGroup struct {
     Id *int `json:"id,omitempty"`
     Name *string `json:"name,omitempty"`
@@ -420,8 +497,41 @@ type DeploymentPoolSummary struct {
 // Properties to be included or expanded in deployment pool summary objects. This is useful when getting a single or list of deployment pool summaries.
 type DeploymentPoolSummaryExpands string
 
+type deploymentPoolSummaryExpandsValuesType struct {
+    None DeploymentPoolSummaryExpands
+    DeploymentGroups DeploymentPoolSummaryExpands
+    Resource DeploymentPoolSummaryExpands
+}
+
+var DeploymentPoolSummaryExpandsValues = deploymentPoolSummaryExpandsValuesType{
+    // No additional properties
+    None: "none",
+    // Include deployment groups referring to the deployment pool.
+    DeploymentGroups: "deploymentGroups",
+    // Include Resource referring to the deployment pool.
+    Resource: "resource",
+}
+
 // Properties to be included or expanded in deployment target objects. This is useful when getting a single or list of deployment targets.
 type DeploymentTargetExpands string
+
+type deploymentTargetExpandsValuesType struct {
+    None DeploymentTargetExpands
+    Capabilities DeploymentTargetExpands
+    AssignedRequest DeploymentTargetExpands
+    LastCompletedRequest DeploymentTargetExpands
+}
+
+var DeploymentTargetExpandsValues = deploymentTargetExpandsValuesType{
+    // No additional properties.
+    None: "none",
+    // Include capabilities of the deployment agent.
+    Capabilities: "capabilities",
+    // Include the job request assigned to the deployment agent.
+    AssignedRequest: "assignedRequest",
+    // Include the last completed job request of the deployment agent.
+    LastCompletedRequest: "lastCompletedRequest",
+}
 
 // Deployment target update parameter.
 type DeploymentTargetUpdateParameter struct {
@@ -462,6 +572,21 @@ type EndpointUrl struct {
 
 // This is useful in getting a list of Environments, filtered for which caller has permissions to take a particular action.
 type EnvironmentActionFilter string
+
+type environmentActionFilterValuesType struct {
+    None EnvironmentActionFilter
+    Manage EnvironmentActionFilter
+    Use EnvironmentActionFilter
+}
+
+var EnvironmentActionFilterValues = environmentActionFilterValuesType{
+    // All environments for which user has **view** permission.
+    None: "none",
+    // Only environments for which caller has **manage** permission.
+    Manage: "manage",
+    // Only environments for which caller has **use** permission.
+    Use: "use",
+}
 
 // Properties to create Environment.
 type EnvironmentCreateParameter struct {
@@ -513,6 +638,18 @@ type EnvironmentDeploymentExecutionRecord struct {
 
 // Properties to be included or expanded in environment objects. This is useful when getting a single environment.
 type EnvironmentExpands string
+
+type environmentExpandsValuesType struct {
+    None EnvironmentExpands
+    ResourceReferences EnvironmentExpands
+}
+
+var EnvironmentExpandsValues = environmentExpandsValuesType{
+    // No additional properties
+    None: "none",
+    // Include resource references referring to the environment.
+    ResourceReferences: "resourceReferences",
+}
 
 // Environment.
 type EnvironmentInstance struct {
@@ -570,6 +707,23 @@ type EnvironmentResourceReference struct {
 
 // EnvironmentResourceType.
 type EnvironmentResourceType string
+
+type environmentResourceTypeValuesType struct {
+    Undefined EnvironmentResourceType
+    Generic EnvironmentResourceType
+    VirtualMachine EnvironmentResourceType
+    Kubernetes EnvironmentResourceType
+}
+
+var EnvironmentResourceTypeValues = environmentResourceTypeValuesType{
+    Undefined: "undefined",
+    // Unknown resource type
+    Generic: "generic",
+    // Virtual machine resource type
+    VirtualMachine: "virtualMachine",
+    // Kubernetes resource type
+    Kubernetes: "kubernetes",
+}
 
 // Properties to update Environment.
 type EnvironmentUpdateParameter struct {
@@ -644,6 +798,30 @@ type InputBindingContext struct {
 // Enumerates data types that are supported as subscription input values.
 type InputDataType string
 
+type inputDataTypeValuesType struct {
+    None InputDataType
+    String InputDataType
+    Number InputDataType
+    Boolean InputDataType
+    Guid InputDataType
+    Uri InputDataType
+}
+
+var InputDataTypeValues = inputDataTypeValuesType{
+    // No data type is specified.
+    None: "none",
+    // Represents a textual value.
+    String: "string",
+    // Represents a numeric value.
+    Number: "number",
+    // Represents a value of true or false.
+    Boolean: "boolean",
+    // Represents a Guid.
+    Guid: "guid",
+    // Represents a URI.
+    Uri: "uri",
+}
+
 // Describes an input for subscriptions.
 type InputDescriptor struct {
     // The ids of all inputs that the value of this input is dependent on.
@@ -678,6 +856,33 @@ type InputDescriptor struct {
 
 // Mode in which a subscription input should be entered (in a UI)
 type InputMode string
+
+type inputModeValuesType struct {
+    None InputMode
+    TextBox InputMode
+    PasswordBox InputMode
+    Combo InputMode
+    RadioButtons InputMode
+    CheckBox InputMode
+    TextArea InputMode
+}
+
+var InputModeValues = inputModeValuesType{
+    // This input should not be shown in the UI
+    None: "none",
+    // An input text box should be shown
+    TextBox: "textBox",
+    // An password input box should be shown
+    PasswordBox: "passwordBox",
+    // A select/combo control should be shown
+    Combo: "combo",
+    // Radio buttons should be shown
+    RadioButtons: "radioButtons",
+    // Checkbox should be shown(for true/false values)
+    CheckBox: "checkBox",
+    // A multi-line text area should be shown
+    TextArea: "textArea",
+}
 
 // Describes what values are valid for a subscription input
 type InputValidation struct {
@@ -758,6 +963,16 @@ type Issue struct {
 }
 
 type IssueType string
+
+type issueTypeValuesType struct {
+    Error IssueType
+    Warning IssueType
+}
+
+var IssueTypeValues = issueTypeValuesType{
+    Error: "error",
+    Warning: "warning",
+}
 
 type JobAssignedEvent struct {
     JobId *uuid.UUID `json:"jobId,omitempty"`
@@ -849,6 +1064,18 @@ type KubernetesResourceCreateParameters struct {
 
 type MachineGroupActionFilter string
 
+type machineGroupActionFilterValuesType struct {
+    None MachineGroupActionFilter
+    Manage MachineGroupActionFilter
+    Use MachineGroupActionFilter
+}
+
+var MachineGroupActionFilterValues = machineGroupActionFilterValuesType{
+    None: "none",
+    Manage: "manage",
+    Use: "use",
+}
+
 // Represents a purchase of resource units in a secondary marketplace.
 type MarketplacePurchasedLicense struct {
     // The Marketplace display name.
@@ -865,6 +1092,16 @@ type MaskHint struct {
 }
 
 type MaskType string
+
+type maskTypeValuesType struct {
+    Variable MaskType
+    Regex MaskType
+}
+
+var MaskTypeValues = maskTypeValuesType{
+    Variable: "variable",
+    Regex: "regex",
+}
 
 // Meta data for a metrics column.
 type MetricsColumnMetaData struct {
@@ -924,7 +1161,31 @@ type PlanEnvironment struct {
 
 type PlanGroupStatus string
 
+type planGroupStatusValuesType struct {
+    Running PlanGroupStatus
+    Queued PlanGroupStatus
+    All PlanGroupStatus
+}
+
+var PlanGroupStatusValues = planGroupStatusValuesType{
+    Running: "running",
+    Queued: "queued",
+    All: "all",
+}
+
 type PlanGroupStatusFilter string
+
+type planGroupStatusFilterValuesType struct {
+    Running PlanGroupStatusFilter
+    Queued PlanGroupStatusFilter
+    All PlanGroupStatusFilter
+}
+
+var PlanGroupStatusFilterValues = planGroupStatusFilterValuesType{
+    Running: "running",
+    Queued: "queued",
+    All: "all",
+}
 
 type ProjectReference struct {
     Id *uuid.UUID `json:"id,omitempty"`
@@ -1017,6 +1278,18 @@ type SecureFile struct {
 }
 
 type SecureFileActionFilter string
+
+type secureFileActionFilterValuesType struct {
+    None SecureFileActionFilter
+    Manage SecureFileActionFilter
+    Use SecureFileActionFilter
+}
+
+var SecureFileActionFilterValues = secureFileActionFilterValuesType{
+    None: "none",
+    Manage: "manage",
+    Use: "use",
+}
 
 type SecureFileEvent struct {
     EventType *string `json:"eventType,omitempty"`
@@ -1181,7 +1454,7 @@ type TaskAgent struct {
     // Name of the agent.
     Name *string `json:"name,omitempty"`
     // Agent OS.
-    OSDescription *string `json:"osDescription,omitempty"`
+    OsDescription *string `json:"osDescription,omitempty"`
     // Provisioning state of this agent.
     ProvisioningState *string `json:"provisioningState,omitempty"`
     // Whether or not the agent is online.
@@ -1332,6 +1605,24 @@ type TaskAgentJobRequest struct {
 // This is useful in getting a list of deployment targets, filtered by the result of their last job.
 type TaskAgentJobResultFilter string
 
+type taskAgentJobResultFilterValuesType struct {
+    Failed TaskAgentJobResultFilter
+    Passed TaskAgentJobResultFilter
+    NeverDeployed TaskAgentJobResultFilter
+    All TaskAgentJobResultFilter
+}
+
+var TaskAgentJobResultFilterValues = taskAgentJobResultFilterValuesType{
+    // Only those deployment targets on which last job failed (**Abandoned**, **Canceled**, **Failed**, **Skipped**).
+    Failed: "failed",
+    // Only those deployment targets on which last job Passed (**Succeeded**, **Succeeded with issues**).
+    Passed: "passed",
+    // Only those deployment targets that never executed a job.
+    NeverDeployed: "neverDeployed",
+    // All deployment targets.
+    All: "all",
+}
+
 type TaskAgentJobStep struct {
     Condition *string `json:"condition,omitempty"`
     ContinueOnError *bool `json:"continueOnError,omitempty"`
@@ -1346,6 +1637,16 @@ type TaskAgentJobStep struct {
 }
 
 type TaskAgentJobStepType string
+
+type taskAgentJobStepTypeValuesType struct {
+    Task TaskAgentJobStepType
+    Action TaskAgentJobStepType
+}
+
+var TaskAgentJobStepTypeValues = taskAgentJobStepTypeValuesType{
+    Task: "task",
+    Action: "action",
+}
 
 type TaskAgentJobTask struct {
     Id *uuid.UUID `json:"id,omitempty"`
@@ -1368,7 +1669,7 @@ type TaskAgentMessage struct {
     // Gets or sets the body of the message. If the <c>IV</c> property is provided the body will need to be decrypted using the <c>TaskAgentSession.EncryptionKey</c> value in addition to the <c>IV</c>.
     Body *string `json:"body,omitempty"`
     // Gets or sets the initialization vector used to encrypt this message.
-    IV *[]byte `json:"iv,omitempty"`
+    Iv *[]byte `json:"iv,omitempty"`
     // Gets or sets the message identifier.
     MessageId *uint64 `json:"messageId,omitempty"`
     // Gets or sets the message type, describing the data contract found in <c>TaskAgentMessage.Body</c>.
@@ -1414,6 +1715,18 @@ type TaskAgentPool struct {
 
 // Filters pools based on whether the calling user has permission to use or manage the pool.
 type TaskAgentPoolActionFilter string
+
+type taskAgentPoolActionFilterValuesType struct {
+    None TaskAgentPoolActionFilter
+    Manage TaskAgentPoolActionFilter
+    Use TaskAgentPoolActionFilter
+}
+
+var TaskAgentPoolActionFilterValues = taskAgentPoolActionFilterValuesType{
+    None: "none",
+    Manage: "manage",
+    Use: "use",
+}
 
 type TaskAgentPoolMaintenanceDefinition struct {
     // Enable maintenance
@@ -1463,7 +1776,33 @@ type TaskAgentPoolMaintenanceJob struct {
 
 type TaskAgentPoolMaintenanceJobResult string
 
+type taskAgentPoolMaintenanceJobResultValuesType struct {
+    Succeeded TaskAgentPoolMaintenanceJobResult
+    Failed TaskAgentPoolMaintenanceJobResult
+    Canceled TaskAgentPoolMaintenanceJobResult
+}
+
+var TaskAgentPoolMaintenanceJobResultValues = taskAgentPoolMaintenanceJobResultValuesType{
+    Succeeded: "succeeded",
+    Failed: "failed",
+    Canceled: "canceled",
+}
+
 type TaskAgentPoolMaintenanceJobStatus string
+
+type taskAgentPoolMaintenanceJobStatusValuesType struct {
+    InProgress TaskAgentPoolMaintenanceJobStatus
+    Completed TaskAgentPoolMaintenanceJobStatus
+    Cancelling TaskAgentPoolMaintenanceJobStatus
+    Queued TaskAgentPoolMaintenanceJobStatus
+}
+
+var TaskAgentPoolMaintenanceJobStatusValues = taskAgentPoolMaintenanceJobStatusValuesType{
+    InProgress: "inProgress",
+    Completed: "completed",
+    Cancelling: "cancelling",
+    Queued: "queued",
+}
 
 type TaskAgentPoolMaintenanceJobTargetAgent struct {
     Agent *TaskAgentReference `json:"agent,omitempty"`
@@ -1496,6 +1835,39 @@ type TaskAgentPoolMaintenanceSchedule struct {
 }
 
 type TaskAgentPoolMaintenanceScheduleDays string
+
+type taskAgentPoolMaintenanceScheduleDaysValuesType struct {
+    None TaskAgentPoolMaintenanceScheduleDays
+    Monday TaskAgentPoolMaintenanceScheduleDays
+    Tuesday TaskAgentPoolMaintenanceScheduleDays
+    Wednesday TaskAgentPoolMaintenanceScheduleDays
+    Thursday TaskAgentPoolMaintenanceScheduleDays
+    Friday TaskAgentPoolMaintenanceScheduleDays
+    Saturday TaskAgentPoolMaintenanceScheduleDays
+    Sunday TaskAgentPoolMaintenanceScheduleDays
+    All TaskAgentPoolMaintenanceScheduleDays
+}
+
+var TaskAgentPoolMaintenanceScheduleDaysValues = taskAgentPoolMaintenanceScheduleDaysValuesType{
+    // Do not run.
+    None: "none",
+    // Run on Monday.
+    Monday: "monday",
+    // Run on Tuesday.
+    Tuesday: "tuesday",
+    // Run on Wednesday.
+    Wednesday: "wednesday",
+    // Run on Thursday.
+    Thursday: "thursday",
+    // Run on Friday.
+    Friday: "friday",
+    // Run on Saturday.
+    Saturday: "saturday",
+    // Run on Sunday.
+    Sunday: "sunday",
+    // Run on all days of the week.
+    All: "all",
+}
 
 type TaskAgentPoolReference struct {
     Id *int `json:"id,omitempty"`
@@ -1542,6 +1914,18 @@ type TaskAgentPoolSummary struct {
 // The type of agent pool.
 type TaskAgentPoolType string
 
+type taskAgentPoolTypeValuesType struct {
+    Automation TaskAgentPoolType
+    Deployment TaskAgentPoolType
+}
+
+var TaskAgentPoolTypeValues = taskAgentPoolTypeValuesType{
+    // A typical pool of task agents
+    Automation: "automation",
+    // A deployment pool
+    Deployment: "deployment",
+}
+
 // Represents the public key portion of an RSA asymmetric key.
 type TaskAgentPublicKey struct {
     // Gets or sets the exponent for the public key.
@@ -1565,6 +1949,18 @@ type TaskAgentQueue struct {
 // Filters queues based on whether the calling user has permission to use or manage the queue.
 type TaskAgentQueueActionFilter string
 
+type taskAgentQueueActionFilterValuesType struct {
+    None TaskAgentQueueActionFilter
+    Manage TaskAgentQueueActionFilter
+    Use TaskAgentQueueActionFilter
+}
+
+var TaskAgentQueueActionFilterValues = taskAgentQueueActionFilterValuesType{
+    None: "none",
+    Manage: "manage",
+    Use: "use",
+}
+
 // A reference to an agent.
 type TaskAgentReference struct {
     Links *ReferenceLinks `json:"_links,omitempty"`
@@ -1577,7 +1973,7 @@ type TaskAgentReference struct {
     // Name of the agent.
     Name *string `json:"name,omitempty"`
     // Agent OS.
-    OSDescription *string `json:"osDescription,omitempty"`
+    OsDescription *string `json:"osDescription,omitempty"`
     // Provisioning state of this agent.
     ProvisioningState *string `json:"provisioningState,omitempty"`
     // Whether or not the agent is online.
@@ -1609,8 +2005,33 @@ type TaskAgentSessionKey struct {
 
 type TaskAgentStatus string
 
+type taskAgentStatusValuesType struct {
+    Offline TaskAgentStatus
+    Online TaskAgentStatus
+}
+
+var TaskAgentStatusValues = taskAgentStatusValuesType{
+    Offline: "offline",
+    Online: "online",
+}
+
 // This is useful in getting a list of deployment targets, filtered by the deployment agent status.
 type TaskAgentStatusFilter string
+
+type taskAgentStatusFilterValuesType struct {
+    Offline TaskAgentStatusFilter
+    Online TaskAgentStatusFilter
+    All TaskAgentStatusFilter
+}
+
+var TaskAgentStatusFilterValues = taskAgentStatusFilterValuesType{
+    // Only deployment targets that are offline.
+    Offline: "offline",
+    // Only deployment targets that are online.
+    Online: "online",
+    // All deployment targets.
+    All: "all",
+}
 
 // Details about an agent update.
 type TaskAgentUpdate struct {
@@ -1633,6 +2054,16 @@ type TaskAgentUpdateReason struct {
 }
 
 type TaskAgentUpdateReasonType string
+
+type taskAgentUpdateReasonTypeValuesType struct {
+    Manual TaskAgentUpdateReasonType
+    MinAgentVersionRequired TaskAgentUpdateReasonType
+}
+
+var TaskAgentUpdateReasonTypeValues = taskAgentUpdateReasonTypeValuesType{
+    Manual: "manual",
+    MinAgentVersionRequired: "minAgentVersionRequired",
+}
 
 type TaskAssignedEvent struct {
     JobId *uuid.UUID `json:"jobId,omitempty"`
@@ -1727,6 +2158,30 @@ type TaskDefinitionReference struct {
 }
 
 type TaskDefinitionStatus string
+
+type taskDefinitionStatusValuesType struct {
+    Preinstalled TaskDefinitionStatus
+    ReceivedInstallOrUpdate TaskDefinitionStatus
+    Installed TaskDefinitionStatus
+    ReceivedUninstall TaskDefinitionStatus
+    Uninstalled TaskDefinitionStatus
+    RequestedUpdate TaskDefinitionStatus
+    Updated TaskDefinitionStatus
+    AlreadyUpToDate TaskDefinitionStatus
+    InlineUpdateReceived TaskDefinitionStatus
+}
+
+var TaskDefinitionStatusValues = taskDefinitionStatusValuesType{
+    Preinstalled: "preinstalled",
+    ReceivedInstallOrUpdate: "receivedInstallOrUpdate",
+    Installed: "installed",
+    ReceivedUninstall: "receivedUninstall",
+    Uninstalled: "uninstalled",
+    RequestedUpdate: "requestedUpdate",
+    Updated: "updated",
+    AlreadyUpToDate: "alreadyUpToDate",
+    InlineUpdateReceived: "inlineUpdateReceived",
+}
 
 type TaskEvent struct {
     JobId *uuid.UUID `json:"jobId,omitempty"`
@@ -1841,8 +2296,30 @@ type TaskGroupDefinition struct {
 
 type TaskGroupExpands string
 
+type taskGroupExpandsValuesType struct {
+    None TaskGroupExpands
+    Tasks TaskGroupExpands
+}
+
+var TaskGroupExpandsValues = taskGroupExpandsValuesType{
+    None: "none",
+    Tasks: "tasks",
+}
+
 // Specifies the desired ordering of taskGroups.
 type TaskGroupQueryOrder string
+
+type taskGroupQueryOrderValuesType struct {
+    CreatedOnAscending TaskGroupQueryOrder
+    CreatedOnDescending TaskGroupQueryOrder
+}
+
+var TaskGroupQueryOrderValues = taskGroupQueryOrderValuesType{
+    // Order by createdon ascending.
+    CreatedOnAscending: "createdOnAscending",
+    // Order by createdon descending.
+    CreatedOnDescending: "createdOnDescending",
+}
 
 type TaskGroupRevision struct {
     ChangedBy *IdentityRef `json:"changedBy,omitempty"`
@@ -2014,6 +2491,16 @@ type TaskOrchestrationItem struct {
 
 type TaskOrchestrationItemType string
 
+type taskOrchestrationItemTypeValuesType struct {
+    Container TaskOrchestrationItemType
+    Job TaskOrchestrationItemType
+}
+
+var TaskOrchestrationItemTypeValues = taskOrchestrationItemTypeValuesType{
+    Container: "container",
+    Job: "job",
+}
+
 type TaskOrchestrationJob struct {
     ItemType *TaskOrchestrationItemType `json:"itemType,omitempty"`
     Demands *[]interface{} `json:"demands,omitempty"`
@@ -2081,6 +2568,20 @@ type TaskOrchestrationPlanReference struct {
 
 type TaskOrchestrationPlanState string
 
+type taskOrchestrationPlanStateValuesType struct {
+    InProgress TaskOrchestrationPlanState
+    Queued TaskOrchestrationPlanState
+    Completed TaskOrchestrationPlanState
+    Throttled TaskOrchestrationPlanState
+}
+
+var TaskOrchestrationPlanStateValues = taskOrchestrationPlanStateValuesType{
+    InProgress: "inProgress",
+    Queued: "queued",
+    Completed: "completed",
+    Throttled: "throttled",
+}
+
 type TaskOrchestrationQueuedPlan struct {
     AssignTime *time.Time `json:"assignTime,omitempty"`
     Definition *TaskOrchestrationOwner `json:"definition,omitempty"`
@@ -2124,6 +2625,24 @@ type TaskReference struct {
 }
 
 type TaskResult string
+
+type taskResultValuesType struct {
+    Succeeded TaskResult
+    SucceededWithIssues TaskResult
+    Failed TaskResult
+    Canceled TaskResult
+    Skipped TaskResult
+    Abandoned TaskResult
+}
+
+var TaskResultValues = taskResultValuesType{
+    Succeeded: "succeeded",
+    SucceededWithIssues: "succeededWithIssues",
+    Failed: "failed",
+    Canceled: "canceled",
+    Skipped: "skipped",
+    Abandoned: "abandoned",
+}
 
 type TaskSourceDefinition struct {
     AuthKey *string `json:"authKey,omitempty"`
@@ -2212,6 +2731,18 @@ type TimelineRecordFeedLinesWrapper struct {
 
 type TimelineRecordState string
 
+type timelineRecordStateValuesType struct {
+    Pending TimelineRecordState
+    InProgress TimelineRecordState
+    Completed TimelineRecordState
+}
+
+var TimelineRecordStateValues = timelineRecordStateValuesType{
+    Pending: "pending",
+    InProgress: "inProgress",
+    Completed: "completed",
+}
+
 type TimelineReference struct {
     ChangeId *int `json:"changeId,omitempty"`
     Id *uuid.UUID `json:"id,omitempty"`
@@ -2257,6 +2788,18 @@ type VariableGroup struct {
 
 type VariableGroupActionFilter string
 
+type variableGroupActionFilterValuesType struct {
+    None VariableGroupActionFilter
+    Manage VariableGroupActionFilter
+    Use VariableGroupActionFilter
+}
+
+var VariableGroupActionFilterValues = variableGroupActionFilterValuesType{
+    None: "none",
+    Manage: "manage",
+    Use: "use",
+}
+
 type VariableGroupParameters struct {
     // Sets description of the variable group.
     Description *string `json:"description,omitempty"`
@@ -2276,6 +2819,18 @@ type VariableGroupProviderData struct {
 
 // Specifies the desired ordering of variableGroups.
 type VariableGroupQueryOrder string
+
+type variableGroupQueryOrderValuesType struct {
+    IdAscending VariableGroupQueryOrder
+    IdDescending VariableGroupQueryOrder
+}
+
+var VariableGroupQueryOrderValues = variableGroupQueryOrderValuesType{
+    // Order by id ascending.
+    IdAscending: "idAscending",
+    // Order by id descending.
+    IdDescending: "idDescending",
+}
 
 type VariableValue struct {
     IsSecret *bool `json:"isSecret,omitempty"`

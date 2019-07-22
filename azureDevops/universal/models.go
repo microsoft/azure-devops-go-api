@@ -38,6 +38,24 @@ type MinimalPackageDetails struct {
 
 type Operation string
 
+type operationValuesType struct {
+    Add Operation
+    Remove Operation
+    Replace Operation
+    Move Operation
+    Copy Operation
+    Test Operation
+}
+
+var OperationValues = operationValuesType{
+    Add: "add",
+    Remove: "remove",
+    Replace: "replace",
+    Move: "move",
+    Copy: "copy",
+    Test: "test",
+}
+
 // Package version metadata for a Universal package
 type Package struct {
     // Related REST links.
@@ -68,8 +86,38 @@ type ReferenceLinks struct {
 // Describes UPack batch operation types.
 type UPackBatchOperationType string
 
+type uPackBatchOperationTypeValuesType struct {
+    Promote UPackBatchOperationType
+    Delete UPackBatchOperationType
+    PermanentDelete UPackBatchOperationType
+    RestoreToFeed UPackBatchOperationType
+}
+
+var UPackBatchOperationTypeValues = uPackBatchOperationTypeValuesType{
+    // Promote package versions to a release view. If constructing a UPackPackagesBatchRequest object with this type, use BatchPromoteData for its Data property. Not supported in the Recycle Bin.
+    Promote: "promote",
+    // Move package versions to the feed's Recycle Bin. Not supported in the Recycle Bin.
+    Delete: "delete",
+    // Permanently delete package versions. Only supported in the Recycle Bin.
+    PermanentDelete: "permanentDelete",
+    // Restore deleted package versions to the feed. Only supported in the Recycle Bin.
+    RestoreToFeed: "restoreToFeed",
+}
+
 // Describes intent when calling the API GetPackageMetadata.
 type UPackGetPackageMetadataIntent string
+
+type uPackGetPackageMetadataIntentValuesType struct {
+    FetchMetadataOnly UPackGetPackageMetadataIntent
+    Download UPackGetPackageMetadataIntent
+}
+
+var UPackGetPackageMetadataIntentValues = uPackGetPackageMetadataIntentValuesType{
+    // Default. The call intends only to retrieve the package metadata.
+    FetchMetadataOnly: "fetchMetadataOnly",
+    // The call is part of the download flow.
+    Download: "download",
+}
 
 // A batch of operations to apply to package versions.
 type UPackPackagesBatchRequest struct {

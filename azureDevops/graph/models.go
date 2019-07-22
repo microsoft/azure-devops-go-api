@@ -23,6 +23,18 @@ type Avatar struct {
 // Small = 34 x 34 pixels; Medium = 44 x 44 pixels; Large = 220 x 220 pixels
 type AvatarSize string
 
+type avatarSizeValuesType struct {
+    Small AvatarSize
+    Medium AvatarSize
+    Large AvatarSize
+}
+
+var AvatarSizeValues = avatarSizeValuesType{
+    Small: "small",
+    Medium: "medium",
+    Large: "large",
+}
+
 type GraphCachePolicies struct {
     // Size of the cache
     CacheSize *int `json:"cacheSize,omitempty"`
@@ -145,6 +157,36 @@ type GraphMember struct {
 }
 
 type GraphMemberSearchFactor string
+
+type graphMemberSearchFactorValuesType struct {
+    PrincipalName GraphMemberSearchFactor
+    DisplayName GraphMemberSearchFactor
+    AdministratorsGroup GraphMemberSearchFactor
+    Identifier GraphMemberSearchFactor
+    MailAddress GraphMemberSearchFactor
+    General GraphMemberSearchFactor
+    Alias GraphMemberSearchFactor
+    DirectoryAlias GraphMemberSearchFactor
+}
+
+var GraphMemberSearchFactorValues = graphMemberSearchFactorValuesType{
+    // Domain qualified account name (domain\alias)
+    PrincipalName: "principalName",
+    // Display name
+    DisplayName: "displayName",
+    // Administrators group
+    AdministratorsGroup: "administratorsGroup",
+    // Find the identity using the identifier (SID)
+    Identifier: "identifier",
+    // Email address
+    MailAddress: "mailAddress",
+    // A general search for an identity.
+    General: "general",
+    // Alternate login username (Basic Auth Alias)
+    Alias: "alias",
+    // Find identity using DirectoryAlias
+    DirectoryAlias: "directoryAlias",
+}
 
 // Relationship between a container and a member
 type GraphMembership struct {
@@ -301,6 +343,18 @@ type GraphSystemSubject struct {
 
 type GraphTraversalDirection string
 
+type graphTraversalDirectionValuesType struct {
+    Unknown GraphTraversalDirection
+    Down GraphTraversalDirection
+    Up GraphTraversalDirection
+}
+
+var GraphTraversalDirectionValues = graphTraversalDirectionValuesType{
+    Unknown: "unknown",
+    Down: "down",
+    Up: "up",
+}
+
 // Graph user entity
 type GraphUser struct {
     // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
@@ -380,6 +434,18 @@ type GraphUserUpdateContext struct {
 
 type GroupScopeType string
 
+type groupScopeTypeValuesType struct {
+    Generic GroupScopeType
+    ServiceHost GroupScopeType
+    TeamProject GroupScopeType
+}
+
+var GroupScopeTypeValues = groupScopeTypeValuesType{
+    Generic: "generic",
+    ServiceHost: "serviceHost",
+    TeamProject: "teamProject",
+}
+
 // The JSON model for a JSON Patch operation
 type JsonPatchOperation struct {
     // The path to copy from for the Move/Copy operation.
@@ -393,6 +459,24 @@ type JsonPatchOperation struct {
 }
 
 type Operation string
+
+type operationValuesType struct {
+    Add Operation
+    Remove Operation
+    Replace Operation
+    Move Operation
+    Copy Operation
+    Test Operation
+}
+
+var OperationValues = operationValuesType{
+    Add: "add",
+    Remove: "remove",
+    Replace: "replace",
+    Move: "move",
+    Copy: "copy",
+    Test: "test",
+}
 
 type PagedGraphGroups struct {
     // This will be non-null if there is another page of data. There will never be more than one continuation token returned by a request.

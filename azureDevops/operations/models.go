@@ -52,6 +52,30 @@ type OperationResultReference struct {
 // The status of an operation.
 type OperationStatus string
 
+type operationStatusValuesType struct {
+    NotSet OperationStatus
+    Queued OperationStatus
+    InProgress OperationStatus
+    Cancelled OperationStatus
+    Succeeded OperationStatus
+    Failed OperationStatus
+}
+
+var OperationStatusValues = operationStatusValuesType{
+    // The operation does not have a status set.
+    NotSet: "notSet",
+    // The operation has been queued.
+    Queued: "queued",
+    // The operation is in progress.
+    InProgress: "inProgress",
+    // The operation was cancelled by the user.
+    Cancelled: "cancelled",
+    // The operation completed successfully.
+    Succeeded: "succeeded",
+    // The operation completed with a failure.
+    Failed: "failed",
+}
+
 // The class to represent a collection of REST reference links.
 type ReferenceLinks struct {
     // The readonly view of the links.  Because Reference links are readonly, we only want to expose them as read only.

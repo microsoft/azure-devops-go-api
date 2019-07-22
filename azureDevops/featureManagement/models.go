@@ -47,6 +47,21 @@ type ContributedFeature struct {
 // The current state of a feature within a given scope
 type ContributedFeatureEnabledValue string
 
+type contributedFeatureEnabledValueValuesType struct {
+    Undefined ContributedFeatureEnabledValue
+    Disabled ContributedFeatureEnabledValue
+    Enabled ContributedFeatureEnabledValue
+}
+
+var ContributedFeatureEnabledValueValues = contributedFeatureEnabledValueValuesType{
+    // The state of the feature is not set for the specified scope
+    Undefined: "undefined",
+    // The feature is disabled at the specified scope
+    Disabled: "disabled",
+    // The feature is enabled at the specified scope
+    Enabled: "enabled",
+}
+
 type ContributedFeatureHandlerSettings struct {
     // Name of the handler to run
     Name *string `json:"name,omitempty"`

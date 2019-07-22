@@ -41,12 +41,24 @@ type Avatar struct {
 // Small = 34 x 34 pixels; Medium = 44 x 44 pixels; Large = 220 x 220 pixels
 type AvatarSize string
 
+type avatarSizeValuesType struct {
+    Small AvatarSize
+    Medium AvatarSize
+    Large AvatarSize
+}
+
+var AvatarSizeValues = avatarSizeValuesType{
+    Small: "small",
+    Medium: "medium",
+    Large: "large",
+}
+
 // A profile attribute which always has a value for each profile.
 type CoreProfileAttribute struct {
 }
 
 type CreateProfileContext struct {
-    CIData *map[string]interface{} `json:"ciData,omitempty"`
+    CiData *map[string]interface{} `json:"ciData,omitempty"`
     ContactWithOffers *bool `json:"contactWithOffers,omitempty"`
     CountryName *string `json:"countryName,omitempty"`
     DisplayName *string `json:"displayName,omitempty"`
@@ -115,3 +127,18 @@ type ProfileRegions struct {
 
 // The state of a profile.
 type ProfileState string
+
+type profileStateValuesType struct {
+    Custom ProfileState
+    CustomReadOnly ProfileState
+    ReadOnly ProfileState
+}
+
+var ProfileStateValues = profileStateValuesType{
+    // The profile is in use.
+    Custom: "custom",
+    // The profile is in use, but can only be read.
+    CustomReadOnly: "customReadOnly",
+    // The profile may only be read.
+    ReadOnly: "readOnly",
+}

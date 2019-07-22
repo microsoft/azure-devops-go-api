@@ -14,6 +14,22 @@ import (
 
 type ConfigurationType string
 
+type configurationTypeValuesType struct {
+    Unknown ConfigurationType
+    Yaml ConfigurationType
+    DesignerJson ConfigurationType
+    JustInTime ConfigurationType
+    DesignerHyphenJson ConfigurationType
+}
+
+var ConfigurationTypeValues = configurationTypeValuesType{
+    Unknown: "unknown",
+    Yaml: "yaml",
+    DesignerJson: "designerJson",
+    JustInTime: "justInTime",
+    DesignerHyphenJson: "designerHyphenJson",
+}
+
 type CreatePipelineConfigurationParameters struct {
     Type *ConfigurationType `json:"type,omitempty"`
 }
@@ -26,6 +42,16 @@ type CreatePipelineParameters struct {
 
 // $expand options for GetLog and ListLogs.
 type GetLogExpandOptions string
+
+type getLogExpandOptionsValuesType struct {
+    None GetLogExpandOptions
+    SignedContent GetLogExpandOptions
+}
+
+var GetLogExpandOptionsValues = getLogExpandOptionsValuesType{
+    None: "none",
+    SignedContent: "signedContent",
+}
 
 type Log struct {
     // The date and time the log was created.
@@ -103,6 +129,20 @@ type RepositoryResourceParameters struct {
 
 type RepositoryType string
 
+type repositoryTypeValuesType struct {
+    Unknown RepositoryType
+    GitHub RepositoryType
+    AzureReposGit RepositoryType
+    AzureReposGitHyphenated RepositoryType
+}
+
+var RepositoryTypeValues = repositoryTypeValuesType{
+    Unknown: "unknown",
+    GitHub: "gitHub",
+    AzureReposGit: "azureReposGit",
+    AzureReposGitHyphenated: "azureReposGitHyphenated",
+}
+
 type Run struct {
     Id *int `json:"id,omitempty"`
     Name *string `json:"name,omitempty"`
@@ -140,8 +180,36 @@ type RunResourcesParameters struct {
 // This is not a Flags enum because we don't want to set multiple results on a build. However, when adding values, please stick to powers of 2 as if it were a Flags enum. This will make it easier to query multiple results.
 type RunResult string
 
+type runResultValuesType struct {
+    Unknown RunResult
+    Succeeded RunResult
+    Failed RunResult
+    Canceled RunResult
+}
+
+var RunResultValues = runResultValuesType{
+    Unknown: "unknown",
+    Succeeded: "succeeded",
+    Failed: "failed",
+    Canceled: "canceled",
+}
+
 // This is not a Flags enum because we don't want to set multiple states on a build. However, when adding values, please stick to powers of 2 as if it were a Flags enum. This will make it easier to query multiple states.
 type RunState string
+
+type runStateValuesType struct {
+    Unknown RunState
+    InProgress RunState
+    Canceling RunState
+    Completed RunState
+}
+
+var RunStateValues = runStateValuesType{
+    Unknown: "unknown",
+    InProgress: "inProgress",
+    Canceling: "canceling",
+    Completed: "completed",
+}
 
 // A signed url allowing limited-time anonymous access to private resources.
 type SignedUrl struct {

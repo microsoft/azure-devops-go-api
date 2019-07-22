@@ -245,6 +245,33 @@ type CommentThreadContext struct {
 // The status of a comment thread.
 type CommentThreadStatus string
 
+type commentThreadStatusValuesType struct {
+    Unknown CommentThreadStatus
+    Active CommentThreadStatus
+    Fixed CommentThreadStatus
+    WontFix CommentThreadStatus
+    Closed CommentThreadStatus
+    ByDesign CommentThreadStatus
+    Pending CommentThreadStatus
+}
+
+var CommentThreadStatusValues = commentThreadStatusValuesType{
+    // The thread status is unknown.
+    Unknown: "unknown",
+    // The thread status is active.
+    Active: "active",
+    // The thread status is resolved as fixed.
+    Fixed: "fixed",
+    // The thread status is resolved as won't fix.
+    WontFix: "wontFix",
+    // The thread status is closed.
+    Closed: "closed",
+    // The thread status is resolved as by design.
+    ByDesign: "byDesign",
+    // The thread status is pending.
+    Pending: "pending",
+}
+
 // Comment tracking criteria is used to identify which iteration context the thread has been tracked to (if any) along with some detail about the original position and filename.
 type CommentTrackingCriteria struct {
     // The iteration of the file on the left side of the diff that the thread will be tracked to. Threads were tracked if this is greater than 0.
@@ -265,6 +292,24 @@ type CommentTrackingCriteria struct {
 
 // The type of a comment.
 type CommentType string
+
+type commentTypeValuesType struct {
+    Unknown CommentType
+    Text CommentType
+    CodeChange CommentType
+    System CommentType
+}
+
+var CommentTypeValues = commentTypeValuesType{
+    // The comment type is not known.
+    Unknown: "unknown",
+    // This is a regular user comment.
+    Text: "text",
+    // The comment comes as a result of a code change.
+    CodeChange: "codeChange",
+    // The comment represents a system message.
+    System: "system",
+}
 
 // Real time event (SignalR) for a completion errors on a pull request
 type CompletionErrorsEvent struct {
@@ -340,6 +385,27 @@ type GitAnnotatedTag struct {
 // Current status of the asynchronous operation.
 type GitAsyncOperationStatus string
 
+type gitAsyncOperationStatusValuesType struct {
+    Queued GitAsyncOperationStatus
+    InProgress GitAsyncOperationStatus
+    Completed GitAsyncOperationStatus
+    Failed GitAsyncOperationStatus
+    Abandoned GitAsyncOperationStatus
+}
+
+var GitAsyncOperationStatusValues = gitAsyncOperationStatusValuesType{
+    // The operation is waiting in a queue and has not yet started.
+    Queued: "queued",
+    // The operation is currently in progress.
+    InProgress: "inProgress",
+    // The operation has completed.
+    Completed: "completed",
+    // The operation has failed. Check for an error message.
+    Failed: "failed",
+    // The operation has been abandoned.
+    Abandoned: "abandoned",
+}
+
 type GitAsyncRefOperation struct {
     Links *ReferenceLinks `json:"_links,omitempty"`
     DetailedStatus *GitAsyncRefOperationDetail `json:"detailedStatus,omitempty"`
@@ -366,6 +432,45 @@ type GitAsyncRefOperationDetail struct {
 }
 
 type GitAsyncRefOperationFailureStatus string
+
+type gitAsyncRefOperationFailureStatusValuesType struct {
+    None GitAsyncRefOperationFailureStatus
+    InvalidRefName GitAsyncRefOperationFailureStatus
+    RefNameConflict GitAsyncRefOperationFailureStatus
+    CreateBranchPermissionRequired GitAsyncRefOperationFailureStatus
+    WritePermissionRequired GitAsyncRefOperationFailureStatus
+    TargetBranchDeleted GitAsyncRefOperationFailureStatus
+    GitObjectTooLarge GitAsyncRefOperationFailureStatus
+    OperationIndentityNotFound GitAsyncRefOperationFailureStatus
+    AsyncOperationNotFound GitAsyncRefOperationFailureStatus
+    Other GitAsyncRefOperationFailureStatus
+    EmptyCommitterSignature GitAsyncRefOperationFailureStatus
+}
+
+var GitAsyncRefOperationFailureStatusValues = gitAsyncRefOperationFailureStatusValuesType{
+    // No status
+    None: "none",
+    // Indicates that the ref update request could not be completed because the ref name presented in the request was not valid.
+    InvalidRefName: "invalidRefName",
+    // The ref update could not be completed because, in case-insensitive mode, the ref name conflicts with an existing, differently-cased ref name.
+    RefNameConflict: "refNameConflict",
+    // The ref update request could not be completed because the user lacks the permission to create a branch
+    CreateBranchPermissionRequired: "createBranchPermissionRequired",
+    // The ref update request could not be completed because the user lacks write permissions required to write this ref
+    WritePermissionRequired: "writePermissionRequired",
+    // Target branch was deleted after Git async operation started
+    TargetBranchDeleted: "targetBranchDeleted",
+    // Git object is too large to materialize into memory
+    GitObjectTooLarge: "gitObjectTooLarge",
+    // Identity who authorized the operation was not found
+    OperationIndentityNotFound: "operationIndentityNotFound",
+    // Async operation was not found
+    AsyncOperationNotFound: "asyncOperationNotFound",
+    // Unexpected failure
+    Other: "other",
+    // Initiator of async operation has signature with empty name or email
+    EmptyCommitterSignature: "emptyCommitterSignature",
+}
 
 // Parameters that are provided in the request body when requesting to cherry pick or revert.
 type GitAsyncRefOperationParameters struct {
@@ -817,6 +922,57 @@ type GitConflictRenameRename struct {
 // The type of a merge conflict.
 type GitConflictType string
 
+type gitConflictTypeValuesType struct {
+    None GitConflictType
+    AddAdd GitConflictType
+    AddRename GitConflictType
+    DeleteEdit GitConflictType
+    DeleteRename GitConflictType
+    DirectoryFile GitConflictType
+    DirectoryChild GitConflictType
+    EditDelete GitConflictType
+    EditEdit GitConflictType
+    FileDirectory GitConflictType
+    Rename1to2 GitConflictType
+    Rename2to1 GitConflictType
+    RenameAdd GitConflictType
+    RenameDelete GitConflictType
+    RenameRename GitConflictType
+}
+
+var GitConflictTypeValues = gitConflictTypeValuesType{
+    // No conflict
+    None: "none",
+    // Added on source and target; content differs
+    AddAdd: "addAdd",
+    // Added on source and rename destination on target
+    AddRename: "addRename",
+    // Deleted on source and edited on target
+    DeleteEdit: "deleteEdit",
+    // Deleted on source and renamed on target
+    DeleteRename: "deleteRename",
+    // Path is a directory on source and a file on target
+    DirectoryFile: "directoryFile",
+    // Children of directory which has DirectoryFile or FileDirectory conflict
+    DirectoryChild: "directoryChild",
+    // Edited on source and deleted on target
+    EditDelete: "editDelete",
+    // Edited on source and target; content differs
+    EditEdit: "editEdit",
+    // Path is a file on source and a directory on target
+    FileDirectory: "fileDirectory",
+    // Same file renamed on both source and target; destination paths differ
+    Rename1to2: "rename1to2",
+    // Different files renamed to same destination path on both source and target
+    Rename2to1: "rename2to1",
+    // Rename destination on source and new file on target
+    RenameAdd: "renameAdd",
+    // Renamed on source and deleted on target
+    RenameDelete: "renameDelete",
+    // Rename destination on both source and target; content differs
+    RenameRename: "renameRename",
+}
+
 type GitConflictUpdateResult struct {
     // Conflict ID that was provided by input
     ConflictId *int `json:"conflictId,omitempty"`
@@ -830,6 +986,27 @@ type GitConflictUpdateResult struct {
 
 // Represents the possible outcomes from a request to update a pull request conflict
 type GitConflictUpdateStatus string
+
+type gitConflictUpdateStatusValuesType struct {
+    Succeeded GitConflictUpdateStatus
+    BadRequest GitConflictUpdateStatus
+    InvalidResolution GitConflictUpdateStatus
+    UnsupportedConflictType GitConflictUpdateStatus
+    NotFound GitConflictUpdateStatus
+}
+
+var GitConflictUpdateStatusValues = gitConflictUpdateStatusValuesType{
+    // Indicates that pull request conflict update request was completed successfully
+    Succeeded: "succeeded",
+    // Indicates that the update request did not fit the expected data contract
+    BadRequest: "badRequest",
+    // Indicates that the requested resolution was not valid
+    InvalidResolution: "invalidResolution",
+    // Indicates that the conflict in the update request was not a supported conflict type
+    UnsupportedConflictType: "unsupportedConflictType",
+    // Indicates that the conflict could not be found
+    NotFound: "notFound",
+}
 
 type GitDeletedRepository struct {
     CreatedDate *time.Time `json:"createdDate,omitempty"`
@@ -918,6 +1095,24 @@ type GitForkTeamProjectReference struct {
 
 // Accepted types of version
 type GitHistoryMode string
+
+type gitHistoryModeValuesType struct {
+    SimplifiedHistory GitHistoryMode
+    FirstParent GitHistoryMode
+    FullHistory GitHistoryMode
+    FullHistorySimplifyMerges GitHistoryMode
+}
+
+var GitHistoryModeValues = gitHistoryModeValuesType{
+    // The history mode used by `git log`. This is the default.
+    SimplifiedHistory: "simplifiedHistory",
+    // The history mode used by `git log --first-parent`
+    FirstParent: "firstParent",
+    // The history mode used by `git log --full-history`
+    FullHistory: "fullHistory",
+    // The history mode used by `git log --full-history --simplify-merges`
+    FullHistorySimplifyMerges: "fullHistorySimplifyMerges",
+}
 
 type GitImportFailedEvent struct {
     SourceRepositoryName *string `json:"sourceRepositoryName,omitempty"`
@@ -1092,6 +1287,28 @@ type GitObject struct {
 
 type GitObjectType string
 
+type gitObjectTypeValuesType struct {
+    Bad GitObjectType
+    Commit GitObjectType
+    Tree GitObjectType
+    Blob GitObjectType
+    Tag GitObjectType
+    Ext2 GitObjectType
+    OfsDelta GitObjectType
+    RefDelta GitObjectType
+}
+
+var GitObjectTypeValues = gitObjectTypeValuesType{
+    Bad: "bad",
+    Commit: "commit",
+    Tree: "tree",
+    Blob: "blob",
+    Tag: "tag",
+    Ext2: "ext2",
+    OfsDelta: "ofsDelta",
+    RefDelta: "refDelta",
+}
+
 type GitPathAction struct {
     Action *GitPathActions `json:"action,omitempty"`
     Base64Content *string `json:"base64Content,omitempty"`
@@ -1101,6 +1318,22 @@ type GitPathAction struct {
 }
 
 type GitPathActions string
+
+type gitPathActionsValuesType struct {
+    None GitPathActions
+    Edit GitPathActions
+    Delete GitPathActions
+    Add GitPathActions
+    Rename GitPathActions
+}
+
+var GitPathActionsValues = gitPathActionsValuesType{
+    None: "none",
+    Edit: "edit",
+    Delete: "delete",
+    Add: "add",
+    Rename: "rename",
+}
 
 type GitPathToItemsCollection struct {
     Items *map[string][]GitItem `json:"items,omitempty"`
@@ -1302,6 +1535,24 @@ type GitPullRequestMergeOptions struct {
 // Enumeration of possible merge strategies which can be used to complete a pull request.
 type GitPullRequestMergeStrategy string
 
+type gitPullRequestMergeStrategyValuesType struct {
+    NoFastForward GitPullRequestMergeStrategy
+    Squash GitPullRequestMergeStrategy
+    Rebase GitPullRequestMergeStrategy
+    RebaseMerge GitPullRequestMergeStrategy
+}
+
+var GitPullRequestMergeStrategyValues = gitPullRequestMergeStrategyValuesType{
+    // A two-parent, no-fast-forward merge. The source branch is unchanged. This is the default behavior.
+    NoFastForward: "noFastForward",
+    // Put all changes from the pull request into a single-parent commit.
+    Squash: "squash",
+    // Rebase the source branch on top of the target branch HEAD commit, and fast-forward the target branch. The source branch is updated during the rebase operation.
+    Rebase: "rebase",
+    // Rebase the source branch on top of the target branch HEAD commit, and create a two-parent, no-fast-forward merge. The source branch is updated during the rebase operation.
+    RebaseMerge: "rebaseMerge",
+}
+
 // A set of pull request queries and their results.
 type GitPullRequestQuery struct {
     // The queries to perform.
@@ -1321,15 +1572,40 @@ type GitPullRequestQueryInput struct {
 // Accepted types of pull request queries.
 type GitPullRequestQueryType string
 
+type gitPullRequestQueryTypeValuesType struct {
+    NotSet GitPullRequestQueryType
+    LastMergeCommit GitPullRequestQueryType
+    Commit GitPullRequestQueryType
+}
+
+var GitPullRequestQueryTypeValues = gitPullRequestQueryTypeValuesType{
+    // No query type set.
+    NotSet: "notSet",
+    // Search for pull requests that created the supplied merge commits.
+    LastMergeCommit: "lastMergeCommit",
+    // Search for pull requests that merged the supplied commits.
+    Commit: "commit",
+}
+
 type GitPullRequestReviewFileContentInfo struct {
     Links *ReferenceLinks `json:"_links,omitempty"`
     // The file change path.
     Path *string `json:"path,omitempty"`
     // Content hash of on-disk representation of file content. Its calculated by the client by using SHA1 hash function. Ensure that uploaded file has same encoding as in source control.
-    SHA1Hash *string `json:"shA1Hash,omitempty"`
+    ShA1Hash *string `json:"shA1Hash,omitempty"`
 }
 
 type GitPullRequestReviewFileType string
+
+type gitPullRequestReviewFileTypeValuesType struct {
+    ChangeEntry GitPullRequestReviewFileType
+    Attachment GitPullRequestReviewFileType
+}
+
+var GitPullRequestReviewFileTypeValues = gitPullRequestReviewFileTypeValuesType{
+    ChangeEntry: "changeEntry",
+    Attachment: "attachment",
+}
 
 // Pull requests can be searched for matching this criteria.
 type GitPullRequestSearchCriteria struct {
@@ -1500,6 +1776,18 @@ type GitRefFavorite struct {
 // Search type on ref name
 type GitRefSearchType string
 
+type gitRefSearchTypeValuesType struct {
+    Exact GitRefSearchType
+    StartsWith GitRefSearchType
+    Contains GitRefSearchType
+}
+
+var GitRefSearchTypeValues = gitRefSearchTypeValuesType{
+    Exact: "exact",
+    StartsWith: "startsWith",
+    Contains: "contains",
+}
+
 type GitRefUpdate struct {
     IsLocked *bool `json:"isLocked,omitempty"`
     Name *string `json:"name,omitempty"`
@@ -1510,6 +1798,18 @@ type GitRefUpdate struct {
 
 // Enumerates the modes under which ref updates can be written to their repositories.
 type GitRefUpdateMode string
+
+type gitRefUpdateModeValuesType struct {
+    BestEffort GitRefUpdateMode
+    AllOrNone GitRefUpdateMode
+}
+
+var GitRefUpdateModeValues = gitRefUpdateModeValuesType{
+    // Indicates the Git protocol model where any refs that can be updated will be updated, but any failures will not prevent other updates from succeeding.
+    BestEffort: "bestEffort",
+    // Indicates that all ref updates must succeed or none will succeed. All ref updates will be atomically written. If any failure is encountered, previously successful updates will be rolled back and the entire operation will fail.
+    AllOrNone: "allOrNone",
+}
 
 type GitRefUpdateResult struct {
     // Custom message for the result object For instance, Reason for failing.
@@ -1534,6 +1834,60 @@ type GitRefUpdateResult struct {
 
 // Represents the possible outcomes from a request to update a ref in a repository.
 type GitRefUpdateStatus string
+
+type gitRefUpdateStatusValuesType struct {
+    Succeeded GitRefUpdateStatus
+    ForcePushRequired GitRefUpdateStatus
+    StaleOldObjectId GitRefUpdateStatus
+    InvalidRefName GitRefUpdateStatus
+    Unprocessed GitRefUpdateStatus
+    UnresolvableToCommit GitRefUpdateStatus
+    WritePermissionRequired GitRefUpdateStatus
+    ManageNotePermissionRequired GitRefUpdateStatus
+    CreateBranchPermissionRequired GitRefUpdateStatus
+    CreateTagPermissionRequired GitRefUpdateStatus
+    RejectedByPlugin GitRefUpdateStatus
+    Locked GitRefUpdateStatus
+    RefNameConflict GitRefUpdateStatus
+    RejectedByPolicy GitRefUpdateStatus
+    SucceededNonExistentRef GitRefUpdateStatus
+    SucceededCorruptRef GitRefUpdateStatus
+}
+
+var GitRefUpdateStatusValues = gitRefUpdateStatusValuesType{
+    // Indicates that the ref update request was completed successfully.
+    Succeeded: "succeeded",
+    // Indicates that the ref update request could not be completed because part of the graph would be disconnected by this change, and the caller does not have ForcePush permission on the repository.
+    ForcePushRequired: "forcePushRequired",
+    // Indicates that the ref update request could not be completed because the old object ID presented in the request was not the object ID of the ref when the database attempted the update. The most likely scenario is that the caller lost a race to update the ref.
+    StaleOldObjectId: "staleOldObjectId",
+    // Indicates that the ref update request could not be completed because the ref name presented in the request was not valid.
+    InvalidRefName: "invalidRefName",
+    // The request was not processed
+    Unprocessed: "unprocessed",
+    // The ref update request could not be completed because the new object ID for the ref could not be resolved to a commit object (potentially through any number of tags)
+    UnresolvableToCommit: "unresolvableToCommit",
+    // The ref update request could not be completed because the user lacks write permissions required to write this ref
+    WritePermissionRequired: "writePermissionRequired",
+    // The ref update request could not be completed because the user lacks note creation permissions required to write this note
+    ManageNotePermissionRequired: "manageNotePermissionRequired",
+    // The ref update request could not be completed because the user lacks the permission to create a branch
+    CreateBranchPermissionRequired: "createBranchPermissionRequired",
+    // The ref update request could not be completed because the user lacks the permission to create a tag
+    CreateTagPermissionRequired: "createTagPermissionRequired",
+    // The ref update could not be completed because it was rejected by the plugin.
+    RejectedByPlugin: "rejectedByPlugin",
+    // The ref update could not be completed because the ref is locked by another user.
+    Locked: "locked",
+    // The ref update could not be completed because, in case-insensitive mode, the ref name conflicts with an existing, differently-cased ref name.
+    RefNameConflict: "refNameConflict",
+    // The ref update could not be completed because it was rejected by policy.
+    RejectedByPolicy: "rejectedByPolicy",
+    // Indicates that the ref update request was completed successfully, but the ref doesn't actually exist so no changes were made.  This should only happen during deletes.
+    SucceededNonExistentRef: "succeededNonExistentRef",
+    // Indicates that the ref update request was completed successfully, but the passed-in ref was corrupt - as in, the old object ID was bad.  This should only happen during deletes.
+    SucceededCorruptRef: "succeededCorruptRef",
+}
 
 type GitRepository struct {
     Links *ReferenceLinks `json:"_links,omitempty"`
@@ -1587,6 +1941,33 @@ type GitResolution struct {
 // The type of a merge conflict.
 type GitResolutionError string
 
+type gitResolutionErrorValuesType struct {
+    None GitResolutionError
+    MergeContentNotFound GitResolutionError
+    PathInUse GitResolutionError
+    InvalidPath GitResolutionError
+    UnknownAction GitResolutionError
+    UnknownMergeType GitResolutionError
+    OtherError GitResolutionError
+}
+
+var GitResolutionErrorValues = gitResolutionErrorValuesType{
+    // No error
+    None: "none",
+    // User set a blob id for resolving a content merge, but blob was not found in repo during application
+    MergeContentNotFound: "mergeContentNotFound",
+    // Attempted to resolve a conflict by moving a file to another path, but path was already in use
+    PathInUse: "pathInUse",
+    // No error
+    InvalidPath: "invalidPath",
+    // GitResolutionAction was set to an unrecognized value
+    UnknownAction: "unknownAction",
+    // GitResolutionMergeType was set to an unrecognized value
+    UnknownMergeType: "unknownMergeType",
+    // Any error for which a more specific code doesn't apply
+    OtherError: "otherError",
+}
+
 type GitResolutionMergeContent struct {
     // User who created the resolution.
     Author *IdentityRef `json:"author,omitempty"`
@@ -1597,6 +1978,22 @@ type GitResolutionMergeContent struct {
 
 type GitResolutionMergeType string
 
+type gitResolutionMergeTypeValuesType struct {
+    Undecided GitResolutionMergeType
+    TakeSourceContent GitResolutionMergeType
+    TakeTargetContent GitResolutionMergeType
+    AutoMerged GitResolutionMergeType
+    UserMerged GitResolutionMergeType
+}
+
+var GitResolutionMergeTypeValues = gitResolutionMergeTypeValuesType{
+    Undecided: "undecided",
+    TakeSourceContent: "takeSourceContent",
+    TakeTargetContent: "takeTargetContent",
+    AutoMerged: "autoMerged",
+    UserMerged: "userMerged",
+}
+
 type GitResolutionPathConflict struct {
     // User who created the resolution.
     Author *IdentityRef `json:"author,omitempty"`
@@ -1605,6 +2002,22 @@ type GitResolutionPathConflict struct {
 }
 
 type GitResolutionPathConflictAction string
+
+type gitResolutionPathConflictActionValuesType struct {
+    Undecided GitResolutionPathConflictAction
+    KeepSourceRenameTarget GitResolutionPathConflictAction
+    KeepSourceDeleteTarget GitResolutionPathConflictAction
+    KeepTargetRenameSource GitResolutionPathConflictAction
+    KeepTargetDeleteSource GitResolutionPathConflictAction
+}
+
+var GitResolutionPathConflictActionValues = gitResolutionPathConflictActionValuesType{
+    Undecided: "undecided",
+    KeepSourceRenameTarget: "keepSourceRenameTarget",
+    KeepSourceDeleteTarget: "keepSourceDeleteTarget",
+    KeepTargetRenameSource: "keepTargetRenameSource",
+    KeepTargetDeleteSource: "keepTargetDeleteSource",
+}
 
 type GitResolutionPickOneAction struct {
     // User who created the resolution.
@@ -1623,10 +2036,48 @@ type GitResolutionRename1to2 struct {
 
 type GitResolutionRename1to2Action string
 
+type gitResolutionRename1to2ActionValuesType struct {
+    Undecided GitResolutionRename1to2Action
+    KeepSourcePath GitResolutionRename1to2Action
+    KeepTargetPath GitResolutionRename1to2Action
+    KeepBothFiles GitResolutionRename1to2Action
+}
+
+var GitResolutionRename1to2ActionValues = gitResolutionRename1to2ActionValuesType{
+    Undecided: "undecided",
+    KeepSourcePath: "keepSourcePath",
+    KeepTargetPath: "keepTargetPath",
+    KeepBothFiles: "keepBothFiles",
+}
+
 // Resolution status of a conflict.
 type GitResolutionStatus string
 
+type gitResolutionStatusValuesType struct {
+    Unresolved GitResolutionStatus
+    PartiallyResolved GitResolutionStatus
+    Resolved GitResolutionStatus
+}
+
+var GitResolutionStatusValues = gitResolutionStatusValuesType{
+    Unresolved: "unresolved",
+    PartiallyResolved: "partiallyResolved",
+    Resolved: "resolved",
+}
+
 type GitResolutionWhichAction string
+
+type gitResolutionWhichActionValuesType struct {
+    Undecided GitResolutionWhichAction
+    PickSourceAction GitResolutionWhichAction
+    PickTargetAction GitResolutionWhichAction
+}
+
+var GitResolutionWhichActionValues = gitResolutionWhichActionValuesType{
+    Undecided: "undecided",
+    PickSourceAction: "pickSourceAction",
+    PickTargetAction: "pickTargetAction",
+}
 
 type GitRevert struct {
     Links *ReferenceLinks `json:"_links,omitempty"`
@@ -1670,6 +2121,30 @@ type GitStatusContext struct {
 
 // State of the status.
 type GitStatusState string
+
+type gitStatusStateValuesType struct {
+    NotSet GitStatusState
+    Pending GitStatusState
+    Succeeded GitStatusState
+    Failed GitStatusState
+    Error GitStatusState
+    NotApplicable GitStatusState
+}
+
+var GitStatusStateValues = gitStatusStateValuesType{
+    // Status state not set. Default state.
+    NotSet: "notSet",
+    // Status pending.
+    Pending: "pending",
+    // Status succeeded.
+    Succeeded: "succeeded",
+    // Status failed.
+    Failed: "failed",
+    // Status with an error.
+    Error: "error",
+    // Status is not applicable to the target object.
+    NotApplicable: "notApplicable",
+}
 
 // An object describing the git suggestion.  Git suggestions are currently limited to suggested pull requests.
 type GitSuggestion struct {
@@ -1782,8 +2257,38 @@ type GitVersionDescriptor struct {
 // Accepted types of version options
 type GitVersionOptions string
 
+type gitVersionOptionsValuesType struct {
+    None GitVersionOptions
+    PreviousChange GitVersionOptions
+    FirstParent GitVersionOptions
+}
+
+var GitVersionOptionsValues = gitVersionOptionsValuesType{
+    // Not specified
+    None: "none",
+    // Commit that changed item prior to the current version
+    PreviousChange: "previousChange",
+    // First parent of commit (HEAD^)
+    FirstParent: "firstParent",
+}
+
 // Accepted types of version
 type GitVersionType string
+
+type gitVersionTypeValuesType struct {
+    Branch GitVersionType
+    Tag GitVersionType
+    Commit GitVersionType
+}
+
+var GitVersionTypeValues = gitVersionTypeValuesType{
+    // Interpret the version as a branch name
+    Branch: "branch",
+    // Interpret the version as a tag name
+    Tag: "tag",
+    // Interpret the version as a commit ID (SHA1)
+    Commit: "commit",
+}
 
 // Globally unique key for a repository.
 type GlobalGitRepositoryKey struct {
@@ -1907,6 +2412,16 @@ type ItemContent struct {
 
 type ItemContentType string
 
+type itemContentTypeValuesType struct {
+    RawText ItemContentType
+    Base64Encoded ItemContentType
+}
+
+var ItemContentTypeValues = itemContentTypeValuesType{
+    RawText: "rawText",
+    Base64Encoded: "base64Encoded",
+}
+
 // Optional details to include when returning an item model
 type ItemDetailsOptions struct {
     // If true, include metadata about the file type
@@ -1927,6 +2442,24 @@ type ItemModel struct {
 
 // The reason for which the pull request iteration was created.
 type IterationReason string
+
+type iterationReasonValuesType struct {
+    Push IterationReason
+    ForcePush IterationReason
+    Create IterationReason
+    Rebase IterationReason
+    Unknown IterationReason
+    Retarget IterationReason
+}
+
+var IterationReasonValues = iterationReasonValuesType{
+    Push: "push",
+    ForcePush: "forcePush",
+    Create: "create",
+    Rebase: "rebase",
+    Unknown: "unknown",
+    Retarget: "retarget",
+}
 
 // The JSON model for a JSON Patch operation
 type JsonPatchOperation struct {
@@ -1965,6 +2498,24 @@ type LineDiffBlock struct {
 // Type of change for a line diff block
 type LineDiffBlockChangeType string
 
+type lineDiffBlockChangeTypeValuesType struct {
+    None LineDiffBlockChangeType
+    Add LineDiffBlockChangeType
+    Delete LineDiffBlockChangeType
+    Edit LineDiffBlockChangeType
+}
+
+var LineDiffBlockChangeTypeValues = lineDiffBlockChangeTypeValuesType{
+    // No change - both the blocks are identical
+    None: "none",
+    // Lines were added to the block in the modified file
+    Add: "add",
+    // Lines were deleted from the block in the original file
+    Delete: "delete",
+    // Lines were modified
+    Edit: "edit",
+}
+
 // Real time event (SignalR) for a merge completed on a pull request
 type MergeCompletedEvent struct {
     // The id of this event. Can be used to track send/receive state between client and server.
@@ -1974,6 +2525,24 @@ type MergeCompletedEvent struct {
 }
 
 type Operation string
+
+type operationValuesType struct {
+    Add Operation
+    Remove Operation
+    Replace Operation
+    Move Operation
+    Copy Operation
+    Test Operation
+}
+
+var OperationValues = operationValuesType{
+    Add: "add",
+    Remove: "remove",
+    Replace: "replace",
+    Move: "move",
+    Copy: "copy",
+    Test: "test",
+}
 
 // The full policy configuration with settings.
 type PolicyConfiguration struct {
@@ -2031,8 +2600,44 @@ type PolicyTypeRef struct {
 
 type ProjectVisibility string
 
+type projectVisibilityValuesType struct {
+    Private ProjectVisibility
+    Public ProjectVisibility
+}
+
+var ProjectVisibilityValues = projectVisibilityValuesType{
+    // The project is only visible to users with explicit access.
+    Private: "private",
+    // The project is visible to all.
+    Public: "public",
+}
+
 // The status of a pull request merge.
 type PullRequestAsyncStatus string
+
+type pullRequestAsyncStatusValuesType struct {
+    NotSet PullRequestAsyncStatus
+    Queued PullRequestAsyncStatus
+    Conflicts PullRequestAsyncStatus
+    Succeeded PullRequestAsyncStatus
+    RejectedByPolicy PullRequestAsyncStatus
+    Failure PullRequestAsyncStatus
+}
+
+var PullRequestAsyncStatusValues = pullRequestAsyncStatusValuesType{
+    // Status is not set. Default state.
+    NotSet: "notSet",
+    // Pull request merge is queued.
+    Queued: "queued",
+    // Pull request merge failed due to conflicts.
+    Conflicts: "conflicts",
+    // Pull request merge succeeded.
+    Succeeded: "succeeded",
+    // Pull request merge rejected by policy.
+    RejectedByPolicy: "rejectedByPolicy",
+    // Pull request merge failed.
+    Failure: "failure",
+}
 
 // Real time event (SignalR) for pull request creation
 type PullRequestCreatedEvent struct {
@@ -2045,8 +2650,47 @@ type PullRequestCreatedEvent struct {
 // The specific type of a pull request merge failure.
 type PullRequestMergeFailureType string
 
+type pullRequestMergeFailureTypeValuesType struct {
+    None PullRequestMergeFailureType
+    Unknown PullRequestMergeFailureType
+    CaseSensitive PullRequestMergeFailureType
+    ObjectTooLarge PullRequestMergeFailureType
+}
+
+var PullRequestMergeFailureTypeValues = pullRequestMergeFailureTypeValuesType{
+    // Type is not set. Default type.
+    None: "none",
+    // Pull request merge failure type unknown.
+    Unknown: "unknown",
+    // Pull request merge failed due to case mismatch.
+    CaseSensitive: "caseSensitive",
+    // Pull request merge failed due to an object being too large.
+    ObjectTooLarge: "objectTooLarge",
+}
+
 // Status of a pull request.
 type PullRequestStatus string
+
+type pullRequestStatusValuesType struct {
+    NotSet PullRequestStatus
+    Active PullRequestStatus
+    Abandoned PullRequestStatus
+    Completed PullRequestStatus
+    All PullRequestStatus
+}
+
+var PullRequestStatusValues = pullRequestStatusValuesType{
+    // Status not set. Default state.
+    NotSet: "notSet",
+    // Pull request is active.
+    Active: "active",
+    // Pull request is abandoned.
+    Abandoned: "abandoned",
+    // Pull request is completed.
+    Completed: "completed",
+    // Used in pull request search criterias to include all statuses.
+    All: "all",
+}
 
 // Initial config contract sent to extensions creating tabs on the pull request page
 type PullRequestTabExtensionConfig struct {
@@ -2069,6 +2713,18 @@ type ReferenceLinks struct {
 }
 
 type RefFavoriteType string
+
+type refFavoriteTypeValuesType struct {
+    Invalid RefFavoriteType
+    Folder RefFavoriteType
+    Ref RefFavoriteType
+}
+
+var RefFavoriteTypeValues = refFavoriteTypeValuesType{
+    Invalid: "invalid",
+    Folder: "folder",
+    Ref: "ref",
+}
 
 type ResourceRef struct {
     Id *string `json:"id,omitempty"`
@@ -2117,6 +2773,16 @@ type ShareNotificationContext struct {
 
 type SourceControlTypes string
 
+type sourceControlTypesValuesType struct {
+    Tfvc SourceControlTypes
+    Git SourceControlTypes
+}
+
+var SourceControlTypesValues = sourceControlTypesValuesType{
+    Tfvc: "tfvc",
+    Git: "git",
+}
+
 type SourceToTargetRef struct {
     // The source ref to copy. For example, refs/heads/master.
     SourceRef *string `json:"sourceRef,omitempty"`
@@ -2164,6 +2830,42 @@ type SupportedIde struct {
 
 // Enumeration that represents the types of IDEs supported.
 type SupportedIdeType string
+
+type supportedIdeTypeValuesType struct {
+    Unknown SupportedIdeType
+    AndroidStudio SupportedIdeType
+    AppCode SupportedIdeType
+    CLion SupportedIdeType
+    DataGrip SupportedIdeType
+    Eclipse SupportedIdeType
+    IntelliJ SupportedIdeType
+    Mps SupportedIdeType
+    PhpStorm SupportedIdeType
+    PyCharm SupportedIdeType
+    RubyMine SupportedIdeType
+    Tower SupportedIdeType
+    VisualStudio SupportedIdeType
+    VsCode SupportedIdeType
+    WebStorm SupportedIdeType
+}
+
+var SupportedIdeTypeValues = supportedIdeTypeValuesType{
+    Unknown: "unknown",
+    AndroidStudio: "androidStudio",
+    AppCode: "appCode",
+    CLion: "cLion",
+    DataGrip: "dataGrip",
+    Eclipse: "eclipse",
+    IntelliJ: "intelliJ",
+    Mps: "mps",
+    PhpStorm: "phpStorm",
+    PyCharm: "pyCharm",
+    RubyMine: "rubyMine",
+    Tower: "tower",
+    VisualStudio: "visualStudio",
+    VsCode: "vsCode",
+    WebStorm: "webStorm",
+}
 
 // Reference object for a TeamProjectCollection.
 type TeamProjectCollectionReference struct {
@@ -2538,7 +3240,41 @@ type TfvcVersionDescriptor struct {
 
 type TfvcVersionOption string
 
+type tfvcVersionOptionValuesType struct {
+    None TfvcVersionOption
+    Previous TfvcVersionOption
+    UseRename TfvcVersionOption
+}
+
+var TfvcVersionOptionValues = tfvcVersionOptionValuesType{
+    None: "none",
+    Previous: "previous",
+    UseRename: "useRename",
+}
+
 type TfvcVersionType string
+
+type tfvcVersionTypeValuesType struct {
+    None TfvcVersionType
+    Changeset TfvcVersionType
+    Shelveset TfvcVersionType
+    Change TfvcVersionType
+    Date TfvcVersionType
+    Latest TfvcVersionType
+    Tip TfvcVersionType
+    MergeSource TfvcVersionType
+}
+
+var TfvcVersionTypeValues = tfvcVersionTypeValuesType{
+    None: "none",
+    Changeset: "changeset",
+    Shelveset: "shelveset",
+    Change: "change",
+    Date: "date",
+    Latest: "latest",
+    Tip: "tip",
+    MergeSource: "mergeSource",
+}
 
 // Real time event (SignalR) for a title/description update on a pull request
 type TitleDescriptionUpdatedEvent struct {
@@ -2555,6 +3291,42 @@ type UpdateRefsRequest struct {
 
 type VersionControlChangeType string
 
+type versionControlChangeTypeValuesType struct {
+    None VersionControlChangeType
+    Add VersionControlChangeType
+    Edit VersionControlChangeType
+    Encoding VersionControlChangeType
+    Rename VersionControlChangeType
+    Delete VersionControlChangeType
+    Undelete VersionControlChangeType
+    Branch VersionControlChangeType
+    Merge VersionControlChangeType
+    Lock VersionControlChangeType
+    Rollback VersionControlChangeType
+    SourceRename VersionControlChangeType
+    TargetRename VersionControlChangeType
+    Property VersionControlChangeType
+    All VersionControlChangeType
+}
+
+var VersionControlChangeTypeValues = versionControlChangeTypeValuesType{
+    None: "none",
+    Add: "add",
+    Edit: "edit",
+    Encoding: "encoding",
+    Rename: "rename",
+    Delete: "delete",
+    Undelete: "undelete",
+    Branch: "branch",
+    Merge: "merge",
+    Lock: "lock",
+    Rollback: "rollback",
+    SourceRename: "sourceRename",
+    TargetRename: "targetRename",
+    Property: "property",
+    All: "all",
+}
+
 type VersionControlProjectInfo struct {
     DefaultSourceControlType *SourceControlTypes `json:"defaultSourceControlType,omitempty"`
     Project *TeamProjectReference `json:"project,omitempty"`
@@ -2563,6 +3335,24 @@ type VersionControlProjectInfo struct {
 }
 
 type VersionControlRecursionType string
+
+type versionControlRecursionTypeValuesType struct {
+    None VersionControlRecursionType
+    OneLevel VersionControlRecursionType
+    OneLevelPlusNestedEmptyFolders VersionControlRecursionType
+    Full VersionControlRecursionType
+}
+
+var VersionControlRecursionTypeValues = versionControlRecursionTypeValuesType{
+    // Only return the specified item.
+    None: "none",
+    // Return the specified item and its direct children.
+    OneLevel: "oneLevel",
+    // Return the specified item and its direct children, as well as recursive chains of nested child folders that only contain a single folder.
+    OneLevelPlusNestedEmptyFolders: "oneLevelPlusNestedEmptyFolders",
+    // Return specified item and all descendants
+    Full: "full",
+}
 
 // A particular revision for a policy configuration.
 type VersionedPolicyConfigurationRef struct {

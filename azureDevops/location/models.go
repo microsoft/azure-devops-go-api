@@ -46,7 +46,40 @@ type ConnectionData struct {
 // Enumeration of the options that can be passed in on Connect.
 type ConnectOptions string
 
+type connectOptionsValuesType struct {
+    None ConnectOptions
+    IncludeServices ConnectOptions
+    IncludeLastUserAccess ConnectOptions
+    IncludeInheritedDefinitionsOnly ConnectOptions
+    IncludeNonInheritedDefinitionsOnly ConnectOptions
+}
+
+var ConnectOptionsValues = connectOptionsValuesType{
+    // Retrieve no optional data.
+    None: "none",
+    // Includes information about AccessMappings and ServiceDefinitions.
+    IncludeServices: "includeServices",
+    // Includes the last user access for this host.
+    IncludeLastUserAccess: "includeLastUserAccess",
+    // This is only valid on the deployment host and when true. Will only return inherited definitions.
+    IncludeInheritedDefinitionsOnly: "includeInheritedDefinitionsOnly",
+    // When true will only return non inherited definitions. Only valid at non-deployment host.
+    IncludeNonInheritedDefinitionsOnly: "includeNonInheritedDefinitionsOnly",
+}
+
 type DeploymentFlags string
+
+type deploymentFlagsValuesType struct {
+    None DeploymentFlags
+    Hosted DeploymentFlags
+    OnPremises DeploymentFlags
+}
+
+var DeploymentFlagsValues = deploymentFlagsValuesType{
+    None: "none",
+    Hosted: "hosted",
+    OnPremises: "onPremises",
+}
 
 type Identity struct {
     // The custom display name for the identity (if any). Setting this property to an empty string will clear the existing custom display name. Setting this property to null will not affect the existing persisted value (since null values do not get sent over the wire or to the database)
@@ -93,6 +126,22 @@ type IdentityBase struct {
 
 type InheritLevel string
 
+type inheritLevelValuesType struct {
+    None InheritLevel
+    Deployment InheritLevel
+    Account InheritLevel
+    Collection InheritLevel
+    All InheritLevel
+}
+
+var InheritLevelValues = inheritLevelValuesType{
+    None: "none",
+    Deployment: "deployment",
+    Account: "account",
+    Collection: "collection",
+    All: "all",
+}
+
 type LocationMapping struct {
     AccessMappingMoniker *string `json:"accessMappingMoniker,omitempty"`
     Location *string `json:"location,omitempty"`
@@ -119,6 +168,18 @@ type LocationServiceData struct {
 }
 
 type RelativeToSetting string
+
+type relativeToSettingValuesType struct {
+    Context RelativeToSetting
+    WebApplication RelativeToSetting
+    FullyQualified RelativeToSetting
+}
+
+var RelativeToSettingValues = relativeToSettingValuesType{
+    Context: "context",
+    WebApplication: "webApplication",
+    FullyQualified: "fullyQualified",
+}
 
 type ResourceAreaInfo struct {
     Id *uuid.UUID `json:"id,omitempty"`
@@ -153,3 +214,15 @@ type ServiceDefinition struct {
 }
 
 type ServiceStatus string
+
+type serviceStatusValuesType struct {
+    Assigned ServiceStatus
+    Active ServiceStatus
+    Moving ServiceStatus
+}
+
+var ServiceStatusValues = serviceStatusValuesType{
+    Assigned: "assigned",
+    Active: "active",
+    Moving: "moving",
+}

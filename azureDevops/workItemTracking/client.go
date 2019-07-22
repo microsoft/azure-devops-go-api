@@ -205,7 +205,7 @@ func (client Client) GetAttachmentZip(ctx context.Context, id *uuid.UUID, projec
 // Gets root classification nodes or list of classification nodes for a given list of nodes ids, for a given project. In case ids parameter is supplied you will  get list of classification nodes for those ids. Otherwise you will get root classification nodes for this project.
 // ctx
 // project (required): Project ID or project name
-// ids (required): Comma seperated integer classification nodes ids. It's not required, if you want root nodes.
+// ids (required): Comma separated integer classification nodes ids. It's not required, if you want root nodes.
 // depth (optional): Depth of children to fetch.
 // errorPolicy (optional): Flag to handle errors in getting some nodes. Possible options are Fail and Omit.
 func (client Client) GetClassificationNodes(ctx context.Context, project *string, ids *[]int, depth *int, errorPolicy *string) (*[]WorkItemClassificationNode, error) {

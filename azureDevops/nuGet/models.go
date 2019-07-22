@@ -46,6 +46,27 @@ type MinimalPackageDetails struct {
 // Describes NuGet batch operation types.
 type NuGetBatchOperationType string
 
+type nuGetBatchOperationTypeValuesType struct {
+    Promote NuGetBatchOperationType
+    List NuGetBatchOperationType
+    Delete NuGetBatchOperationType
+    PermanentDelete NuGetBatchOperationType
+    RestoreToFeed NuGetBatchOperationType
+}
+
+var NuGetBatchOperationTypeValues = nuGetBatchOperationTypeValuesType{
+    // Promote package versions to a release view. If constructing a NuGetPackagesBatchRequest object with this type, use BatchPromoteData for its Data property. Not supported in the Recycle Bin.
+    Promote: "promote",
+    // Unlist or relist package versions. Not supported in the Recycle Bin.
+    List: "list",
+    // Move package versions to the feed's Recycle Bin. Not supported in the Recycle Bin.
+    Delete: "delete",
+    // Permanently delete package versions. Only supported in the Recycle Bin.
+    PermanentDelete: "permanentDelete",
+    // Restore deleted package versions to the feed. Only supported in the Recycle Bin.
+    RestoreToFeed: "restoreToFeed",
+}
+
 // A batch of operations to apply to package versions.
 type NuGetPackagesBatchRequest struct {
     // Data required to perform the operation. This is optional based on the type of the operation. Use BatchPromoteData if performing a promote operation.
@@ -72,6 +93,24 @@ type NuGetRecycleBinPackageVersionDetails struct {
 }
 
 type Operation string
+
+type operationValuesType struct {
+    Add Operation
+    Remove Operation
+    Replace Operation
+    Move Operation
+    Copy Operation
+    Test Operation
+}
+
+var OperationValues = operationValuesType{
+    Add: "add",
+    Remove: "remove",
+    Replace: "replace",
+    Move: "move",
+    Copy: "copy",
+    Test: "test",
+}
 
 // Package version metadata for a NuGet package
 type Package struct {
@@ -100,6 +139,18 @@ type PackageVersionDetails struct {
 
 // Type of an upstream source, such as Public or Internal.
 type PackagingSourceType string
+
+type packagingSourceTypeValuesType struct {
+    Public PackagingSourceType
+    Internal PackagingSourceType
+}
+
+var PackagingSourceTypeValues = packagingSourceTypeValuesType{
+    // Publicly available source.
+    Public: "public",
+    // Azure DevOps upstream source.
+    Internal: "internal",
+}
 
 // The class to represent a collection of REST reference links.
 type ReferenceLinks struct {

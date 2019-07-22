@@ -56,10 +56,50 @@ type GitVersionDescriptor struct {
 // Accepted types of version options
 type GitVersionOptions string
 
+type gitVersionOptionsValuesType struct {
+    None GitVersionOptions
+    PreviousChange GitVersionOptions
+    FirstParent GitVersionOptions
+}
+
+var GitVersionOptionsValues = gitVersionOptionsValuesType{
+    // Not specified
+    None: "none",
+    // Commit that changed item prior to the current version
+    PreviousChange: "previousChange",
+    // First parent of commit (HEAD^)
+    FirstParent: "firstParent",
+}
+
 // Accepted types of version
 type GitVersionType string
 
+type gitVersionTypeValuesType struct {
+    Branch GitVersionType
+    Tag GitVersionType
+    Commit GitVersionType
+}
+
+var GitVersionTypeValues = gitVersionTypeValuesType{
+    // Interpret the version as a branch name
+    Branch: "branch",
+    // Interpret the version as a tag name
+    Tag: "tag",
+    // Interpret the version as a commit ID (SHA1)
+    Commit: "commit",
+}
+
 type ProjectVisibility string
+
+type projectVisibilityValuesType struct {
+    Private ProjectVisibility
+    Public ProjectVisibility
+}
+
+var ProjectVisibilityValues = projectVisibilityValuesType{
+    Private: "private",
+    Public: "public",
+}
 
 type ReferenceLinks struct {
     Links *map[string]interface{} `json:"links,omitempty"`
@@ -85,6 +125,24 @@ type TeamProjectReference struct {
 }
 
 type VersionControlRecursionType string
+
+type versionControlRecursionTypeValuesType struct {
+    None VersionControlRecursionType
+    OneLevel VersionControlRecursionType
+    OneLevelPlusNestedEmptyFolders VersionControlRecursionType
+    Full VersionControlRecursionType
+}
+
+var VersionControlRecursionTypeValues = versionControlRecursionTypeValuesType{
+    // Only return the specified item.
+    None: "none",
+    // Return the specified item and its direct children.
+    OneLevel: "oneLevel",
+    // Return the specified item and its direct children, as well as recursive chains of nested child folders that only contain a single folder.
+    OneLevelPlusNestedEmptyFolders: "oneLevelPlusNestedEmptyFolders",
+    // Return specified item and all descendants
+    Full: "full",
+}
 
 // Defines a wiki repository which encapsulates the git repository backing the wiki.
 type Wiki struct {
@@ -234,6 +292,18 @@ type WikiPageViewStats struct {
 
 // Wiki types.
 type WikiType string
+
+type wikiTypeValuesType struct {
+    ProjectWiki WikiType
+    CodeWiki WikiType
+}
+
+var WikiTypeValues = wikiTypeValuesType{
+    // Indicates that the wiki is provisioned for the team project
+    ProjectWiki: "projectWiki",
+    // Indicates that the wiki is published from a git repository
+    CodeWiki: "codeWiki",
+}
 
 type WikiUpdatedNotificationMessage struct {
     // Collection host Id for which the wikis are updated.

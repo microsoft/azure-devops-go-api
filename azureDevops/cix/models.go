@@ -15,6 +15,16 @@ import (
 
 type BuildFrameworkDetectionType string
 
+type buildFrameworkDetectionTypeValuesType struct {
+    Shallow BuildFrameworkDetectionType
+    Full BuildFrameworkDetectionType
+}
+
+var BuildFrameworkDetectionTypeValues = buildFrameworkDetectionTypeValuesType{
+    Shallow: "shallow",
+    Full: "full",
+}
+
 type ConfigurationFile struct {
     // The content of the file.
     Content *string `json:"content,omitempty"`
@@ -99,6 +109,30 @@ type OperationResultReference struct {
 // The status of an operation.
 type OperationStatus string
 
+type operationStatusValuesType struct {
+    NotSet OperationStatus
+    Queued OperationStatus
+    InProgress OperationStatus
+    Cancelled OperationStatus
+    Succeeded OperationStatus
+    Failed OperationStatus
+}
+
+var OperationStatusValues = operationStatusValuesType{
+    // The operation does not have a status set.
+    NotSet: "notSet",
+    // The operation has been queued.
+    Queued: "queued",
+    // The operation is in progress.
+    InProgress: "inProgress",
+    // The operation was cancelled by the user.
+    Cancelled: "cancelled",
+    // The operation completed successfully.
+    Succeeded: "succeeded",
+    // The operation completed with a failure.
+    Failed: "failed",
+}
+
 type PipelineConnection struct {
     // The account id that contains the team project for the connection.
     AccountId *uuid.UUID `json:"accountId,omitempty"`
@@ -113,6 +147,18 @@ type PipelineConnection struct {
 }
 
 type ProjectVisibility string
+
+type projectVisibilityValuesType struct {
+    Private ProjectVisibility
+    Public ProjectVisibility
+}
+
+var ProjectVisibilityValues = projectVisibilityValuesType{
+    // The project is only visible to users with explicit access.
+    Private: "private",
+    // The project is visible to all.
+    Public: "public",
+}
 
 // The class to represent a collection of REST reference links.
 type ReferenceLinks struct {

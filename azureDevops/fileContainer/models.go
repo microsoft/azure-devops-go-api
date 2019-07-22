@@ -16,11 +16,47 @@ import (
 // Status of a container item.
 type ContainerItemStatus string
 
+type containerItemStatusValuesType struct {
+    Created ContainerItemStatus
+    PendingUpload ContainerItemStatus
+}
+
+var ContainerItemStatusValues = containerItemStatusValuesType{
+    // Item is created.
+    Created: "created",
+    // Item is a file pending for upload.
+    PendingUpload: "pendingUpload",
+}
+
 // Type of a container item.
 type ContainerItemType string
 
+type containerItemTypeValuesType struct {
+    Any ContainerItemType
+    Folder ContainerItemType
+    File ContainerItemType
+}
+
+var ContainerItemTypeValues = containerItemTypeValuesType{
+    // Any item type.
+    Any: "any",
+    // Item is a folder which can have child items.
+    Folder: "folder",
+    // Item is a file which is stored in the file service.
+    File: "file",
+}
+
 // Options a container can have.
 type ContainerOptions string
+
+type containerOptionsValuesType struct {
+    None ContainerOptions
+}
+
+var ContainerOptionsValues = containerOptionsValuesType{
+    // No option.
+    None: "none",
+}
 
 // Represents a container that encapsulates a hierarchical file system.
 type FileContainer struct {

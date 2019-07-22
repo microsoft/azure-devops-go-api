@@ -19,6 +19,24 @@ type BatchOperationData struct {
 
 type MavenBatchOperationType string
 
+type mavenBatchOperationTypeValuesType struct {
+    Promote MavenBatchOperationType
+    Delete MavenBatchOperationType
+    PermanentDelete MavenBatchOperationType
+    RestoreToFeed MavenBatchOperationType
+}
+
+var MavenBatchOperationTypeValues = mavenBatchOperationTypeValuesType{
+    // Promote package versions to a release view. If constructing a MavenPackagesBatchRequest object with this type, use BatchPromoteData for its Data property. Not supported in the Recycle Bin.
+    Promote: "promote",
+    // Delete package versions. Not supported in the Recycle Bin.
+    Delete: "delete",
+    // Permanently delete package versions. Only supported in the Recycle Bin.
+    PermanentDelete: "permanentDelete",
+    // Restore unpublished package versions to the feed. Only supported in the Recycle Bin.
+    RestoreToFeed: "restoreToFeed",
+}
+
 type MavenDistributionManagement struct {
     Repository *MavenRepository `json:"repository,omitempty"`
     SnapshotRepository *MavenSnapshotRepository `json:"snapshotRepository,omitempty"`
@@ -220,6 +238,18 @@ type Package struct {
 
 // Type of an upstream source, such as Public or Internal.
 type PackagingSourceType string
+
+type packagingSourceTypeValuesType struct {
+    Public PackagingSourceType
+    Internal PackagingSourceType
+}
+
+var PackagingSourceTypeValues = packagingSourceTypeValuesType{
+    // Publicly available source.
+    Public: "public",
+    // Azure DevOps upstream source.
+    Internal: "internal",
+}
 
 type Plugin struct {
     ArtifactId *string `json:"artifactId,omitempty"`

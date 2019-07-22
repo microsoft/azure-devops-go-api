@@ -99,3 +99,13 @@ type ValidationIssue struct {
 }
 
 type ValidationIssueType string
+
+type validationIssueTypeValuesType struct {
+    Warning ValidationIssueType
+    Error ValidationIssueType
+}
+
+var ValidationIssueTypeValues = validationIssueTypeValuesType{
+    Warning: "warning",
+    Error: "error",
+}

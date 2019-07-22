@@ -17,6 +17,27 @@ import (
 
 type AadLoginPromptOption string
 
+type aadLoginPromptOptionValuesType struct {
+    NoOption AadLoginPromptOption
+    Login AadLoginPromptOption
+    SelectAccount AadLoginPromptOption
+    FreshLogin AadLoginPromptOption
+    FreshLoginWithMfa AadLoginPromptOption
+}
+
+var AadLoginPromptOptionValues = aadLoginPromptOptionValuesType{
+    // Do not provide a prompt option
+    NoOption: "noOption",
+    // Force the user to login again.
+    Login: "login",
+    // Force the user to select which account they are logging in with instead of automatically picking the user up from the session state. NOTE: This does not work for switching between the variants of a dual-homed user.
+    SelectAccount: "selectAccount",
+    // Force the user to login again. <remarks> Ignore current authentication state and force the user to authenticate again. This option should be used instead of Login. </remarks>
+    FreshLogin: "freshLogin",
+    // Force the user to login again with mfa. <remarks> Ignore current authentication state and force the user to authenticate again. This option should be used instead of Login, if MFA is required. </remarks>
+    FreshLoginWithMfa: "freshLoginWithMfa",
+}
+
 type AadOauthTokenRequest struct {
     Refresh *bool `json:"refresh,omitempty"`
     Resource *string `json:"resource,omitempty"`
@@ -30,6 +51,18 @@ type AadOauthTokenResult struct {
 }
 
 type AccessTokenRequestType string
+
+type accessTokenRequestTypeValuesType struct {
+    None AccessTokenRequestType
+    Oauth AccessTokenRequestType
+    Direct AccessTokenRequestType
+}
+
+var AccessTokenRequestTypeValues = accessTokenRequestTypeValuesType{
+    None: "none",
+    Oauth: "oauth",
+    Direct: "direct",
+}
 
 type AuthConfiguration struct {
     // Gets or sets the ClientId
@@ -353,6 +386,30 @@ type IdentityRef struct {
 // Enumerates data types that are supported as subscription input values.
 type InputDataType string
 
+type inputDataTypeValuesType struct {
+    None InputDataType
+    String InputDataType
+    Number InputDataType
+    Boolean InputDataType
+    Guid InputDataType
+    Uri InputDataType
+}
+
+var InputDataTypeValues = inputDataTypeValuesType{
+    // No data type is specified.
+    None: "none",
+    // Represents a textual value.
+    String: "string",
+    // Represents a numeric value.
+    Number: "number",
+    // Represents a value of true or false.
+    Boolean: "boolean",
+    // Represents a Guid.
+    Guid: "guid",
+    // Represents a URI.
+    Uri: "uri",
+}
+
 // Describes an input for subscriptions.
 type InputDescriptor struct {
     // The ids of all inputs that the value of this input is dependent on.
@@ -387,6 +444,33 @@ type InputDescriptor struct {
 
 // Mode in which a subscription input should be entered (in a UI)
 type InputMode string
+
+type inputModeValuesType struct {
+    None InputMode
+    TextBox InputMode
+    PasswordBox InputMode
+    Combo InputMode
+    RadioButtons InputMode
+    CheckBox InputMode
+    TextArea InputMode
+}
+
+var InputModeValues = inputModeValuesType{
+    // This input should not be shown in the UI
+    None: "none",
+    // An input text box should be shown
+    TextBox: "textBox",
+    // An password input box should be shown
+    PasswordBox: "passwordBox",
+    // A select/combo control should be shown
+    Combo: "combo",
+    // Radio buttons should be shown
+    RadioButtons: "radioButtons",
+    // Checkbox should be shown(for true/false values)
+    CheckBox: "checkBox",
+    // A multi-line text area should be shown
+    TextArea: "textArea",
+}
 
 // Describes what values are valid for a subscription input
 type InputValidation struct {
@@ -477,6 +561,18 @@ type OAuthConfiguration struct {
 
 type OAuthConfigurationActionFilter string
 
+type oAuthConfigurationActionFilterValuesType struct {
+    None OAuthConfigurationActionFilter
+    Manage OAuthConfigurationActionFilter
+    Use OAuthConfigurationActionFilter
+}
+
+var OAuthConfigurationActionFilterValues = oAuthConfigurationActionFilterValuesType{
+    None: "none",
+    Manage: "manage",
+    Use: "use",
+}
+
 type OAuthConfigurationParams struct {
     // Gets or sets the ClientId
     ClientId *string `json:"clientId,omitempty"`
@@ -556,6 +652,18 @@ type ServiceEndpoint struct {
 
 type ServiceEndpointActionFilter string
 
+type serviceEndpointActionFilterValuesType struct {
+    None ServiceEndpointActionFilter
+    Manage ServiceEndpointActionFilter
+    Use ServiceEndpointActionFilter
+}
+
+var ServiceEndpointActionFilterValues = serviceEndpointActionFilterValuesType{
+    None: "none",
+    Manage: "manage",
+    Use: "use",
+}
+
 // Represents the authentication scheme used to authenticate the endpoint.
 type ServiceEndpointAuthenticationScheme struct {
     // Gets or sets the authorization headers of service endpoint authentication scheme.
@@ -613,7 +721,7 @@ type ServiceEndpointExecutionOwner struct {
     Name *string `json:"name,omitempty"`
 }
 
-// Represents the details of service ednpoint execution.
+// Represents the details of service endpoint execution.
 type ServiceEndpointExecutionRecord struct {
     // Gets the execution data of service endpoint execution.
     Data *ServiceEndpointExecutionData `json:"data,omitempty"`
@@ -627,6 +735,30 @@ type ServiceEndpointExecutionRecordsInput struct {
 }
 
 type ServiceEndpointExecutionResult string
+
+type serviceEndpointExecutionResultValuesType struct {
+    Succeeded ServiceEndpointExecutionResult
+    SucceededWithIssues ServiceEndpointExecutionResult
+    Failed ServiceEndpointExecutionResult
+    Canceled ServiceEndpointExecutionResult
+    Skipped ServiceEndpointExecutionResult
+    Abandoned ServiceEndpointExecutionResult
+}
+
+var ServiceEndpointExecutionResultValues = serviceEndpointExecutionResultValuesType{
+    // "Service endpoint request succeeded.
+    Succeeded: "succeeded",
+    // "Service endpoint request succeeded but with some issues.
+    SucceededWithIssues: "succeededWithIssues",
+    // "Service endpoint request failed.
+    Failed: "failed",
+    // "Service endpoint request was cancelled.
+    Canceled: "canceled",
+    // "Service endpoint request was skipped.
+    Skipped: "skipped",
+    // "Service endpoint request was abandoned.
+    Abandoned: "abandoned",
+}
 
 type ServiceEndpointOAuthConfigurationReference struct {
     ConfigurationId *uuid.UUID `json:"configurationId,omitempty"`

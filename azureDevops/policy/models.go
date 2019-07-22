@@ -110,6 +110,30 @@ type PolicyEvaluationRecord struct {
 // Status of a policy which is running against a specific pull request.
 type PolicyEvaluationStatus string
 
+type policyEvaluationStatusValuesType struct {
+    Queued PolicyEvaluationStatus
+    Running PolicyEvaluationStatus
+    Approved PolicyEvaluationStatus
+    Rejected PolicyEvaluationStatus
+    NotApplicable PolicyEvaluationStatus
+    Broken PolicyEvaluationStatus
+}
+
+var PolicyEvaluationStatusValues = policyEvaluationStatusValuesType{
+    // The policy is either queued to run, or is waiting for some event before progressing.
+    Queued: "queued",
+    // The policy is currently running.
+    Running: "running",
+    // The policy has been fulfilled for this pull request.
+    Approved: "approved",
+    // The policy has rejected this pull request.
+    Rejected: "rejected",
+    // The policy does not apply to this pull request.
+    NotApplicable: "notApplicable",
+    // The policy has encountered an unexpected error.
+    Broken: "broken",
+}
+
 // User-friendly policy type with description (used for querying policy types).
 type PolicyType struct {
     // Display name of the policy type.

@@ -42,6 +42,24 @@ type CloneOperationCommonResponse struct {
 // Enum of type Clone Operation Type.
 type CloneOperationState string
 
+type cloneOperationStateValuesType struct {
+    Failed CloneOperationState
+    InProgress CloneOperationState
+    Queued CloneOperationState
+    Succeeded CloneOperationState
+}
+
+var CloneOperationStateValues = cloneOperationStateValuesType{
+    // value for Failed State
+    Failed: "failed",
+    // value for Inprogress state
+    InProgress: "inProgress",
+    // Value for Queued State
+    Queued: "queued",
+    // value for Success state
+    Succeeded: "succeeded",
+}
+
 // Clone options for cloning the test suite.
 type CloneOptions struct {
     // If set to true requirements will be cloned
@@ -164,6 +182,26 @@ type DestinationTestSuiteInfo struct {
 
 type FailureType string
 
+type failureTypeValuesType struct {
+    None FailureType
+    Regression FailureType
+    New_Issue FailureType
+    Known_Issue FailureType
+    Unknown FailureType
+    Null_Value FailureType
+    MaxValue FailureType
+}
+
+var FailureTypeValues = failureTypeValuesType{
+    None: "none",
+    Regression: "regression",
+    New_Issue: "new_Issue",
+    Known_Issue: "known_Issue",
+    Unknown: "unknown",
+    Null_Value: "null_Value",
+    MaxValue: "maxValue",
+}
+
 type GraphSubjectBase struct {
     // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
     Links *ReferenceLinks `json:"_links,omitempty"`
@@ -204,6 +242,26 @@ type IdentityRef struct {
 
 type LastResolutionState string
 
+type lastResolutionStateValuesType struct {
+    None LastResolutionState
+    NeedsInvestigation LastResolutionState
+    TestIssue LastResolutionState
+    ProductIssue LastResolutionState
+    ConfigurationIssue LastResolutionState
+    NullValue LastResolutionState
+    MaxValue LastResolutionState
+}
+
+var LastResolutionStateValues = lastResolutionStateValuesType{
+    None: "none",
+    NeedsInvestigation: "needsInvestigation",
+    TestIssue: "testIssue",
+    ProductIssue: "productIssue",
+    ConfigurationIssue: "configurationIssue",
+    NullValue: "nullValue",
+    MaxValue: "maxValue",
+}
+
 // Last result details of test point.
 type LastResultDetails struct {
     // CompletedDate of LastResult.
@@ -224,6 +282,59 @@ type NameValuePair struct {
 
 type Outcome string
 
+type outcomeValuesType struct {
+    Unspecified Outcome
+    None Outcome
+    Passed Outcome
+    Failed Outcome
+    Inconclusive Outcome
+    Timeout Outcome
+    Aborted Outcome
+    Blocked Outcome
+    NotExecuted Outcome
+    Warning Outcome
+    Error Outcome
+    NotApplicable Outcome
+    Paused Outcome
+    InProgress Outcome
+    NotImpacted Outcome
+    MaxValue Outcome
+}
+
+var OutcomeValues = outcomeValuesType{
+    // Only used during an update to preserve the existing value.
+    Unspecified: "unspecified",
+    // Test has not been completed, or the test type does not report pass/failure.
+    None: "none",
+    // Test was executed w/o any issues.
+    Passed: "passed",
+    // Test was executed, but there were issues. Issues may involve exceptions or failed assertions.
+    Failed: "failed",
+    // Test has completed, but we can't say if it passed or failed. May be used for aborted tests...
+    Inconclusive: "inconclusive",
+    // The test timed out
+    Timeout: "timeout",
+    // Test was aborted. This was not caused by a user gesture, but rather by a framework decision.
+    Aborted: "aborted",
+    // Test had it chance for been executed but was not, as ITestElement.IsRunnable == false.
+    Blocked: "blocked",
+    // Test was not executed. This was caused by a user gesture - e.g. user hit stop button.
+    NotExecuted: "notExecuted",
+    // To be used by Run level results. This is not a failure.
+    Warning: "warning",
+    // There was a system error while we were trying to execute a test.
+    Error: "error",
+    // Test is Not Applicable for execution.
+    NotApplicable: "notApplicable",
+    // Test is paused.
+    Paused: "paused",
+    // Test is currently executing. Added this for TCM charts
+    InProgress: "inProgress",
+    // Test is not impacted. Added fot TIA.
+    NotImpacted: "notImpacted",
+    MaxValue: "maxValue",
+}
+
 // Assignments for the Test Point
 type PointAssignment struct {
     // Id of the Configuration Assigned to the Test Point
@@ -238,7 +349,42 @@ type PointAssignment struct {
 
 type PointState string
 
+type pointStateValuesType struct {
+    None PointState
+    Ready PointState
+    Completed PointState
+    NotReady PointState
+    InProgress PointState
+    MaxValue PointState
+}
+
+var PointStateValues = pointStateValuesType{
+    // Default
+    None: "none",
+    // The test point needs to be executed in order for the test pass to be considered complete.  Either the test has not been run before or the previous run failed.
+    Ready: "ready",
+    // The test has passed successfully and does not need to be re-run for the test pass to be considered complete.
+    Completed: "completed",
+    // The test point needs to be executed but is not able to.
+    NotReady: "notReady",
+    // The test is being executed.
+    InProgress: "inProgress",
+    MaxValue: "maxValue",
+}
+
 type ProjectVisibility string
+
+type projectVisibilityValuesType struct {
+    Private ProjectVisibility
+    Public ProjectVisibility
+}
+
+var ProjectVisibilityValues = projectVisibilityValuesType{
+    // The project is only visible to users with explicit access.
+    Private: "private",
+    // The project is visible to all.
+    Public: "public",
+}
 
 // The class to represent a collection of REST reference links.
 type ReferenceLinks struct {
@@ -261,6 +407,32 @@ type Results struct {
 }
 
 type ResultState string
+
+type resultStateValuesType struct {
+    Unspecified ResultState
+    Pending ResultState
+    Queued ResultState
+    InProgress ResultState
+    Paused ResultState
+    Completed ResultState
+    MaxValue ResultState
+}
+
+var ResultStateValues = resultStateValuesType{
+    // Only used during an update to preserve the existing value.
+    Unspecified: "unspecified",
+    // Test is in the execution queue, was not started yet.
+    Pending: "pending",
+    // Test has been queued. This is applicable when a test case is queued for execution
+    Queued: "queued",
+    // Test is currently executing.
+    InProgress: "inProgress",
+    // Test has been paused. This is applicable when a test case is paused by the user (For e.g. Manual Tester can pause the execution of the manual test case)
+    Paused: "paused",
+    // Test has completed, but there is no quantitative measure of completeness. This may apply to load tests.
+    Completed: "completed",
+    MaxValue: "maxValue",
+}
 
 // Source Test Plan information for Test Plan clone operation
 type SourceTestPlanInfo struct {
@@ -302,6 +474,18 @@ type SuiteEntry struct {
 
 type SuiteEntryTypes string
 
+type suiteEntryTypesValuesType struct {
+    TestCase SuiteEntryTypes
+    Suite SuiteEntryTypes
+}
+
+var SuiteEntryTypesValues = suiteEntryTypesValuesType{
+    // Test Case
+    TestCase: "testCase",
+    // Child Suite
+    Suite: "suite",
+}
+
 // A suite entry defines properties for a test suite.
 type SuiteEntryUpdateParams struct {
     // Id of the suite entry in the test suite: either a test case id or child suite id.
@@ -314,6 +498,21 @@ type SuiteEntryUpdateParams struct {
 
 // Option to get details in response
 type SuiteExpand string
+
+type suiteExpandValuesType struct {
+    None SuiteExpand
+    Children SuiteExpand
+    DefaultTesters SuiteExpand
+}
+
+var SuiteExpandValues = suiteExpandValuesType{
+    // Dont include any of the expansions in output.
+    None: "none",
+    // Include children in response.
+    Children: "children",
+    // Include default testers in response.
+    DefaultTesters: "defaultTesters",
+}
 
 // Create and Update Suite Test Case Parameters
 type SuiteTestCaseCreateUpdateParameters struct {
@@ -419,6 +618,18 @@ type TestConfigurationReference struct {
 
 // Represents the state of an ITestConfiguration object.
 type TestConfigurationState string
+
+type testConfigurationStateValuesType struct {
+    Active TestConfigurationState
+    Inactive TestConfigurationState
+}
+
+var TestConfigurationStateValues = testConfigurationStateValuesType{
+    // The configuration can be used for new test runs.
+    Active: "active",
+    // The configuration has been retired and should not be used for new test runs.
+    Inactive: "inactive",
+}
 
 // Test environment Detail.
 type TestEnvironment struct {
@@ -773,6 +984,24 @@ type TestSuiteReferenceWithProject struct {
 // Type of TestSuite
 type TestSuiteType string
 
+type testSuiteTypeValuesType struct {
+    None TestSuiteType
+    DynamicTestSuite TestSuiteType
+    StaticTestSuite TestSuiteType
+    RequirementTestSuite TestSuiteType
+}
+
+var TestSuiteTypeValues = testSuiteTypeValuesType{
+    // Default suite type
+    None: "none",
+    // Query Based test Suite
+    DynamicTestSuite: "dynamicTestSuite",
+    // Static Test Suite
+    StaticTestSuite: "staticTestSuite",
+    // Requirement based Test Suite
+    RequirementTestSuite: "requirementTestSuite",
+}
+
 // Test Suite Update Parameters
 type TestSuiteUpdateParams struct {
     // Test suite default configurations.
@@ -816,6 +1045,28 @@ type TestVariableCreateUpdateParameters struct {
 }
 
 type UserFriendlyTestOutcome string
+
+type userFriendlyTestOutcomeValuesType struct {
+    InProgress UserFriendlyTestOutcome
+    Blocked UserFriendlyTestOutcome
+    Failed UserFriendlyTestOutcome
+    Passed UserFriendlyTestOutcome
+    Ready UserFriendlyTestOutcome
+    NotApplicable UserFriendlyTestOutcome
+    Paused UserFriendlyTestOutcome
+    MaxValue UserFriendlyTestOutcome
+}
+
+var UserFriendlyTestOutcomeValues = userFriendlyTestOutcomeValuesType{
+    InProgress: "inProgress",
+    Blocked: "blocked",
+    Failed: "failed",
+    Passed: "passed",
+    Ready: "ready",
+    NotApplicable: "notApplicable",
+    Paused: "paused",
+    MaxValue: "maxValue",
+}
 
 // Work Item
 type WorkItem struct {

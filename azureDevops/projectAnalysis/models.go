@@ -15,6 +15,16 @@ import (
 
 type AggregationType string
 
+type aggregationTypeValuesType struct {
+    Hourly AggregationType
+    Daily AggregationType
+}
+
+var AggregationTypeValues = aggregationTypeValuesType{
+    Hourly: "hourly",
+    Daily: "daily",
+}
+
 type AnalyzerDescriptor struct {
     Description *string `json:"description,omitempty"`
     Id *uuid.UUID `json:"id,omitempty"`
@@ -84,3 +94,13 @@ type RepositoryLanguageAnalytics struct {
 }
 
 type ResultPhase string
+
+type resultPhaseValuesType struct {
+    Preliminary ResultPhase
+    Full ResultPhase
+}
+
+var ResultPhaseValues = resultPhaseValuesType{
+    Preliminary: "preliminary",
+    Full: "full",
+}

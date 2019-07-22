@@ -39,6 +39,24 @@ type MinimalPackageDetails struct {
 
 type Operation string
 
+type operationValuesType struct {
+    Add Operation
+    Remove Operation
+    Replace Operation
+    Move Operation
+    Copy Operation
+    Test Operation
+}
+
+var OperationValues = operationValuesType{
+    Add: "add",
+    Remove: "remove",
+    Replace: "replace",
+    Move: "move",
+    Copy: "copy",
+    Test: "test",
+}
+
 // Package version metadata for a Python package
 type Package struct {
     // Related REST links.
@@ -65,8 +83,38 @@ type PackageVersionDetails struct {
 // Type of an upstream source, such as Public or Internal.
 type PackagingSourceType string
 
+type packagingSourceTypeValuesType struct {
+    Public PackagingSourceType
+    Internal PackagingSourceType
+}
+
+var PackagingSourceTypeValues = packagingSourceTypeValuesType{
+    // Publicly available source.
+    Public: "public",
+    // Azure DevOps upstream source.
+    Internal: "internal",
+}
+
 // Describes PyPi batch operation types.
 type PyPiBatchOperationType string
+
+type pyPiBatchOperationTypeValuesType struct {
+    Promote PyPiBatchOperationType
+    Delete PyPiBatchOperationType
+    PermanentDelete PyPiBatchOperationType
+    RestoreToFeed PyPiBatchOperationType
+}
+
+var PyPiBatchOperationTypeValues = pyPiBatchOperationTypeValuesType{
+    // Promote package versions to a release view. If constructing a PyPiPackagesBatchRequest object with this type, use BatchPromoteData for its Data property. Not supported in the Recycle Bin.
+    Promote: "promote",
+    // Move package versions to the feed's Recycle Bin. Not supported in the Recycle Bin.
+    Delete: "delete",
+    // Permanently delete package versions. Only supported in the Recycle Bin.
+    PermanentDelete: "permanentDelete",
+    // Restore deleted package versions to the feed. Only supported in the Recycle Bin.
+    RestoreToFeed: "restoreToFeed",
+}
 
 // A batch of operations to apply to package versions.
 type PyPiPackagesBatchRequest struct {

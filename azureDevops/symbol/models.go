@@ -52,11 +52,74 @@ type DebugEntryCreateBatch struct {
 // The expected behavior when a debug entry to add already exists.
 type DebugEntryCreateBehavior string
 
+type debugEntryCreateBehaviorValuesType struct {
+    ThrowIfExists DebugEntryCreateBehavior
+    SkipIfExists DebugEntryCreateBehavior
+    OverwriteIfExists DebugEntryCreateBehavior
+}
+
+var DebugEntryCreateBehaviorValues = debugEntryCreateBehaviorValuesType{
+    // Throw exceptions at server end. This will translate to 409 (Conflict) HTTP status code.
+    ThrowIfExists: "throwIfExists",
+    // Do not add this debug entry. The rest of the batch, if any, is not affected.
+    SkipIfExists: "skipIfExists",
+    // Overwrite the existing debug entry.
+    OverwriteIfExists: "overwriteIfExists",
+}
+
 // The status of debug entry.
 type DebugEntryStatus string
 
+type debugEntryStatusValuesType struct {
+    None DebugEntryStatus
+    Created DebugEntryStatus
+    BlobMissing DebugEntryStatus
+}
+
+var DebugEntryStatusValues = debugEntryStatusValuesType{
+    // The status of this debug entry is undefined or irrelevant in the current context.
+    None: "none",
+    // The debug entry is created and read to use.
+    Created: "created",
+    // The symbol file for the requested debug entry is missing.
+    BlobMissing: "blobMissing",
+}
+
 // Defines the level of debug-related information inside the .pdb file. These values can be combined together (bitwise OR'ed) to create a customized level.
 type DebugInformationLevel string
+
+type debugInformationLevelValuesType struct {
+    None DebugInformationLevel
+    Binary DebugInformationLevel
+    Publics DebugInformationLevel
+    TraceFormatPresent DebugInformationLevel
+    TypeInfo DebugInformationLevel
+    LineNumbers DebugInformationLevel
+    GlobalSymbols DebugInformationLevel
+    Private DebugInformationLevel
+    SourceIndexed DebugInformationLevel
+}
+
+var DebugInformationLevelValues = debugInformationLevelValuesType{
+    // If set, the .pdb file contains no debug information.
+    None: "none",
+    // If set, the .pdb file contains debug information which is binary.
+    Binary: "binary",
+    // If set, the .pdb file contains public symbols.
+    Publics: "publics",
+    // If set, the .pdb file contains trace format.
+    TraceFormatPresent: "traceFormatPresent",
+    // If set, the .pdb file contains type information.
+    TypeInfo: "typeInfo",
+    // If set, the .pdb file contains line number information.
+    LineNumbers: "lineNumbers",
+    // If set, the .pdb file contains symbol information.
+    GlobalSymbols: "globalSymbols",
+    // If set, the .pdb file contains public symbols and has type, line number and symbol information.
+    Private: "private",
+    // If set, the .pdb file supports the source server.
+    SourceIndexed: "sourceIndexed",
+}
 
 // BlobBlock hash formatted to be deserialized for symbol service.
 type JsonBlobBlockHash struct {
@@ -100,6 +163,24 @@ type Request struct {
 
 // The status of request.
 type RequestStatus string
+
+type requestStatusValuesType struct {
+    None RequestStatus
+    Created RequestStatus
+    Sealed RequestStatus
+    Unavailable RequestStatus
+}
+
+var RequestStatusValues = requestStatusValuesType{
+    // The status of this request is undefined or irrelevant in the current context.
+    None: "none",
+    // The request is created, and is open to accepting debug entries.
+    Created: "created",
+    // The request is sealed. No more debug entries can be added to it.
+    Sealed: "sealed",
+    // The request is no longer available, possibly deleted.
+    Unavailable: "unavailable",
+}
 
 type ResourceBase struct {
     // The ID of user who created this item. Optional.

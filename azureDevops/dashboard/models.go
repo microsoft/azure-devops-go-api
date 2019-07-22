@@ -46,7 +46,7 @@ type DashboardGroup struct {
     Url *string `json:"url,omitempty"`
 }
 
-// Dashboard group entry, wraping around Dashboard (needed?)
+// Dashboard group entry, wrapping around Dashboard (needed?)
 type DashboardGroupEntry struct {
     Links *ReferenceLinks `json:"_links,omitempty"`
     // Description of the dashboard.
@@ -114,7 +114,31 @@ type DashboardResponse struct {
 // identifies the scope of dashboard storage and permissions.
 type DashboardScope string
 
+type dashboardScopeValuesType struct {
+    Collection_User DashboardScope
+    Project_Team DashboardScope
+}
+
+var DashboardScopeValues = dashboardScopeValuesType{
+    Collection_User: "collection_User",
+    Project_Team: "project_Team",
+}
+
 type GroupMemberPermission string
+
+type groupMemberPermissionValuesType struct {
+    None GroupMemberPermission
+    Edit GroupMemberPermission
+    Manage GroupMemberPermission
+    ManagePermissions GroupMemberPermission
+}
+
+var GroupMemberPermissionValues = groupMemberPermissionValuesType{
+    None: "none",
+    Edit: "edit",
+    Manage: "manage",
+    ManagePermissions: "managePermissions",
+}
 
 // Lightbox configuration
 type LightboxOptions struct {
@@ -155,6 +179,24 @@ type TeamContext struct {
 }
 
 type TeamDashboardPermission string
+
+type teamDashboardPermissionValuesType struct {
+    None TeamDashboardPermission
+    Read TeamDashboardPermission
+    Create TeamDashboardPermission
+    Edit TeamDashboardPermission
+    Delete TeamDashboardPermission
+    ManagePermissions TeamDashboardPermission
+}
+
+var TeamDashboardPermissionValues = teamDashboardPermissionValuesType{
+    None: "none",
+    Read: "read",
+    Create: "create",
+    Edit: "edit",
+    Delete: "delete",
+    ManagePermissions: "managePermissions",
+}
 
 // Widget data
 type Widget struct {
@@ -276,6 +318,16 @@ type WidgetResponse struct {
 
 // data contract required for the widget to function in a webaccess area or page.
 type WidgetScope string
+
+type widgetScopeValuesType struct {
+    Collection_User WidgetScope
+    Project_Team WidgetScope
+}
+
+var WidgetScopeValues = widgetScopeValuesType{
+    Collection_User: "collection_User",
+    Project_Team: "project_Team",
+}
 
 type WidgetSize struct {
     // The Width of the widget, expressed in dashboard grid columns.
