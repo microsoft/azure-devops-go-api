@@ -8,6 +8,7 @@ To use the API, establish a connection using a [personal access token](https://d
 package main
 
 import (
+    "context"
     "github.com/microsoft/azure-devops-go-api/azureDevops"
     "github.com/microsoft/azure-devops-go-api/azureDevops/core"
     "log"
@@ -20,14 +21,16 @@ func main() {
     // Create a connection to your organization
     connection := azureDevops.NewConnection(organizationUrl, personalAccessToken)
 
+    ctx := context.Background()
+
     // Create a client to interact with the Core area
-    coreClient, err := core.NewClient(*connection)
+    coreClient, err := core.NewClient(ctx, *connection)
     if err != nil {
         log.Fatal(err)
     }
     
     // Get a list of all team projects
-    teamProjectReferences, err := coreClient.GetProjects(nil, nil, nil, nil, nil)
+    teamProjectReferences, err := coreClient.GetProjects(ctx, nil, nil, nil, nil, nil)
     if err != nil {
         log.Fatal(err)
     }
