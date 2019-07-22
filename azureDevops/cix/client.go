@@ -103,7 +103,7 @@ func (client Client) CreateProjectConnection(ctx context.Context, createConnecti
 // branch (optional): The repository branch to detect build frameworks for.
 // detectionType (optional)
 // serviceConnectionId (optional): If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TfsGit (i.e. Azure Repos).
-func (client Client) GetDetectedBuildFrameworks(ctx context.Context, project *string, repositoryType *string, repositoryId *string, branch *string, detectionType *string, serviceConnectionId *uuid.UUID) (*[]DetectedBuildFramework, error) {
+func (client Client) GetDetectedBuildFrameworks(ctx context.Context, project *string, repositoryType *string, repositoryId *string, branch *string, detectionType *BuildFrameworkDetectionType, serviceConnectionId *uuid.UUID) (*[]DetectedBuildFramework, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 

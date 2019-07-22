@@ -592,7 +592,7 @@ func (client Client) GetWidgetMetadata(ctx context.Context, contributionId *stri
 // ctx
 // scope (required)
 // project (optional): Project ID or project name
-func (client Client) GetWidgetTypes(ctx context.Context, scope *string, project *string) (*WidgetTypesResponse, error) {
+func (client Client) GetWidgetTypes(ctx context.Context, scope *WidgetScope, project *string) (*WidgetTypesResponse, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project

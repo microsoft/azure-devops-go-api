@@ -48,7 +48,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 // continuationToken (optional): Gets the approvals after the continuation token provided.
 // queryOrder (optional): Gets the results in the defined order of created approvals. Default is 'descending'.
 // includeMyGroupApprovals (optional): 'true' to include my group approvals. Default is 'false'.
-func (client Client) GetApprovals(ctx context.Context, project *string, assignedToFilter *string, statusFilter *string, releaseIdsFilter *[]int, typeFilter *string, top *int, continuationToken *int, queryOrder *string, includeMyGroupApprovals *bool) (*[]ReleaseApproval, error) {
+func (client Client) GetApprovals(ctx context.Context, project *string, assignedToFilter *string, statusFilter *ApprovalStatus, releaseIdsFilter *[]int, typeFilter *ApprovalType, top *int, continuationToken *int, queryOrder *ReleaseQueryOrder, includeMyGroupApprovals *bool) (*[]ReleaseApproval, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -348,7 +348,7 @@ func (client Client) GetReleaseDefinition(ctx context.Context, project *string, 
 // definitionIdFilter (optional): A comma-delimited list of release definitions to retrieve.
 // isDeleted (optional): 'true' to get release definitions that has been deleted. Default is 'false'
 // searchTextContainsFolderName (optional): 'true' to get the release definitions under the folder with name as specified in searchText. Default is 'false'.
-func (client Client) GetReleaseDefinitions(ctx context.Context, project *string, searchText *string, expand *string, artifactType *string, artifactSourceId *string, top *int, continuationToken *string, queryOrder *string, path *string, isExactNameMatch *bool, tagFilter *[]string, propertyFilters *[]string, definitionIdFilter *[]string, isDeleted *bool, searchTextContainsFolderName *bool) (*[]ReleaseDefinition, error) {
+func (client Client) GetReleaseDefinitions(ctx context.Context, project *string, searchText *string, expand *ReleaseDefinitionExpands, artifactType *string, artifactSourceId *string, top *int, continuationToken *string, queryOrder *ReleaseDefinitionQueryOrder, path *string, isExactNameMatch *bool, tagFilter *[]string, propertyFilters *[]string, definitionIdFilter *[]string, isDeleted *bool, searchTextContainsFolderName *bool) (*[]ReleaseDefinition, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -458,7 +458,7 @@ func (client Client) UpdateReleaseDefinition(ctx context.Context, releaseDefinit
 // minStartedTime (optional)
 // maxStartedTime (optional)
 // sourceBranch (optional)
-func (client Client) GetDeployments(ctx context.Context, project *string, definitionId *int, definitionEnvironmentId *int, createdBy *string, minModifiedTime *time.Time, maxModifiedTime *time.Time, deploymentStatus *string, operationStatus *string, latestAttemptsOnly *bool, queryOrder *string, top *int, continuationToken *int, createdFor *string, minStartedTime *time.Time, maxStartedTime *time.Time, sourceBranch *string) (*[]Deployment, error) {
+func (client Client) GetDeployments(ctx context.Context, project *string, definitionId *int, definitionEnvironmentId *int, createdBy *string, minModifiedTime *time.Time, maxModifiedTime *time.Time, deploymentStatus *DeploymentStatus, operationStatus *DeploymentOperationStatus, latestAttemptsOnly *bool, queryOrder *ReleaseQueryOrder, top *int, continuationToken *int, createdFor *string, minStartedTime *time.Time, maxStartedTime *time.Time, sourceBranch *string) (*[]Deployment, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -621,7 +621,7 @@ func (client Client) DeleteFolder(ctx context.Context, project *string, path *st
 // project (required): Project ID or project name
 // path (optional): Path of the folder.
 // queryOrder (optional): Gets the results in the defined order. Default is 'None'.
-func (client Client) GetFolders(ctx context.Context, project *string, path *string, queryOrder *string) (*[]Folder, error) {
+func (client Client) GetFolders(ctx context.Context, project *string, path *string, queryOrder *FolderPathQueryOrder) (*[]Folder, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -910,7 +910,7 @@ func (client Client) UpdateManualIntervention(ctx context.Context, manualInterve
 // propertyFilters (optional): A comma-delimited list of extended properties to be retrieved. If set, the returned Releases will contain values for the specified property Ids (if they exist). If not set, properties will not be included. Note that this will not filter out any Release from results irrespective of whether it has property set or not.
 // releaseIdFilter (optional): A comma-delimited list of releases Ids. Only releases with these Ids will be returned.
 // path (optional): Releases under this folder path will be returned
-func (client Client) GetReleases(ctx context.Context, project *string, definitionId *int, definitionEnvironmentId *int, searchText *string, createdBy *string, statusFilter *string, environmentStatusFilter *int, minCreatedTime *time.Time, maxCreatedTime *time.Time, queryOrder *string, top *int, continuationToken *int, expand *string, artifactTypeId *string, sourceId *string, artifactVersionId *string, sourceBranchFilter *string, isDeleted *bool, tagFilter *[]string, propertyFilters *[]string, releaseIdFilter *[]int, path *string) (*[]Release, error) {
+func (client Client) GetReleases(ctx context.Context, project *string, definitionId *int, definitionEnvironmentId *int, searchText *string, createdBy *string, statusFilter *ReleaseStatus, environmentStatusFilter *int, minCreatedTime *time.Time, maxCreatedTime *time.Time, queryOrder *ReleaseQueryOrder, top *int, continuationToken *int, expand *ReleaseExpands, artifactTypeId *string, sourceId *string, artifactVersionId *string, sourceBranchFilter *string, isDeleted *bool, tagFilter *[]string, propertyFilters *[]string, releaseIdFilter *[]int, path *string) (*[]Release, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -1035,7 +1035,7 @@ func (client Client) CreateRelease(ctx context.Context, releaseStartMetadata *Re
 // propertyFilters (optional): A comma-delimited list of extended properties to be retrieved. If set, the returned Release will contain values for the specified property Ids (if they exist). If not set, properties will not be included.
 // expand (optional): A property that should be expanded in the release.
 // topGateRecords (optional): Number of release gate records to get. Default is 5.
-func (client Client) GetRelease(ctx context.Context, project *string, releaseId *int, approvalFilters *string, propertyFilters *[]string, expand *string, topGateRecords *int) (*Release, error) {
+func (client Client) GetRelease(ctx context.Context, project *string, releaseId *int, approvalFilters *ApprovalFilters, propertyFilters *[]string, expand *SingleReleaseExpands, topGateRecords *int) (*Release, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 

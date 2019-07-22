@@ -37,7 +37,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
 // runId (required)
 // logId (required)
 // expand (optional)
-func (client Client) GetLog(ctx context.Context, project *string, pipelineId *int, runId *int, logId *int, expand *string) (*Log, error) {
+func (client Client) GetLog(ctx context.Context, project *string, pipelineId *int, runId *int, logId *int, expand *GetLogExpandOptions) (*Log, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -77,7 +77,7 @@ func (client Client) GetLog(ctx context.Context, project *string, pipelineId *in
 // pipelineId (required)
 // runId (required)
 // expand (optional)
-func (client Client) ListLogs(ctx context.Context, project *string, pipelineId *int, runId *int, expand *string) (*LogCollection, error) {
+func (client Client) ListLogs(ctx context.Context, project *string, pipelineId *int, runId *int, expand *GetLogExpandOptions) (*LogCollection, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 

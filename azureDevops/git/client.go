@@ -1083,7 +1083,7 @@ func (client Client) UpdateImportRequest(ctx context.Context, importRequestToUpd
 // versionDescriptor (optional): Version descriptor.  Default is the default branch for the repository.
 // includeContent (optional): Set to true to include item content when requesting json.  Default is false.
 // resolveLfs (optional): Set to true to resolve Git LFS pointer files to return actual content from Git LFS.  Default is false.
-func (client Client) GetItem(ctx context.Context, repositoryId *string, path *string, project *string, scopePath *string, recursionLevel *string, includeContentMetadata *bool, latestProcessedChange *bool, download *bool, versionDescriptor *GitVersionDescriptor, includeContent *bool, resolveLfs *bool) (*GitItem, error) {
+func (client Client) GetItem(ctx context.Context, repositoryId *string, path *string, project *string, scopePath *string, recursionLevel *VersionControlRecursionType, includeContentMetadata *bool, latestProcessedChange *bool, download *bool, versionDescriptor *GitVersionDescriptor, includeContent *bool, resolveLfs *bool) (*GitItem, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -1154,7 +1154,7 @@ func (client Client) GetItem(ctx context.Context, repositoryId *string, path *st
 // versionDescriptor (optional): Version descriptor.  Default is the default branch for the repository.
 // includeContent (optional): Set to true to include item content when requesting json.  Default is false.
 // resolveLfs (optional): Set to true to resolve Git LFS pointer files to return actual content from Git LFS.  Default is false.
-func (client Client) GetItemContent(ctx context.Context, repositoryId *string, path *string, project *string, scopePath *string, recursionLevel *string, includeContentMetadata *bool, latestProcessedChange *bool, download *bool, versionDescriptor *GitVersionDescriptor, includeContent *bool, resolveLfs *bool) (*interface{}, error) {
+func (client Client) GetItemContent(ctx context.Context, repositoryId *string, path *string, project *string, scopePath *string, recursionLevel *VersionControlRecursionType, includeContentMetadata *bool, latestProcessedChange *bool, download *bool, versionDescriptor *GitVersionDescriptor, includeContent *bool, resolveLfs *bool) (*interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -1223,7 +1223,7 @@ func (client Client) GetItemContent(ctx context.Context, repositoryId *string, p
 // download (optional): Set to true to download the response as a file.  Default is false.
 // includeLinks (optional): Set to true to include links to items.  Default is false.
 // versionDescriptor (optional): Version descriptor.  Default is the default branch for the repository.
-func (client Client) GetItems(ctx context.Context, repositoryId *string, project *string, scopePath *string, recursionLevel *string, includeContentMetadata *bool, latestProcessedChange *bool, download *bool, includeLinks *bool, versionDescriptor *GitVersionDescriptor) (*[]GitItem, error) {
+func (client Client) GetItems(ctx context.Context, repositoryId *string, project *string, scopePath *string, recursionLevel *VersionControlRecursionType, includeContentMetadata *bool, latestProcessedChange *bool, download *bool, includeLinks *bool, versionDescriptor *GitVersionDescriptor) (*[]GitItem, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -1287,7 +1287,7 @@ func (client Client) GetItems(ctx context.Context, repositoryId *string, project
 // versionDescriptor (optional): Version descriptor.  Default is the default branch for the repository.
 // includeContent (optional): Set to true to include item content when requesting json.  Default is false.
 // resolveLfs (optional): Set to true to resolve Git LFS pointer files to return actual content from Git LFS.  Default is false.
-func (client Client) GetItemText(ctx context.Context, repositoryId *string, path *string, project *string, scopePath *string, recursionLevel *string, includeContentMetadata *bool, latestProcessedChange *bool, download *bool, versionDescriptor *GitVersionDescriptor, includeContent *bool, resolveLfs *bool) (*interface{}, error) {
+func (client Client) GetItemText(ctx context.Context, repositoryId *string, path *string, project *string, scopePath *string, recursionLevel *VersionControlRecursionType, includeContentMetadata *bool, latestProcessedChange *bool, download *bool, versionDescriptor *GitVersionDescriptor, includeContent *bool, resolveLfs *bool) (*interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -1358,7 +1358,7 @@ func (client Client) GetItemText(ctx context.Context, repositoryId *string, path
 // versionDescriptor (optional): Version descriptor.  Default is the default branch for the repository.
 // includeContent (optional): Set to true to include item content when requesting json.  Default is false.
 // resolveLfs (optional): Set to true to resolve Git LFS pointer files to return actual content from Git LFS.  Default is false.
-func (client Client) GetItemZip(ctx context.Context, repositoryId *string, path *string, project *string, scopePath *string, recursionLevel *string, includeContentMetadata *bool, latestProcessedChange *bool, download *bool, versionDescriptor *GitVersionDescriptor, includeContent *bool, resolveLfs *bool) (*interface{}, error) {
+func (client Client) GetItemZip(ctx context.Context, repositoryId *string, path *string, project *string, scopePath *string, recursionLevel *VersionControlRecursionType, includeContentMetadata *bool, latestProcessedChange *bool, download *bool, versionDescriptor *GitVersionDescriptor, includeContent *bool, resolveLfs *bool) (*interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project

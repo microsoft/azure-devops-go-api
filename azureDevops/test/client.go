@@ -962,7 +962,7 @@ func (client Client) AddTestResultsToTestRun(ctx context.Context, results *[]Tes
 // runId (required): Test run ID of a test result to fetch.
 // testCaseResultId (required): Test result ID.
 // detailsToInclude (optional): Details to include with test results. Default is None. Other values are Iterations, WorkItems and SubResults.
-func (client Client) GetTestResultById(ctx context.Context, project *string, runId *int, testCaseResultId *int, detailsToInclude *string) (*TestCaseResult, error) {
+func (client Client) GetTestResultById(ctx context.Context, project *string, runId *int, testCaseResultId *int, detailsToInclude *ResultDetails) (*TestCaseResult, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1000,7 +1000,7 @@ func (client Client) GetTestResultById(ctx context.Context, project *string, run
 // skip (optional): Number of test results to skip from beginning.
 // top (optional): Number of test results to return. Maximum is 1000 when detailsToInclude is None and 200 otherwise.
 // outcomes (optional): Comma separated list of test outcomes to filter test results.
-func (client Client) GetTestResults(ctx context.Context, project *string, runId *int, detailsToInclude *string, skip *int, top *int, outcomes *[]TestOutcome) (*[]TestCaseResult, error) {
+func (client Client) GetTestResults(ctx context.Context, project *string, runId *int, detailsToInclude *ResultDetails, skip *int, top *int, outcomes *[]TestOutcome) (*[]TestCaseResult, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1257,7 +1257,7 @@ func (client Client) GetTestRuns(ctx context.Context, project *string, buildUri 
 // runTitle (optional): Run Title of the Runs to be queried.
 // top (optional): Number of runs to be queried. Limit is 100
 // continuationToken (optional): continuationToken received from previous batch or null for first batch. It is not supposed to be created (or altered, if received from last batch) by user.
-func (client Client) QueryTestRuns(ctx context.Context, project *string, minLastUpdatedDate *time.Time, maxLastUpdatedDate *time.Time, state *string, planIds *[]int, isAutomated *bool, publishContext *string, buildIds *[]int, buildDefIds *[]int, branchName *string, releaseIds *[]int, releaseDefIds *[]int, releaseEnvIds *[]int, releaseEnvDefIds *[]int, runTitle *string, top *int, continuationToken *string) (*[]TestRun, error) {
+func (client Client) QueryTestRuns(ctx context.Context, project *string, minLastUpdatedDate *time.Time, maxLastUpdatedDate *time.Time, state *TestRunState, planIds *[]int, isAutomated *bool, publishContext *TestRunPublishContext, buildIds *[]int, buildDefIds *[]int, branchName *string, releaseIds *[]int, releaseDefIds *[]int, releaseEnvIds *[]int, releaseEnvDefIds *[]int, runTitle *string, top *int, continuationToken *string) (*[]TestRun, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1437,7 +1437,7 @@ func (client Client) CreateTestSession(ctx context.Context, testSession *TestSes
 // includeAllProperties (optional): If true, it returns all properties of the test sessions. Otherwise, it returns the skinny version.
 // source (optional): Source of the test session.
 // includeOnlyCompletedSessions (optional): If true, it returns test sessions in completed state. Otherwise, it returns test sessions for all states
-func (client Client) GetTestSessions(ctx context.Context, project *string, team *string, period *int, allSessions *bool, includeAllProperties *bool, source *string, includeOnlyCompletedSessions *bool) (*[]TestSession, error) {
+func (client Client) GetTestSessions(ctx context.Context, project *string, team *string, period *int, allSessions *bool, includeAllProperties *bool, source *TestSessionSource, includeOnlyCompletedSessions *bool) (*[]TestSession, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 

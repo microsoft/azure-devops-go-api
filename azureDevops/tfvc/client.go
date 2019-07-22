@@ -454,7 +454,7 @@ func (client Client) GetItemsBatchZip(ctx context.Context, itemRequestData *Tfvc
 // recursionLevel (optional): None (just the item), or OneLevel (contents of a folder).
 // versionDescriptor (optional): Version descriptor.  Default is null.
 // includeContent (optional): Set to true to include item content when requesting json.  Default is false.
-func (client Client) GetItem(ctx context.Context, path *string, project *string, fileName *string, download *bool, scopePath *string, recursionLevel *string, versionDescriptor *TfvcVersionDescriptor, includeContent *bool) (*TfvcItem, error) {
+func (client Client) GetItem(ctx context.Context, path *string, project *string, fileName *string, download *bool, scopePath *string, recursionLevel *VersionControlRecursionType, versionDescriptor *TfvcVersionDescriptor, includeContent *bool) (*TfvcItem, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -512,7 +512,7 @@ func (client Client) GetItem(ctx context.Context, path *string, project *string,
 // recursionLevel (optional): None (just the item), or OneLevel (contents of a folder).
 // versionDescriptor (optional): Version descriptor.  Default is null.
 // includeContent (optional): Set to true to include item content when requesting json.  Default is false.
-func (client Client) GetItemContent(ctx context.Context, path *string, project *string, fileName *string, download *bool, scopePath *string, recursionLevel *string, versionDescriptor *TfvcVersionDescriptor, includeContent *bool) (*interface{}, error) {
+func (client Client) GetItemContent(ctx context.Context, path *string, project *string, fileName *string, download *bool, scopePath *string, recursionLevel *VersionControlRecursionType, versionDescriptor *TfvcVersionDescriptor, includeContent *bool) (*interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -567,7 +567,7 @@ func (client Client) GetItemContent(ctx context.Context, path *string, project *
 // recursionLevel (optional): None (just the item), or OneLevel (contents of a folder).
 // includeLinks (optional): True to include links.
 // versionDescriptor (optional)
-func (client Client) GetItems(ctx context.Context, project *string, scopePath *string, recursionLevel *string, includeLinks *bool, versionDescriptor *TfvcVersionDescriptor) (*[]TfvcItem, error) {
+func (client Client) GetItems(ctx context.Context, project *string, scopePath *string, recursionLevel *VersionControlRecursionType, includeLinks *bool, versionDescriptor *TfvcVersionDescriptor) (*[]TfvcItem, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -615,7 +615,7 @@ func (client Client) GetItems(ctx context.Context, project *string, scopePath *s
 // recursionLevel (optional): None (just the item), or OneLevel (contents of a folder).
 // versionDescriptor (optional): Version descriptor.  Default is null.
 // includeContent (optional): Set to true to include item content when requesting json.  Default is false.
-func (client Client) GetItemText(ctx context.Context, path *string, project *string, fileName *string, download *bool, scopePath *string, recursionLevel *string, versionDescriptor *TfvcVersionDescriptor, includeContent *bool) (*interface{}, error) {
+func (client Client) GetItemText(ctx context.Context, path *string, project *string, fileName *string, download *bool, scopePath *string, recursionLevel *VersionControlRecursionType, versionDescriptor *TfvcVersionDescriptor, includeContent *bool) (*interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -673,7 +673,7 @@ func (client Client) GetItemText(ctx context.Context, path *string, project *str
 // recursionLevel (optional): None (just the item), or OneLevel (contents of a folder).
 // versionDescriptor (optional): Version descriptor.  Default is null.
 // includeContent (optional): Set to true to include item content when requesting json.  Default is false.
-func (client Client) GetItemZip(ctx context.Context, path *string, project *string, fileName *string, download *bool, scopePath *string, recursionLevel *string, versionDescriptor *TfvcVersionDescriptor, includeContent *bool) (*interface{}, error) {
+func (client Client) GetItemZip(ctx context.Context, path *string, project *string, fileName *string, download *bool, scopePath *string, recursionLevel *VersionControlRecursionType, versionDescriptor *TfvcVersionDescriptor, includeContent *bool) (*interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project

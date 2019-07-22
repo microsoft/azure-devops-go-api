@@ -141,7 +141,7 @@ func (client Client) GetConnectedServiceDetails(ctx context.Context, projectId *
 // ctx
 // projectId (required)
 // kind (optional)
-func (client Client) GetConnectedServices(ctx context.Context, projectId *string, kind *string) (*[]WebApiConnectedService, error) {
+func (client Client) GetConnectedServices(ctx context.Context, projectId *string, kind *ConnectedServiceKind) (*[]WebApiConnectedService, error) {
     routeValues := make(map[string]string)
     if projectId == nil || *projectId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
@@ -314,7 +314,7 @@ func (client Client) GetProject(ctx context.Context, projectId *string, includeC
 // skip (optional)
 // continuationToken (optional)
 // getDefaultTeamImageUrl (optional)
-func (client Client) GetProjects(ctx context.Context, stateFilter *string, top *int, skip *int, continuationToken *string, getDefaultTeamImageUrl *bool) (*[]TeamProjectReference, error) {
+func (client Client) GetProjects(ctx context.Context, stateFilter *interface{}, top *int, skip *int, continuationToken *string, getDefaultTeamImageUrl *bool) (*[]TeamProjectReference, error) {
     queryParams := url.Values{}
     if stateFilter != nil {
         queryParams.Add("stateFilter", *stateFilter)

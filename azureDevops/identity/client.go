@@ -218,7 +218,7 @@ func (client Client) GetUserIdentityIdsByDomainId(ctx context.Context, domainId 
 // properties (optional)
 // includeRestrictedVisibility (optional)
 // options (optional)
-func (client Client) ReadIdentities(ctx context.Context, descriptors *string, identityIds *string, subjectDescriptors *string, socialDescriptors *string, searchFilter *string, filterValue *string, queryMembership *string, properties *string, includeRestrictedVisibility *bool, options *string) (*[]Identity, error) {
+func (client Client) ReadIdentities(ctx context.Context, descriptors *string, identityIds *string, subjectDescriptors *string, socialDescriptors *string, searchFilter *string, filterValue *string, queryMembership *QueryMembership, properties *string, includeRestrictedVisibility *bool, options *ReadIdentitiesOptions) (*[]Identity, error) {
     queryParams := url.Values{}
     if descriptors != nil {
         queryParams.Add("descriptors", *descriptors)
@@ -265,7 +265,7 @@ func (client Client) ReadIdentities(ctx context.Context, descriptors *string, id
 // scopeId (required)
 // queryMembership (optional)
 // properties (optional)
-func (client Client) ReadIdentitiesByScope(ctx context.Context, scopeId *uuid.UUID, queryMembership *string, properties *string) (*[]Identity, error) {
+func (client Client) ReadIdentitiesByScope(ctx context.Context, scopeId *uuid.UUID, queryMembership *QueryMembership, properties *string) (*[]Identity, error) {
     queryParams := url.Values{}
     if scopeId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeId"}
@@ -292,7 +292,7 @@ func (client Client) ReadIdentitiesByScope(ctx context.Context, scopeId *uuid.UU
 // identityId (required)
 // queryMembership (optional)
 // properties (optional)
-func (client Client) ReadIdentity(ctx context.Context, identityId *string, queryMembership *string, properties *string) (*Identity, error) {
+func (client Client) ReadIdentity(ctx context.Context, identityId *string, queryMembership *QueryMembership, properties *string) (*Identity, error) {
     routeValues := make(map[string]string)
     if identityId == nil || *identityId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "identityId"} 
@@ -487,7 +487,7 @@ func (client Client) AddMember(ctx context.Context, containerId *string, memberI
 // containerId (required)
 // memberId (required)
 // queryMembership (optional)
-func (client Client) ReadMember(ctx context.Context, containerId *string, memberId *string, queryMembership *string) (*string, error) {
+func (client Client) ReadMember(ctx context.Context, containerId *string, memberId *string, queryMembership *QueryMembership) (*string, error) {
     routeValues := make(map[string]string)
     if containerId == nil || *containerId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "containerId"} 
@@ -517,7 +517,7 @@ func (client Client) ReadMember(ctx context.Context, containerId *string, member
 // ctx
 // containerId (required)
 // queryMembership (optional)
-func (client Client) ReadMembers(ctx context.Context, containerId *string, queryMembership *string) (*[]string, error) {
+func (client Client) ReadMembers(ctx context.Context, containerId *string, queryMembership *QueryMembership) (*[]string, error) {
     routeValues := make(map[string]string)
     if containerId == nil || *containerId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "containerId"} 
@@ -570,7 +570,7 @@ func (client Client) RemoveMember(ctx context.Context, containerId *string, memb
 // memberId (required)
 // containerId (required)
 // queryMembership (optional)
-func (client Client) ReadMemberOf(ctx context.Context, memberId *string, containerId *string, queryMembership *string) (*string, error) {
+func (client Client) ReadMemberOf(ctx context.Context, memberId *string, containerId *string, queryMembership *QueryMembership) (*string, error) {
     routeValues := make(map[string]string)
     if memberId == nil || *memberId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "memberId"} 
@@ -600,7 +600,7 @@ func (client Client) ReadMemberOf(ctx context.Context, memberId *string, contain
 // ctx
 // memberId (required)
 // queryMembership (optional)
-func (client Client) ReadMembersOf(ctx context.Context, memberId *string, queryMembership *string) (*[]string, error) {
+func (client Client) ReadMembersOf(ctx context.Context, memberId *string, queryMembership *QueryMembership) (*[]string, error) {
     routeValues := make(map[string]string)
     if memberId == nil || *memberId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "memberId"} 

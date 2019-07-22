@@ -60,7 +60,7 @@ func (client Client) DeleteAvatar(ctx context.Context, subjectDescriptor *string
 // subjectDescriptor (required)
 // size (optional)
 // format (optional)
-func (client Client) GetAvatar(ctx context.Context, subjectDescriptor *string, size *string, format *string) (*Avatar, error) {
+func (client Client) GetAvatar(ctx context.Context, subjectDescriptor *string, size *AvatarSize, format *string) (*Avatar, error) {
     routeValues := make(map[string]string)
     if subjectDescriptor == nil || *subjectDescriptor == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"} 
@@ -376,7 +376,7 @@ func (client Client) RemoveMembership(ctx context.Context, subjectDescriptor *st
 // subjectDescriptor (required): Fetch all direct memberships of this descriptor.
 // direction (optional): Defaults to Up.
 // depth (optional): The maximum number of edges to traverse up or down the membership tree. Currently the only supported value is '1'.
-func (client Client) ListMemberships(ctx context.Context, subjectDescriptor *string, direction *string, depth *int) (*[]GraphMembership, error) {
+func (client Client) ListMemberships(ctx context.Context, subjectDescriptor *string, direction *GraphTraversalDirection, depth *int) (*[]GraphMembership, error) {
     routeValues := make(map[string]string)
     if subjectDescriptor == nil || *subjectDescriptor == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"} 

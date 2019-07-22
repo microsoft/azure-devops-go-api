@@ -208,7 +208,7 @@ func (client Client) DeletePageById(ctx context.Context, project *string, wikiId
 // id (required): Wiki page id.
 // recursionLevel (optional): Recursion level for subpages retrieval. Defaults to `None` (Optional).
 // includeContent (optional): True to include the content of the page in the response for Json content type. Defaults to false (Optional)
-func (client Client) GetPageById(ctx context.Context, project *string, wikiIdentifier *string, id *int, recursionLevel *string, includeContent *bool) (*WikiPageResponse, error) {
+func (client Client) GetPageById(ctx context.Context, project *string, wikiIdentifier *string, id *int, recursionLevel *VersionControlRecursionType, includeContent *bool) (*WikiPageResponse, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -257,7 +257,7 @@ func (client Client) GetPageById(ctx context.Context, project *string, wikiIdent
 // id (required): Wiki page id.
 // recursionLevel (optional): Recursion level for subpages retrieval. Defaults to `None` (Optional).
 // includeContent (optional): True to include the content of the page in the response for Json content type. Defaults to false (Optional)
-func (client Client) GetPageByIdText(ctx context.Context, project *string, wikiIdentifier *string, id *int, recursionLevel *string, includeContent *bool) (*interface{}, error) {
+func (client Client) GetPageByIdText(ctx context.Context, project *string, wikiIdentifier *string, id *int, recursionLevel *VersionControlRecursionType, includeContent *bool) (*interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -297,7 +297,7 @@ func (client Client) GetPageByIdText(ctx context.Context, project *string, wikiI
 // id (required): Wiki page id.
 // recursionLevel (optional): Recursion level for subpages retrieval. Defaults to `None` (Optional).
 // includeContent (optional): True to include the content of the page in the response for Json content type. Defaults to false (Optional)
-func (client Client) GetPageByIdZip(ctx context.Context, project *string, wikiIdentifier *string, id *int, recursionLevel *string, includeContent *bool) (*interface{}, error) {
+func (client Client) GetPageByIdZip(ctx context.Context, project *string, wikiIdentifier *string, id *int, recursionLevel *VersionControlRecursionType, includeContent *bool) (*interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -523,7 +523,7 @@ func (client Client) DeletePage(ctx context.Context, project *string, wikiIdenti
 // recursionLevel (optional): Recursion level for subpages retrieval. Defaults to `None` (Optional).
 // versionDescriptor (optional): GitVersionDescriptor for the page. Defaults to the default branch (Optional).
 // includeContent (optional): True to include the content of the page in the response for Json content type. Defaults to false (Optional)
-func (client Client) GetPage(ctx context.Context, project *string, wikiIdentifier *string, path *string, recursionLevel *string, versionDescriptor *GitVersionDescriptor, includeContent *bool) (*WikiPageResponse, error) {
+func (client Client) GetPage(ctx context.Context, project *string, wikiIdentifier *string, path *string, recursionLevel *VersionControlRecursionType, versionDescriptor *GitVersionDescriptor, includeContent *bool) (*WikiPageResponse, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -583,7 +583,7 @@ func (client Client) GetPage(ctx context.Context, project *string, wikiIdentifie
 // recursionLevel (optional): Recursion level for subpages retrieval. Defaults to `None` (Optional).
 // versionDescriptor (optional): GitVersionDescriptor for the page. Defaults to the default branch (Optional).
 // includeContent (optional): True to include the content of the page in the response for Json content type. Defaults to false (Optional)
-func (client Client) GetPageText(ctx context.Context, project *string, wikiIdentifier *string, path *string, recursionLevel *string, versionDescriptor *GitVersionDescriptor, includeContent *bool) (*interface{}, error) {
+func (client Client) GetPageText(ctx context.Context, project *string, wikiIdentifier *string, path *string, recursionLevel *VersionControlRecursionType, versionDescriptor *GitVersionDescriptor, includeContent *bool) (*interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -634,7 +634,7 @@ func (client Client) GetPageText(ctx context.Context, project *string, wikiIdent
 // recursionLevel (optional): Recursion level for subpages retrieval. Defaults to `None` (Optional).
 // versionDescriptor (optional): GitVersionDescriptor for the page. Defaults to the default branch (Optional).
 // includeContent (optional): True to include the content of the page in the response for Json content type. Defaults to false (Optional)
-func (client Client) GetPageZip(ctx context.Context, project *string, wikiIdentifier *string, path *string, recursionLevel *string, versionDescriptor *GitVersionDescriptor, includeContent *bool) (*interface{}, error) {
+func (client Client) GetPageZip(ctx context.Context, project *string, wikiIdentifier *string, path *string, recursionLevel *VersionControlRecursionType, versionDescriptor *GitVersionDescriptor, includeContent *bool) (*interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 

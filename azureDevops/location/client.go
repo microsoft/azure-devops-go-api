@@ -35,7 +35,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
 // connectOptions (optional)
 // lastChangeId (optional): Obsolete 32-bit LastChangeId
 // lastChangeId64 (optional): Non-truncated 64-bit LastChangeId
-func (client Client) GetConnectionData(ctx context.Context, connectOptions *string, lastChangeId *int, lastChangeId64 *uint64) (*ConnectionData, error) {
+func (client Client) GetConnectionData(ctx context.Context, connectOptions *ConnectOptions, lastChangeId *int, lastChangeId64 *uint64) (*ConnectionData, error) {
     queryParams := url.Values{}
     if connectOptions != nil {
         queryParams.Add("connectOptions", *connectOptions)

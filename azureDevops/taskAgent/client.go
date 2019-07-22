@@ -401,7 +401,7 @@ func (client Client) DeleteDeploymentGroup(ctx context.Context, project *string,
 // deploymentGroupId (required): ID of the deployment group.
 // actionFilter (optional): Get the deployment group only if this action can be performed on it.
 // expand (optional): Include these additional details in the returned object.
-func (client Client) GetDeploymentGroup(ctx context.Context, project *string, deploymentGroupId *int, actionFilter *string, expand *string) (*DeploymentGroup, error) {
+func (client Client) GetDeploymentGroup(ctx context.Context, project *string, deploymentGroupId *int, actionFilter *DeploymentGroupActionFilter, expand *DeploymentGroupExpands) (*DeploymentGroup, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -439,7 +439,7 @@ func (client Client) GetDeploymentGroup(ctx context.Context, project *string, de
 // continuationToken (optional): Get deployment groups with names greater than this continuationToken lexicographically.
 // top (optional): Maximum number of deployment groups to return. Default is **1000**.
 // ids (optional): Comma separated list of IDs of the deployment groups.
-func (client Client) GetDeploymentGroups(ctx context.Context, project *string, name *string, actionFilter *string, expand *string, continuationToken *string, top *int, ids *[]int) (*[]DeploymentGroup, error) {
+func (client Client) GetDeploymentGroups(ctx context.Context, project *string, name *string, actionFilter *DeploymentGroupActionFilter, expand *DeploymentGroupExpands, continuationToken *string, top *int, ids *[]int) (*[]DeploymentGroup, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -561,7 +561,7 @@ func (client Client) DeleteAgentPool(ctx context.Context, poolId *int) error {
 // poolId (required): An agent pool ID
 // properties (optional): Agent pool properties (comma-separated)
 // actionFilter (optional): Filter by whether the calling user has use or manage permissions
-func (client Client) GetAgentPool(ctx context.Context, poolId *int, properties *[]string, actionFilter *string) (*TaskAgentPool, error) {
+func (client Client) GetAgentPool(ctx context.Context, poolId *int, properties *[]string, actionFilter *TaskAgentPoolActionFilter) (*TaskAgentPool, error) {
     routeValues := make(map[string]string)
     if poolId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "poolId"} 
@@ -593,7 +593,7 @@ func (client Client) GetAgentPool(ctx context.Context, poolId *int, properties *
 // properties (optional): Filter by agent pool properties (comma-separated)
 // poolType (optional): Filter by pool type
 // actionFilter (optional): Filter by whether the calling user has use or manage permissions
-func (client Client) GetAgentPools(ctx context.Context, poolName *string, properties *[]string, poolType *string, actionFilter *string) (*[]TaskAgentPool, error) {
+func (client Client) GetAgentPools(ctx context.Context, poolName *string, properties *[]string, poolType *TaskAgentPoolType, actionFilter *TaskAgentPoolActionFilter) (*[]TaskAgentPool, error) {
     queryParams := url.Values{}
     if poolName != nil {
         queryParams.Add("poolName", *poolName)
@@ -623,7 +623,7 @@ func (client Client) GetAgentPools(ctx context.Context, poolName *string, proper
 // ctx
 // poolIds (required): pool Ids to fetch
 // actionFilter (optional): Filter by whether the calling user has use or manage permissions
-func (client Client) GetAgentPoolsByIds(ctx context.Context, poolIds *[]int, actionFilter *string) (*[]TaskAgentPool, error) {
+func (client Client) GetAgentPoolsByIds(ctx context.Context, poolIds *[]int, actionFilter *TaskAgentPoolActionFilter) (*[]TaskAgentPool, error) {
     queryParams := url.Values{}
     if poolIds == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "poolIds"}
@@ -738,7 +738,7 @@ func (client Client) DeleteAgentQueue(ctx context.Context, queueId *int, project
 // queueId (required): The agent queue to get information about
 // project (optional): Project ID or project name
 // actionFilter (optional): Filter by whether the calling user has use or manage permissions
-func (client Client) GetAgentQueue(ctx context.Context, queueId *int, project *string, actionFilter *string) (*TaskAgentQueue, error) {
+func (client Client) GetAgentQueue(ctx context.Context, queueId *int, project *string, actionFilter *TaskAgentQueueActionFilter) (*TaskAgentQueue, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -768,7 +768,7 @@ func (client Client) GetAgentQueue(ctx context.Context, queueId *int, project *s
 // project (optional): Project ID or project name
 // queueName (optional): Filter on the agent queue name
 // actionFilter (optional): Filter by whether the calling user has use or manage permissions
-func (client Client) GetAgentQueues(ctx context.Context, project *string, queueName *string, actionFilter *string) (*[]TaskAgentQueue, error) {
+func (client Client) GetAgentQueues(ctx context.Context, project *string, queueName *string, actionFilter *TaskAgentQueueActionFilter) (*[]TaskAgentQueue, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -797,7 +797,7 @@ func (client Client) GetAgentQueues(ctx context.Context, project *string, queueN
 // queueIds (required): A comma-separated list of agent queue IDs to retrieve
 // project (optional): Project ID or project name
 // actionFilter (optional): Filter by whether the calling user has use or manage permissions
-func (client Client) GetAgentQueuesByIds(ctx context.Context, queueIds *[]int, project *string, actionFilter *string) (*[]TaskAgentQueue, error) {
+func (client Client) GetAgentQueuesByIds(ctx context.Context, queueIds *[]int, project *string, actionFilter *TaskAgentQueueActionFilter) (*[]TaskAgentQueue, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -832,7 +832,7 @@ func (client Client) GetAgentQueuesByIds(ctx context.Context, queueIds *[]int, p
 // queueNames (required): A comma-separated list of agent names to retrieve
 // project (optional): Project ID or project name
 // actionFilter (optional): Filter by whether the calling user has use or manage permissions
-func (client Client) GetAgentQueuesByNames(ctx context.Context, queueNames *[]string, project *string, actionFilter *string) (*[]TaskAgentQueue, error) {
+func (client Client) GetAgentQueuesByNames(ctx context.Context, queueNames *[]string, project *string, actionFilter *TaskAgentQueueActionFilter) (*[]TaskAgentQueue, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -914,7 +914,7 @@ func (client Client) DeleteDeploymentTarget(ctx context.Context, project *string
 // deploymentGroupId (required): ID of the deployment group to which deployment target belongs.
 // targetId (required): ID of the deployment target to return.
 // expand (optional): Include these additional details in the returned objects.
-func (client Client) GetDeploymentTarget(ctx context.Context, project *string, deploymentGroupId *int, targetId *int, expand *string) (*DeploymentMachine, error) {
+func (client Client) GetDeploymentTarget(ctx context.Context, project *string, deploymentGroupId *int, targetId *int, expand *DeploymentTargetExpands) (*DeploymentMachine, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -958,7 +958,7 @@ func (client Client) GetDeploymentTarget(ctx context.Context, project *string, d
 // top (optional): Maximum number of deployment targets to return. Default is **1000**.
 // enabled (optional): Get only deployment targets that are enabled or disabled. Default is 'null' which returns all the targets.
 // propertyFilters (optional)
-func (client Client) GetDeploymentTargets(ctx context.Context, project *string, deploymentGroupId *int, tags *[]string, name *string, partialNameMatch *bool, expand *string, agentStatus *string, agentJobResult *string, continuationToken *string, top *int, enabled *bool, propertyFilters *[]string) (*[]DeploymentMachine, error) {
+func (client Client) GetDeploymentTargets(ctx context.Context, project *string, deploymentGroupId *int, tags *[]string, name *string, partialNameMatch *bool, expand *DeploymentTargetExpands, agentStatus *TaskAgentStatusFilter, agentJobResult *TaskAgentJobResultFilter, continuationToken *string, top *int, enabled *bool, propertyFilters *[]string) (*[]DeploymentMachine, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1115,7 +1115,7 @@ func (client Client) DeleteTaskGroup(ctx context.Context, project *string, taskG
 // top (optional): Number of task groups to get.
 // continuationToken (optional): Gets the task groups after the continuation token provided.
 // queryOrder (optional): Gets the results in the defined order. Default is 'CreatedOnDescending'.
-func (client Client) GetTaskGroups(ctx context.Context, project *string, taskGroupId *uuid.UUID, expanded *bool, taskIdFilter *uuid.UUID, deleted *bool, top *int, continuationToken *time.Time, queryOrder *string) (*[]TaskGroup, error) {
+func (client Client) GetTaskGroups(ctx context.Context, project *string, taskGroupId *uuid.UUID, expanded *bool, taskIdFilter *uuid.UUID, deleted *bool, top *int, continuationToken *time.Time, queryOrder *TaskGroupQueryOrder) (*[]TaskGroup, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1275,7 +1275,7 @@ func (client Client) GetVariableGroup(ctx context.Context, project *string, grou
 // top (optional): Number of variable groups to get.
 // continuationToken (optional): Gets the variable groups after the continuation token provided.
 // queryOrder (optional): Gets the results in the defined order. Default is 'IdDescending'.
-func (client Client) GetVariableGroups(ctx context.Context, project *string, groupName *string, actionFilter *string, top *int, continuationToken *int, queryOrder *string) (*[]VariableGroup, error) {
+func (client Client) GetVariableGroups(ctx context.Context, project *string, groupName *string, actionFilter *VariableGroupActionFilter, top *int, continuationToken *int, queryOrder *VariableGroupQueryOrder) (*[]VariableGroup, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 

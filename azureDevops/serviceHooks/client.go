@@ -261,7 +261,7 @@ func (client Client) GetNotification(ctx context.Context, subscriptionId *uuid.U
 // maxResults (optional): Maximum number of notifications to return. Default is **100**.
 // status (optional): Get only notifications with this status.
 // result (optional): Get only notifications with this result type.
-func (client Client) GetNotifications(ctx context.Context, subscriptionId *uuid.UUID, maxResults *int, status *string, result *string) (*[]Notification, error) {
+func (client Client) GetNotifications(ctx context.Context, subscriptionId *uuid.UUID, maxResults *int, status *NotificationStatus, result *NotificationResult) (*[]Notification, error) {
     routeValues := make(map[string]string)
     if subscriptionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "subscriptionId"} 

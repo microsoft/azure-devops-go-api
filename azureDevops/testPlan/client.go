@@ -327,7 +327,7 @@ func (client Client) UpdateTestPlan(ctx context.Context, testPlanUpdateParams *T
 // project (required): Project ID or project name
 // suiteId (required): Id of the parent suite.
 // suiteEntryType (optional)
-func (client Client) GetSuiteEntries(ctx context.Context, project *string, suiteId *int, suiteEntryType *string) (*[]SuiteEntry, error) {
+func (client Client) GetSuiteEntries(ctx context.Context, project *string, suiteId *int, suiteEntryType *SuiteEntryTypes) (*[]SuiteEntry, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -456,7 +456,7 @@ func (client Client) DeleteTestSuite(ctx context.Context, project *string, planI
 // planId (required): ID of the test plan that contains the suites.
 // suiteId (required): ID of the suite to get.
 // expand (optional): Include the children suites and testers details
-func (client Client) GetTestSuiteById(ctx context.Context, project *string, planId *int, suiteId *int, expand *string) (*TestSuite, error) {
+func (client Client) GetTestSuiteById(ctx context.Context, project *string, planId *int, suiteId *int, expand *SuiteExpand) (*TestSuite, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -493,7 +493,7 @@ func (client Client) GetTestSuiteById(ctx context.Context, project *string, plan
 // expand (optional): Include the children suites and testers details.
 // continuationToken (optional): If the list of suites returned is not complete, a continuation token to query next batch of suites is included in the response header as "x-ms-continuationtoken". Omit this parameter to get the first batch of test suites.
 // asTreeView (optional): If the suites returned should be in a tree structure.
-func (client Client) GetTestSuitesForPlan(ctx context.Context, project *string, planId *int, expand *string, continuationToken *string, asTreeView *bool) (*[]TestSuite, error) {
+func (client Client) GetTestSuitesForPlan(ctx context.Context, project *string, planId *int, expand *SuiteExpand, continuationToken *string, asTreeView *bool) (*[]TestSuite, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 

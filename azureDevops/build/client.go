@@ -526,7 +526,7 @@ func (client Client) GetBuild(ctx context.Context, project *string, buildId *int
 // buildIds (optional): A comma-delimited list that specifies the IDs of builds to retrieve.
 // repositoryId (optional): If specified, filters to builds that built from this repository.
 // repositoryType (optional): If specified, filters to builds that built from repositories of this type.
-func (client Client) GetBuilds(ctx context.Context, project *string, definitions *[]int, queues *[]int, buildNumber *string, minTime *time.Time, maxTime *time.Time, requestedFor *string, reasonFilter *string, statusFilter *string, resultFilter *string, tagFilters *[]string, properties *[]string, top *int, continuationToken *string, maxBuildsPerDefinition *int, deletedFilter *string, queryOrder *string, branchName *string, buildIds *[]int, repositoryId *string, repositoryType *string) (*[]Build, error) {
+func (client Client) GetBuilds(ctx context.Context, project *string, definitions *[]int, queues *[]int, buildNumber *string, minTime *time.Time, maxTime *time.Time, requestedFor *string, reasonFilter *BuildReason, statusFilter *BuildStatus, resultFilter *BuildResult, tagFilters *[]string, properties *[]string, top *int, continuationToken *string, maxBuildsPerDefinition *int, deletedFilter *QueryDeletedOption, queryOrder *BuildQueryOrder, branchName *string, buildIds *[]int, repositoryId *string, repositoryType *string) (*[]Build, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -970,7 +970,7 @@ func (client Client) GetDefinition(ctx context.Context, project *string, definit
 // taskIdFilter (optional): If specified, filters to definitions that use the specified task.
 // processType (optional): If specified, filters to definitions with the given process type.
 // yamlFilename (optional): If specified, filters to YAML definitions that match the given filename.
-func (client Client) GetDefinitions(ctx context.Context, project *string, name *string, repositoryId *string, repositoryType *string, queryOrder *string, top *int, continuationToken *string, minMetricsTime *time.Time, definitionIds *[]int, path *string, builtAfter *time.Time, notBuiltAfter *time.Time, includeAllProperties *bool, includeLatestBuilds *bool, taskIdFilter *uuid.UUID, processType *int, yamlFilename *string) (*[]BuildDefinitionReference, error) {
+func (client Client) GetDefinitions(ctx context.Context, project *string, name *string, repositoryId *string, repositoryType *string, queryOrder *DefinitionQueryOrder, top *int, continuationToken *string, minMetricsTime *time.Time, definitionIds *[]int, path *string, builtAfter *time.Time, notBuiltAfter *time.Time, includeAllProperties *bool, includeLatestBuilds *bool, taskIdFilter *uuid.UUID, processType *int, yamlFilename *string) (*[]BuildDefinitionReference, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1225,7 +1225,7 @@ func (client Client) DeleteFolder(ctx context.Context, project *string, path *st
 // project (required): Project ID or project name
 // path (optional): The path to start with.
 // queryOrder (optional): The order in which folders should be returned.
-func (client Client) GetFolders(ctx context.Context, project *string, path *string, queryOrder *string) (*[]Folder, error) {
+func (client Client) GetFolders(ctx context.Context, project *string, path *string, queryOrder *FolderQueryOrder) (*[]Folder, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1855,7 +1855,7 @@ func (client Client) GetBuildReportHtmlContent(ctx context.Context, project *str
 // resultSet (optional): 'top' for the repositories most relevant for the endpoint. If not set, all repositories are returned. Ignored if 'repository' is set.
 // pageResults (optional): If set to true, this will limit the set of results and will return a continuation token to continue the query.
 // continuationToken (optional): When paging results, this is a continuation token, returned by a previous call to this method, that can be used to return the next set of repositories.
-func (client Client) ListRepositories(ctx context.Context, project *string, providerName *string, serviceEndpointId *uuid.UUID, repository *string, resultSet *string, pageResults *bool, continuationToken *string) (*SourceRepositories, error) {
+func (client Client) ListRepositories(ctx context.Context, project *string, providerName *string, serviceEndpointId *uuid.UUID, repository *string, resultSet *ResultSet, pageResults *bool, continuationToken *string) (*SourceRepositories, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 

@@ -77,7 +77,7 @@ func (client Client) AddPackage(ctx context.Context, metadata *UPackPackagePushM
 // packageName (required)
 // packageVersion (required)
 // intent (optional)
-func (client Client) GetPackageMetadata(ctx context.Context, feedId *string, packageName *string, packageVersion *string, intent *string) (*UPackPackageMetadata, error) {
+func (client Client) GetPackageMetadata(ctx context.Context, feedId *string, packageName *string, packageVersion *string, intent *UPackGetPackageMetadataIntent) (*UPackPackageMetadata, error) {
     routeValues := make(map[string]string)
     if feedId == nil || *feedId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 

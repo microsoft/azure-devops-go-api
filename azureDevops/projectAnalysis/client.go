@@ -60,7 +60,7 @@ func (client Client) GetProjectLanguageAnalytics(ctx context.Context, project *s
 // project (required): Project ID or project name
 // fromDate (required)
 // aggregationType (required)
-func (client Client) GetProjectActivityMetrics(ctx context.Context, project *string, fromDate *time.Time, aggregationType *string) (*ProjectActivityMetrics, error) {
+func (client Client) GetProjectActivityMetrics(ctx context.Context, project *string, fromDate *time.Time, aggregationType *AggregationType) (*ProjectActivityMetrics, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -94,7 +94,7 @@ func (client Client) GetProjectActivityMetrics(ctx context.Context, project *str
 // aggregationType (required): Bucket size on which, trends are to be aggregated.
 // skip (required): The number of repositories to ignore.
 // top (required): The number of repositories for which activity metrics are to be retrieved.
-func (client Client) GetGitRepositoriesActivityMetrics(ctx context.Context, project *string, fromDate *time.Time, aggregationType *string, skip *int, top *int) (*[]RepositoryActivityMetrics, error) {
+func (client Client) GetGitRepositoriesActivityMetrics(ctx context.Context, project *string, fromDate *time.Time, aggregationType *AggregationType, skip *int, top *int) (*[]RepositoryActivityMetrics, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -135,7 +135,7 @@ func (client Client) GetGitRepositoriesActivityMetrics(ctx context.Context, proj
 // repositoryId (required)
 // fromDate (required)
 // aggregationType (required)
-func (client Client) GetRepositoryActivityMetrics(ctx context.Context, project *string, repositoryId *uuid.UUID, fromDate *time.Time, aggregationType *string) (*RepositoryActivityMetrics, error) {
+func (client Client) GetRepositoryActivityMetrics(ctx context.Context, project *string, repositoryId *uuid.UUID, fromDate *time.Time, aggregationType *AggregationType) (*RepositoryActivityMetrics, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 

@@ -39,7 +39,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 // ctx
 // groupEntitlement (required): GroupEntitlement object specifying License Rule, Extensions Rule for the group. Based on the rules the members of the group will be given licenses and extensions. The Group Entitlement can be used to add the group to another project level groups
 // ruleOption (optional): RuleOption [ApplyGroupRule/TestApplyGroupRule] - specifies if the rules defined in group entitlement should be created and applied to it’s members (default option) or just be tested
-func (client Client) AddGroupEntitlement(ctx context.Context, groupEntitlement *GroupEntitlement, ruleOption *string) (*GroupEntitlementOperationReference, error) {
+func (client Client) AddGroupEntitlement(ctx context.Context, groupEntitlement *GroupEntitlement, ruleOption *RuleOption) (*GroupEntitlementOperationReference, error) {
     if groupEntitlement == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "groupEntitlement"}
     }
@@ -67,7 +67,7 @@ func (client Client) AddGroupEntitlement(ctx context.Context, groupEntitlement *
 // groupId (required): ID of the group to delete.
 // ruleOption (optional): RuleOption [ApplyGroupRule/TestApplyGroupRule] - specifies if the rules defined in group entitlement should be deleted and the changes are applied to it’s members (default option) or just be tested
 // removeGroupMembership (optional): Optional parameter that specifies whether the group with the given ID should be removed from all other groups
-func (client Client) DeleteGroupEntitlement(ctx context.Context, groupId *uuid.UUID, ruleOption *string, removeGroupMembership *bool) (*GroupEntitlementOperationReference, error) {
+func (client Client) DeleteGroupEntitlement(ctx context.Context, groupId *uuid.UUID, ruleOption *RuleOption, removeGroupMembership *bool) (*GroupEntitlementOperationReference, error) {
     routeValues := make(map[string]string)
     if groupId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "groupId"} 
@@ -132,7 +132,7 @@ func (client Client) GetGroupEntitlements(ctx context.Context, ) (*[]GroupEntitl
 // document (required): JsonPatchDocument containing the operations to perform on the group.
 // groupId (required): ID of the group.
 // ruleOption (optional): RuleOption [ApplyGroupRule/TestApplyGroupRule] - specifies if the rules defined in group entitlement should be updated and the changes are applied to it’s members (default option) or just be tested
-func (client Client) UpdateGroupEntitlement(ctx context.Context, document *[]JsonPatchOperation, groupId *uuid.UUID, ruleOption *string) (*GroupEntitlementOperationReference, error) {
+func (client Client) UpdateGroupEntitlement(ctx context.Context, document *[]JsonPatchOperation, groupId *uuid.UUID, ruleOption *RuleOption) (*GroupEntitlementOperationReference, error) {
     if document == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "document"}
     }

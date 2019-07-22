@@ -209,7 +209,7 @@ func (client Client) GetFeed(ctx context.Context, feedId *string, project *strin
 // project (optional): Project ID or project name
 // feedRole (optional): Filter by this role, either Administrator(4), Contributor(3), or Reader(2) level permissions.
 // includeDeletedUpstreams (optional): Include upstreams that have been deleted in the response.
-func (client Client) GetFeeds(ctx context.Context, project *string, feedRole *string, includeDeletedUpstreams *bool) (*[]Feed, error) {
+func (client Client) GetFeeds(ctx context.Context, project *string, feedRole *FeedRole, includeDeletedUpstreams *bool) (*[]Feed, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project

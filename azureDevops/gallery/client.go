@@ -1099,7 +1099,7 @@ func (client Client) DeleteExtensionById(ctx context.Context, extensionId *uuid.
 // extensionId (required)
 // version (optional)
 // flags (optional)
-func (client Client) GetExtensionById(ctx context.Context, extensionId *uuid.UUID, version *string, flags *string) (*PublishedExtension, error) {
+func (client Client) GetExtensionById(ctx context.Context, extensionId *uuid.UUID, version *string, flags *ExtensionQueryFlags) (*PublishedExtension, error) {
     routeValues := make(map[string]string)
     if extensionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "extensionId"} 
@@ -1211,7 +1211,7 @@ func (client Client) DeleteExtension(ctx context.Context, publisherName *string,
 // flags (optional)
 // accountToken (optional)
 // accountTokenHeader (optional): Header to pass the account token
-func (client Client) GetExtension(ctx context.Context, publisherName *string, extensionName *string, version *string, flags *string, accountToken *string, accountTokenHeader *string) (*PublishedExtension, error) {
+func (client Client) GetExtension(ctx context.Context, publisherName *string, extensionName *string, version *string, flags *ExtensionQueryFlags, accountToken *string, accountTokenHeader *string) (*PublishedExtension, error) {
     routeValues := make(map[string]string)
     if publisherName == nil || *publisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -1291,7 +1291,7 @@ func (client Client) UpdateExtension(ctx context.Context, uploadStream *interfac
 // publisherName (required)
 // extensionName (required)
 // flags (required)
-func (client Client) UpdateExtensionProperties(ctx context.Context, publisherName *string, extensionName *string, flags *string) (*PublishedExtension, error) {
+func (client Client) UpdateExtensionProperties(ctx context.Context, publisherName *string, extensionName *string, flags *PublishedExtensionFlags) (*PublishedExtension, error) {
     routeValues := make(map[string]string)
     if publisherName == nil || *publisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -2110,7 +2110,7 @@ func (client Client) GetExtensionReports(ctx context.Context, publisherName *str
 // filterOptions (optional): FilterOptions to filter out empty reviews etcetera, defaults to none
 // beforeDate (optional): Use if you want to fetch reviews older than the specified date, defaults to null
 // afterDate (optional): Use if you want to fetch reviews newer than the specified date, defaults to null
-func (client Client) GetReviews(ctx context.Context, publisherName *string, extensionName *string, count *int, filterOptions *string, beforeDate *time.Time, afterDate *time.Time) (*ReviewsResult, error) {
+func (client Client) GetReviews(ctx context.Context, publisherName *string, extensionName *string, count *int, filterOptions *ReviewFilterOptions, beforeDate *time.Time, afterDate *time.Time) (*ReviewsResult, error) {
     routeValues := make(map[string]string)
     if publisherName == nil || *publisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -2440,7 +2440,7 @@ func (client Client) UpdateExtensionStatistics(ctx context.Context, extensionSta
 // days (optional)
 // aggregate (optional)
 // afterDate (optional)
-func (client Client) GetExtensionDailyStats(ctx context.Context, publisherName *string, extensionName *string, days *int, aggregate *string, afterDate *time.Time) (*ExtensionDailyStats, error) {
+func (client Client) GetExtensionDailyStats(ctx context.Context, publisherName *string, extensionName *string, days *int, aggregate *ExtensionStatsAggregateType, afterDate *time.Time) (*ExtensionDailyStats, error) {
     routeValues := make(map[string]string)
     if publisherName == nil || *publisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 

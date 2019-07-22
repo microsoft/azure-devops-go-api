@@ -981,7 +981,7 @@ func (client Client) AddTestResultsToTestRun(ctx context.Context, results *[]Tes
 // runId (required)
 // testResultId (required)
 // detailsToInclude (optional)
-func (client Client) GetTestResultById(ctx context.Context, project *string, runId *int, testResultId *int, detailsToInclude *string) (*TestCaseResult, error) {
+func (client Client) GetTestResultById(ctx context.Context, project *string, runId *int, testResultId *int, detailsToInclude *ResultDetails) (*TestCaseResult, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1019,7 +1019,7 @@ func (client Client) GetTestResultById(ctx context.Context, project *string, run
 // skip (optional)
 // top (optional)
 // outcomes (optional)
-func (client Client) GetTestResults(ctx context.Context, project *string, runId *int, detailsToInclude *string, skip *int, top *int, outcomes *[]TestOutcome) (*[]TestCaseResult, error) {
+func (client Client) GetTestResults(ctx context.Context, project *string, runId *int, detailsToInclude *ResultDetails, skip *int, top *int, outcomes *[]TestOutcome) (*[]TestCaseResult, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1512,7 +1512,7 @@ func (client Client) GetTestRuns(ctx context.Context, project *string, buildUri 
 // runTitle (optional): Run Title of the Runs to be queried.
 // top (optional): Number of runs to be queried. Limit is 100
 // continuationToken (optional): continuationToken received from previous batch or null for first batch. It is not supposed to be created (or altered, if received from last batch) by user.
-func (client Client) QueryTestRuns(ctx context.Context, project *string, minLastUpdatedDate *time.Time, maxLastUpdatedDate *time.Time, state *string, planIds *[]int, isAutomated *bool, publishContext *string, buildIds *[]int, buildDefIds *[]int, branchName *string, releaseIds *[]int, releaseDefIds *[]int, releaseEnvIds *[]int, releaseEnvDefIds *[]int, runTitle *string, top *int, continuationToken *string) (*[]TestRun, error) {
+func (client Client) QueryTestRuns(ctx context.Context, project *string, minLastUpdatedDate *time.Time, maxLastUpdatedDate *time.Time, state *TestRunState, planIds *[]int, isAutomated *bool, publishContext *TestRunPublishContext, buildIds *[]int, buildDefIds *[]int, branchName *string, releaseIds *[]int, releaseDefIds *[]int, releaseEnvIds *[]int, releaseEnvDefIds *[]int, runTitle *string, top *int, continuationToken *string) (*[]TestRun, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1680,7 +1680,7 @@ func (client Client) GetTestRunStatistics(ctx context.Context, project *string, 
 // ctx
 // project (required): Project ID or project name
 // settingsType (optional)
-func (client Client) GetTestResultsSettings(ctx context.Context, project *string, settingsType *string) (*TestResultsSettings, error) {
+func (client Client) GetTestResultsSettings(ctx context.Context, project *string, settingsType *TestResultsSettingsType) (*TestResultsSettings, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1770,7 +1770,7 @@ func (client Client) QueryTestHistory(ctx context.Context, filter *TestHistoryQu
 // fetchMetaData (optional)
 // top (optional)
 // continuationToken (optional): Header to pass the continuationToken
-func (client Client) GetTestLogsForBuild(ctx context.Context, project *string, buildId *int, type_ *string, directoryPath *string, fileNamePrefix *string, fetchMetaData *bool, top *int, continuationToken *string) (*[]TestLog, error) {
+func (client Client) GetTestLogsForBuild(ctx context.Context, project *string, buildId *int, type_ *TestLogType, directoryPath *string, fileNamePrefix *string, fetchMetaData *bool, top *int, continuationToken *string) (*[]TestLog, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1824,7 +1824,7 @@ func (client Client) GetTestLogsForBuild(ctx context.Context, project *string, b
 // fetchMetaData (optional)
 // top (optional)
 // continuationToken (optional): Header to pass the continuationToken
-func (client Client) GetTestResultLogs(ctx context.Context, project *string, runId *int, resultId *int, type_ *string, directoryPath *string, fileNamePrefix *string, fetchMetaData *bool, top *int, continuationToken *string) (*[]TestLog, error) {
+func (client Client) GetTestResultLogs(ctx context.Context, project *string, runId *int, resultId *int, type_ *TestLogType, directoryPath *string, fileNamePrefix *string, fetchMetaData *bool, top *int, continuationToken *string) (*[]TestLog, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1883,7 +1883,7 @@ func (client Client) GetTestResultLogs(ctx context.Context, project *string, run
 // fetchMetaData (optional)
 // top (optional)
 // continuationToken (optional): Header to pass the continuationToken
-func (client Client) GetTestSubResultLogs(ctx context.Context, project *string, runId *int, resultId *int, subResultId *int, type_ *string, directoryPath *string, fileNamePrefix *string, fetchMetaData *bool, top *int, continuationToken *string) (*[]TestLog, error) {
+func (client Client) GetTestSubResultLogs(ctx context.Context, project *string, runId *int, resultId *int, subResultId *int, type_ *TestLogType, directoryPath *string, fileNamePrefix *string, fetchMetaData *bool, top *int, continuationToken *string) (*[]TestLog, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1944,7 +1944,7 @@ func (client Client) GetTestSubResultLogs(ctx context.Context, project *string, 
 // fetchMetaData (optional)
 // top (optional)
 // continuationToken (optional): Header to pass the continuationToken
-func (client Client) GetTestRunLogs(ctx context.Context, project *string, runId *int, type_ *string, directoryPath *string, fileNamePrefix *string, fetchMetaData *bool, top *int, continuationToken *string) (*[]TestLog, error) {
+func (client Client) GetTestRunLogs(ctx context.Context, project *string, runId *int, type_ *TestLogType, directoryPath *string, fileNamePrefix *string, fetchMetaData *bool, top *int, continuationToken *string) (*[]TestLog, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1993,7 +1993,7 @@ func (client Client) GetTestRunLogs(ctx context.Context, project *string, runId 
 // build (required)
 // type_ (required)
 // filePath (required)
-func (client Client) GetTestLogStoreEndpointDetailsForBuildLog(ctx context.Context, project *string, build *int, type_ *string, filePath *string) (*TestLogStoreEndpointDetails, error) {
+func (client Client) GetTestLogStoreEndpointDetailsForBuildLog(ctx context.Context, project *string, build *int, type_ *TestLogType, filePath *string) (*TestLogStoreEndpointDetails, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2029,7 +2029,7 @@ func (client Client) GetTestLogStoreEndpointDetailsForBuildLog(ctx context.Conte
 // project (required): Project ID or project name
 // buildId (required)
 // testLogStoreOperationType (required)
-func (client Client) TestLogStoreEndpointDetailsForBuild(ctx context.Context, project *string, buildId *int, testLogStoreOperationType *string) (*TestLogStoreEndpointDetails, error) {
+func (client Client) TestLogStoreEndpointDetailsForBuild(ctx context.Context, project *string, buildId *int, testLogStoreOperationType *TestLogStoreOperationType) (*TestLogStoreEndpointDetails, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2063,7 +2063,7 @@ func (client Client) TestLogStoreEndpointDetailsForBuild(ctx context.Context, pr
 // resultId (required)
 // type_ (required)
 // filePath (required)
-func (client Client) GetTestLogStoreEndpointDetailsForResultLog(ctx context.Context, project *string, runId *int, resultId *int, type_ *string, filePath *string) (*TestLogStoreEndpointDetails, error) {
+func (client Client) GetTestLogStoreEndpointDetailsForResultLog(ctx context.Context, project *string, runId *int, resultId *int, type_ *TestLogType, filePath *string) (*TestLogStoreEndpointDetails, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2106,7 +2106,7 @@ func (client Client) GetTestLogStoreEndpointDetailsForResultLog(ctx context.Cont
 // subResultId (required)
 // type_ (required)
 // filePath (required)
-func (client Client) GetTestLogStoreEndpointDetailsForSubResultLog(ctx context.Context, project *string, runId *int, resultId *int, subResultId *int, type_ *string, filePath *string) (*TestLogStoreEndpointDetails, error) {
+func (client Client) GetTestLogStoreEndpointDetailsForSubResultLog(ctx context.Context, project *string, runId *int, resultId *int, subResultId *int, type_ *TestLogType, filePath *string) (*TestLogStoreEndpointDetails, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2153,7 +2153,7 @@ func (client Client) GetTestLogStoreEndpointDetailsForSubResultLog(ctx context.C
 // subResultId (required)
 // filePath (required)
 // type_ (required)
-func (client Client) TestLogStoreEndpointDetailsForResult(ctx context.Context, project *string, runId *int, resultId *int, subResultId *int, filePath *string, type_ *string) (*TestLogStoreEndpointDetails, error) {
+func (client Client) TestLogStoreEndpointDetailsForResult(ctx context.Context, project *string, runId *int, resultId *int, subResultId *int, filePath *string, type_ *TestLogType) (*TestLogStoreEndpointDetails, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2198,7 +2198,7 @@ func (client Client) TestLogStoreEndpointDetailsForResult(ctx context.Context, p
 // runId (required)
 // type_ (required)
 // filePath (required)
-func (client Client) GetTestLogStoreEndpointDetailsForRunLog(ctx context.Context, project *string, runId *int, type_ *string, filePath *string) (*TestLogStoreEndpointDetails, error) {
+func (client Client) GetTestLogStoreEndpointDetailsForRunLog(ctx context.Context, project *string, runId *int, type_ *TestLogType, filePath *string) (*TestLogStoreEndpointDetails, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2236,7 +2236,7 @@ func (client Client) GetTestLogStoreEndpointDetailsForRunLog(ctx context.Context
 // testLogStoreOperationType (required)
 // filePath (optional)
 // type_ (optional)
-func (client Client) TestLogStoreEndpointDetailsForRun(ctx context.Context, project *string, runId *int, testLogStoreOperationType *string, filePath *string, type_ *string) (*TestLogStoreEndpointDetails, error) {
+func (client Client) TestLogStoreEndpointDetailsForRun(ctx context.Context, project *string, runId *int, testLogStoreOperationType *TestLogStoreOperationType, filePath *string, type_ *TestLogType) (*TestLogStoreEndpointDetails, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 

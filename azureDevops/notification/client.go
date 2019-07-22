@@ -302,7 +302,7 @@ func (client Client) DeleteSubscription(ctx context.Context, subscriptionId *str
 // ctx
 // subscriptionId (required)
 // queryFlags (optional)
-func (client Client) GetSubscription(ctx context.Context, subscriptionId *string, queryFlags *string) (*NotificationSubscription, error) {
+func (client Client) GetSubscription(ctx context.Context, subscriptionId *string, queryFlags *SubscriptionQueryFlags) (*NotificationSubscription, error) {
     routeValues := make(map[string]string)
     if subscriptionId == nil || *subscriptionId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "subscriptionId"} 
@@ -329,7 +329,7 @@ func (client Client) GetSubscription(ctx context.Context, subscriptionId *string
 // targetId (optional): User or Group ID
 // ids (optional): List of subscription IDs
 // queryFlags (optional)
-func (client Client) ListSubscriptions(ctx context.Context, targetId *uuid.UUID, ids *[]string, queryFlags *string) (*[]NotificationSubscription, error) {
+func (client Client) ListSubscriptions(ctx context.Context, targetId *uuid.UUID, ids *[]string, queryFlags *SubscriptionQueryFlags) (*[]NotificationSubscription, error) {
     queryParams := url.Values{}
     if targetId != nil {
         queryParams.Add("targetId", (*targetId).String())

@@ -92,7 +92,7 @@ func (client Client) DeleteProcessBehavior(ctx context.Context, processId *uuid.
 // processId (required): The ID of the process
 // behaviorRefName (required): The reference name of the behavior
 // expand (optional)
-func (client Client) GetProcessBehavior(ctx context.Context, processId *uuid.UUID, behaviorRefName *string, expand *string) (*ProcessBehavior, error) {
+func (client Client) GetProcessBehavior(ctx context.Context, processId *uuid.UUID, behaviorRefName *string, expand *GetBehaviorsExpand) (*ProcessBehavior, error) {
     routeValues := make(map[string]string)
     if processId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
@@ -122,7 +122,7 @@ func (client Client) GetProcessBehavior(ctx context.Context, processId *uuid.UUI
 // ctx
 // processId (required): The ID of the process
 // expand (optional)
-func (client Client) GetProcessBehaviors(ctx context.Context, processId *uuid.UUID, expand *string) (*[]ProcessBehavior, error) {
+func (client Client) GetProcessBehaviors(ctx context.Context, processId *uuid.UUID, expand *GetBehaviorsExpand) (*[]ProcessBehavior, error) {
     routeValues := make(map[string]string)
     if processId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
@@ -1051,7 +1051,7 @@ func (client Client) EditProcess(ctx context.Context, updateRequest *UpdateProce
 // [Preview API] Get list of all processes including system and inherited.
 // ctx
 // expand (optional)
-func (client Client) GetListOfProcesses(ctx context.Context, expand *string) (*[]ProcessInfo, error) {
+func (client Client) GetListOfProcesses(ctx context.Context, expand *GetProcessExpandLevel) (*[]ProcessInfo, error) {
     queryParams := url.Values{}
     if expand != nil {
         queryParams.Add("$expand", *expand)
@@ -1071,7 +1071,7 @@ func (client Client) GetListOfProcesses(ctx context.Context, expand *string) (*[
 // ctx
 // processTypeId (required)
 // expand (optional)
-func (client Client) GetProcessByItsId(ctx context.Context, processTypeId *uuid.UUID, expand *string) (*ProcessInfo, error) {
+func (client Client) GetProcessByItsId(ctx context.Context, processTypeId *uuid.UUID, expand *GetProcessExpandLevel) (*ProcessInfo, error) {
     routeValues := make(map[string]string)
     if processTypeId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processTypeId"} 
@@ -1508,7 +1508,7 @@ func (client Client) DeleteProcessWorkItemType(ctx context.Context, processId *u
 // processId (required): The ID of the process
 // witRefName (required): The reference name of the work item type
 // expand (optional): Flag to determine what properties of work item type to return
-func (client Client) GetProcessWorkItemType(ctx context.Context, processId *uuid.UUID, witRefName *string, expand *string) (*ProcessWorkItemType, error) {
+func (client Client) GetProcessWorkItemType(ctx context.Context, processId *uuid.UUID, witRefName *string, expand *GetWorkItemTypeExpand) (*ProcessWorkItemType, error) {
     routeValues := make(map[string]string)
     if processId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
@@ -1538,7 +1538,7 @@ func (client Client) GetProcessWorkItemType(ctx context.Context, processId *uuid
 // ctx
 // processId (required): The ID of the process
 // expand (optional): Flag to determine what properties of work item type to return
-func (client Client) GetProcessWorkItemTypes(ctx context.Context, processId *uuid.UUID, expand *string) (*[]ProcessWorkItemType, error) {
+func (client Client) GetProcessWorkItemTypes(ctx context.Context, processId *uuid.UUID, expand *GetWorkItemTypeExpand) (*[]ProcessWorkItemType, error) {
     routeValues := make(map[string]string)
     if processId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 

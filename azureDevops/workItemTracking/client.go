@@ -208,7 +208,7 @@ func (client Client) GetAttachmentZip(ctx context.Context, id *uuid.UUID, projec
 // ids (required): Comma separated integer classification nodes ids. It's not required, if you want root nodes.
 // depth (optional): Depth of children to fetch.
 // errorPolicy (optional): Flag to handle errors in getting some nodes. Possible options are Fail and Omit.
-func (client Client) GetClassificationNodes(ctx context.Context, project *string, ids *[]int, depth *int, errorPolicy *string) (*[]WorkItemClassificationNode, error) {
+func (client Client) GetClassificationNodes(ctx context.Context, project *string, ids *[]int, depth *int, errorPolicy *ClassificationNodesErrorPolicy) (*[]WorkItemClassificationNode, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -274,7 +274,7 @@ func (client Client) GetRootNodes(ctx context.Context, project *string, depth *i
 // project (required): Project ID or project name
 // structureGroup (required): Structure group of the classification node, area or iteration.
 // path (optional): Path of the classification node.
-func (client Client) CreateOrUpdateClassificationNode(ctx context.Context, postedNode *WorkItemClassificationNode, project *string, structureGroup *string, path *string) (*WorkItemClassificationNode, error) {
+func (client Client) CreateOrUpdateClassificationNode(ctx context.Context, postedNode *WorkItemClassificationNode, project *string, structureGroup *TreeStructureGroup, path *string) (*WorkItemClassificationNode, error) {
     if postedNode == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "postedNode"}
     }
@@ -312,7 +312,7 @@ func (client Client) CreateOrUpdateClassificationNode(ctx context.Context, poste
 // structureGroup (required): Structure group of the classification node, area or iteration.
 // path (optional): Path of the classification node.
 // reclassifyId (optional): Id of the target classification node for reclassification.
-func (client Client) DeleteClassificationNode(ctx context.Context, project *string, structureGroup *string, path *string, reclassifyId *int) error {
+func (client Client) DeleteClassificationNode(ctx context.Context, project *string, structureGroup *TreeStructureGroup, path *string, reclassifyId *int) error {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -345,7 +345,7 @@ func (client Client) DeleteClassificationNode(ctx context.Context, project *stri
 // structureGroup (required): Structure group of the classification node, area or iteration.
 // path (optional): Path of the classification node.
 // depth (optional): Depth of children to fetch.
-func (client Client) GetClassificationNode(ctx context.Context, project *string, structureGroup *string, path *string, depth *int) (*WorkItemClassificationNode, error) {
+func (client Client) GetClassificationNode(ctx context.Context, project *string, structureGroup *TreeStructureGroup, path *string, depth *int) (*WorkItemClassificationNode, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -380,7 +380,7 @@ func (client Client) GetClassificationNode(ctx context.Context, project *string,
 // project (required): Project ID or project name
 // structureGroup (required): Structure group of the classification node, area or iteration.
 // path (optional): Path of the classification node.
-func (client Client) UpdateClassificationNode(ctx context.Context, postedNode *WorkItemClassificationNode, project *string, structureGroup *string, path *string) (*WorkItemClassificationNode, error) {
+func (client Client) UpdateClassificationNode(ctx context.Context, postedNode *WorkItemClassificationNode, project *string, structureGroup *TreeStructureGroup, path *string) (*WorkItemClassificationNode, error) {
     if postedNode == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "postedNode"}
     }
@@ -420,7 +420,7 @@ func (client Client) UpdateClassificationNode(ctx context.Context, postedNode *W
 // reactionType (required): Type of the reaction.
 // top (optional)
 // skip (optional)
-func (client Client) GetEngagedUsers(ctx context.Context, project *string, workItemId *int, commentId *int, reactionType *string, top *int, skip *int) (*[]IdentityRef, error) {
+func (client Client) GetEngagedUsers(ctx context.Context, project *string, workItemId *int, commentId *int, reactionType *CommentReactionType, top *int, skip *int) (*[]IdentityRef, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -527,7 +527,7 @@ func (client Client) DeleteComment(ctx context.Context, project *string, workIte
 // commentId (required): Id of the comment to return.
 // includeDeleted (optional): Specify if the deleted comment should be retrieved.
 // expand (optional): Specifies the additional data retrieval options for work item comments.
-func (client Client) GetComment(ctx context.Context, project *string, workItemId *int, commentId *int, includeDeleted *bool, expand *string) (*Comment, error) {
+func (client Client) GetComment(ctx context.Context, project *string, workItemId *int, commentId *int, includeDeleted *bool, expand *CommentExpandOptions) (*Comment, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -569,7 +569,7 @@ func (client Client) GetComment(ctx context.Context, project *string, workItemId
 // includeDeleted (optional): Specify if the deleted comments should be retrieved.
 // expand (optional): Specifies the additional data retrieval options for work item comments.
 // order (optional): Order in which the comments should be returned.
-func (client Client) GetComments(ctx context.Context, project *string, workItemId *int, top *int, continuationToken *string, includeDeleted *bool, expand *string, order *string) (*CommentList, error) {
+func (client Client) GetComments(ctx context.Context, project *string, workItemId *int, top *int, continuationToken *string, includeDeleted *bool, expand *CommentExpandOptions, order *CommentSortOrder) (*CommentList, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -614,7 +614,7 @@ func (client Client) GetComments(ctx context.Context, project *string, workItemI
 // ids (required): Comma-separated list of comment ids to return.
 // includeDeleted (optional): Specify if the deleted comments should be retrieved.
 // expand (optional): Specifies the additional data retrieval options for work item comments.
-func (client Client) GetCommentsBatch(ctx context.Context, project *string, workItemId *int, ids *[]int, includeDeleted *bool, expand *string) (*CommentList, error) {
+func (client Client) GetCommentsBatch(ctx context.Context, project *string, workItemId *int, ids *[]int, includeDeleted *bool, expand *CommentExpandOptions) (*CommentList, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -697,7 +697,7 @@ func (client Client) UpdateComment(ctx context.Context, request *CommentUpdate, 
 // workItemId (required): WorkItem ID
 // commentId (required): Comment ID
 // reactionType (required): Type of the reaction
-func (client Client) CreateCommentReaction(ctx context.Context, project *string, workItemId *int, commentId *int, reactionType *string) (*CommentReaction, error) {
+func (client Client) CreateCommentReaction(ctx context.Context, project *string, workItemId *int, commentId *int, reactionType *CommentReactionType) (*CommentReaction, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -733,7 +733,7 @@ func (client Client) CreateCommentReaction(ctx context.Context, project *string,
 // workItemId (required): WorkItem ID
 // commentId (required): Comment ID
 // reactionType (required): Type of the reaction
-func (client Client) DeleteCommentReaction(ctx context.Context, project *string, workItemId *int, commentId *int, reactionType *string) (*CommentReaction, error) {
+func (client Client) DeleteCommentReaction(ctx context.Context, project *string, workItemId *int, commentId *int, reactionType *CommentReactionType) (*CommentReaction, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -941,7 +941,7 @@ func (client Client) GetField(ctx context.Context, fieldNameOrRefName *string, p
 // ctx
 // project (optional): Project ID or project name
 // expand (optional): Use ExtensionFields to include extension fields, otherwise exclude them. Unless the feature flag for this parameter is enabled, extension fields are always included.
-func (client Client) GetFields(ctx context.Context, project *string, expand *string) (*[]WorkItemField, error) {
+func (client Client) GetFields(ctx context.Context, project *string, expand *GetFieldsExpand) (*[]WorkItemField, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -1031,7 +1031,7 @@ func (client Client) DeleteQuery(ctx context.Context, project *string, query *st
 // expand (optional): Include the query string (wiql), clauses, query result columns, and sort options in the results.
 // depth (optional): In the folder of queries, return child queries and folders to this depth.
 // includeDeleted (optional): Include deleted queries and folders
-func (client Client) GetQueries(ctx context.Context, project *string, expand *string, depth *int, includeDeleted *bool) (*[]QueryHierarchyItem, error) {
+func (client Client) GetQueries(ctx context.Context, project *string, expand *QueryExpand, depth *int, includeDeleted *bool) (*[]QueryHierarchyItem, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1066,7 +1066,7 @@ func (client Client) GetQueries(ctx context.Context, project *string, expand *st
 // expand (optional): Include the query string (wiql), clauses, query result columns, and sort options in the results.
 // depth (optional): In the folder of queries, return child queries and folders to this depth.
 // includeDeleted (optional): Include deleted queries and folders
-func (client Client) GetQuery(ctx context.Context, project *string, query *string, expand *string, depth *int, includeDeleted *bool) (*QueryHierarchyItem, error) {
+func (client Client) GetQuery(ctx context.Context, project *string, query *string, expand *QueryExpand, depth *int, includeDeleted *bool) (*QueryHierarchyItem, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1105,7 +1105,7 @@ func (client Client) GetQuery(ctx context.Context, project *string, query *strin
 // top (optional): The number of queries to return (Default is 50 and maximum is 200).
 // expand (optional)
 // includeDeleted (optional): Include deleted queries and folders
-func (client Client) SearchQueries(ctx context.Context, project *string, filter *string, top *int, expand *string, includeDeleted *bool) (*QueryHierarchyItemsResult, error) {
+func (client Client) SearchQueries(ctx context.Context, project *string, filter *string, top *int, expand *QueryExpand, includeDeleted *bool) (*QueryHierarchyItemsResult, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1343,7 +1343,7 @@ func (client Client) RestoreWorkItem(ctx context.Context, payload *WorkItemDelet
 // revisionNumber (required)
 // project (optional): Project ID or project name
 // expand (optional)
-func (client Client) GetRevision(ctx context.Context, id *int, revisionNumber *int, project *string, expand *string) (*WorkItem, error) {
+func (client Client) GetRevision(ctx context.Context, id *int, revisionNumber *int, project *string, expand *WorkItemExpand) (*WorkItem, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -1379,7 +1379,7 @@ func (client Client) GetRevision(ctx context.Context, id *int, revisionNumber *i
 // top (optional)
 // skip (optional)
 // expand (optional)
-func (client Client) GetRevisions(ctx context.Context, id *int, project *string, top *int, skip *int, expand *string) (*[]WorkItem, error) {
+func (client Client) GetRevisions(ctx context.Context, id *int, project *string, top *int, skip *int, expand *WorkItemExpand) (*[]WorkItem, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -1947,7 +1947,7 @@ func (client Client) GetRelationTypes(ctx context.Context, ) (*[]WorkItemRelatio
 // expand (optional): Return all the fields in work item revisions, including long text fields which are not returned by default
 // includeDiscussionChangesOnly (optional): Return only the those revisions of work items, where only history field was changed
 // maxPageSize (optional): The maximum number of results to return in this batch
-func (client Client) ReadReportingRevisionsGet(ctx context.Context, project *string, fields *[]string, types *[]string, continuationToken *string, startDateTime *time.Time, includeIdentityRef *bool, includeDeleted *bool, includeTagRef *bool, includeLatestOnly *bool, expand *string, includeDiscussionChangesOnly *bool, maxPageSize *int) (*ReportingWorkItemRevisionsBatch, error) {
+func (client Client) ReadReportingRevisionsGet(ctx context.Context, project *string, fields *[]string, types *[]string, continuationToken *string, startDateTime *time.Time, includeIdentityRef *bool, includeDeleted *bool, includeTagRef *bool, includeLatestOnly *bool, expand *ReportingRevisionsExpand, includeDiscussionChangesOnly *bool, maxPageSize *int) (*ReportingWorkItemRevisionsBatch, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -2007,7 +2007,7 @@ func (client Client) ReadReportingRevisionsGet(ctx context.Context, project *str
 // continuationToken (optional): Specifies the watermark to start the batch from. Omit this parameter to get the first batch of revisions.
 // startDateTime (optional): Date/time to use as a starting point for revisions, all revisions will occur after this date/time. Cannot be used in conjunction with 'watermark' parameter.
 // expand (optional)
-func (client Client) ReadReportingRevisionsPost(ctx context.Context, filter *ReportingWorkItemRevisionsFilter, project *string, continuationToken *string, startDateTime *time.Time, expand *string) (*ReportingWorkItemRevisionsBatch, error) {
+func (client Client) ReadReportingRevisionsPost(ctx context.Context, filter *ReportingWorkItemRevisionsFilter, project *string, continuationToken *string, startDateTime *time.Time, expand *ReportingRevisionsExpand) (*ReportingWorkItemRevisionsBatch, error) {
     if filter == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "filter"}
     }
@@ -2079,7 +2079,7 @@ func (client Client) ReadReportingDiscussions(ctx context.Context, project *stri
 // bypassRules (optional): Do not enforce the work item type rules on this update
 // suppressNotifications (optional): Do not fire any notifications for this change
 // expand (optional): The expand parameters for work item attributes. Possible options are { None, Relations, Fields, Links, All }.
-func (client Client) CreateWorkItem(ctx context.Context, document *[]JsonPatchOperation, project *string, type_ *string, validateOnly *bool, bypassRules *bool, suppressNotifications *bool, expand *string) (*WorkItem, error) {
+func (client Client) CreateWorkItem(ctx context.Context, document *[]JsonPatchOperation, project *string, type_ *string, validateOnly *bool, bypassRules *bool, suppressNotifications *bool, expand *WorkItemExpand) (*WorkItem, error) {
     if document == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "document"}
     }
@@ -2128,7 +2128,7 @@ func (client Client) CreateWorkItem(ctx context.Context, document *[]JsonPatchOp
 // fields (optional): Comma-separated list of requested fields
 // asOf (optional): AsOf UTC date time string
 // expand (optional): The expand parameters for work item attributes. Possible options are { None, Relations, Fields, Links, All }.
-func (client Client) GetWorkItemTemplate(ctx context.Context, project *string, type_ *string, fields *string, asOf *time.Time, expand *string) (*WorkItem, error) {
+func (client Client) GetWorkItemTemplate(ctx context.Context, project *string, type_ *string, fields *string, asOf *time.Time, expand *WorkItemExpand) (*WorkItem, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2197,7 +2197,7 @@ func (client Client) DeleteWorkItem(ctx context.Context, id *int, project *strin
 // fields (optional): Comma-separated list of requested fields
 // asOf (optional): AsOf UTC date time string
 // expand (optional): The expand parameters for work item attributes. Possible options are { None, Relations, Fields, Links, All }.
-func (client Client) GetWorkItem(ctx context.Context, id *int, project *string, fields *[]string, asOf *time.Time, expand *string) (*WorkItem, error) {
+func (client Client) GetWorkItem(ctx context.Context, id *int, project *string, fields *[]string, asOf *time.Time, expand *WorkItemExpand) (*WorkItem, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -2237,7 +2237,7 @@ func (client Client) GetWorkItem(ctx context.Context, id *int, project *string, 
 // asOf (optional): AsOf UTC date time string
 // expand (optional): The expand parameters for work item attributes. Possible options are { None, Relations, Fields, Links, All }.
 // errorPolicy (optional): The flag to control error policy in a bulk get work items request. Possible options are {Fail, Omit}.
-func (client Client) GetWorkItems(ctx context.Context, ids *[]int, project *string, fields *[]string, asOf *time.Time, expand *string, errorPolicy *string) (*[]WorkItem, error) {
+func (client Client) GetWorkItems(ctx context.Context, ids *[]int, project *string, fields *[]string, asOf *time.Time, expand *WorkItemExpand, errorPolicy *WorkItemErrorPolicy) (*[]WorkItem, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -2286,7 +2286,7 @@ func (client Client) GetWorkItems(ctx context.Context, ids *[]int, project *stri
 // bypassRules (optional): Do not enforce the work item type rules on this update
 // suppressNotifications (optional): Do not fire any notifications for this change
 // expand (optional): The expand parameters for work item attributes. Possible options are { None, Relations, Fields, Links, All }.
-func (client Client) UpdateWorkItem(ctx context.Context, document *[]JsonPatchOperation, id *int, project *string, validateOnly *bool, bypassRules *bool, suppressNotifications *bool, expand *string) (*WorkItem, error) {
+func (client Client) UpdateWorkItem(ctx context.Context, document *[]JsonPatchOperation, id *int, project *string, validateOnly *bool, bypassRules *bool, suppressNotifications *bool, expand *WorkItemExpand) (*WorkItem, error) {
     if document == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "document"}
     }
@@ -2483,7 +2483,7 @@ func (client Client) GetWorkItemTypes(ctx context.Context, project *string) (*[]
 // project (required): Project ID or project name
 // type_ (required): Work item type.
 // expand (optional): Expand level for the API response. Properties: to include allowedvalues, default value, isRequired etc. as a part of response; None: to skip these properties.
-func (client Client) GetWorkItemTypeFieldsWithReferences(ctx context.Context, project *string, type_ *string, expand *string) (*[]WorkItemTypeFieldWithReferences, error) {
+func (client Client) GetWorkItemTypeFieldsWithReferences(ctx context.Context, project *string, type_ *string, expand *WorkItemTypeFieldsExpandLevel) (*[]WorkItemTypeFieldWithReferences, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2515,7 +2515,7 @@ func (client Client) GetWorkItemTypeFieldsWithReferences(ctx context.Context, pr
 // type_ (required): Work item type.
 // field (required)
 // expand (optional): Expand level for the API response. Properties: to include allowedvalues, default value, isRequired etc. as a part of response; None: to skip these properties.
-func (client Client) GetWorkItemTypeFieldWithReferences(ctx context.Context, project *string, type_ *string, field *string, expand *string) (*WorkItemTypeFieldWithReferences, error) {
+func (client Client) GetWorkItemTypeFieldWithReferences(ctx context.Context, project *string, type_ *string, field *string, expand *WorkItemTypeFieldsExpandLevel) (*WorkItemTypeFieldWithReferences, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
