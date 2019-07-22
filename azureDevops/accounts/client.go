@@ -9,6 +9,7 @@
 package accounts
 
 import (
+    "context"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevops"
     "net/http"
@@ -21,8 +22,8 @@ type Client struct {
     Client azureDevops.Client
 }
 
-func NewClient(connection azureDevops.Connection) (*Client, error) {
-    client, err := connection.GetClientByResourceAreaId(ResourceAreaId)
+func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+    client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
     }
@@ -32,10 +33,11 @@ func NewClient(connection azureDevops.Connection) (*Client, error) {
 }
 
 // Get a list of accounts for a specific owner or a specific member.
+// ctx
 // ownerId (optional): ID for the owner of the accounts.
 // memberId (optional): ID for a member of the accounts.
 // properties (optional)
-func (client Client) GetAccounts(ownerId *uuid.UUID, memberId *uuid.UUID, properties *string) (*[]Account, error) {
+func (client Client) GetAccounts(ctx context.Context, ownerId *uuid.UUID, memberId *uuid.UUID, properties *string) (*[]Account, error) {
     queryParams := url.Values{}
     if ownerId != nil {
         queryParams.Add("ownerId", (*ownerId).String())
@@ -47,7 +49,7 @@ func (client Client) GetAccounts(ownerId *uuid.UUID, memberId *uuid.UUID, proper
         queryParams.Add("properties", *properties)
     }
     locationId, _ := uuid.Parse("229a6a53-b428-4ffb-a835-e8f36b5b4b1e")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }

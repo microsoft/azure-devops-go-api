@@ -10,8 +10,8 @@ package feed
 
 import (
     "bytes"
+    "context"
     "encoding/json"
-    "errors"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevops"
     "net/http"
@@ -25,8 +25,8 @@ type Client struct {
     Client azureDevops.Client
 }
 
-func NewClient(connection azureDevops.Connection) (*Client, error) {
-    client, err := connection.GetClientByResourceAreaId(ResourceAreaId)
+func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+    client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
     }
@@ -36,25 +36,26 @@ func NewClient(connection azureDevops.Connection) (*Client, error) {
 }
 
 // [Preview API] Generate a SVG badge for the latest version of a package.  The generated SVG is typically used as the image in an HTML link which takes users to the feed containing the package to accelerate discovery and consumption.
+// ctx
 // feedId (required): Name or Id of the feed.
 // packageId (required): Id of the package (GUID Id, not name).
 // project (optional): Project ID or project name
-func (client Client) GetBadge(feedId *string, packageId *uuid.UUID, project *string) (*string, error) {
+func (client Client) GetBadge(ctx context.Context, feedId *string, packageId *uuid.UUID, project *string) (*string, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
     if packageId == nil {
-        return nil, errors.New("packageId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "packageId"} 
     }
     routeValues["packageId"] = (*packageId).String()
 
     locationId, _ := uuid.Parse("61d885fd-10f3-4a55-82b6-476d866b673f")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -65,20 +66,21 @@ func (client Client) GetBadge(feedId *string, packageId *uuid.UUID, project *str
 }
 
 // [Preview API] Query a feed to determine its current state.
+// ctx
 // feedId (required): Name or ID of the feed.
 // project (optional): Project ID or project name
-func (client Client) GetFeedChange(feedId *string, project *string) (*FeedChange, error) {
+func (client Client) GetFeedChange(ctx context.Context, feedId *string, project *string) (*FeedChange, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
 
     locationId, _ := uuid.Parse("29ba2dad-389a-4661-b5d3-de76397ca05b")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -89,11 +91,12 @@ func (client Client) GetFeedChange(feedId *string, project *string) (*FeedChange
 }
 
 // [Preview API] Query to determine which feeds have changed since the last call, tracked through the provided continuationToken. Only changes to a feed itself are returned and impact the continuationToken, not additions or alterations to packages within the feeds.
+// ctx
 // project (optional): Project ID or project name
 // includeDeleted (optional): If true, get changes for all feeds including deleted feeds. The default value is false.
 // continuationToken (optional): A continuation token which acts as a bookmark to a previously retrieved change. This token allows the user to continue retrieving changes in batches, picking up where the previous batch left off. If specified, all the changes that occur strictly after the token will be returned. If not specified or 0, iteration will start with the first change.
 // batchSize (optional): Number of package changes to fetch. The default value is 1000. The maximum value is 2000.
-func (client Client) GetFeedChanges(project *string, includeDeleted *bool, continuationToken *uint64, batchSize *int) (*FeedChangesResponse, error) {
+func (client Client) GetFeedChanges(ctx context.Context, project *string, includeDeleted *bool, continuationToken *uint64, batchSize *int) (*FeedChangesResponse, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -110,7 +113,7 @@ func (client Client) GetFeedChanges(project *string, includeDeleted *bool, conti
         queryParams.Add("batchSize", strconv.Itoa(*batchSize))
     }
     locationId, _ := uuid.Parse("29ba2dad-389a-4661-b5d3-de76397ca05b")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -121,11 +124,12 @@ func (client Client) GetFeedChanges(project *string, includeDeleted *bool, conti
 }
 
 // [Preview API] Create a feed, a container for various package types.
+// ctx
 // feed (required): A JSON object containing both required and optional attributes for the feed. Name is the only required value.
 // project (optional): Project ID or project name
-func (client Client) CreateFeed(feed *Feed, project *string) (*Feed, error) {
+func (client Client) CreateFeed(ctx context.Context, feed *Feed, project *string) (*Feed, error) {
     if feed == nil {
-        return nil, errors.New("feed is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "feed"}
     }
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
@@ -137,7 +141,7 @@ func (client Client) CreateFeed(feed *Feed, project *string) (*Feed, error) {
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("c65009a7-474a-4ad1-8b42-7d852107ef8c")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -148,20 +152,21 @@ func (client Client) CreateFeed(feed *Feed, project *string) (*Feed, error) {
 }
 
 // [Preview API] Remove a feed and all its packages. The action does not result in packages moving to the RecycleBin and is not reversible.
+// ctx
 // feedId (required): Name or Id of the feed.
 // project (optional): Project ID or project name
-func (client Client) DeleteFeed(feedId *string, project *string) error {
+func (client Client) DeleteFeed(ctx context.Context, feedId *string, project *string) error {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return errors.New("feedId is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
 
     locationId, _ := uuid.Parse("c65009a7-474a-4ad1-8b42-7d852107ef8c")
-    _, err := client.Client.Send(http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return err
     }
@@ -170,16 +175,17 @@ func (client Client) DeleteFeed(feedId *string, project *string) error {
 }
 
 // [Preview API] Get the settings for a specific feed.
+// ctx
 // feedId (required): Name or Id of the feed.
 // project (optional): Project ID or project name
 // includeDeletedUpstreams (optional): Include upstreams that have been deleted in the response.
-func (client Client) GetFeed(feedId *string, project *string, includeDeletedUpstreams *bool) (*Feed, error) {
+func (client Client) GetFeed(ctx context.Context, feedId *string, project *string, includeDeletedUpstreams *bool) (*Feed, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
 
@@ -188,7 +194,7 @@ func (client Client) GetFeed(feedId *string, project *string, includeDeletedUpst
         queryParams.Add("includeDeletedUpstreams", strconv.FormatBool(*includeDeletedUpstreams))
     }
     locationId, _ := uuid.Parse("c65009a7-474a-4ad1-8b42-7d852107ef8c")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -199,10 +205,11 @@ func (client Client) GetFeed(feedId *string, project *string, includeDeletedUpst
 }
 
 // [Preview API] Get all feeds in an account where you have the provided role access.
+// ctx
 // project (optional): Project ID or project name
 // feedRole (optional): Filter by this role, either Administrator(4), Contributor(3), or Reader(2) level permissions.
 // includeDeletedUpstreams (optional): Include upstreams that have been deleted in the response.
-func (client Client) GetFeeds(project *string, feedRole *string, includeDeletedUpstreams *bool) (*[]Feed, error) {
+func (client Client) GetFeeds(ctx context.Context, project *string, feedRole *string, includeDeletedUpstreams *bool) (*[]Feed, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -216,7 +223,7 @@ func (client Client) GetFeeds(project *string, feedRole *string, includeDeletedU
         queryParams.Add("includeDeletedUpstreams", strconv.FormatBool(*includeDeletedUpstreams))
     }
     locationId, _ := uuid.Parse("c65009a7-474a-4ad1-8b42-7d852107ef8c")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -227,19 +234,20 @@ func (client Client) GetFeeds(project *string, feedRole *string, includeDeletedU
 }
 
 // [Preview API] Change the attributes of a feed.
+// ctx
 // feed (required): A JSON object containing the feed settings to be updated.
 // feedId (required): Name or Id of the feed.
 // project (optional): Project ID or project name
-func (client Client) UpdateFeed(feed *FeedUpdate, feedId *string, project *string) (*Feed, error) {
+func (client Client) UpdateFeed(ctx context.Context, feed *FeedUpdate, feedId *string, project *string) (*Feed, error) {
     if feed == nil {
-        return nil, errors.New("feed is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "feed"}
     }
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
 
@@ -248,7 +256,7 @@ func (client Client) UpdateFeed(feed *FeedUpdate, feedId *string, project *strin
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("c65009a7-474a-4ad1-8b42-7d852107ef8c")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -259,14 +267,15 @@ func (client Client) UpdateFeed(feed *FeedUpdate, feedId *string, project *strin
 }
 
 // [Preview API] Get all service-wide feed creation and administration permissions.
+// ctx
 // includeIds (optional): Set to true to add IdentityIds to the permission objects.
-func (client Client) GetGlobalPermissions(includeIds *bool) (*[]GlobalPermission, error) {
+func (client Client) GetGlobalPermissions(ctx context.Context, includeIds *bool) (*[]GlobalPermission, error) {
     queryParams := url.Values{}
     if includeIds != nil {
         queryParams.Add("includeIds", strconv.FormatBool(*includeIds))
     }
     locationId, _ := uuid.Parse("a74419ef-b477-43df-8758-3cd1cd5f56c6")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -277,17 +286,18 @@ func (client Client) GetGlobalPermissions(includeIds *bool) (*[]GlobalPermission
 }
 
 // [Preview API] Set service-wide permissions that govern feed creation and administration.
+// ctx
 // globalPermissions (required): New permissions for the organization.
-func (client Client) SetGlobalPermissions(globalPermissions *[]GlobalPermission) (*[]GlobalPermission, error) {
+func (client Client) SetGlobalPermissions(ctx context.Context, globalPermissions *[]GlobalPermission) (*[]GlobalPermission, error) {
     if globalPermissions == nil {
-        return nil, errors.New("globalPermissions is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "globalPermissions"}
     }
     body, marshalErr := json.Marshal(*globalPermissions)
     if marshalErr != nil {
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("a74419ef-b477-43df-8758-3cd1cd5f56c6")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1-preview.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -298,17 +308,18 @@ func (client Client) SetGlobalPermissions(globalPermissions *[]GlobalPermission)
 }
 
 // [Preview API] Get a batch of package changes made to a feed.  The changes returned are 'most recent change' so if an Add is followed by an Update before you begin enumerating, you'll only see one change in the batch.  While consuming batches using the continuation token, you may see changes to the same package version multiple times if they are happening as you enumerate.
+// ctx
 // feedId (required): Name or Id of the feed.
 // project (optional): Project ID or project name
 // continuationToken (optional): A continuation token which acts as a bookmark to a previously retrieved change. This token allows the user to continue retrieving changes in batches, picking up where the previous batch left off. If specified, all the changes that occur strictly after the token will be returned. If not specified or 0, iteration will start with the first change.
 // batchSize (optional): Number of package changes to fetch. The default value is 1000. The maximum value is 2000.
-func (client Client) GetPackageChanges(feedId *string, project *string, continuationToken *uint64, batchSize *int) (*PackageChangesResponse, error) {
+func (client Client) GetPackageChanges(ctx context.Context, feedId *string, project *string, continuationToken *uint64, batchSize *int) (*PackageChangesResponse, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
 
@@ -320,7 +331,7 @@ func (client Client) GetPackageChanges(feedId *string, project *string, continua
         queryParams.Add("batchSize", strconv.Itoa(*batchSize))
     }
     locationId, _ := uuid.Parse("323a0631-d083-4005-85ae-035114dfb681")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -331,19 +342,20 @@ func (client Client) GetPackageChanges(feedId *string, project *string, continua
 }
 
 // [Preview API]
+// ctx
 // packageIdQuery (required)
 // feedId (required)
 // project (optional): Project ID or project name
-func (client Client) QueryPackageMetrics(packageIdQuery *PackageMetricsQuery, feedId *string, project *string) (*[]PackageMetrics, error) {
+func (client Client) QueryPackageMetrics(ctx context.Context, packageIdQuery *PackageMetricsQuery, feedId *string, project *string) (*[]PackageMetrics, error) {
     if packageIdQuery == nil {
-        return nil, errors.New("packageIdQuery is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "packageIdQuery"}
     }
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
 
@@ -352,7 +364,7 @@ func (client Client) QueryPackageMetrics(packageIdQuery *PackageMetricsQuery, fe
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("bddc9b3c-8a59-4a9f-9b40-ee1dcaa2cc0d")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -363,6 +375,7 @@ func (client Client) QueryPackageMetrics(packageIdQuery *PackageMetricsQuery, fe
 }
 
 // [Preview API] Get details about a specific package.
+// ctx
 // feedId (required): Name or Id of the feed.
 // packageId (required): The package Id (GUID Id, not the package name).
 // project (optional): Project ID or project name
@@ -372,17 +385,17 @@ func (client Client) QueryPackageMetrics(packageIdQuery *PackageMetricsQuery, fe
 // isRelease (optional): Only applicable for Nuget packages. Use this to filter the response when includeAllVersions is set to true.  Default is True (only return packages without prerelease versioning).
 // includeDeleted (optional): Return deleted or unpublished versions of packages in the response. Default is False.
 // includeDescription (optional): Return the description for every version of each package in the response. Default is False.
-func (client Client) GetPackage(feedId *string, packageId *string, project *string, includeAllVersions *bool, includeUrls *bool, isListed *bool, isRelease *bool, includeDeleted *bool, includeDescription *bool) (*Package, error) {
+func (client Client) GetPackage(ctx context.Context, feedId *string, packageId *string, project *string, includeAllVersions *bool, includeUrls *bool, isListed *bool, isRelease *bool, includeDeleted *bool, includeDescription *bool) (*Package, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
     if packageId == nil || *packageId == "" {
-        return nil, errors.New("packageId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageId"} 
     }
     routeValues["packageId"] = *packageId
 
@@ -406,7 +419,7 @@ func (client Client) GetPackage(feedId *string, packageId *string, project *stri
         queryParams.Add("includeDescription", strconv.FormatBool(*includeDescription))
     }
     locationId, _ := uuid.Parse("7a20d846-c929-4acc-9ea2-0d5a7df1b197")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -417,6 +430,7 @@ func (client Client) GetPackage(feedId *string, packageId *string, project *stri
 }
 
 // [Preview API] Get details about all of the packages in the feed. Use the various filters to include or exclude information from the result set.
+// ctx
 // feedId (required): Name or Id of the feed.
 // project (optional): Project ID or project name
 // protocolType (optional): One of the supported artifact package types.
@@ -433,13 +447,13 @@ func (client Client) GetPackage(feedId *string, packageId *string, project *stri
 // includeDeleted (optional): Return deleted or unpublished versions of packages in the response. Default is False.
 // isCached (optional): [Obsolete] Used for legacy scenarios and may be removed in future versions.
 // directUpstreamId (optional): Filter results to return packages from a specific upstream.
-func (client Client) GetPackages(feedId *string, project *string, protocolType *string, packageNameQuery *string, normalizedPackageName *string, includeUrls *bool, includeAllVersions *bool, isListed *bool, getTopPackageVersions *bool, isRelease *bool, includeDescription *bool, top *int, skip *int, includeDeleted *bool, isCached *bool, directUpstreamId *uuid.UUID) (*[]Package, error) {
+func (client Client) GetPackages(ctx context.Context, feedId *string, project *string, protocolType *string, packageNameQuery *string, normalizedPackageName *string, includeUrls *bool, includeAllVersions *bool, isListed *bool, getTopPackageVersions *bool, isRelease *bool, includeDescription *bool, top *int, skip *int, includeDeleted *bool, isCached *bool, directUpstreamId *uuid.UUID) (*[]Package, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
 
@@ -487,7 +501,7 @@ func (client Client) GetPackages(feedId *string, project *string, protocolType *
         queryParams.Add("directUpstreamId", (*directUpstreamId).String())
     }
     locationId, _ := uuid.Parse("7a20d846-c929-4acc-9ea2-0d5a7df1b197")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -498,18 +512,19 @@ func (client Client) GetPackages(feedId *string, project *string, protocolType *
 }
 
 // [Preview API] Get the permissions for a feed.
+// ctx
 // feedId (required): Name or Id of the feed.
 // project (optional): Project ID or project name
 // includeIds (optional): True to include user Ids in the response.  Default is false.
 // excludeInheritedPermissions (optional): True to only return explicitly set permissions on the feed.  Default is false.
 // identityDescriptor (optional): Filter permissions to the provided identity.
-func (client Client) GetFeedPermissions(feedId *string, project *string, includeIds *bool, excludeInheritedPermissions *bool, identityDescriptor *string) (*[]FeedPermission, error) {
+func (client Client) GetFeedPermissions(ctx context.Context, feedId *string, project *string, includeIds *bool, excludeInheritedPermissions *bool, identityDescriptor *string) (*[]FeedPermission, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
 
@@ -524,7 +539,7 @@ func (client Client) GetFeedPermissions(feedId *string, project *string, include
         queryParams.Add("identityDescriptor", *identityDescriptor)
     }
     locationId, _ := uuid.Parse("be8c1476-86a7-44ed-b19d-aec0e9275cd8")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -535,19 +550,20 @@ func (client Client) GetFeedPermissions(feedId *string, project *string, include
 }
 
 // [Preview API] Update the permissions on a feed.
+// ctx
 // feedPermission (required): Permissions to set.
 // feedId (required): Name or Id of the feed.
 // project (optional): Project ID or project name
-func (client Client) SetFeedPermissions(feedPermission *[]FeedPermission, feedId *string, project *string) (*[]FeedPermission, error) {
+func (client Client) SetFeedPermissions(ctx context.Context, feedPermission *[]FeedPermission, feedId *string, project *string) (*[]FeedPermission, error) {
     if feedPermission == nil {
-        return nil, errors.New("feedPermission is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "feedPermission"}
     }
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
 
@@ -556,7 +572,7 @@ func (client Client) SetFeedPermissions(feedPermission *[]FeedPermission, feedId
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("be8c1476-86a7-44ed-b19d-aec0e9275cd8")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -567,30 +583,31 @@ func (client Client) SetFeedPermissions(feedPermission *[]FeedPermission, feedId
 }
 
 // [Preview API] Gets provenance for a package version.
+// ctx
 // feedId (required): Name or Id of the feed.
 // packageId (required): Id of the package (GUID Id, not name).
 // packageVersionId (required): Id of the package version (GUID Id, not name).
 // project (optional): Project ID or project name
-func (client Client) GetPackageVersionProvenance(feedId *string, packageId *uuid.UUID, packageVersionId *uuid.UUID, project *string) (*PackageVersionProvenance, error) {
+func (client Client) GetPackageVersionProvenance(ctx context.Context, feedId *string, packageId *uuid.UUID, packageVersionId *uuid.UUID, project *string) (*PackageVersionProvenance, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
     if packageId == nil {
-        return nil, errors.New("packageId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "packageId"} 
     }
     routeValues["packageId"] = (*packageId).String()
     if packageVersionId == nil {
-        return nil, errors.New("packageVersionId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "packageVersionId"} 
     }
     routeValues["packageVersionId"] = (*packageVersionId).String()
 
     locationId, _ := uuid.Parse("0aaeabd4-85cd-4686-8a77-8d31c15690b8")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -601,21 +618,22 @@ func (client Client) GetPackageVersionProvenance(feedId *string, packageId *uuid
 }
 
 // [Preview API] Get information about a package and all its versions within the recycle bin.
+// ctx
 // feedId (required): Name or Id of the feed.
 // packageId (required): The package Id (GUID Id, not the package name).
 // project (optional): Project ID or project name
 // includeUrls (optional): True to return REST Urls with the response.  Default is True.
-func (client Client) GetRecycleBinPackage(feedId *string, packageId *uuid.UUID, project *string, includeUrls *bool) (*Package, error) {
+func (client Client) GetRecycleBinPackage(ctx context.Context, feedId *string, packageId *uuid.UUID, project *string, includeUrls *bool) (*Package, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
     if packageId == nil {
-        return nil, errors.New("packageId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "packageId"} 
     }
     routeValues["packageId"] = (*packageId).String()
 
@@ -624,7 +642,7 @@ func (client Client) GetRecycleBinPackage(feedId *string, packageId *uuid.UUID, 
         queryParams.Add("includeUrls", strconv.FormatBool(*includeUrls))
     }
     locationId, _ := uuid.Parse("2704e72c-f541-4141-99be-2004b50b05fa")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -635,6 +653,7 @@ func (client Client) GetRecycleBinPackage(feedId *string, packageId *uuid.UUID, 
 }
 
 // [Preview API] Query for packages within the recycle bin.
+// ctx
 // feedId (required): Name or Id of the feed.
 // project (optional): Project ID or project name
 // protocolType (optional): Type of package (e.g. NuGet, npm, ...).
@@ -643,13 +662,13 @@ func (client Client) GetRecycleBinPackage(feedId *string, packageId *uuid.UUID, 
 // top (optional): Get the top N packages.
 // skip (optional): Skip the first N packages.
 // includeAllVersions (optional): True to return all versions of the package in the response.  Default is false (latest version only).
-func (client Client) GetRecycleBinPackages(feedId *string, project *string, protocolType *string, packageNameQuery *string, includeUrls *bool, top *int, skip *int, includeAllVersions *bool) (*[]Package, error) {
+func (client Client) GetRecycleBinPackages(ctx context.Context, feedId *string, project *string, protocolType *string, packageNameQuery *string, includeUrls *bool, top *int, skip *int, includeAllVersions *bool) (*[]Package, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
 
@@ -673,7 +692,7 @@ func (client Client) GetRecycleBinPackages(feedId *string, project *string, prot
         queryParams.Add("includeAllVersions", strconv.FormatBool(*includeAllVersions))
     }
     locationId, _ := uuid.Parse("2704e72c-f541-4141-99be-2004b50b05fa")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -684,26 +703,27 @@ func (client Client) GetRecycleBinPackages(feedId *string, project *string, prot
 }
 
 // [Preview API] Get information about a package version within the recycle bin.
+// ctx
 // feedId (required): Name or Id of the feed.
 // packageId (required): The package Id (GUID Id, not the package name).
 // packageVersionId (required): The package version Id 9guid Id, not the version string).
 // project (optional): Project ID or project name
 // includeUrls (optional): True to return REST Urls with the response.  Default is True.
-func (client Client) GetRecycleBinPackageVersion(feedId *string, packageId *uuid.UUID, packageVersionId *uuid.UUID, project *string, includeUrls *bool) (*RecycleBinPackageVersion, error) {
+func (client Client) GetRecycleBinPackageVersion(ctx context.Context, feedId *string, packageId *uuid.UUID, packageVersionId *uuid.UUID, project *string, includeUrls *bool) (*RecycleBinPackageVersion, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
     if packageId == nil {
-        return nil, errors.New("packageId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "packageId"} 
     }
     routeValues["packageId"] = (*packageId).String()
     if packageVersionId == nil {
-        return nil, errors.New("packageVersionId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "packageVersionId"} 
     }
     routeValues["packageVersionId"] = (*packageVersionId).String()
 
@@ -712,7 +732,7 @@ func (client Client) GetRecycleBinPackageVersion(feedId *string, packageId *uuid
         queryParams.Add("includeUrls", strconv.FormatBool(*includeUrls))
     }
     locationId, _ := uuid.Parse("aceb4be7-8737-4820-834c-4c549e10fdc7")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -723,21 +743,22 @@ func (client Client) GetRecycleBinPackageVersion(feedId *string, packageId *uuid
 }
 
 // [Preview API] Get a list of package versions within the recycle bin.
+// ctx
 // feedId (required): Name or Id of the feed.
 // packageId (required): The package Id (GUID Id, not the package name).
 // project (optional): Project ID or project name
 // includeUrls (optional): True to return REST Urls with the response.  Default is True.
-func (client Client) GetRecycleBinPackageVersions(feedId *string, packageId *uuid.UUID, project *string, includeUrls *bool) (*[]RecycleBinPackageVersion, error) {
+func (client Client) GetRecycleBinPackageVersions(ctx context.Context, feedId *string, packageId *uuid.UUID, project *string, includeUrls *bool) (*[]RecycleBinPackageVersion, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
     if packageId == nil {
-        return nil, errors.New("packageId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "packageId"} 
     }
     routeValues["packageId"] = (*packageId).String()
 
@@ -746,7 +767,7 @@ func (client Client) GetRecycleBinPackageVersions(feedId *string, packageId *uui
         queryParams.Add("includeUrls", strconv.FormatBool(*includeUrls))
     }
     locationId, _ := uuid.Parse("aceb4be7-8737-4820-834c-4c549e10fdc7")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -757,20 +778,21 @@ func (client Client) GetRecycleBinPackageVersions(feedId *string, packageId *uui
 }
 
 // [Preview API] Delete the retention policy for a feed.
+// ctx
 // feedId (required): Name or ID of the feed.
 // project (optional): Project ID or project name
-func (client Client) DeleteFeedRetentionPolicies(feedId *string, project *string) error {
+func (client Client) DeleteFeedRetentionPolicies(ctx context.Context, feedId *string, project *string) error {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return errors.New("feedId is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
 
     locationId, _ := uuid.Parse("ed52a011-0112-45b5-9f9e-e14efffb3193")
-    _, err := client.Client.Send(http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return err
     }
@@ -779,20 +801,21 @@ func (client Client) DeleteFeedRetentionPolicies(feedId *string, project *string
 }
 
 // [Preview API] Get the retention policy for a feed.
+// ctx
 // feedId (required): Name or ID of the feed.
 // project (optional): Project ID or project name
-func (client Client) GetFeedRetentionPolicies(feedId *string, project *string) (*FeedRetentionPolicy, error) {
+func (client Client) GetFeedRetentionPolicies(ctx context.Context, feedId *string, project *string) (*FeedRetentionPolicy, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
 
     locationId, _ := uuid.Parse("ed52a011-0112-45b5-9f9e-e14efffb3193")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -803,19 +826,20 @@ func (client Client) GetFeedRetentionPolicies(feedId *string, project *string) (
 }
 
 // [Preview API] Set the retention policy for a feed.
+// ctx
 // policy (required): Feed retention policy.
 // feedId (required): Name or ID of the feed.
 // project (optional): Project ID or project name
-func (client Client) SetFeedRetentionPolicies(policy *FeedRetentionPolicy, feedId *string, project *string) (*FeedRetentionPolicy, error) {
+func (client Client) SetFeedRetentionPolicies(ctx context.Context, policy *FeedRetentionPolicy, feedId *string, project *string) (*FeedRetentionPolicy, error) {
     if policy == nil {
-        return nil, errors.New("policy is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "policy"}
     }
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
 
@@ -824,7 +848,7 @@ func (client Client) SetFeedRetentionPolicies(policy *FeedRetentionPolicy, feedI
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("ed52a011-0112-45b5-9f9e-e14efffb3193")
-    resp, err := client.Client.Send(http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -835,24 +859,25 @@ func (client Client) SetFeedRetentionPolicies(policy *FeedRetentionPolicy, feedI
 }
 
 // [Preview API]
+// ctx
 // packageVersionIdQuery (required)
 // feedId (required)
 // packageId (required)
 // project (optional): Project ID or project name
-func (client Client) QueryPackageVersionMetrics(packageVersionIdQuery *PackageVersionMetricsQuery, feedId *string, packageId *uuid.UUID, project *string) (*[]PackageVersionMetrics, error) {
+func (client Client) QueryPackageVersionMetrics(ctx context.Context, packageVersionIdQuery *PackageVersionMetricsQuery, feedId *string, packageId *uuid.UUID, project *string) (*[]PackageVersionMetrics, error) {
     if packageVersionIdQuery == nil {
-        return nil, errors.New("packageVersionIdQuery is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "packageVersionIdQuery"}
     }
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
     if packageId == nil {
-        return nil, errors.New("packageId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "packageId"} 
     }
     routeValues["packageId"] = (*packageId).String()
 
@@ -861,7 +886,7 @@ func (client Client) QueryPackageVersionMetrics(packageVersionIdQuery *PackageVe
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("e6ae8caa-b6a8-4809-b840-91b2a42c19ad")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -872,6 +897,7 @@ func (client Client) QueryPackageVersionMetrics(packageVersionIdQuery *PackageVe
 }
 
 // [Preview API] Get details about a specific package version.
+// ctx
 // feedId (required): Name or Id of the feed.
 // packageId (required): Id of the package (GUID Id, not name).
 // packageVersionId (required): Id of the package version (GUID Id, not name).
@@ -879,21 +905,21 @@ func (client Client) QueryPackageVersionMetrics(packageVersionIdQuery *PackageVe
 // includeUrls (optional): True to include urls for each version. Default is true.
 // isListed (optional): Only applicable for NuGet packages. If false, delisted package versions will be returned.
 // isDeleted (optional): This does not have any effect on the requested package version, for other versions returned specifies whether to return only deleted or non-deleted versions of packages in the response. Default is unset (return all versions).
-func (client Client) GetPackageVersion(feedId *string, packageId *string, packageVersionId *string, project *string, includeUrls *bool, isListed *bool, isDeleted *bool) (*PackageVersion, error) {
+func (client Client) GetPackageVersion(ctx context.Context, feedId *string, packageId *string, packageVersionId *string, project *string, includeUrls *bool, isListed *bool, isDeleted *bool) (*PackageVersion, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
     if packageId == nil || *packageId == "" {
-        return nil, errors.New("packageId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageId"} 
     }
     routeValues["packageId"] = *packageId
     if packageVersionId == nil || *packageVersionId == "" {
-        return nil, errors.New("packageVersionId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageVersionId"} 
     }
     routeValues["packageVersionId"] = *packageVersionId
 
@@ -908,7 +934,7 @@ func (client Client) GetPackageVersion(feedId *string, packageId *string, packag
         queryParams.Add("isDeleted", strconv.FormatBool(*isDeleted))
     }
     locationId, _ := uuid.Parse("3b331909-6a86-44cc-b9ec-c1834c35498f")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -919,23 +945,24 @@ func (client Client) GetPackageVersion(feedId *string, packageId *string, packag
 }
 
 // [Preview API] Get a list of package versions, optionally filtering by state.
+// ctx
 // feedId (required): Name or Id of the feed.
 // packageId (required): Id of the package (GUID Id, not name).
 // project (optional): Project ID or project name
 // includeUrls (optional): True to include urls for each version. Default is true.
 // isListed (optional): Only applicable for NuGet packages. If false, delisted package versions will be returned.
 // isDeleted (optional): If set specifies whether to return only deleted or non-deleted versions of packages in the response. Default is unset (return all versions).
-func (client Client) GetPackageVersions(feedId *string, packageId *string, project *string, includeUrls *bool, isListed *bool, isDeleted *bool) (*[]PackageVersion, error) {
+func (client Client) GetPackageVersions(ctx context.Context, feedId *string, packageId *string, project *string, includeUrls *bool, isListed *bool, isDeleted *bool) (*[]PackageVersion, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
     if packageId == nil || *packageId == "" {
-        return nil, errors.New("packageId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageId"} 
     }
     routeValues["packageId"] = *packageId
 
@@ -950,7 +977,7 @@ func (client Client) GetPackageVersions(feedId *string, packageId *string, proje
         queryParams.Add("isDeleted", strconv.FormatBool(*isDeleted))
     }
     locationId, _ := uuid.Parse("3b331909-6a86-44cc-b9ec-c1834c35498f")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -961,19 +988,20 @@ func (client Client) GetPackageVersions(feedId *string, packageId *string, proje
 }
 
 // [Preview API] Create a new view on the referenced feed.
+// ctx
 // view (required): View to be created.
 // feedId (required): Name or Id of the feed.
 // project (optional): Project ID or project name
-func (client Client) CreateFeedView(view *FeedView, feedId *string, project *string) (*FeedView, error) {
+func (client Client) CreateFeedView(ctx context.Context, view *FeedView, feedId *string, project *string) (*FeedView, error) {
     if view == nil {
-        return nil, errors.New("view is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "view"}
     }
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
 
@@ -982,7 +1010,7 @@ func (client Client) CreateFeedView(view *FeedView, feedId *string, project *str
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("42a8502a-6785-41bc-8c16-89477d930877")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -993,25 +1021,26 @@ func (client Client) CreateFeedView(view *FeedView, feedId *string, project *str
 }
 
 // [Preview API] Delete a feed view.
+// ctx
 // feedId (required): Name or Id of the feed.
 // viewId (required): Name or Id of the view.
 // project (optional): Project ID or project name
-func (client Client) DeleteFeedView(feedId *string, viewId *string, project *string) error {
+func (client Client) DeleteFeedView(ctx context.Context, feedId *string, viewId *string, project *string) error {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return errors.New("feedId is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
     if viewId == nil || *viewId == "" {
-        return errors.New("viewId is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "viewId"} 
     }
     routeValues["viewId"] = *viewId
 
     locationId, _ := uuid.Parse("42a8502a-6785-41bc-8c16-89477d930877")
-    _, err := client.Client.Send(http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return err
     }
@@ -1020,25 +1049,26 @@ func (client Client) DeleteFeedView(feedId *string, viewId *string, project *str
 }
 
 // [Preview API] Get a view by Id.
+// ctx
 // feedId (required): Name or Id of the feed.
 // viewId (required): Name or Id of the view.
 // project (optional): Project ID or project name
-func (client Client) GetFeedView(feedId *string, viewId *string, project *string) (*FeedView, error) {
+func (client Client) GetFeedView(ctx context.Context, feedId *string, viewId *string, project *string) (*FeedView, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
     if viewId == nil || *viewId == "" {
-        return nil, errors.New("viewId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "viewId"} 
     }
     routeValues["viewId"] = *viewId
 
     locationId, _ := uuid.Parse("42a8502a-6785-41bc-8c16-89477d930877")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1049,20 +1079,21 @@ func (client Client) GetFeedView(feedId *string, viewId *string, project *string
 }
 
 // [Preview API] Get all views for a feed.
+// ctx
 // feedId (required): Name or Id of the feed.
 // project (optional): Project ID or project name
-func (client Client) GetFeedViews(feedId *string, project *string) (*[]FeedView, error) {
+func (client Client) GetFeedViews(ctx context.Context, feedId *string, project *string) (*[]FeedView, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
 
     locationId, _ := uuid.Parse("42a8502a-6785-41bc-8c16-89477d930877")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1073,24 +1104,25 @@ func (client Client) GetFeedViews(feedId *string, project *string) (*[]FeedView,
 }
 
 // [Preview API] Update a view.
+// ctx
 // view (required): New settings to apply to the specified view.
 // feedId (required): Name or Id of the feed.
 // viewId (required): Name or Id of the view.
 // project (optional): Project ID or project name
-func (client Client) UpdateFeedView(view *FeedView, feedId *string, viewId *string, project *string) (*FeedView, error) {
+func (client Client) UpdateFeedView(ctx context.Context, view *FeedView, feedId *string, viewId *string, project *string) (*FeedView, error) {
     if view == nil {
-        return nil, errors.New("view is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "view"}
     }
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if feedId == nil || *feedId == "" {
-        return nil, errors.New("feedId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *feedId
     if viewId == nil || *viewId == "" {
-        return nil, errors.New("viewId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "viewId"} 
     }
     routeValues["viewId"] = *viewId
 
@@ -1099,7 +1131,7 @@ func (client Client) UpdateFeedView(view *FeedView, feedId *string, viewId *stri
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("42a8502a-6785-41bc-8c16-89477d930877")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }

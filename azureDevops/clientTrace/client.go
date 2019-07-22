@@ -10,8 +10,8 @@ package clientTrace
 
 import (
     "bytes"
+    "context"
     "encoding/json"
-    "errors"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevops"
     "net/http"
@@ -21,7 +21,7 @@ type Client struct {
     Client azureDevops.Client
 }
 
-func NewClient(connection azureDevops.Connection) *Client {
+func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -29,17 +29,18 @@ func NewClient(connection azureDevops.Connection) *Client {
 }
 
 // [Preview API]
+// ctx
 // events (required)
-func (client Client) PublishEvents(events *[]ClientTraceEvent) error {
+func (client Client) PublishEvents(ctx context.Context, events *[]ClientTraceEvent) error {
     if events == nil {
-        return errors.New("events is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "events"}
     }
     body, marshalErr := json.Marshal(*events)
     if marshalErr != nil {
         return marshalErr
     }
     locationId, _ := uuid.Parse("06bcc74a-1491-4eb8-a0eb-704778f9d041")
-    _, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return err
     }

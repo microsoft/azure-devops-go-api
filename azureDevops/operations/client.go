@@ -9,7 +9,7 @@
 package operations
 
 import (
-    "errors"
+    "context"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevops"
     "net/http"
@@ -20,7 +20,7 @@ type Client struct {
     Client azureDevops.Client
 }
 
-func NewClient(connection azureDevops.Connection) *Client {
+func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -28,12 +28,13 @@ func NewClient(connection azureDevops.Connection) *Client {
 }
 
 // Gets an operation from the the operationId using the given pluginId.
+// ctx
 // operationId (required): The ID for the operation.
 // pluginId (optional): The ID for the plugin.
-func (client Client) GetOperation(operationId *uuid.UUID, pluginId *uuid.UUID) (*Operation, error) {
+func (client Client) GetOperation(ctx context.Context, operationId *uuid.UUID, pluginId *uuid.UUID) (*Operation, error) {
     routeValues := make(map[string]string)
     if operationId == nil {
-        return nil, errors.New("operationId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "operationId"} 
     }
     routeValues["operationId"] = (*operationId).String()
 
@@ -42,7 +43,7 @@ func (client Client) GetOperation(operationId *uuid.UUID, pluginId *uuid.UUID) (
         queryParams.Add("pluginId", (*pluginId).String())
     }
     locationId, _ := uuid.Parse("9a1b74b4-2ca8-4a9f-8470-c2f2e6fdc949")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }

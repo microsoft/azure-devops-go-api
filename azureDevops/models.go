@@ -5,6 +5,7 @@ package azureDevops
 
 import (
 	"github.com/google/uuid"
+	"strconv"
 )
 
 type ApiResourceLocation struct {
@@ -67,6 +68,9 @@ type WrappedError struct {
 
 func (e WrappedError) Error() string {
 	if e.Message == nil {
+		if e.StatusCode != nil {
+			return "REST call returned status code " + strconv.Itoa(*e.StatusCode)
+		}
 		return ""
 	}
 	return *e.Message

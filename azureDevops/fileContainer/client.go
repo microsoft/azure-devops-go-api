@@ -10,8 +10,8 @@ package fileContainer
 
 import (
     "bytes"
+    "context"
     "encoding/json"
-    "errors"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevops"
     "net/http"
@@ -23,7 +23,7 @@ type Client struct {
     Client azureDevops.Client
 }
 
-func NewClient(connection azureDevops.Connection) *Client {
+func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -31,16 +31,17 @@ func NewClient(connection azureDevops.Connection) *Client {
 }
 
 // [Preview API] Creates the specified items in in the referenced container.
+// ctx
 // items (required)
 // containerId (required)
 // scope (optional): A guid representing the scope of the container. This is often the project id.
-func (client Client) CreateItems(items *azureDevops.VssJsonCollectionWrapper, containerId *int, scope *uuid.UUID) (*[]FileContainerItem, error) {
+func (client Client) CreateItems(ctx context.Context, items *azureDevops.VssJsonCollectionWrapper, containerId *int, scope *uuid.UUID) (*[]FileContainerItem, error) {
     if items == nil {
-        return nil, errors.New("items is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "items"}
     }
     routeValues := make(map[string]string)
     if containerId == nil {
-        return nil, errors.New("containerId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "containerId"} 
     }
     routeValues["containerId"] = strconv.Itoa(*containerId)
 
@@ -53,7 +54,7 @@ func (client Client) CreateItems(items *azureDevops.VssJsonCollectionWrapper, co
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("e4f5c81e-e250-447b-9fef-bd48471bea5e")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.4", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.4", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -64,26 +65,27 @@ func (client Client) CreateItems(items *azureDevops.VssJsonCollectionWrapper, co
 }
 
 // [Preview API] Deletes the specified items in a container.
+// ctx
 // containerId (required): Container Id.
 // itemPath (required): Path to delete.
 // scope (optional): A guid representing the scope of the container. This is often the project id.
-func (client Client) DeleteItem(containerId *uint64, itemPath *string, scope *uuid.UUID) error {
+func (client Client) DeleteItem(ctx context.Context, containerId *uint64, itemPath *string, scope *uuid.UUID) error {
     routeValues := make(map[string]string)
     if containerId == nil {
-        return errors.New("containerId is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "containerId"} 
     }
     routeValues["containerId"] = strconv.FormatUint(*containerId, 10)
 
     queryParams := url.Values{}
     if itemPath == nil {
-        return errors.New("itemPath is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "itemPath"}
     }
     queryParams.Add("itemPath", *itemPath)
     if scope != nil {
         queryParams.Add("scope", (*scope).String())
     }
     locationId, _ := uuid.Parse("e4f5c81e-e250-447b-9fef-bd48471bea5e")
-    _, err := client.Client.Send(http.MethodDelete, locationId, "5.1-preview.4", routeValues, queryParams, nil, "", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.4", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return err
     }
@@ -92,9 +94,10 @@ func (client Client) DeleteItem(containerId *uint64, itemPath *string, scope *uu
 }
 
 // [Preview API] Gets containers filtered by a comma separated list of artifact uris within the same scope, if not specified returns all containers
+// ctx
 // scope (optional): A guid representing the scope of the container. This is often the project id.
 // artifactUris (optional)
-func (client Client) GetContainers(scope *uuid.UUID, artifactUris *string) (*[]FileContainer, error) {
+func (client Client) GetContainers(ctx context.Context, scope *uuid.UUID, artifactUris *string) (*[]FileContainer, error) {
     queryParams := url.Values{}
     if scope != nil {
         queryParams.Add("scope", (*scope).String())
@@ -103,7 +106,7 @@ func (client Client) GetContainers(scope *uuid.UUID, artifactUris *string) (*[]F
         queryParams.Add("artifactUris", *artifactUris)
     }
     locationId, _ := uuid.Parse("e4f5c81e-e250-447b-9fef-bd48471bea5e")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.4", nil, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.4", nil, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -114,6 +117,7 @@ func (client Client) GetContainers(scope *uuid.UUID, artifactUris *string) (*[]F
 }
 
 // [Preview API]
+// ctx
 // containerId (required)
 // scope (optional)
 // itemPath (optional)
@@ -122,10 +126,10 @@ func (client Client) GetContainers(scope *uuid.UUID, artifactUris *string) (*[]F
 // downloadFileName (optional)
 // includeDownloadTickets (optional)
 // isShallow (optional)
-func (client Client) GetItems(containerId *uint64, scope *uuid.UUID, itemPath *string, metadata *bool, format *string, downloadFileName *string, includeDownloadTickets *bool, isShallow *bool) (*[]FileContainerItem, error) {
+func (client Client) GetItems(ctx context.Context, containerId *uint64, scope *uuid.UUID, itemPath *string, metadata *bool, format *string, downloadFileName *string, includeDownloadTickets *bool, isShallow *bool) (*[]FileContainerItem, error) {
     routeValues := make(map[string]string)
     if containerId == nil {
-        return nil, errors.New("containerId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "containerId"} 
     }
     routeValues["containerId"] = strconv.FormatUint(*containerId, 10)
 
@@ -152,7 +156,7 @@ func (client Client) GetItems(containerId *uint64, scope *uuid.UUID, itemPath *s
         queryParams.Add("isShallow", strconv.FormatBool(*isShallow))
     }
     locationId, _ := uuid.Parse("e4f5c81e-e250-447b-9fef-bd48471bea5e")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.4", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.4", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }

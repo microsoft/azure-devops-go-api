@@ -10,8 +10,8 @@ package cloudLoadTest
 
 import (
     "bytes"
+    "context"
     "encoding/json"
-    "errors"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevops"
     "net/http"
@@ -25,8 +25,8 @@ type Client struct {
     Client azureDevops.Client
 }
 
-func NewClient(connection azureDevops.Connection) (*Client, error) {
-    client, err := connection.GetClientByResourceAreaId(ResourceAreaId)
+func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+    client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
     }
@@ -35,17 +35,18 @@ func NewClient(connection azureDevops.Connection) (*Client, error) {
     }, nil
 }
 
+// ctx
 // group (required): Agent group to be created
-func (client Client) CreateAgentGroup(group *AgentGroup) (*AgentGroup, error) {
+func (client Client) CreateAgentGroup(ctx context.Context, group *AgentGroup) (*AgentGroup, error) {
     if group == nil {
-        return nil, errors.New("group is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "group"}
     }
     body, marshalErr := json.Marshal(*group)
     if marshalErr != nil {
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("ab8d91c1-12d9-4ec5-874d-1ddb23e17720")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -55,12 +56,13 @@ func (client Client) CreateAgentGroup(group *AgentGroup) (*AgentGroup, error) {
     return &responseValue, err
 }
 
+// ctx
 // agentGroupId (optional): The agent group indentifier
 // machineSetupInput (optional)
 // machineAccessData (optional)
 // outgoingRequestUrls (optional)
 // agentGroupName (optional): Name of the agent group
-func (client Client) GetAgentGroups(agentGroupId *string, machineSetupInput *bool, machineAccessData *bool, outgoingRequestUrls *bool, agentGroupName *string) (*interface{}, error) {
+func (client Client) GetAgentGroups(ctx context.Context, agentGroupId *string, machineSetupInput *bool, machineAccessData *bool, outgoingRequestUrls *bool, agentGroupName *string) (*interface{}, error) {
     routeValues := make(map[string]string)
     if agentGroupId != nil && *agentGroupId != "" {
         routeValues["agentGroupId"] = *agentGroupId
@@ -80,7 +82,7 @@ func (client Client) GetAgentGroups(agentGroupId *string, machineSetupInput *boo
         queryParams.Add("agentGroupName", *agentGroupName)
     }
     locationId, _ := uuid.Parse("ab8d91c1-12d9-4ec5-874d-1ddb23e17720")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -90,22 +92,23 @@ func (client Client) GetAgentGroups(agentGroupId *string, machineSetupInput *boo
     return &responseValue, err
 }
 
+// ctx
 // agentGroupId (required): The agent group identifier
 // agentName (required): Name of the static agent
-func (client Client) DeleteStaticAgent(agentGroupId *string, agentName *string) (*string, error) {
+func (client Client) DeleteStaticAgent(ctx context.Context, agentGroupId *string, agentName *string) (*string, error) {
     routeValues := make(map[string]string)
     if agentGroupId == nil || *agentGroupId == "" {
-        return nil, errors.New("agentGroupId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "agentGroupId"} 
     }
     routeValues["agentGroupId"] = *agentGroupId
 
     queryParams := url.Values{}
     if agentName == nil {
-        return nil, errors.New("agentName is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "agentName"}
     }
     queryParams.Add("agentName", *agentName)
     locationId, _ := uuid.Parse("87e4b63d-7142-4b50-801e-72ba9ff8ee9b")
-    resp, err := client.Client.Send(http.MethodDelete, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -115,12 +118,13 @@ func (client Client) DeleteStaticAgent(agentGroupId *string, agentName *string) 
     return &responseValue, err
 }
 
+// ctx
 // agentGroupId (required): The agent group identifier
 // agentName (optional): Name of the static agent
-func (client Client) GetStaticAgents(agentGroupId *string, agentName *string) (*interface{}, error) {
+func (client Client) GetStaticAgents(ctx context.Context, agentGroupId *string, agentName *string) (*interface{}, error) {
     routeValues := make(map[string]string)
     if agentGroupId == nil || *agentGroupId == "" {
-        return nil, errors.New("agentGroupId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "agentGroupId"} 
     }
     routeValues["agentGroupId"] = *agentGroupId
 
@@ -129,7 +133,7 @@ func (client Client) GetStaticAgents(agentGroupId *string, agentName *string) (*
         queryParams.Add("agentName", *agentName)
     }
     locationId, _ := uuid.Parse("87e4b63d-7142-4b50-801e-72ba9ff8ee9b")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -139,16 +143,17 @@ func (client Client) GetStaticAgents(agentGroupId *string, agentName *string) (*
     return &responseValue, err
 }
 
+// ctx
 // applicationId (required): Filter by APM application identifier.
-func (client Client) GetApplication(applicationId *string) (*Application, error) {
+func (client Client) GetApplication(ctx context.Context, applicationId *string) (*Application, error) {
     routeValues := make(map[string]string)
     if applicationId == nil || *applicationId == "" {
-        return nil, errors.New("applicationId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "applicationId"} 
     }
     routeValues["applicationId"] = *applicationId
 
     locationId, _ := uuid.Parse("2c986dce-8e8d-4142-b541-d016d5aff764")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -158,14 +163,15 @@ func (client Client) GetApplication(applicationId *string) (*Application, error)
     return &responseValue, err
 }
 
+// ctx
 // type_ (optional): Filters the results based on the plugin type.
-func (client Client) GetApplications(type_ *string) (*[]Application, error) {
+func (client Client) GetApplications(ctx context.Context, type_ *string) (*[]Application, error) {
     queryParams := url.Values{}
     if type_ != nil {
         queryParams.Add("type_", *type_)
     }
     locationId, _ := uuid.Parse("2c986dce-8e8d-4142-b541-d016d5aff764")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -175,26 +181,27 @@ func (client Client) GetApplications(type_ *string) (*[]Application, error) {
     return &responseValue, err
 }
 
+// ctx
 // testRunId (required): The test run identifier
 // groupNames (required): Comma separated names of counter groups, such as 'Application', 'Performance' and 'Throughput'
 // includeSummary (optional)
-func (client Client) GetCounters(testRunId *string, groupNames *string, includeSummary *bool) (*[]TestRunCounterInstance, error) {
+func (client Client) GetCounters(ctx context.Context, testRunId *string, groupNames *string, includeSummary *bool) (*[]TestRunCounterInstance, error) {
     routeValues := make(map[string]string)
     if testRunId == nil || *testRunId == "" {
-        return nil, errors.New("testRunId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "testRunId"} 
     }
     routeValues["testRunId"] = *testRunId
 
     queryParams := url.Values{}
     if groupNames == nil {
-        return nil, errors.New("groupNames is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "groupNames"}
     }
     queryParams.Add("groupNames", *groupNames)
     if includeSummary != nil {
         queryParams.Add("includeSummary", strconv.FormatBool(*includeSummary))
     }
     locationId, _ := uuid.Parse("29265ea4-b5a5-4b2e-b054-47f5f6f00183")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -204,9 +211,10 @@ func (client Client) GetCounters(testRunId *string, groupNames *string, includeS
     return &responseValue, err
 }
 
+// ctx
 // applicationId (optional): Filter by APM application identifier.
 // plugintype (optional): Currently ApplicationInsights is the only available plugin type.
-func (client Client) GetApplicationCounters(applicationId *string, plugintype *string) (*[]ApplicationCounters, error) {
+func (client Client) GetApplicationCounters(ctx context.Context, applicationId *string, plugintype *string) (*[]ApplicationCounters, error) {
     queryParams := url.Values{}
     if applicationId != nil {
         queryParams.Add("applicationId", *applicationId)
@@ -215,7 +223,7 @@ func (client Client) GetApplicationCounters(applicationId *string, plugintype *s
         queryParams.Add("plugintype", *plugintype)
     }
     locationId, _ := uuid.Parse("c1275ce9-6d26-4bc6-926b-b846502e812d")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -225,15 +233,16 @@ func (client Client) GetApplicationCounters(applicationId *string, plugintype *s
     return &responseValue, err
 }
 
+// ctx
 // counterSampleQueryDetails (required)
 // testRunId (required): The test run identifier
-func (client Client) GetCounterSamples(counterSampleQueryDetails *azureDevops.VssJsonCollectionWrapper, testRunId *string) (*CounterSamplesResult, error) {
+func (client Client) GetCounterSamples(ctx context.Context, counterSampleQueryDetails *azureDevops.VssJsonCollectionWrapper, testRunId *string) (*CounterSamplesResult, error) {
     if counterSampleQueryDetails == nil {
-        return nil, errors.New("counterSampleQueryDetails is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "counterSampleQueryDetails"}
     }
     routeValues := make(map[string]string)
     if testRunId == nil || *testRunId == "" {
-        return nil, errors.New("testRunId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "testRunId"} 
     }
     routeValues["testRunId"] = *testRunId
 
@@ -242,7 +251,7 @@ func (client Client) GetCounterSamples(counterSampleQueryDetails *azureDevops.Vs
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("bad18480-7193-4518-992a-37289c5bb92d")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -252,14 +261,15 @@ func (client Client) GetCounterSamples(counterSampleQueryDetails *azureDevops.Vs
     return &responseValue, err
 }
 
+// ctx
 // testRunId (required): The test run identifier
 // type_ (optional): Filter for the particular type of errors.
 // subType (optional): Filter for a particular subtype of errors. You should not provide error subtype without error type.
 // detailed (optional): To include the details of test errors such as messagetext, request, stacktrace, testcasename, scenarioname, and lasterrordate.
-func (client Client) GetLoadTestRunErrors(testRunId *string, type_ *string, subType *string, detailed *bool) (*LoadTestErrors, error) {
+func (client Client) GetLoadTestRunErrors(ctx context.Context, testRunId *string, type_ *string, subType *string, detailed *bool) (*LoadTestErrors, error) {
     routeValues := make(map[string]string)
     if testRunId == nil || *testRunId == "" {
-        return nil, errors.New("testRunId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "testRunId"} 
     }
     routeValues["testRunId"] = *testRunId
 
@@ -274,7 +284,7 @@ func (client Client) GetLoadTestRunErrors(testRunId *string, type_ *string, subT
         queryParams.Add("detailed", strconv.FormatBool(*detailed))
     }
     locationId, _ := uuid.Parse("b52025a7-3fb4-4283-8825-7079e75bd402")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -284,16 +294,17 @@ func (client Client) GetLoadTestRunErrors(testRunId *string, type_ *string, subT
     return &responseValue, err
 }
 
+// ctx
 // testRunId (required): Id of the test run
-func (client Client) GetTestRunMessages(testRunId *string) (*[]TestRunMessage, error) {
+func (client Client) GetTestRunMessages(ctx context.Context, testRunId *string) (*[]TestRunMessage, error) {
     routeValues := make(map[string]string)
     if testRunId == nil || *testRunId == "" {
-        return nil, errors.New("testRunId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "testRunId"} 
     }
     routeValues["testRunId"] = *testRunId
 
     locationId, _ := uuid.Parse("2e7ba122-f522-4205-845b-2d270e59850a")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -303,16 +314,17 @@ func (client Client) GetTestRunMessages(testRunId *string) (*[]TestRunMessage, e
     return &responseValue, err
 }
 
+// ctx
 // type_ (required): Currently ApplicationInsights is the only available plugin type.
-func (client Client) GetPlugin(type_ *string) (*ApplicationType, error) {
+func (client Client) GetPlugin(ctx context.Context, type_ *string) (*ApplicationType, error) {
     routeValues := make(map[string]string)
     if type_ == nil || *type_ == "" {
-        return nil, errors.New("type_ is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *type_
 
     locationId, _ := uuid.Parse("7dcb0bb2-42d5-4729-9958-c0401d5e7693")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -322,9 +334,10 @@ func (client Client) GetPlugin(type_ *string) (*ApplicationType, error) {
     return &responseValue, err
 }
 
-func (client Client) GetPlugins() (*[]ApplicationType, error) {
+// ctx
+func (client Client) GetPlugins(ctx context.Context, ) (*[]ApplicationType, error) {
     locationId, _ := uuid.Parse("7dcb0bb2-42d5-4729-9958-c0401d5e7693")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", nil, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -334,16 +347,17 @@ func (client Client) GetPlugins() (*[]ApplicationType, error) {
     return &responseValue, err
 }
 
+// ctx
 // testRunId (required): The test run identifier
-func (client Client) GetLoadTestResult(testRunId *string) (*TestResults, error) {
+func (client Client) GetLoadTestResult(ctx context.Context, testRunId *string) (*TestResults, error) {
     routeValues := make(map[string]string)
     if testRunId == nil || *testRunId == "" {
-        return nil, errors.New("testRunId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "testRunId"} 
     }
     routeValues["testRunId"] = *testRunId
 
     locationId, _ := uuid.Parse("5ed69bd8-4557-4cec-9b75-1ad67d0c257b")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -353,17 +367,18 @@ func (client Client) GetLoadTestResult(testRunId *string) (*TestResults, error) 
     return &responseValue, err
 }
 
+// ctx
 // testDefinition (required): Test definition to be created
-func (client Client) CreateTestDefinition(testDefinition *TestDefinition) (*TestDefinition, error) {
+func (client Client) CreateTestDefinition(ctx context.Context, testDefinition *TestDefinition) (*TestDefinition, error) {
     if testDefinition == nil {
-        return nil, errors.New("testDefinition is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testDefinition"}
     }
     body, marshalErr := json.Marshal(*testDefinition)
     if marshalErr != nil {
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("a8f9b135-f604-41ea-9d74-d9a5fd32fcd8")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -373,16 +388,17 @@ func (client Client) CreateTestDefinition(testDefinition *TestDefinition) (*Test
     return &responseValue, err
 }
 
+// ctx
 // testDefinitionId (required): The test definition identifier
-func (client Client) GetTestDefinition(testDefinitionId *string) (*TestDefinition, error) {
+func (client Client) GetTestDefinition(ctx context.Context, testDefinitionId *string) (*TestDefinition, error) {
     routeValues := make(map[string]string)
     if testDefinitionId == nil || *testDefinitionId == "" {
-        return nil, errors.New("testDefinitionId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "testDefinitionId"} 
     }
     routeValues["testDefinitionId"] = *testDefinitionId
 
     locationId, _ := uuid.Parse("a8f9b135-f604-41ea-9d74-d9a5fd32fcd8")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -392,10 +408,11 @@ func (client Client) GetTestDefinition(testDefinitionId *string) (*TestDefinitio
     return &responseValue, err
 }
 
+// ctx
 // fromDate (optional): Date after which test definitions were created
 // toDate (optional): Date before which test definitions were crated
 // top (optional)
-func (client Client) GetTestDefinitions(fromDate *string, toDate *string, top *int) (*[]TestDefinitionBasic, error) {
+func (client Client) GetTestDefinitions(ctx context.Context, fromDate *string, toDate *string, top *int) (*[]TestDefinitionBasic, error) {
     queryParams := url.Values{}
     if fromDate != nil {
         queryParams.Add("fromDate", *fromDate)
@@ -407,7 +424,7 @@ func (client Client) GetTestDefinitions(fromDate *string, toDate *string, top *i
         queryParams.Add("top", strconv.Itoa(*top))
     }
     locationId, _ := uuid.Parse("a8f9b135-f604-41ea-9d74-d9a5fd32fcd8")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -417,17 +434,18 @@ func (client Client) GetTestDefinitions(fromDate *string, toDate *string, top *i
     return &responseValue, err
 }
 
+// ctx
 // testDefinition (required)
-func (client Client) UpdateTestDefinition(testDefinition *TestDefinition) (*TestDefinition, error) {
+func (client Client) UpdateTestDefinition(ctx context.Context, testDefinition *TestDefinition) (*TestDefinition, error) {
     if testDefinition == nil {
-        return nil, errors.New("testDefinition is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testDefinition"}
     }
     body, marshalErr := json.Marshal(*testDefinition)
     if marshalErr != nil {
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("a8f9b135-f604-41ea-9d74-d9a5fd32fcd8")
-    resp, err := client.Client.Send(http.MethodPut, locationId, "5.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -437,17 +455,18 @@ func (client Client) UpdateTestDefinition(testDefinition *TestDefinition) (*Test
     return &responseValue, err
 }
 
+// ctx
 // webTestDrop (required): Test drop to be created
-func (client Client) CreateTestDrop(webTestDrop *TestDrop) (*TestDrop, error) {
+func (client Client) CreateTestDrop(ctx context.Context, webTestDrop *TestDrop) (*TestDrop, error) {
     if webTestDrop == nil {
-        return nil, errors.New("webTestDrop is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "webTestDrop"}
     }
     body, marshalErr := json.Marshal(*webTestDrop)
     if marshalErr != nil {
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("d89d0e08-505c-4357-96f6-9729311ce8ad")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -457,16 +476,17 @@ func (client Client) CreateTestDrop(webTestDrop *TestDrop) (*TestDrop, error) {
     return &responseValue, err
 }
 
+// ctx
 // testDropId (required): The test drop identifier
-func (client Client) GetTestDrop(testDropId *string) (*TestDrop, error) {
+func (client Client) GetTestDrop(ctx context.Context, testDropId *string) (*TestDrop, error) {
     routeValues := make(map[string]string)
     if testDropId == nil || *testDropId == "" {
-        return nil, errors.New("testDropId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "testDropId"} 
     }
     routeValues["testDropId"] = *testDropId
 
     locationId, _ := uuid.Parse("d89d0e08-505c-4357-96f6-9729311ce8ad")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -476,17 +496,18 @@ func (client Client) GetTestDrop(testDropId *string) (*TestDrop, error) {
     return &responseValue, err
 }
 
+// ctx
 // webTestRun (required)
-func (client Client) CreateTestRun(webTestRun *TestRun) (*TestRun, error) {
+func (client Client) CreateTestRun(ctx context.Context, webTestRun *TestRun) (*TestRun, error) {
     if webTestRun == nil {
-        return nil, errors.New("webTestRun is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "webTestRun"}
     }
     body, marshalErr := json.Marshal(*webTestRun)
     if marshalErr != nil {
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("b41a84ff-ff03-4ac1-b76e-e7ea25c92aba")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -496,16 +517,17 @@ func (client Client) CreateTestRun(webTestRun *TestRun) (*TestRun, error) {
     return &responseValue, err
 }
 
+// ctx
 // testRunId (required): Unique ID of the test run
-func (client Client) GetTestRun(testRunId *string) (*TestRun, error) {
+func (client Client) GetTestRun(ctx context.Context, testRunId *string) (*TestRun, error) {
     routeValues := make(map[string]string)
     if testRunId == nil || *testRunId == "" {
-        return nil, errors.New("testRunId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "testRunId"} 
     }
     routeValues["testRunId"] = *testRunId
 
     locationId, _ := uuid.Parse("b41a84ff-ff03-4ac1-b76e-e7ea25c92aba")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -516,6 +538,7 @@ func (client Client) GetTestRun(testRunId *string) (*TestRun, error) {
 }
 
 // Returns test runs based on the filter specified. Returns all runs of the tenant if there is no filter.
+// ctx
 // name (optional): Name for the test run. Names are not unique. Test runs with same name are assigned sequential rolling numbers.
 // requestedBy (optional): Filter by the user who requested the test run. Here requestedBy should be the display name of the user.
 // status (optional): Filter by the test run status.
@@ -526,7 +549,7 @@ func (client Client) GetTestRun(testRunId *string) (*TestRun, error) {
 // top (optional): The maximum number of test runs to return.
 // runsourceidentifier (optional)
 // retentionState (optional)
-func (client Client) GetTestRuns(name *string, requestedBy *string, status *string, runType *string, fromDate *string, toDate *string, detailed *bool, top *int, runsourceidentifier *string, retentionState *string) (*interface{}, error) {
+func (client Client) GetTestRuns(ctx context.Context, name *string, requestedBy *string, status *string, runType *string, fromDate *string, toDate *string, detailed *bool, top *int, runsourceidentifier *string, retentionState *string) (*interface{}, error) {
     queryParams := url.Values{}
     if name != nil {
         queryParams.Add("name", *name)
@@ -559,7 +582,7 @@ func (client Client) GetTestRuns(name *string, requestedBy *string, status *stri
         queryParams.Add("retentionState", *retentionState)
     }
     locationId, _ := uuid.Parse("b41a84ff-ff03-4ac1-b76e-e7ea25c92aba")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -569,15 +592,16 @@ func (client Client) GetTestRuns(name *string, requestedBy *string, status *stri
     return &responseValue, err
 }
 
+// ctx
 // webTestRun (required)
 // testRunId (required)
-func (client Client) UpdateTestRun(webTestRun *TestRun, testRunId *string) error {
+func (client Client) UpdateTestRun(ctx context.Context, webTestRun *TestRun, testRunId *string) error {
     if webTestRun == nil {
-        return errors.New("webTestRun is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "webTestRun"}
     }
     routeValues := make(map[string]string)
     if testRunId == nil || *testRunId == "" {
-        return errors.New("testRunId is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "testRunId"} 
     }
     routeValues["testRunId"] = *testRunId
 
@@ -586,7 +610,7 @@ func (client Client) UpdateTestRun(webTestRun *TestRun, testRunId *string) error
         return marshalErr
     }
     locationId, _ := uuid.Parse("b41a84ff-ff03-4ac1-b76e-e7ea25c92aba")
-    _, err := client.Client.Send(http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return err
     }

@@ -10,8 +10,8 @@ package work
 
 import (
     "bytes"
+    "context"
     "encoding/json"
-    "errors"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevops"
     "net/http"
@@ -27,8 +27,8 @@ type Client struct {
     Client azureDevops.Client
 }
 
-func NewClient(connection azureDevops.Connection) (*Client, error) {
-    client, err := connection.GetClientByResourceAreaId(ResourceAreaId)
+func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+    client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
     }
@@ -38,12 +38,13 @@ func NewClient(connection azureDevops.Connection) (*Client, error) {
 }
 
 // Gets backlog configuration for a team
+// ctx
 // project (required): Project ID or project name
 // team (optional): Team ID or team name
-func (client Client) GetBacklogConfigurations(project *string, team *string) (*BacklogConfiguration, error) {
+func (client Client) GetBacklogConfigurations(ctx context.Context, project *string, team *string) (*BacklogConfiguration, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
@@ -51,7 +52,7 @@ func (client Client) GetBacklogConfigurations(project *string, team *string) (*B
     }
 
     locationId, _ := uuid.Parse("7799f497-3cb5-4f16-ad4f-5cd06012db64")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -62,26 +63,27 @@ func (client Client) GetBacklogConfigurations(project *string, team *string) (*B
 }
 
 // [Preview API] Get a list of work items within a backlog level
+// ctx
 // project (required): Project ID or project name
 // team (required): Team ID or team name
 // backlogId (required)
-func (client Client) GetBacklogLevelWorkItems(project *string, team *string, backlogId *string) (*BacklogLevelWorkItems, error) {
+func (client Client) GetBacklogLevelWorkItems(ctx context.Context, project *string, team *string, backlogId *string) (*BacklogLevelWorkItems, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team == nil || *team == "" {
-        return nil, errors.New("team is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "team"} 
     }
     routeValues["team"] = *team
     if backlogId == nil || *backlogId == "" {
-        return nil, errors.New("backlogId is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "backlogId"} 
     }
     routeValues["backlogId"] = *backlogId
 
     locationId, _ := uuid.Parse("7c468d96-ab1d-4294-a360-92f07e9ccd98")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -92,26 +94,27 @@ func (client Client) GetBacklogLevelWorkItems(project *string, team *string, bac
 }
 
 // [Preview API] Get a backlog level
+// ctx
 // project (required): Project ID or project name
 // team (required): Team ID or team name
 // id (required): The id of the backlog level
-func (client Client) GetBacklog(project *string, team *string, id *string) (*BacklogLevelConfiguration, error) {
+func (client Client) GetBacklog(ctx context.Context, project *string, team *string, id *string) (*BacklogLevelConfiguration, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team == nil || *team == "" {
-        return nil, errors.New("team is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "team"} 
     }
     routeValues["team"] = *team
     if id == nil || *id == "" {
-        return nil, errors.New("id is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "id"} 
     }
     routeValues["id"] = *id
 
     locationId, _ := uuid.Parse("a93726f9-7867-4e38-b4f2-0bfafc2f6a94")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -122,21 +125,22 @@ func (client Client) GetBacklog(project *string, team *string, id *string) (*Bac
 }
 
 // [Preview API] List all backlog levels
+// ctx
 // project (required): Project ID or project name
 // team (required): Team ID or team name
-func (client Client) GetBacklogs(project *string, team *string) (*[]BacklogLevelConfiguration, error) {
+func (client Client) GetBacklogs(ctx context.Context, project *string, team *string) (*[]BacklogLevelConfiguration, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team == nil || *team == "" {
-        return nil, errors.New("team is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "team"} 
     }
     routeValues["team"] = *team
 
     locationId, _ := uuid.Parse("a93726f9-7867-4e38-b4f2-0bfafc2f6a94")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -147,15 +151,16 @@ func (client Client) GetBacklogs(project *string, team *string) (*[]BacklogLevel
 }
 
 // Get available board columns in a project
+// ctx
 // project (optional): Project ID or project name
-func (client Client) GetColumnSuggestedValues(project *string) (*[]BoardSuggestedValue, error) {
+func (client Client) GetColumnSuggestedValues(ctx context.Context, project *string) (*[]BoardSuggestedValue, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
 
     locationId, _ := uuid.Parse("eb7ec5a3-1ba3-4fd1-b834-49a5a387e57d")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -166,14 +171,15 @@ func (client Client) GetColumnSuggestedValues(project *string) (*[]BoardSuggeste
 }
 
 // [Preview API] Returns the list of parent field filter model for the given list of workitem ids
+// ctx
 // project (required): Project ID or project name
 // childBacklogContextCategoryRefName (required)
 // workitemIds (required)
 // team (optional): Team ID or team name
-func (client Client) GetBoardMappingParentItems(project *string, childBacklogContextCategoryRefName *string, workitemIds *[]int, team *string) (*[]ParentChildWIMap, error) {
+func (client Client) GetBoardMappingParentItems(ctx context.Context, project *string, childBacklogContextCategoryRefName *string, workitemIds *[]int, team *string) (*[]ParentChildWIMap, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
@@ -182,11 +188,11 @@ func (client Client) GetBoardMappingParentItems(project *string, childBacklogCon
 
     queryParams := url.Values{}
     if childBacklogContextCategoryRefName == nil {
-        return nil, errors.New("childBacklogContextCategoryRefName is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "childBacklogContextCategoryRefName"}
     }
     queryParams.Add("childBacklogContextCategoryRefName", *childBacklogContextCategoryRefName)
     if workitemIds == nil {
-        return nil, errors.New("workitemIds is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "workitemIds"}
     }
     var stringList []string
     for _, item := range *workitemIds {
@@ -195,7 +201,7 @@ func (client Client) GetBoardMappingParentItems(project *string, childBacklogCon
     listAsString := strings.Join((stringList)[:], ",")
     queryParams.Add("definitions", listAsString)
     locationId, _ := uuid.Parse("186abea3-5c35-432f-9e28-7a15b4312a0e")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -206,15 +212,16 @@ func (client Client) GetBoardMappingParentItems(project *string, childBacklogCon
 }
 
 // Get available board rows in a project
+// ctx
 // project (optional): Project ID or project name
-func (client Client) GetRowSuggestedValues(project *string) (*[]BoardSuggestedValue, error) {
+func (client Client) GetRowSuggestedValues(ctx context.Context, project *string) (*[]BoardSuggestedValue, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
 
     locationId, _ := uuid.Parse("bb494cc6-a0f5-4c6c-8dca-ea6912e79eb9")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -225,25 +232,26 @@ func (client Client) GetRowSuggestedValues(project *string) (*[]BoardSuggestedVa
 }
 
 // Get board
+// ctx
 // project (required): Project ID or project name
 // id (required): identifier for board, either board's backlog level name (Eg:"Stories") or Id
 // team (optional): Team ID or team name
-func (client Client) GetBoard(project *string, id *string, team *string) (*Board, error) {
+func (client Client) GetBoard(ctx context.Context, project *string, id *string, team *string) (*Board, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if id == nil || *id == "" {
-        return nil, errors.New("id is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "id"} 
     }
     routeValues["id"] = *id
 
     locationId, _ := uuid.Parse("23ad19fc-3b8e-4877-8462-b3f92bc06b40")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -254,12 +262,13 @@ func (client Client) GetBoard(project *string, id *string, team *string) (*Board
 }
 
 // Get boards
+// ctx
 // project (required): Project ID or project name
 // team (optional): Team ID or team name
-func (client Client) GetBoards(project *string, team *string) (*[]BoardReference, error) {
+func (client Client) GetBoards(ctx context.Context, project *string, team *string) (*[]BoardReference, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
@@ -267,7 +276,7 @@ func (client Client) GetBoards(project *string, team *string) (*[]BoardReference
     }
 
     locationId, _ := uuid.Parse("23ad19fc-3b8e-4877-8462-b3f92bc06b40")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -278,24 +287,25 @@ func (client Client) GetBoards(project *string, team *string) (*[]BoardReference
 }
 
 // Update board options
+// ctx
 // options (required): options to updated
 // project (required): Project ID or project name
 // id (required): identifier for board, either category plural name (Eg:"Stories") or guid
 // team (optional): Team ID or team name
-func (client Client) SetBoardOptions(options *map[string]string, project *string, id *string, team *string) (*map[string]string, error) {
+func (client Client) SetBoardOptions(ctx context.Context, options *map[string]string, project *string, id *string, team *string) (*map[string]string, error) {
     if options == nil {
-        return nil, errors.New("options is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "options"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if id == nil || *id == "" {
-        return nil, errors.New("id is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "id"} 
     }
     routeValues["id"] = *id
 
@@ -304,7 +314,7 @@ func (client Client) SetBoardOptions(options *map[string]string, project *string
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("23ad19fc-3b8e-4877-8462-b3f92bc06b40")
-    resp, err := client.Client.Send(http.MethodPut, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -315,25 +325,26 @@ func (client Client) SetBoardOptions(options *map[string]string, project *string
 }
 
 // [Preview API] Get board user settings for a board id
+// ctx
 // project (required): Project ID or project name
 // board (required): Board ID or Name
 // team (optional): Team ID or team name
-func (client Client) GetBoardUserSettings(project *string, board *string, team *string) (*BoardUserSettings, error) {
+func (client Client) GetBoardUserSettings(ctx context.Context, project *string, board *string, team *string) (*BoardUserSettings, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if board == nil || *board == "" {
-        return nil, errors.New("board is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *board
 
     locationId, _ := uuid.Parse("b30d9f58-1891-4b0a-b168-c46408f919b0")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -344,24 +355,25 @@ func (client Client) GetBoardUserSettings(project *string, board *string, team *
 }
 
 // [Preview API] Update board user settings for the board id
+// ctx
 // boardUserSettings (required)
 // project (required): Project ID or project name
 // board (required)
 // team (optional): Team ID or team name
-func (client Client) UpdateBoardUserSettings(boardUserSettings *map[string]string, project *string, board *string, team *string) (*BoardUserSettings, error) {
+func (client Client) UpdateBoardUserSettings(ctx context.Context, boardUserSettings *map[string]string, project *string, board *string, team *string) (*BoardUserSettings, error) {
     if boardUserSettings == nil {
-        return nil, errors.New("boardUserSettings is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "boardUserSettings"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if board == nil || *board == "" {
-        return nil, errors.New("board is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *board
 
@@ -370,7 +382,7 @@ func (client Client) UpdateBoardUserSettings(boardUserSettings *map[string]strin
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("b30d9f58-1891-4b0a-b168-c46408f919b0")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -381,25 +393,26 @@ func (client Client) UpdateBoardUserSettings(boardUserSettings *map[string]strin
 }
 
 // Get a team's capacity
+// ctx
 // project (required): Project ID or project name
 // iterationId (required): ID of the iteration
 // team (optional): Team ID or team name
-func (client Client) GetCapacitiesWithIdentityRef(project *string, iterationId *uuid.UUID, team *string) (*[]TeamMemberCapacityIdentityRef, error) {
+func (client Client) GetCapacitiesWithIdentityRef(ctx context.Context, project *string, iterationId *uuid.UUID, team *string) (*[]TeamMemberCapacityIdentityRef, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if iterationId == nil {
-        return nil, errors.New("iterationId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = (*iterationId).String()
 
     locationId, _ := uuid.Parse("74412d15-8c1a-4352-a48d-ef1ed5587d57")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -410,30 +423,31 @@ func (client Client) GetCapacitiesWithIdentityRef(project *string, iterationId *
 }
 
 // Get a team member's capacity
+// ctx
 // project (required): Project ID or project name
 // iterationId (required): ID of the iteration
 // teamMemberId (required): ID of the team member
 // team (optional): Team ID or team name
-func (client Client) GetCapacityWithIdentityRef(project *string, iterationId *uuid.UUID, teamMemberId *uuid.UUID, team *string) (*TeamMemberCapacityIdentityRef, error) {
+func (client Client) GetCapacityWithIdentityRef(ctx context.Context, project *string, iterationId *uuid.UUID, teamMemberId *uuid.UUID, team *string) (*TeamMemberCapacityIdentityRef, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if iterationId == nil {
-        return nil, errors.New("iterationId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = (*iterationId).String()
     if teamMemberId == nil {
-        return nil, errors.New("teamMemberId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "teamMemberId"} 
     }
     routeValues["teamMemberId"] = (*teamMemberId).String()
 
     locationId, _ := uuid.Parse("74412d15-8c1a-4352-a48d-ef1ed5587d57")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -444,24 +458,25 @@ func (client Client) GetCapacityWithIdentityRef(project *string, iterationId *uu
 }
 
 // Replace a team's capacity
+// ctx
 // capacities (required): Team capacity to replace
 // project (required): Project ID or project name
 // iterationId (required): ID of the iteration
 // team (optional): Team ID or team name
-func (client Client) ReplaceCapacitiesWithIdentityRef(capacities *[]TeamMemberCapacityIdentityRef, project *string, iterationId *uuid.UUID, team *string) (*[]TeamMemberCapacityIdentityRef, error) {
+func (client Client) ReplaceCapacitiesWithIdentityRef(ctx context.Context, capacities *[]TeamMemberCapacityIdentityRef, project *string, iterationId *uuid.UUID, team *string) (*[]TeamMemberCapacityIdentityRef, error) {
     if capacities == nil {
-        return nil, errors.New("capacities is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "capacities"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if iterationId == nil {
-        return nil, errors.New("iterationId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = (*iterationId).String()
 
@@ -470,7 +485,7 @@ func (client Client) ReplaceCapacitiesWithIdentityRef(capacities *[]TeamMemberCa
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("74412d15-8c1a-4352-a48d-ef1ed5587d57")
-    resp, err := client.Client.Send(http.MethodPut, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -481,29 +496,30 @@ func (client Client) ReplaceCapacitiesWithIdentityRef(capacities *[]TeamMemberCa
 }
 
 // Update a team member's capacity
+// ctx
 // patch (required): Updated capacity
 // project (required): Project ID or project name
 // iterationId (required): ID of the iteration
 // teamMemberId (required): ID of the team member
 // team (optional): Team ID or team name
-func (client Client) UpdateCapacityWithIdentityRef(patch *CapacityPatch, project *string, iterationId *uuid.UUID, teamMemberId *uuid.UUID, team *string) (*TeamMemberCapacityIdentityRef, error) {
+func (client Client) UpdateCapacityWithIdentityRef(ctx context.Context, patch *CapacityPatch, project *string, iterationId *uuid.UUID, teamMemberId *uuid.UUID, team *string) (*TeamMemberCapacityIdentityRef, error) {
     if patch == nil {
-        return nil, errors.New("patch is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "patch"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if iterationId == nil {
-        return nil, errors.New("iterationId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = (*iterationId).String()
     if teamMemberId == nil {
-        return nil, errors.New("teamMemberId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "teamMemberId"} 
     }
     routeValues["teamMemberId"] = (*teamMemberId).String()
 
@@ -512,7 +528,7 @@ func (client Client) UpdateCapacityWithIdentityRef(patch *CapacityPatch, project
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("74412d15-8c1a-4352-a48d-ef1ed5587d57")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -523,25 +539,26 @@ func (client Client) UpdateCapacityWithIdentityRef(patch *CapacityPatch, project
 }
 
 // Get board card Rule settings for the board id or board by name
+// ctx
 // project (required): Project ID or project name
 // board (required)
 // team (optional): Team ID or team name
-func (client Client) GetBoardCardRuleSettings(project *string, board *string, team *string) (*BoardCardRuleSettings, error) {
+func (client Client) GetBoardCardRuleSettings(ctx context.Context, project *string, board *string, team *string) (*BoardCardRuleSettings, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if board == nil || *board == "" {
-        return nil, errors.New("board is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *board
 
     locationId, _ := uuid.Parse("b044a3d9-02ea-49c7-91a1-b730949cc896")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -552,24 +569,25 @@ func (client Client) GetBoardCardRuleSettings(project *string, board *string, te
 }
 
 // Update board card Rule settings for the board id or board by name
+// ctx
 // boardCardRuleSettings (required)
 // project (required): Project ID or project name
 // board (required)
 // team (optional): Team ID or team name
-func (client Client) UpdateBoardCardRuleSettings(boardCardRuleSettings *BoardCardRuleSettings, project *string, board *string, team *string) (*BoardCardRuleSettings, error) {
+func (client Client) UpdateBoardCardRuleSettings(ctx context.Context, boardCardRuleSettings *BoardCardRuleSettings, project *string, board *string, team *string) (*BoardCardRuleSettings, error) {
     if boardCardRuleSettings == nil {
-        return nil, errors.New("boardCardRuleSettings is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "boardCardRuleSettings"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if board == nil || *board == "" {
-        return nil, errors.New("board is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *board
 
@@ -578,7 +596,7 @@ func (client Client) UpdateBoardCardRuleSettings(boardCardRuleSettings *BoardCar
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("b044a3d9-02ea-49c7-91a1-b730949cc896")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -589,20 +607,21 @@ func (client Client) UpdateBoardCardRuleSettings(boardCardRuleSettings *BoardCar
 }
 
 // [Preview API] Update taskboard card Rule settings
+// ctx
 // boardCardRuleSettings (required)
 // project (required): Project ID or project name
 // team (required): Team ID or team name
-func (client Client) UpdateTaskboardCardRuleSettings(boardCardRuleSettings *BoardCardRuleSettings, project *string, team *string) error {
+func (client Client) UpdateTaskboardCardRuleSettings(ctx context.Context, boardCardRuleSettings *BoardCardRuleSettings, project *string, team *string) error {
     if boardCardRuleSettings == nil {
-        return errors.New("boardCardRuleSettings is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "boardCardRuleSettings"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return errors.New("project is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team == nil || *team == "" {
-        return errors.New("team is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "team"} 
     }
     routeValues["team"] = *team
 
@@ -611,7 +630,7 @@ func (client Client) UpdateTaskboardCardRuleSettings(boardCardRuleSettings *Boar
         return marshalErr
     }
     locationId, _ := uuid.Parse("3f84a8d1-1aab-423e-a94b-6dcbdcca511f")
-    _, err := client.Client.Send(http.MethodPatch, locationId, "5.1-preview.2", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.2", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return err
     }
@@ -620,25 +639,26 @@ func (client Client) UpdateTaskboardCardRuleSettings(boardCardRuleSettings *Boar
 }
 
 // Get board card settings for the board id or board by name
+// ctx
 // project (required): Project ID or project name
 // board (required)
 // team (optional): Team ID or team name
-func (client Client) GetBoardCardSettings(project *string, board *string, team *string) (*BoardCardSettings, error) {
+func (client Client) GetBoardCardSettings(ctx context.Context, project *string, board *string, team *string) (*BoardCardSettings, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if board == nil || *board == "" {
-        return nil, errors.New("board is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *board
 
     locationId, _ := uuid.Parse("07c3b467-bc60-4f05-8e34-599ce288fafc")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -649,24 +669,25 @@ func (client Client) GetBoardCardSettings(project *string, board *string, team *
 }
 
 // Update board card settings for the board id or board by name
+// ctx
 // boardCardSettingsToSave (required)
 // project (required): Project ID or project name
 // board (required)
 // team (optional): Team ID or team name
-func (client Client) UpdateBoardCardSettings(boardCardSettingsToSave *BoardCardSettings, project *string, board *string, team *string) (*BoardCardSettings, error) {
+func (client Client) UpdateBoardCardSettings(ctx context.Context, boardCardSettingsToSave *BoardCardSettings, project *string, board *string, team *string) (*BoardCardSettings, error) {
     if boardCardSettingsToSave == nil {
-        return nil, errors.New("boardCardSettingsToSave is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "boardCardSettingsToSave"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if board == nil || *board == "" {
-        return nil, errors.New("board is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *board
 
@@ -675,7 +696,7 @@ func (client Client) UpdateBoardCardSettings(boardCardSettingsToSave *BoardCardS
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("07c3b467-bc60-4f05-8e34-599ce288fafc")
-    resp, err := client.Client.Send(http.MethodPut, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -686,20 +707,21 @@ func (client Client) UpdateBoardCardSettings(boardCardSettingsToSave *BoardCardS
 }
 
 // [Preview API] Update taskboard card settings
+// ctx
 // boardCardSettingsToSave (required)
 // project (required): Project ID or project name
 // team (required): Team ID or team name
-func (client Client) UpdateTaskboardCardSettings(boardCardSettingsToSave *BoardCardSettings, project *string, team *string) error {
+func (client Client) UpdateTaskboardCardSettings(ctx context.Context, boardCardSettingsToSave *BoardCardSettings, project *string, team *string) error {
     if boardCardSettingsToSave == nil {
-        return errors.New("boardCardSettingsToSave is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "boardCardSettingsToSave"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return errors.New("project is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team == nil || *team == "" {
-        return errors.New("team is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "team"} 
     }
     routeValues["team"] = *team
 
@@ -708,7 +730,7 @@ func (client Client) UpdateTaskboardCardSettings(boardCardSettingsToSave *BoardC
         return marshalErr
     }
     locationId, _ := uuid.Parse("0d63745f-31f3-4cf3-9056-2a064e567637")
-    _, err := client.Client.Send(http.MethodPut, locationId, "5.1-preview.2", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.2", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return err
     }
@@ -717,30 +739,31 @@ func (client Client) UpdateTaskboardCardSettings(boardCardSettingsToSave *BoardC
 }
 
 // Get a board chart
+// ctx
 // project (required): Project ID or project name
 // board (required): Identifier for board, either board's backlog level name (Eg:"Stories") or Id
 // name (required): The chart name
 // team (optional): Team ID or team name
-func (client Client) GetBoardChart(project *string, board *string, name *string, team *string) (*BoardChart, error) {
+func (client Client) GetBoardChart(ctx context.Context, project *string, board *string, name *string, team *string) (*BoardChart, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if board == nil || *board == "" {
-        return nil, errors.New("board is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *board
     if name == nil || *name == "" {
-        return nil, errors.New("name is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
     routeValues["name"] = *name
 
     locationId, _ := uuid.Parse("45fe888c-239e-49fd-958c-df1a1ab21d97")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -751,25 +774,26 @@ func (client Client) GetBoardChart(project *string, board *string, name *string,
 }
 
 // Get board charts
+// ctx
 // project (required): Project ID or project name
 // board (required): Identifier for board, either board's backlog level name (Eg:"Stories") or Id
 // team (optional): Team ID or team name
-func (client Client) GetBoardCharts(project *string, board *string, team *string) (*[]BoardChartReference, error) {
+func (client Client) GetBoardCharts(ctx context.Context, project *string, board *string, team *string) (*[]BoardChartReference, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if board == nil || *board == "" {
-        return nil, errors.New("board is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *board
 
     locationId, _ := uuid.Parse("45fe888c-239e-49fd-958c-df1a1ab21d97")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -780,29 +804,30 @@ func (client Client) GetBoardCharts(project *string, board *string, team *string
 }
 
 // Update a board chart
+// ctx
 // chart (required)
 // project (required): Project ID or project name
 // board (required): Identifier for board, either board's backlog level name (Eg:"Stories") or Id
 // name (required): The chart name
 // team (optional): Team ID or team name
-func (client Client) UpdateBoardChart(chart *BoardChart, project *string, board *string, name *string, team *string) (*BoardChart, error) {
+func (client Client) UpdateBoardChart(ctx context.Context, chart *BoardChart, project *string, board *string, name *string, team *string) (*BoardChart, error) {
     if chart == nil {
-        return nil, errors.New("chart is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "chart"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if board == nil || *board == "" {
-        return nil, errors.New("board is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *board
     if name == nil || *name == "" {
-        return nil, errors.New("name is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
     routeValues["name"] = *name
 
@@ -811,7 +836,7 @@ func (client Client) UpdateBoardChart(chart *BoardChart, project *string, board 
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("45fe888c-239e-49fd-958c-df1a1ab21d97")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -822,25 +847,26 @@ func (client Client) UpdateBoardChart(chart *BoardChart, project *string, board 
 }
 
 // Get columns on a board
+// ctx
 // project (required): Project ID or project name
 // board (required): Name or ID of the specific board
 // team (optional): Team ID or team name
-func (client Client) GetBoardColumns(project *string, board *string, team *string) (*[]BoardColumn, error) {
+func (client Client) GetBoardColumns(ctx context.Context, project *string, board *string, team *string) (*[]BoardColumn, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if board == nil || *board == "" {
-        return nil, errors.New("board is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *board
 
     locationId, _ := uuid.Parse("c555d7ff-84e1-47df-9923-a3fe0cd8751b")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -851,24 +877,25 @@ func (client Client) GetBoardColumns(project *string, board *string, team *strin
 }
 
 // Update columns on a board
+// ctx
 // boardColumns (required): List of board columns to update
 // project (required): Project ID or project name
 // board (required): Name or ID of the specific board
 // team (optional): Team ID or team name
-func (client Client) UpdateBoardColumns(boardColumns *[]BoardColumn, project *string, board *string, team *string) (*[]BoardColumn, error) {
+func (client Client) UpdateBoardColumns(ctx context.Context, boardColumns *[]BoardColumn, project *string, board *string, team *string) (*[]BoardColumn, error) {
     if boardColumns == nil {
-        return nil, errors.New("boardColumns is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "boardColumns"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if board == nil || *board == "" {
-        return nil, errors.New("board is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *board
 
@@ -877,7 +904,7 @@ func (client Client) UpdateBoardColumns(boardColumns *[]BoardColumn, project *st
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("c555d7ff-84e1-47df-9923-a3fe0cd8751b")
-    resp, err := client.Client.Send(http.MethodPut, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -888,19 +915,20 @@ func (client Client) UpdateBoardColumns(boardColumns *[]BoardColumn, project *st
 }
 
 // Get Delivery View Data
+// ctx
 // project (required): Project ID or project name
 // id (required): Identifier for delivery view
 // revision (optional): Revision of the plan for which you want data. If the current plan is a different revision you will get an ViewRevisionMismatchException exception. If you do not supply a revision you will get data for the latest revision.
 // startDate (optional): The start date of timeline
 // endDate (optional): The end date of timeline
-func (client Client) GetDeliveryTimelineData(project *string, id *string, revision *int, startDate *time.Time, endDate *time.Time) (*DeliveryViewData, error) {
+func (client Client) GetDeliveryTimelineData(ctx context.Context, project *string, id *string, revision *int, startDate *time.Time, endDate *time.Time) (*DeliveryViewData, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if id == nil || *id == "" {
-        return nil, errors.New("id is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "id"} 
     }
     routeValues["id"] = *id
 
@@ -915,7 +943,7 @@ func (client Client) GetDeliveryTimelineData(project *string, id *string, revisi
         queryParams.Add("endDate", (*endDate).String())
     }
     locationId, _ := uuid.Parse("bdd0834e-101f-49f0-a6ae-509f384a12b4")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -926,25 +954,26 @@ func (client Client) GetDeliveryTimelineData(project *string, id *string, revisi
 }
 
 // Delete a team's iteration by iterationId
+// ctx
 // project (required): Project ID or project name
 // id (required): ID of the iteration
 // team (optional): Team ID or team name
-func (client Client) DeleteTeamIteration(project *string, id *uuid.UUID, team *string) error {
+func (client Client) DeleteTeamIteration(ctx context.Context, project *string, id *uuid.UUID, team *string) error {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return errors.New("project is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if id == nil {
-        return errors.New("id is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = (*id).String()
 
     locationId, _ := uuid.Parse("c9175577-28a1-4b06-9197-8636af9f64ad")
-    _, err := client.Client.Send(http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return err
     }
@@ -953,25 +982,26 @@ func (client Client) DeleteTeamIteration(project *string, id *uuid.UUID, team *s
 }
 
 // Get team's iteration by iterationId
+// ctx
 // project (required): Project ID or project name
 // id (required): ID of the iteration
 // team (optional): Team ID or team name
-func (client Client) GetTeamIteration(project *string, id *uuid.UUID, team *string) (*TeamSettingsIteration, error) {
+func (client Client) GetTeamIteration(ctx context.Context, project *string, id *uuid.UUID, team *string) (*TeamSettingsIteration, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if id == nil {
-        return nil, errors.New("id is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = (*id).String()
 
     locationId, _ := uuid.Parse("c9175577-28a1-4b06-9197-8636af9f64ad")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -982,13 +1012,14 @@ func (client Client) GetTeamIteration(project *string, id *uuid.UUID, team *stri
 }
 
 // Get a team's iterations using timeframe filter
+// ctx
 // project (required): Project ID or project name
 // team (optional): Team ID or team name
 // timeframe (optional): A filter for which iterations are returned based on relative time. Only Current is supported currently.
-func (client Client) GetTeamIterations(project *string, team *string, timeframe *string) (*[]TeamSettingsIteration, error) {
+func (client Client) GetTeamIterations(ctx context.Context, project *string, team *string, timeframe *string) (*[]TeamSettingsIteration, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
@@ -1000,7 +1031,7 @@ func (client Client) GetTeamIterations(project *string, team *string, timeframe 
         queryParams.Add("$timeframe", *timeframe)
     }
     locationId, _ := uuid.Parse("c9175577-28a1-4b06-9197-8636af9f64ad")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1011,16 +1042,17 @@ func (client Client) GetTeamIterations(project *string, team *string, timeframe 
 }
 
 // Add an iteration to the team
+// ctx
 // iteration (required): Iteration to add
 // project (required): Project ID or project name
 // team (optional): Team ID or team name
-func (client Client) PostTeamIteration(iteration *TeamSettingsIteration, project *string, team *string) (*TeamSettingsIteration, error) {
+func (client Client) PostTeamIteration(ctx context.Context, iteration *TeamSettingsIteration, project *string, team *string) (*TeamSettingsIteration, error) {
     if iteration == nil {
-        return nil, errors.New("iteration is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iteration"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
@@ -1032,7 +1064,7 @@ func (client Client) PostTeamIteration(iteration *TeamSettingsIteration, project
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("c9175577-28a1-4b06-9197-8636af9f64ad")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1043,15 +1075,16 @@ func (client Client) PostTeamIteration(iteration *TeamSettingsIteration, project
 }
 
 // Add a new plan for the team
+// ctx
 // postedPlan (required): Plan definition
 // project (required): Project ID or project name
-func (client Client) CreatePlan(postedPlan *CreatePlan, project *string) (*Plan, error) {
+func (client Client) CreatePlan(ctx context.Context, postedPlan *CreatePlan, project *string) (*Plan, error) {
     if postedPlan == nil {
-        return nil, errors.New("postedPlan is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "postedPlan"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
@@ -1060,7 +1093,7 @@ func (client Client) CreatePlan(postedPlan *CreatePlan, project *string) (*Plan,
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("0b42cb47-cd73-4810-ac90-19c9ba147453")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1071,21 +1104,22 @@ func (client Client) CreatePlan(postedPlan *CreatePlan, project *string) (*Plan,
 }
 
 // Delete the specified plan
+// ctx
 // project (required): Project ID or project name
 // id (required): Identifier of the plan
-func (client Client) DeletePlan(project *string, id *string) error {
+func (client Client) DeletePlan(ctx context.Context, project *string, id *string) error {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return errors.New("project is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if id == nil || *id == "" {
-        return errors.New("id is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "id"} 
     }
     routeValues["id"] = *id
 
     locationId, _ := uuid.Parse("0b42cb47-cd73-4810-ac90-19c9ba147453")
-    _, err := client.Client.Send(http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return err
     }
@@ -1094,21 +1128,22 @@ func (client Client) DeletePlan(project *string, id *string) error {
 }
 
 // Get the information for the specified plan
+// ctx
 // project (required): Project ID or project name
 // id (required): Identifier of the plan
-func (client Client) GetPlan(project *string, id *string) (*Plan, error) {
+func (client Client) GetPlan(ctx context.Context, project *string, id *string) (*Plan, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if id == nil || *id == "" {
-        return nil, errors.New("id is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "id"} 
     }
     routeValues["id"] = *id
 
     locationId, _ := uuid.Parse("0b42cb47-cd73-4810-ac90-19c9ba147453")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1119,16 +1154,17 @@ func (client Client) GetPlan(project *string, id *string) (*Plan, error) {
 }
 
 // Get the information for all the plans configured for the given team
+// ctx
 // project (required): Project ID or project name
-func (client Client) GetPlans(project *string) (*[]Plan, error) {
+func (client Client) GetPlans(ctx context.Context, project *string) (*[]Plan, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     locationId, _ := uuid.Parse("0b42cb47-cd73-4810-ac90-19c9ba147453")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1139,20 +1175,21 @@ func (client Client) GetPlans(project *string) (*[]Plan, error) {
 }
 
 // Update the information for the specified plan
+// ctx
 // updatedPlan (required): Plan definition to be updated
 // project (required): Project ID or project name
 // id (required): Identifier of the plan
-func (client Client) UpdatePlan(updatedPlan *UpdatePlan, project *string, id *string) (*Plan, error) {
+func (client Client) UpdatePlan(ctx context.Context, updatedPlan *UpdatePlan, project *string, id *string) (*Plan, error) {
     if updatedPlan == nil {
-        return nil, errors.New("updatedPlan is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "updatedPlan"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if id == nil || *id == "" {
-        return nil, errors.New("id is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "id"} 
     }
     routeValues["id"] = *id
 
@@ -1161,7 +1198,7 @@ func (client Client) UpdatePlan(updatedPlan *UpdatePlan, project *string, id *st
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("0b42cb47-cd73-4810-ac90-19c9ba147453")
-    resp, err := client.Client.Send(http.MethodPut, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1172,16 +1209,17 @@ func (client Client) UpdatePlan(updatedPlan *UpdatePlan, project *string, id *st
 }
 
 // [Preview API] Get process configuration
+// ctx
 // project (required): Project ID or project name
-func (client Client) GetProcessConfiguration(project *string) (*ProcessConfiguration, error) {
+func (client Client) GetProcessConfiguration(ctx context.Context, project *string) (*ProcessConfiguration, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     locationId, _ := uuid.Parse("f901ba42-86d2-4b0c-89c1-3f86d06daa84")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1192,25 +1230,26 @@ func (client Client) GetProcessConfiguration(project *string) (*ProcessConfigura
 }
 
 // Get rows on a board
+// ctx
 // project (required): Project ID or project name
 // board (required): Name or ID of the specific board
 // team (optional): Team ID or team name
-func (client Client) GetBoardRows(project *string, board *string, team *string) (*[]BoardRow, error) {
+func (client Client) GetBoardRows(ctx context.Context, project *string, board *string, team *string) (*[]BoardRow, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if board == nil || *board == "" {
-        return nil, errors.New("board is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *board
 
     locationId, _ := uuid.Parse("0863355d-aefd-4d63-8669-984c9b7b0e78")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1221,24 +1260,25 @@ func (client Client) GetBoardRows(project *string, board *string, team *string) 
 }
 
 // Update rows on a board
+// ctx
 // boardRows (required): List of board rows to update
 // project (required): Project ID or project name
 // board (required): Name or ID of the specific board
 // team (optional): Team ID or team name
-func (client Client) UpdateBoardRows(boardRows *[]BoardRow, project *string, board *string, team *string) (*[]BoardRow, error) {
+func (client Client) UpdateBoardRows(ctx context.Context, boardRows *[]BoardRow, project *string, board *string, team *string) (*[]BoardRow, error) {
     if boardRows == nil {
-        return nil, errors.New("boardRows is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "boardRows"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if board == nil || *board == "" {
-        return nil, errors.New("board is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *board
 
@@ -1247,7 +1287,7 @@ func (client Client) UpdateBoardRows(boardRows *[]BoardRow, project *string, boa
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("0863355d-aefd-4d63-8669-984c9b7b0e78")
-    resp, err := client.Client.Send(http.MethodPut, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1258,25 +1298,26 @@ func (client Client) UpdateBoardRows(boardRows *[]BoardRow, project *string, boa
 }
 
 // Get team's days off for an iteration
+// ctx
 // project (required): Project ID or project name
 // iterationId (required): ID of the iteration
 // team (optional): Team ID or team name
-func (client Client) GetTeamDaysOff(project *string, iterationId *uuid.UUID, team *string) (*TeamSettingsDaysOff, error) {
+func (client Client) GetTeamDaysOff(ctx context.Context, project *string, iterationId *uuid.UUID, team *string) (*TeamSettingsDaysOff, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if iterationId == nil {
-        return nil, errors.New("iterationId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = (*iterationId).String()
 
     locationId, _ := uuid.Parse("2d4faa2e-9150-4cbf-a47a-932b1b4a0773")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1287,24 +1328,25 @@ func (client Client) GetTeamDaysOff(project *string, iterationId *uuid.UUID, tea
 }
 
 // Set a team's days off for an iteration
+// ctx
 // daysOffPatch (required): Team's days off patch containting a list of start and end dates
 // project (required): Project ID or project name
 // iterationId (required): ID of the iteration
 // team (optional): Team ID or team name
-func (client Client) UpdateTeamDaysOff(daysOffPatch *TeamSettingsDaysOffPatch, project *string, iterationId *uuid.UUID, team *string) (*TeamSettingsDaysOff, error) {
+func (client Client) UpdateTeamDaysOff(ctx context.Context, daysOffPatch *TeamSettingsDaysOffPatch, project *string, iterationId *uuid.UUID, team *string) (*TeamSettingsDaysOff, error) {
     if daysOffPatch == nil {
-        return nil, errors.New("daysOffPatch is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "daysOffPatch"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if iterationId == nil {
-        return nil, errors.New("iterationId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = (*iterationId).String()
 
@@ -1313,7 +1355,7 @@ func (client Client) UpdateTeamDaysOff(daysOffPatch *TeamSettingsDaysOffPatch, p
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("2d4faa2e-9150-4cbf-a47a-932b1b4a0773")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1324,12 +1366,13 @@ func (client Client) UpdateTeamDaysOff(daysOffPatch *TeamSettingsDaysOffPatch, p
 }
 
 // Get a collection of team field values
+// ctx
 // project (required): Project ID or project name
 // team (optional): Team ID or team name
-func (client Client) GetTeamFieldValues(project *string, team *string) (*TeamFieldValues, error) {
+func (client Client) GetTeamFieldValues(ctx context.Context, project *string, team *string) (*TeamFieldValues, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
@@ -1337,7 +1380,7 @@ func (client Client) GetTeamFieldValues(project *string, team *string) (*TeamFie
     }
 
     locationId, _ := uuid.Parse("07ced576-58ed-49e6-9c1e-5cb53ab8bf2a")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1348,16 +1391,17 @@ func (client Client) GetTeamFieldValues(project *string, team *string) (*TeamFie
 }
 
 // Update team field values
+// ctx
 // patch (required)
 // project (required): Project ID or project name
 // team (optional): Team ID or team name
-func (client Client) UpdateTeamFieldValues(patch *TeamFieldValuesPatch, project *string, team *string) (*TeamFieldValues, error) {
+func (client Client) UpdateTeamFieldValues(ctx context.Context, patch *TeamFieldValuesPatch, project *string, team *string) (*TeamFieldValues, error) {
     if patch == nil {
-        return nil, errors.New("patch is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "patch"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
@@ -1369,7 +1413,7 @@ func (client Client) UpdateTeamFieldValues(patch *TeamFieldValuesPatch, project 
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("07ced576-58ed-49e6-9c1e-5cb53ab8bf2a")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1380,12 +1424,13 @@ func (client Client) UpdateTeamFieldValues(patch *TeamFieldValuesPatch, project 
 }
 
 // Get a team's settings
+// ctx
 // project (required): Project ID or project name
 // team (optional): Team ID or team name
-func (client Client) GetTeamSettings(project *string, team *string) (*TeamSetting, error) {
+func (client Client) GetTeamSettings(ctx context.Context, project *string, team *string) (*TeamSetting, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
@@ -1393,7 +1438,7 @@ func (client Client) GetTeamSettings(project *string, team *string) (*TeamSettin
     }
 
     locationId, _ := uuid.Parse("c3c1012b-bea7-49d7-b45e-1664e566f84c")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1404,16 +1449,17 @@ func (client Client) GetTeamSettings(project *string, team *string) (*TeamSettin
 }
 
 // Update a team's settings
+// ctx
 // teamSettingsPatch (required): TeamSettings changes
 // project (required): Project ID or project name
 // team (optional): Team ID or team name
-func (client Client) UpdateTeamSettings(teamSettingsPatch *TeamSettingsPatch, project *string, team *string) (*TeamSetting, error) {
+func (client Client) UpdateTeamSettings(ctx context.Context, teamSettingsPatch *TeamSettingsPatch, project *string, team *string) (*TeamSetting, error) {
     if teamSettingsPatch == nil {
-        return nil, errors.New("teamSettingsPatch is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "teamSettingsPatch"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
@@ -1425,7 +1471,7 @@ func (client Client) UpdateTeamSettings(teamSettingsPatch *TeamSettingsPatch, pr
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("c3c1012b-bea7-49d7-b45e-1664e566f84c")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1436,25 +1482,26 @@ func (client Client) UpdateTeamSettings(teamSettingsPatch *TeamSettingsPatch, pr
 }
 
 // [Preview API] Get work items for iteration
+// ctx
 // project (required): Project ID or project name
 // iterationId (required): ID of the iteration
 // team (optional): Team ID or team name
-func (client Client) GetIterationWorkItems(project *string, iterationId *uuid.UUID, team *string) (*IterationWorkItems, error) {
+func (client Client) GetIterationWorkItems(ctx context.Context, project *string, iterationId *uuid.UUID, team *string) (*IterationWorkItems, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team != nil && *team != "" {
         routeValues["team"] = *team
     }
     if iterationId == nil {
-        return nil, errors.New("iterationId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = (*iterationId).String()
 
     locationId, _ := uuid.Parse("5b3ef1a6-d3ab-44cd-bafd-c7f45db850fa")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1465,20 +1512,21 @@ func (client Client) GetIterationWorkItems(project *string, iterationId *uuid.UU
 }
 
 // [Preview API] Reorder Product Backlog/Boards Work Items
+// ctx
 // operation (required)
 // project (required): Project ID or project name
 // team (required): Team ID or team name
-func (client Client) ReorderBacklogWorkItems(operation *ReorderOperation, project *string, team *string) (*[]ReorderResult, error) {
+func (client Client) ReorderBacklogWorkItems(ctx context.Context, operation *ReorderOperation, project *string, team *string) (*[]ReorderResult, error) {
     if operation == nil {
-        return nil, errors.New("operation is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "operation"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team == nil || *team == "" {
-        return nil, errors.New("team is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "team"} 
     }
     routeValues["team"] = *team
 
@@ -1487,7 +1535,7 @@ func (client Client) ReorderBacklogWorkItems(operation *ReorderOperation, projec
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("1c22b714-e7e4-41b9-85e0-56ee13ef55ed")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1498,25 +1546,26 @@ func (client Client) ReorderBacklogWorkItems(operation *ReorderOperation, projec
 }
 
 // [Preview API] Reorder Sprint Backlog/Taskboard Work Items
+// ctx
 // operation (required)
 // project (required): Project ID or project name
 // team (required): Team ID or team name
 // iterationId (required): The id of the iteration
-func (client Client) ReorderIterationWorkItems(operation *ReorderOperation, project *string, team *string, iterationId *uuid.UUID) (*[]ReorderResult, error) {
+func (client Client) ReorderIterationWorkItems(ctx context.Context, operation *ReorderOperation, project *string, team *string, iterationId *uuid.UUID) (*[]ReorderResult, error) {
     if operation == nil {
-        return nil, errors.New("operation is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "operation"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team == nil || *team == "" {
-        return nil, errors.New("team is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "team"} 
     }
     routeValues["team"] = *team
     if iterationId == nil {
-        return nil, errors.New("iterationId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = (*iterationId).String()
 
@@ -1525,7 +1574,7 @@ func (client Client) ReorderIterationWorkItems(operation *ReorderOperation, proj
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("47755db2-d7eb-405a-8c25-675401525fc9")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }

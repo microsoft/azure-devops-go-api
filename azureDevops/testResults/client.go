@@ -10,8 +10,8 @@ package testResults
 
 import (
     "bytes"
+    "context"
     "encoding/json"
-    "errors"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevops"
     "net/http"
@@ -25,7 +25,7 @@ type Client struct {
     Client azureDevops.Client
 }
 
-func NewClient(connection azureDevops.Connection) *Client {
+func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -33,33 +33,34 @@ func NewClient(connection azureDevops.Connection) *Client {
 }
 
 // [Preview API]
+// ctx
 // attachmentRequestModel (required)
 // project (required): Project ID or project name
 // runId (required)
 // testCaseResultId (required)
 // iterationId (required)
 // actionPath (optional)
-func (client Client) CreateTestIterationResultAttachment(attachmentRequestModel *TestAttachmentRequestModel, project *string, runId *int, testCaseResultId *int, iterationId *int, actionPath *string) (*TestAttachmentReference, error) {
+func (client Client) CreateTestIterationResultAttachment(ctx context.Context, attachmentRequestModel *TestAttachmentRequestModel, project *string, runId *int, testCaseResultId *int, iterationId *int, actionPath *string) (*TestAttachmentReference, error) {
     if attachmentRequestModel == nil {
-        return nil, errors.New("attachmentRequestModel is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "attachmentRequestModel"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
     if testCaseResultId == nil {
-        return nil, errors.New("testCaseResultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
     routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
 
     queryParams := url.Values{}
     if iterationId == nil {
-        return nil, errors.New("iterationId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"}
     }
     queryParams.Add("iterationId", strconv.Itoa(*iterationId))
     if actionPath != nil {
@@ -70,7 +71,7 @@ func (client Client) CreateTestIterationResultAttachment(attachmentRequestModel 
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("2a632e97-e014-4275-978f-8e5c4906d4b3")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -81,25 +82,26 @@ func (client Client) CreateTestIterationResultAttachment(attachmentRequestModel 
 }
 
 // [Preview API]
+// ctx
 // attachmentRequestModel (required)
 // project (required): Project ID or project name
 // runId (required)
 // testCaseResultId (required)
-func (client Client) CreateTestResultAttachment(attachmentRequestModel *TestAttachmentRequestModel, project *string, runId *int, testCaseResultId *int) (*TestAttachmentReference, error) {
+func (client Client) CreateTestResultAttachment(ctx context.Context, attachmentRequestModel *TestAttachmentRequestModel, project *string, runId *int, testCaseResultId *int) (*TestAttachmentReference, error) {
     if attachmentRequestModel == nil {
-        return nil, errors.New("attachmentRequestModel is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "attachmentRequestModel"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
     if testCaseResultId == nil {
-        return nil, errors.New("testCaseResultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
     routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
 
@@ -108,7 +110,7 @@ func (client Client) CreateTestResultAttachment(attachmentRequestModel *TestAtta
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("2a632e97-e014-4275-978f-8e5c4906d4b3")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -119,32 +121,33 @@ func (client Client) CreateTestResultAttachment(attachmentRequestModel *TestAtta
 }
 
 // [Preview API]
+// ctx
 // attachmentRequestModel (required)
 // project (required): Project ID or project name
 // runId (required)
 // testCaseResultId (required)
 // testSubResultId (required)
-func (client Client) CreateTestSubResultAttachment(attachmentRequestModel *TestAttachmentRequestModel, project *string, runId *int, testCaseResultId *int, testSubResultId *int) (*TestAttachmentReference, error) {
+func (client Client) CreateTestSubResultAttachment(ctx context.Context, attachmentRequestModel *TestAttachmentRequestModel, project *string, runId *int, testCaseResultId *int, testSubResultId *int) (*TestAttachmentReference, error) {
     if attachmentRequestModel == nil {
-        return nil, errors.New("attachmentRequestModel is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "attachmentRequestModel"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
     if testCaseResultId == nil {
-        return nil, errors.New("testCaseResultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
     routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
 
     queryParams := url.Values{}
     if testSubResultId == nil {
-        return nil, errors.New("testSubResultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testSubResultId"}
     }
     queryParams.Add("testSubResultId", strconv.Itoa(*testSubResultId))
     body, marshalErr := json.Marshal(*attachmentRequestModel)
@@ -152,7 +155,7 @@ func (client Client) CreateTestSubResultAttachment(attachmentRequestModel *TestA
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("2a632e97-e014-4275-978f-8e5c4906d4b3")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -163,31 +166,32 @@ func (client Client) CreateTestSubResultAttachment(attachmentRequestModel *TestA
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // testCaseResultId (required)
 // attachmentId (required)
-func (client Client) DeleteTestResultAttachment(project *string, runId *int, testCaseResultId *int, attachmentId *int) error {
+func (client Client) DeleteTestResultAttachment(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int) error {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return errors.New("project is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return errors.New("runId is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
     if testCaseResultId == nil {
-        return errors.New("testCaseResultId is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
     routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
     if attachmentId == nil {
-        return errors.New("attachmentId is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "attachmentId"} 
     }
     routeValues["attachmentId"] = strconv.Itoa(*attachmentId)
 
     locationId, _ := uuid.Parse("2a632e97-e014-4275-978f-8e5c4906d4b3")
-    _, err := client.Client.Send(http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return err
     }
@@ -196,31 +200,32 @@ func (client Client) DeleteTestResultAttachment(project *string, runId *int, tes
 }
 
 // [Preview API] Returns a test result attachment
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // testCaseResultId (required)
 // attachmentId (required)
-func (client Client) GetTestResultAttachmentContent(project *string, runId *int, testCaseResultId *int, attachmentId *int) (*interface{}, error) {
+func (client Client) GetTestResultAttachmentContent(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int) (*interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
     if testCaseResultId == nil {
-        return nil, errors.New("testCaseResultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
     routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
     if attachmentId == nil {
-        return nil, errors.New("attachmentId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "attachmentId"} 
     }
     routeValues["attachmentId"] = strconv.Itoa(*attachmentId)
 
     locationId, _ := uuid.Parse("2a632e97-e014-4275-978f-8e5c4906d4b3")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/octet-stream", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/octet-stream", nil)
     if err != nil {
         return nil, err
     }
@@ -231,26 +236,27 @@ func (client Client) GetTestResultAttachmentContent(project *string, runId *int,
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // testCaseResultId (required)
-func (client Client) GetTestResultAttachments(project *string, runId *int, testCaseResultId *int) (*[]TestAttachment, error) {
+func (client Client) GetTestResultAttachments(ctx context.Context, project *string, runId *int, testCaseResultId *int) (*[]TestAttachment, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
     if testCaseResultId == nil {
-        return nil, errors.New("testCaseResultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
     routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
 
     locationId, _ := uuid.Parse("2a632e97-e014-4275-978f-8e5c4906d4b3")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -261,31 +267,32 @@ func (client Client) GetTestResultAttachments(project *string, runId *int, testC
 }
 
 // [Preview API] Returns a test result attachment
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // testCaseResultId (required)
 // attachmentId (required)
-func (client Client) GetTestResultAttachmentZip(project *string, runId *int, testCaseResultId *int, attachmentId *int) (*interface{}, error) {
+func (client Client) GetTestResultAttachmentZip(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int) (*interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
     if testCaseResultId == nil {
-        return nil, errors.New("testCaseResultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
     routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
     if attachmentId == nil {
-        return nil, errors.New("attachmentId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "attachmentId"} 
     }
     routeValues["attachmentId"] = strconv.Itoa(*attachmentId)
 
     locationId, _ := uuid.Parse("2a632e97-e014-4275-978f-8e5c4906d4b3")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/zip", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/zip", nil)
     if err != nil {
         return nil, err
     }
@@ -296,37 +303,38 @@ func (client Client) GetTestResultAttachmentZip(project *string, runId *int, tes
 }
 
 // [Preview API] Returns a test sub result attachment
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // testCaseResultId (required)
 // attachmentId (required)
 // testSubResultId (required)
-func (client Client) GetTestSubResultAttachmentContent(project *string, runId *int, testCaseResultId *int, attachmentId *int, testSubResultId *int) (*interface{}, error) {
+func (client Client) GetTestSubResultAttachmentContent(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int, testSubResultId *int) (*interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
     if testCaseResultId == nil {
-        return nil, errors.New("testCaseResultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
     routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
     if attachmentId == nil {
-        return nil, errors.New("attachmentId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "attachmentId"} 
     }
     routeValues["attachmentId"] = strconv.Itoa(*attachmentId)
 
     queryParams := url.Values{}
     if testSubResultId == nil {
-        return nil, errors.New("testSubResultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testSubResultId"}
     }
     queryParams.Add("testSubResultId", strconv.Itoa(*testSubResultId))
     locationId, _ := uuid.Parse("2a632e97-e014-4275-978f-8e5c4906d4b3")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/octet-stream", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/octet-stream", nil)
     if err != nil {
         return nil, err
     }
@@ -337,32 +345,33 @@ func (client Client) GetTestSubResultAttachmentContent(project *string, runId *i
 }
 
 // [Preview API] Returns attachment references for test sub result.
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // testCaseResultId (required)
 // testSubResultId (required)
-func (client Client) GetTestSubResultAttachments(project *string, runId *int, testCaseResultId *int, testSubResultId *int) (*[]TestAttachment, error) {
+func (client Client) GetTestSubResultAttachments(ctx context.Context, project *string, runId *int, testCaseResultId *int, testSubResultId *int) (*[]TestAttachment, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
     if testCaseResultId == nil {
-        return nil, errors.New("testCaseResultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
     routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
 
     queryParams := url.Values{}
     if testSubResultId == nil {
-        return nil, errors.New("testSubResultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testSubResultId"}
     }
     queryParams.Add("testSubResultId", strconv.Itoa(*testSubResultId))
     locationId, _ := uuid.Parse("2a632e97-e014-4275-978f-8e5c4906d4b3")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -373,37 +382,38 @@ func (client Client) GetTestSubResultAttachments(project *string, runId *int, te
 }
 
 // [Preview API] Returns a test sub result attachment
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // testCaseResultId (required)
 // attachmentId (required)
 // testSubResultId (required)
-func (client Client) GetTestSubResultAttachmentZip(project *string, runId *int, testCaseResultId *int, attachmentId *int, testSubResultId *int) (*interface{}, error) {
+func (client Client) GetTestSubResultAttachmentZip(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int, testSubResultId *int) (*interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
     if testCaseResultId == nil {
-        return nil, errors.New("testCaseResultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
     routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
     if attachmentId == nil {
-        return nil, errors.New("attachmentId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "attachmentId"} 
     }
     routeValues["attachmentId"] = strconv.Itoa(*attachmentId)
 
     queryParams := url.Values{}
     if testSubResultId == nil {
-        return nil, errors.New("testSubResultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testSubResultId"}
     }
     queryParams.Add("testSubResultId", strconv.Itoa(*testSubResultId))
     locationId, _ := uuid.Parse("2a632e97-e014-4275-978f-8e5c4906d4b3")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/zip", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/zip", nil)
     if err != nil {
         return nil, err
     }
@@ -414,20 +424,21 @@ func (client Client) GetTestSubResultAttachmentZip(project *string, runId *int, 
 }
 
 // [Preview API]
+// ctx
 // attachmentRequestModel (required)
 // project (required): Project ID or project name
 // runId (required)
-func (client Client) CreateTestRunAttachment(attachmentRequestModel *TestAttachmentRequestModel, project *string, runId *int) (*TestAttachmentReference, error) {
+func (client Client) CreateTestRunAttachment(ctx context.Context, attachmentRequestModel *TestAttachmentRequestModel, project *string, runId *int) (*TestAttachmentReference, error) {
     if attachmentRequestModel == nil {
-        return nil, errors.New("attachmentRequestModel is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "attachmentRequestModel"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
 
@@ -436,7 +447,7 @@ func (client Client) CreateTestRunAttachment(attachmentRequestModel *TestAttachm
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("b5731898-8206-477a-a51d-3fdf116fc6bf")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -447,26 +458,27 @@ func (client Client) CreateTestRunAttachment(attachmentRequestModel *TestAttachm
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // attachmentId (required)
-func (client Client) DeleteTestRunAttachment(project *string, runId *int, attachmentId *int) error {
+func (client Client) DeleteTestRunAttachment(ctx context.Context, project *string, runId *int, attachmentId *int) error {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return errors.New("project is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return errors.New("runId is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
     if attachmentId == nil {
-        return errors.New("attachmentId is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "attachmentId"} 
     }
     routeValues["attachmentId"] = strconv.Itoa(*attachmentId)
 
     locationId, _ := uuid.Parse("b5731898-8206-477a-a51d-3fdf116fc6bf")
-    _, err := client.Client.Send(http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return err
     }
@@ -475,26 +487,27 @@ func (client Client) DeleteTestRunAttachment(project *string, runId *int, attach
 }
 
 // [Preview API] Returns a test run attachment
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // attachmentId (required)
-func (client Client) GetTestRunAttachmentContent(project *string, runId *int, attachmentId *int) (*interface{}, error) {
+func (client Client) GetTestRunAttachmentContent(ctx context.Context, project *string, runId *int, attachmentId *int) (*interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
     if attachmentId == nil {
-        return nil, errors.New("attachmentId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "attachmentId"} 
     }
     routeValues["attachmentId"] = strconv.Itoa(*attachmentId)
 
     locationId, _ := uuid.Parse("b5731898-8206-477a-a51d-3fdf116fc6bf")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/octet-stream", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/octet-stream", nil)
     if err != nil {
         return nil, err
     }
@@ -505,21 +518,22 @@ func (client Client) GetTestRunAttachmentContent(project *string, runId *int, at
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // runId (required)
-func (client Client) GetTestRunAttachments(project *string, runId *int) (*[]TestAttachment, error) {
+func (client Client) GetTestRunAttachments(ctx context.Context, project *string, runId *int) (*[]TestAttachment, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
 
     locationId, _ := uuid.Parse("b5731898-8206-477a-a51d-3fdf116fc6bf")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -530,26 +544,27 @@ func (client Client) GetTestRunAttachments(project *string, runId *int) (*[]Test
 }
 
 // [Preview API] Returns a test run attachment
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // attachmentId (required)
-func (client Client) GetTestRunAttachmentZip(project *string, runId *int, attachmentId *int) (*interface{}, error) {
+func (client Client) GetTestRunAttachmentZip(ctx context.Context, project *string, runId *int, attachmentId *int) (*interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
     if attachmentId == nil {
-        return nil, errors.New("attachmentId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "attachmentId"} 
     }
     routeValues["attachmentId"] = strconv.Itoa(*attachmentId)
 
     locationId, _ := uuid.Parse("b5731898-8206-477a-a51d-3fdf116fc6bf")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/zip", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/zip", nil)
     if err != nil {
         return nil, err
     }
@@ -560,26 +575,27 @@ func (client Client) GetTestRunAttachmentZip(project *string, runId *int, attach
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // testCaseResultId (required)
-func (client Client) GetBugsLinkedToTestResult(project *string, runId *int, testCaseResultId *int) (*[]WorkItemReference, error) {
+func (client Client) GetBugsLinkedToTestResult(ctx context.Context, project *string, runId *int, testCaseResultId *int) (*[]WorkItemReference, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
     if testCaseResultId == nil {
-        return nil, errors.New("testCaseResultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
     routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
 
     locationId, _ := uuid.Parse("d8dbf98f-eb34-4f8d-8365-47972af34f29")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -590,27 +606,28 @@ func (client Client) GetBugsLinkedToTestResult(project *string, runId *int, test
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // buildId (required)
 // flags (required)
-func (client Client) GetBuildCodeCoverage(project *string, buildId *int, flags *int) (*[]BuildCoverage, error) {
+func (client Client) GetBuildCodeCoverage(ctx context.Context, project *string, buildId *int, flags *int) (*[]BuildCoverage, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     queryParams := url.Values{}
     if buildId == nil {
-        return nil, errors.New("buildId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"}
     }
     queryParams.Add("buildId", strconv.Itoa(*buildId))
     if flags == nil {
-        return nil, errors.New("flags is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "flags"}
     }
     queryParams.Add("flags", strconv.Itoa(*flags))
     locationId, _ := uuid.Parse("9b3e1ece-c6ab-4fbb-8167-8a32a0c92216")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -621,26 +638,27 @@ func (client Client) GetBuildCodeCoverage(project *string, buildId *int, flags *
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // buildId (required)
 // deltaBuildId (optional)
-func (client Client) GetCodeCoverageSummary(project *string, buildId *int, deltaBuildId *int) (*CodeCoverageSummary, error) {
+func (client Client) GetCodeCoverageSummary(ctx context.Context, project *string, buildId *int, deltaBuildId *int) (*CodeCoverageSummary, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     queryParams := url.Values{}
     if buildId == nil {
-        return nil, errors.New("buildId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"}
     }
     queryParams.Add("buildId", strconv.Itoa(*buildId))
     if deltaBuildId != nil {
         queryParams.Add("deltaBuildId", strconv.Itoa(*deltaBuildId))
     }
     locationId, _ := uuid.Parse("9b3e1ece-c6ab-4fbb-8167-8a32a0c92216")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -651,19 +669,20 @@ func (client Client) GetCodeCoverageSummary(project *string, buildId *int, delta
 }
 
 // [Preview API] http://(tfsserver):8080/tfs/DefaultCollection/_apis/test/CodeCoverage?buildId=10 Request: Json of code coverage summary
+// ctx
 // project (required): Project ID or project name
 // buildId (required)
 // coverageData (optional)
-func (client Client) UpdateCodeCoverageSummary(project *string, buildId *int, coverageData *CodeCoverageData) error {
+func (client Client) UpdateCodeCoverageSummary(ctx context.Context, project *string, buildId *int, coverageData *CodeCoverageData) error {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return errors.New("project is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     queryParams := url.Values{}
     if buildId == nil {
-        return errors.New("buildId is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "buildId"}
     }
     queryParams.Add("buildId", strconv.Itoa(*buildId))
     body, marshalErr := json.Marshal(*coverageData)
@@ -671,7 +690,7 @@ func (client Client) UpdateCodeCoverageSummary(project *string, buildId *int, co
         return marshalErr
     }
     locationId, _ := uuid.Parse("9b3e1ece-c6ab-4fbb-8167-8a32a0c92216")
-    _, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return err
     }
@@ -680,27 +699,28 @@ func (client Client) UpdateCodeCoverageSummary(project *string, buildId *int, co
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // flags (required)
-func (client Client) GetTestRunCodeCoverage(project *string, runId *int, flags *int) (*[]TestRunCoverage, error) {
+func (client Client) GetTestRunCodeCoverage(ctx context.Context, project *string, runId *int, flags *int) (*[]TestRunCoverage, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
 
     queryParams := url.Values{}
     if flags == nil {
-        return nil, errors.New("flags is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "flags"}
     }
     queryParams.Add("flags", strconv.Itoa(*flags))
     locationId, _ := uuid.Parse("5641efbc-6f9b-401a-baeb-d3da22489e5e")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -711,15 +731,16 @@ func (client Client) GetTestRunCodeCoverage(project *string, runId *int, flags *
 }
 
 // [Preview API]
+// ctx
 // filter (required)
 // project (required): Project ID or project name
-func (client Client) QueryTestResultHistory(filter *ResultsFilter, project *string) (*TestResultHistory, error) {
+func (client Client) QueryTestResultHistory(ctx context.Context, filter *ResultsFilter, project *string) (*TestResultHistory, error) {
     if filter == nil {
-        return nil, errors.New("filter is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "filter"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
@@ -728,7 +749,7 @@ func (client Client) QueryTestResultHistory(filter *ResultsFilter, project *stri
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("bdf7a97b-0395-4da8-9d5d-f957619327d1")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -739,6 +760,7 @@ func (client Client) QueryTestResultHistory(filter *ResultsFilter, project *stri
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // buildId (required)
 // publishContext (optional)
@@ -747,16 +769,16 @@ func (client Client) QueryTestResultHistory(filter *ResultsFilter, project *stri
 // orderby (optional)
 // shouldIncludeResults (optional)
 // queryRunSummaryForInProgress (optional)
-func (client Client) GetTestResultDetailsForBuild(project *string, buildId *int, publishContext *string, groupBy *string, filter *string, orderby *string, shouldIncludeResults *bool, queryRunSummaryForInProgress *bool) (*TestResultsDetails, error) {
+func (client Client) GetTestResultDetailsForBuild(ctx context.Context, project *string, buildId *int, publishContext *string, groupBy *string, filter *string, orderby *string, shouldIncludeResults *bool, queryRunSummaryForInProgress *bool) (*TestResultsDetails, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     queryParams := url.Values{}
     if buildId == nil {
-        return nil, errors.New("buildId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"}
     }
     queryParams.Add("buildId", strconv.Itoa(*buildId))
     if publishContext != nil {
@@ -778,7 +800,7 @@ func (client Client) GetTestResultDetailsForBuild(project *string, buildId *int,
         queryParams.Add("queryRunSummaryForInProgress", strconv.FormatBool(*queryRunSummaryForInProgress))
     }
     locationId, _ := uuid.Parse("a518c749-4524-45b2-a7ef-1ac009b312cd")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -789,6 +811,7 @@ func (client Client) GetTestResultDetailsForBuild(project *string, buildId *int,
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // releaseId (required)
 // releaseEnvId (required)
@@ -798,20 +821,20 @@ func (client Client) GetTestResultDetailsForBuild(project *string, buildId *int,
 // orderby (optional)
 // shouldIncludeResults (optional)
 // queryRunSummaryForInProgress (optional)
-func (client Client) GetTestResultDetailsForRelease(project *string, releaseId *int, releaseEnvId *int, publishContext *string, groupBy *string, filter *string, orderby *string, shouldIncludeResults *bool, queryRunSummaryForInProgress *bool) (*TestResultsDetails, error) {
+func (client Client) GetTestResultDetailsForRelease(ctx context.Context, project *string, releaseId *int, releaseEnvId *int, publishContext *string, groupBy *string, filter *string, orderby *string, shouldIncludeResults *bool, queryRunSummaryForInProgress *bool) (*TestResultsDetails, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     queryParams := url.Values{}
     if releaseId == nil {
-        return nil, errors.New("releaseId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"}
     }
     queryParams.Add("releaseId", strconv.Itoa(*releaseId))
     if releaseEnvId == nil {
-        return nil, errors.New("releaseEnvId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseEnvId"}
     }
     queryParams.Add("releaseEnvId", strconv.Itoa(*releaseEnvId))
     if publishContext != nil {
@@ -833,7 +856,7 @@ func (client Client) GetTestResultDetailsForRelease(project *string, releaseId *
         queryParams.Add("queryRunSummaryForInProgress", strconv.FormatBool(*queryRunSummaryForInProgress))
     }
     locationId, _ := uuid.Parse("19a8183a-69fb-47d7-bfbf-1b6b0d921294")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -844,15 +867,16 @@ func (client Client) GetTestResultDetailsForRelease(project *string, releaseId *
 }
 
 // [Preview API]
+// ctx
 // query (required)
 // project (required): Project ID or project name
-func (client Client) GetTestResultsByQuery(query *TestResultsQuery, project *string) (*TestResultsQuery, error) {
+func (client Client) GetTestResultsByQuery(ctx context.Context, query *TestResultsQuery, project *string) (*TestResultsQuery, error) {
     if query == nil {
-        return nil, errors.New("query is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "query"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
@@ -861,7 +885,7 @@ func (client Client) GetTestResultsByQuery(query *TestResultsQuery, project *str
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("14033a2c-af25-4af1-9e39-8ef6900482e3")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -872,19 +896,20 @@ func (client Client) GetTestResultsByQuery(query *TestResultsQuery, project *str
 }
 
 // [Preview API]
+// ctx
 // queryModel (required)
 // project (required): Project ID or project name
 // includeResultDetails (optional)
 // includeIterationDetails (optional)
 // skip (optional)
 // top (optional)
-func (client Client) GetTestResultsByQueryWiql(queryModel *QueryModel, project *string, includeResultDetails *bool, includeIterationDetails *bool, skip *int, top *int) (*[]TestCaseResult, error) {
+func (client Client) GetTestResultsByQueryWiql(ctx context.Context, queryModel *QueryModel, project *string, includeResultDetails *bool, includeIterationDetails *bool, skip *int, top *int) (*[]TestCaseResult, error) {
     if queryModel == nil {
-        return nil, errors.New("queryModel is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "queryModel"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
@@ -906,7 +931,7 @@ func (client Client) GetTestResultsByQueryWiql(queryModel *QueryModel, project *
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("5ea78be3-2f5a-4110-8034-c27f24c62db1")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -917,20 +942,21 @@ func (client Client) GetTestResultsByQueryWiql(queryModel *QueryModel, project *
 }
 
 // [Preview API]
+// ctx
 // results (required)
 // project (required): Project ID or project name
 // runId (required)
-func (client Client) AddTestResultsToTestRun(results *[]TestCaseResult, project *string, runId *int) (*[]TestCaseResult, error) {
+func (client Client) AddTestResultsToTestRun(ctx context.Context, results *[]TestCaseResult, project *string, runId *int) (*[]TestCaseResult, error) {
     if results == nil {
-        return nil, errors.New("results is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "results"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
 
@@ -939,7 +965,7 @@ func (client Client) AddTestResultsToTestRun(results *[]TestCaseResult, project 
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("02afa165-e79a-4d70-8f0c-2af0f35b4e07")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -950,22 +976,23 @@ func (client Client) AddTestResultsToTestRun(results *[]TestCaseResult, project 
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // testResultId (required)
 // detailsToInclude (optional)
-func (client Client) GetTestResultById(project *string, runId *int, testResultId *int, detailsToInclude *string) (*TestCaseResult, error) {
+func (client Client) GetTestResultById(ctx context.Context, project *string, runId *int, testResultId *int, detailsToInclude *string) (*TestCaseResult, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
     if testResultId == nil {
-        return nil, errors.New("testResultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testResultId"} 
     }
     routeValues["testResultId"] = strconv.Itoa(*testResultId)
 
@@ -974,7 +1001,7 @@ func (client Client) GetTestResultById(project *string, runId *int, testResultId
         queryParams.Add("detailsToInclude", *detailsToInclude)
     }
     locationId, _ := uuid.Parse("02afa165-e79a-4d70-8f0c-2af0f35b4e07")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -985,20 +1012,21 @@ func (client Client) GetTestResultById(project *string, runId *int, testResultId
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // detailsToInclude (optional)
 // skip (optional)
 // top (optional)
 // outcomes (optional)
-func (client Client) GetTestResults(project *string, runId *int, detailsToInclude *string, skip *int, top *int, outcomes *[]TestOutcome) (*[]TestCaseResult, error) {
+func (client Client) GetTestResults(ctx context.Context, project *string, runId *int, detailsToInclude *string, skip *int, top *int, outcomes *[]TestOutcome) (*[]TestCaseResult, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
 
@@ -1021,7 +1049,7 @@ func (client Client) GetTestResults(project *string, runId *int, detailsToInclud
         queryParams.Add("definitions", listAsString)
     }
     locationId, _ := uuid.Parse("02afa165-e79a-4d70-8f0c-2af0f35b4e07")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1032,20 +1060,21 @@ func (client Client) GetTestResults(project *string, runId *int, detailsToInclud
 }
 
 // [Preview API]
+// ctx
 // results (required)
 // project (required): Project ID or project name
 // runId (required)
-func (client Client) UpdateTestResults(results *[]TestCaseResult, project *string, runId *int) (*[]TestCaseResult, error) {
+func (client Client) UpdateTestResults(ctx context.Context, results *[]TestCaseResult, project *string, runId *int) (*[]TestCaseResult, error) {
     if results == nil {
-        return nil, errors.New("results is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "results"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
 
@@ -1054,7 +1083,7 @@ func (client Client) UpdateTestResults(results *[]TestCaseResult, project *strin
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("02afa165-e79a-4d70-8f0c-2af0f35b4e07")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1065,21 +1094,22 @@ func (client Client) UpdateTestResults(results *[]TestCaseResult, project *strin
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // buildId (required)
 // publishContext (optional)
 // includeFailureDetails (optional)
 // buildToCompare (optional)
-func (client Client) QueryTestResultsReportForBuild(project *string, buildId *int, publishContext *string, includeFailureDetails *bool, buildToCompare *BuildReference) (*TestResultSummary, error) {
+func (client Client) QueryTestResultsReportForBuild(ctx context.Context, project *string, buildId *int, publishContext *string, includeFailureDetails *bool, buildToCompare *BuildReference) (*TestResultSummary, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     queryParams := url.Values{}
     if buildId == nil {
-        return nil, errors.New("buildId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"}
     }
     queryParams.Add("buildId", strconv.Itoa(*buildId))
     if publishContext != nil {
@@ -1112,7 +1142,7 @@ func (client Client) QueryTestResultsReportForBuild(project *string, buildId *in
         }
     }
     locationId, _ := uuid.Parse("e009fa95-95a5-4ad4-9681-590043ce2423")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1123,26 +1153,27 @@ func (client Client) QueryTestResultsReportForBuild(project *string, buildId *in
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // releaseId (required)
 // releaseEnvId (required)
 // publishContext (optional)
 // includeFailureDetails (optional)
 // releaseToCompare (optional)
-func (client Client) QueryTestResultsReportForRelease(project *string, releaseId *int, releaseEnvId *int, publishContext *string, includeFailureDetails *bool, releaseToCompare *ReleaseReference) (*TestResultSummary, error) {
+func (client Client) QueryTestResultsReportForRelease(ctx context.Context, project *string, releaseId *int, releaseEnvId *int, publishContext *string, includeFailureDetails *bool, releaseToCompare *ReleaseReference) (*TestResultSummary, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     queryParams := url.Values{}
     if releaseId == nil {
-        return nil, errors.New("releaseId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"}
     }
     queryParams.Add("releaseId", strconv.Itoa(*releaseId))
     if releaseEnvId == nil {
-        return nil, errors.New("releaseEnvId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseEnvId"}
     }
     queryParams.Add("releaseEnvId", strconv.Itoa(*releaseEnvId))
     if publishContext != nil {
@@ -1184,7 +1215,7 @@ func (client Client) QueryTestResultsReportForRelease(project *string, releaseId
         }
     }
     locationId, _ := uuid.Parse("f10f9577-2c04-45ab-8c99-b26567a7cd55")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1195,15 +1226,16 @@ func (client Client) QueryTestResultsReportForRelease(project *string, releaseId
 }
 
 // [Preview API]
+// ctx
 // releases (required)
 // project (required): Project ID or project name
-func (client Client) QueryTestResultsSummaryForReleases(releases *[]ReleaseReference, project *string) (*[]TestResultSummary, error) {
+func (client Client) QueryTestResultsSummaryForReleases(ctx context.Context, releases *[]ReleaseReference, project *string) (*[]TestResultSummary, error) {
     if releases == nil {
-        return nil, errors.New("releases is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releases"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
@@ -1212,7 +1244,7 @@ func (client Client) QueryTestResultsSummaryForReleases(releases *[]ReleaseRefer
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("f10f9577-2c04-45ab-8c99-b26567a7cd55")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1223,16 +1255,17 @@ func (client Client) QueryTestResultsSummaryForReleases(releases *[]ReleaseRefer
 }
 
 // [Preview API]
+// ctx
 // resultsContext (required)
 // project (required): Project ID or project name
 // workItemIds (optional)
-func (client Client) QueryTestSummaryByRequirement(resultsContext *TestResultsContext, project *string, workItemIds *[]int) (*[]TestSummaryForWorkItem, error) {
+func (client Client) QueryTestSummaryByRequirement(ctx context.Context, resultsContext *TestResultsContext, project *string, workItemIds *[]int) (*[]TestSummaryForWorkItem, error) {
     if resultsContext == nil {
-        return nil, errors.New("resultsContext is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "resultsContext"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
@@ -1250,7 +1283,7 @@ func (client Client) QueryTestSummaryByRequirement(resultsContext *TestResultsCo
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("3b7fd26f-c335-4e55-afc1-a588f5e2af3c")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1261,15 +1294,16 @@ func (client Client) QueryTestSummaryByRequirement(resultsContext *TestResultsCo
 }
 
 // [Preview API]
+// ctx
 // filter (required)
 // project (required): Project ID or project name
-func (client Client) QueryResultTrendForBuild(filter *TestResultTrendFilter, project *string) (*[]AggregatedDataForResultTrend, error) {
+func (client Client) QueryResultTrendForBuild(ctx context.Context, filter *TestResultTrendFilter, project *string) (*[]AggregatedDataForResultTrend, error) {
     if filter == nil {
-        return nil, errors.New("filter is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "filter"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
@@ -1278,7 +1312,7 @@ func (client Client) QueryResultTrendForBuild(filter *TestResultTrendFilter, pro
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("0886a7ae-315a-4dba-9122-bcce93301f3a")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1289,15 +1323,16 @@ func (client Client) QueryResultTrendForBuild(filter *TestResultTrendFilter, pro
 }
 
 // [Preview API]
+// ctx
 // filter (required)
 // project (required): Project ID or project name
-func (client Client) QueryResultTrendForRelease(filter *TestResultTrendFilter, project *string) (*[]AggregatedDataForResultTrend, error) {
+func (client Client) QueryResultTrendForRelease(ctx context.Context, filter *TestResultTrendFilter, project *string) (*[]AggregatedDataForResultTrend, error) {
     if filter == nil {
-        return nil, errors.New("filter is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "filter"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
@@ -1306,7 +1341,7 @@ func (client Client) QueryResultTrendForRelease(filter *TestResultTrendFilter, p
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("107f23c3-359a-460a-a70c-63ee739f9f9a")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1317,15 +1352,16 @@ func (client Client) QueryResultTrendForRelease(filter *TestResultTrendFilter, p
 }
 
 // [Preview API]
+// ctx
 // testRun (required)
 // project (required): Project ID or project name
-func (client Client) CreateTestRun(testRun *RunCreateModel, project *string) (*TestRun, error) {
+func (client Client) CreateTestRun(ctx context.Context, testRun *RunCreateModel, project *string) (*TestRun, error) {
     if testRun == nil {
-        return nil, errors.New("testRun is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testRun"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
@@ -1334,7 +1370,7 @@ func (client Client) CreateTestRun(testRun *RunCreateModel, project *string) (*T
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("364538f9-8062-4ce0-b024-75a0fb463f0d")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1345,21 +1381,22 @@ func (client Client) CreateTestRun(testRun *RunCreateModel, project *string) (*T
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // runId (required)
-func (client Client) DeleteTestRun(project *string, runId *int) error {
+func (client Client) DeleteTestRun(ctx context.Context, project *string, runId *int) error {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return errors.New("project is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return errors.New("runId is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
 
     locationId, _ := uuid.Parse("364538f9-8062-4ce0-b024-75a0fb463f0d")
-    _, err := client.Client.Send(http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return err
     }
@@ -1368,18 +1405,19 @@ func (client Client) DeleteTestRun(project *string, runId *int) error {
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // includeDetails (optional)
 // includeTags (optional)
-func (client Client) GetTestRunById(project *string, runId *int, includeDetails *bool, includeTags *bool) (*TestRun, error) {
+func (client Client) GetTestRunById(ctx context.Context, project *string, runId *int, includeDetails *bool, includeTags *bool) (*TestRun, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
 
@@ -1391,7 +1429,7 @@ func (client Client) GetTestRunById(project *string, runId *int, includeDetails 
         queryParams.Add("includeTags", strconv.FormatBool(*includeTags))
     }
     locationId, _ := uuid.Parse("364538f9-8062-4ce0-b024-75a0fb463f0d")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1402,6 +1440,7 @@ func (client Client) GetTestRunById(project *string, runId *int, includeDetails 
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // buildUri (optional)
 // owner (optional)
@@ -1411,10 +1450,10 @@ func (client Client) GetTestRunById(project *string, runId *int, includeDetails 
 // automated (optional)
 // skip (optional)
 // top (optional)
-func (client Client) GetTestRuns(project *string, buildUri *string, owner *string, tmiRunId *string, planId *int, includeRunDetails *bool, automated *bool, skip *int, top *int) (*[]TestRun, error) {
+func (client Client) GetTestRuns(ctx context.Context, project *string, buildUri *string, owner *string, tmiRunId *string, planId *int, includeRunDetails *bool, automated *bool, skip *int, top *int) (*[]TestRun, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
@@ -1444,7 +1483,7 @@ func (client Client) GetTestRuns(project *string, buildUri *string, owner *strin
         queryParams.Add("$top", strconv.Itoa(*top))
     }
     locationId, _ := uuid.Parse("364538f9-8062-4ce0-b024-75a0fb463f0d")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1455,6 +1494,7 @@ func (client Client) GetTestRuns(project *string, buildUri *string, owner *strin
 }
 
 // [Preview API] Query Test Runs based on filters. Mandatory fields are minLastUpdatedDate and maxLastUpdatedDate.
+// ctx
 // project (required): Project ID or project name
 // minLastUpdatedDate (required): Minimum Last Modified Date of run to be queried (Mandatory).
 // maxLastUpdatedDate (required): Maximum Last Modified Date of run to be queried (Mandatory, difference between min and max date can be atmost 7 days).
@@ -1472,20 +1512,20 @@ func (client Client) GetTestRuns(project *string, buildUri *string, owner *strin
 // runTitle (optional): Run Title of the Runs to be queried.
 // top (optional): Number of runs to be queried. Limit is 100
 // continuationToken (optional): continuationToken received from previous batch or null for first batch. It is not supposed to be created (or altered, if received from last batch) by user.
-func (client Client) QueryTestRuns(project *string, minLastUpdatedDate *time.Time, maxLastUpdatedDate *time.Time, state *string, planIds *[]int, isAutomated *bool, publishContext *string, buildIds *[]int, buildDefIds *[]int, branchName *string, releaseIds *[]int, releaseDefIds *[]int, releaseEnvIds *[]int, releaseEnvDefIds *[]int, runTitle *string, top *int, continuationToken *string) (*[]TestRun, error) {
+func (client Client) QueryTestRuns(ctx context.Context, project *string, minLastUpdatedDate *time.Time, maxLastUpdatedDate *time.Time, state *string, planIds *[]int, isAutomated *bool, publishContext *string, buildIds *[]int, buildDefIds *[]int, branchName *string, releaseIds *[]int, releaseDefIds *[]int, releaseEnvIds *[]int, releaseEnvDefIds *[]int, runTitle *string, top *int, continuationToken *string) (*[]TestRun, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     queryParams := url.Values{}
     if minLastUpdatedDate == nil {
-        return nil, errors.New("minLastUpdatedDate is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "minLastUpdatedDate"}
     }
     queryParams.Add("minLastUpdatedDate", (*minLastUpdatedDate).String())
     if maxLastUpdatedDate == nil {
-        return nil, errors.New("maxLastUpdatedDate is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "maxLastUpdatedDate"}
     }
     queryParams.Add("maxLastUpdatedDate", (*maxLastUpdatedDate).String())
     if state != nil {
@@ -1566,7 +1606,7 @@ func (client Client) QueryTestRuns(project *string, minLastUpdatedDate *time.Tim
         queryParams.Add("continuationToken", *continuationToken)
     }
     locationId, _ := uuid.Parse("364538f9-8062-4ce0-b024-75a0fb463f0d")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1577,20 +1617,21 @@ func (client Client) QueryTestRuns(project *string, minLastUpdatedDate *time.Tim
 }
 
 // [Preview API]
+// ctx
 // runUpdateModel (required)
 // project (required): Project ID or project name
 // runId (required)
-func (client Client) UpdateTestRun(runUpdateModel *RunUpdateModel, project *string, runId *int) (*TestRun, error) {
+func (client Client) UpdateTestRun(ctx context.Context, runUpdateModel *RunUpdateModel, project *string, runId *int) (*TestRun, error) {
     if runUpdateModel == nil {
-        return nil, errors.New("runUpdateModel is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runUpdateModel"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
 
@@ -1599,7 +1640,7 @@ func (client Client) UpdateTestRun(runUpdateModel *RunUpdateModel, project *stri
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("364538f9-8062-4ce0-b024-75a0fb463f0d")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1610,21 +1651,22 @@ func (client Client) UpdateTestRun(runUpdateModel *RunUpdateModel, project *stri
 }
 
 // Get test run statistics , used when we want to get summary of a run by outcome.
+// ctx
 // project (required): Project ID or project name
 // runId (required): ID of the run to get.
-func (client Client) GetTestRunStatistics(project *string, runId *int) (*TestRunStatistic, error) {
+func (client Client) GetTestRunStatistics(ctx context.Context, project *string, runId *int) (*TestRunStatistic, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
 
     locationId, _ := uuid.Parse("82b986e8-ca9e-4a89-b39e-f65c69bc104a")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1635,12 +1677,13 @@ func (client Client) GetTestRunStatistics(project *string, runId *int) (*TestRun
 }
 
 // [Preview API] Get TestResultsSettings data
+// ctx
 // project (required): Project ID or project name
 // settingsType (optional)
-func (client Client) GetTestResultsSettings(project *string, settingsType *string) (*TestResultsSettings, error) {
+func (client Client) GetTestResultsSettings(ctx context.Context, project *string, settingsType *string) (*TestResultsSettings, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
@@ -1649,7 +1692,7 @@ func (client Client) GetTestResultsSettings(project *string, settingsType *strin
         queryParams.Add("settingsType", *settingsType)
     }
     locationId, _ := uuid.Parse("7319952e-e5a9-4e19-a006-84f3be8b7c68")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.3", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.3", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1660,15 +1703,16 @@ func (client Client) GetTestResultsSettings(project *string, settingsType *strin
 }
 
 // [Preview API] Update project settings of test results
+// ctx
 // testResultsUpdateSettings (required)
 // project (required): Project ID or project name
-func (client Client) UpdatePipelinesTestSettings(testResultsUpdateSettings *TestResultsUpdateSettings, project *string) (*TestResultsSettings, error) {
+func (client Client) UpdatePipelinesTestSettings(ctx context.Context, testResultsUpdateSettings *TestResultsUpdateSettings, project *string) (*TestResultsSettings, error) {
     if testResultsUpdateSettings == nil {
-        return nil, errors.New("testResultsUpdateSettings is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testResultsUpdateSettings"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
@@ -1677,7 +1721,7 @@ func (client Client) UpdatePipelinesTestSettings(testResultsUpdateSettings *Test
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("7319952e-e5a9-4e19-a006-84f3be8b7c68")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1-preview.3", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.3", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1688,15 +1732,16 @@ func (client Client) UpdatePipelinesTestSettings(testResultsUpdateSettings *Test
 }
 
 // [Preview API] Get history of a test method using TestHistoryQuery
+// ctx
 // filter (required): TestHistoryQuery to get history
 // project (required): Project ID or project name
-func (client Client) QueryTestHistory(filter *TestHistoryQuery, project *string) (*TestHistoryQuery, error) {
+func (client Client) QueryTestHistory(ctx context.Context, filter *TestHistoryQuery, project *string) (*TestHistoryQuery, error) {
     if filter == nil {
-        return nil, errors.New("filter is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "filter"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
@@ -1705,7 +1750,7 @@ func (client Client) QueryTestHistory(filter *TestHistoryQuery, project *string)
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("2a41bd6a-8118-4403-b74e-5ba7492aed9d")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.2", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.2", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1716,6 +1761,7 @@ func (client Client) QueryTestHistory(filter *TestHistoryQuery, project *string)
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // buildId (required)
 // type_ (required)
@@ -1724,20 +1770,20 @@ func (client Client) QueryTestHistory(filter *TestHistoryQuery, project *string)
 // fetchMetaData (optional)
 // top (optional)
 // continuationToken (optional): Header to pass the continuationToken
-func (client Client) GetTestLogsForBuild(project *string, buildId *int, type_ *string, directoryPath *string, fileNamePrefix *string, fetchMetaData *bool, top *int, continuationToken *string) (*[]TestLog, error) {
+func (client Client) GetTestLogsForBuild(ctx context.Context, project *string, buildId *int, type_ *string, directoryPath *string, fileNamePrefix *string, fetchMetaData *bool, top *int, continuationToken *string) (*[]TestLog, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     queryParams := url.Values{}
     if buildId == nil {
-        return nil, errors.New("buildId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"}
     }
     queryParams.Add("buildId", strconv.Itoa(*buildId))
     if type_ == nil {
-        return nil, errors.New("type_ is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "type_"}
     }
     queryParams.Add("type_", *type_)
     if directoryPath != nil {
@@ -1757,7 +1803,7 @@ func (client Client) GetTestLogsForBuild(project *string, buildId *int, type_ *s
         additionalHeaders["x-ms-continuationtoken"] = *continuationToken
     }
     locationId, _ := uuid.Parse("dff8ce3a-e539-4817-a405-d968491a88f1")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", additionalHeaders)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", additionalHeaders)
     if err != nil {
         return nil, err
     }
@@ -1768,6 +1814,7 @@ func (client Client) GetTestLogsForBuild(project *string, buildId *int, type_ *s
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // resultId (required)
@@ -1777,24 +1824,24 @@ func (client Client) GetTestLogsForBuild(project *string, buildId *int, type_ *s
 // fetchMetaData (optional)
 // top (optional)
 // continuationToken (optional): Header to pass the continuationToken
-func (client Client) GetTestResultLogs(project *string, runId *int, resultId *int, type_ *string, directoryPath *string, fileNamePrefix *string, fetchMetaData *bool, top *int, continuationToken *string) (*[]TestLog, error) {
+func (client Client) GetTestResultLogs(ctx context.Context, project *string, runId *int, resultId *int, type_ *string, directoryPath *string, fileNamePrefix *string, fetchMetaData *bool, top *int, continuationToken *string) (*[]TestLog, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
     if resultId == nil {
-        return nil, errors.New("resultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "resultId"} 
     }
     routeValues["resultId"] = strconv.Itoa(*resultId)
 
     queryParams := url.Values{}
     if type_ == nil {
-        return nil, errors.New("type_ is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "type_"}
     }
     queryParams.Add("type_", *type_)
     if directoryPath != nil {
@@ -1814,7 +1861,7 @@ func (client Client) GetTestResultLogs(project *string, runId *int, resultId *in
         additionalHeaders["x-ms-continuationtoken"] = *continuationToken
     }
     locationId, _ := uuid.Parse("714caaac-ae1e-4869-8323-9bc0f5120dbf")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", additionalHeaders)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", additionalHeaders)
     if err != nil {
         return nil, err
     }
@@ -1825,6 +1872,7 @@ func (client Client) GetTestResultLogs(project *string, runId *int, resultId *in
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // resultId (required)
@@ -1835,28 +1883,28 @@ func (client Client) GetTestResultLogs(project *string, runId *int, resultId *in
 // fetchMetaData (optional)
 // top (optional)
 // continuationToken (optional): Header to pass the continuationToken
-func (client Client) GetTestSubResultLogs(project *string, runId *int, resultId *int, subResultId *int, type_ *string, directoryPath *string, fileNamePrefix *string, fetchMetaData *bool, top *int, continuationToken *string) (*[]TestLog, error) {
+func (client Client) GetTestSubResultLogs(ctx context.Context, project *string, runId *int, resultId *int, subResultId *int, type_ *string, directoryPath *string, fileNamePrefix *string, fetchMetaData *bool, top *int, continuationToken *string) (*[]TestLog, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
     if resultId == nil {
-        return nil, errors.New("resultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "resultId"} 
     }
     routeValues["resultId"] = strconv.Itoa(*resultId)
 
     queryParams := url.Values{}
     if subResultId == nil {
-        return nil, errors.New("subResultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "subResultId"}
     }
     queryParams.Add("subResultId", strconv.Itoa(*subResultId))
     if type_ == nil {
-        return nil, errors.New("type_ is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "type_"}
     }
     queryParams.Add("type_", *type_)
     if directoryPath != nil {
@@ -1876,7 +1924,7 @@ func (client Client) GetTestSubResultLogs(project *string, runId *int, resultId 
         additionalHeaders["x-ms-continuationtoken"] = *continuationToken
     }
     locationId, _ := uuid.Parse("714caaac-ae1e-4869-8323-9bc0f5120dbf")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", additionalHeaders)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", additionalHeaders)
     if err != nil {
         return nil, err
     }
@@ -1887,6 +1935,7 @@ func (client Client) GetTestSubResultLogs(project *string, runId *int, resultId 
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // type_ (required)
@@ -1895,20 +1944,20 @@ func (client Client) GetTestSubResultLogs(project *string, runId *int, resultId 
 // fetchMetaData (optional)
 // top (optional)
 // continuationToken (optional): Header to pass the continuationToken
-func (client Client) GetTestRunLogs(project *string, runId *int, type_ *string, directoryPath *string, fileNamePrefix *string, fetchMetaData *bool, top *int, continuationToken *string) (*[]TestLog, error) {
+func (client Client) GetTestRunLogs(ctx context.Context, project *string, runId *int, type_ *string, directoryPath *string, fileNamePrefix *string, fetchMetaData *bool, top *int, continuationToken *string) (*[]TestLog, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
 
     queryParams := url.Values{}
     if type_ == nil {
-        return nil, errors.New("type_ is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "type_"}
     }
     queryParams.Add("type_", *type_)
     if directoryPath != nil {
@@ -1928,7 +1977,7 @@ func (client Client) GetTestRunLogs(project *string, runId *int, type_ *string, 
         additionalHeaders["x-ms-continuationtoken"] = *continuationToken
     }
     locationId, _ := uuid.Parse("5b47b946-e875-4c9a-acdc-2a20996caebe")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", additionalHeaders)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", additionalHeaders)
     if err != nil {
         return nil, err
     }
@@ -1939,32 +1988,33 @@ func (client Client) GetTestRunLogs(project *string, runId *int, type_ *string, 
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // build (required)
 // type_ (required)
 // filePath (required)
-func (client Client) GetTestLogStoreEndpointDetailsForBuildLog(project *string, build *int, type_ *string, filePath *string) (*TestLogStoreEndpointDetails, error) {
+func (client Client) GetTestLogStoreEndpointDetailsForBuildLog(ctx context.Context, project *string, build *int, type_ *string, filePath *string) (*TestLogStoreEndpointDetails, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     queryParams := url.Values{}
     if build == nil {
-        return nil, errors.New("build is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "build"}
     }
     queryParams.Add("build", strconv.Itoa(*build))
     if type_ == nil {
-        return nil, errors.New("type_ is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "type_"}
     }
     queryParams.Add("type_", *type_)
     if filePath == nil {
-        return nil, errors.New("filePath is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "filePath"}
     }
     queryParams.Add("filePath", *filePath)
     locationId, _ := uuid.Parse("39b09be7-f0c9-4a83-a513-9ae31b45c56f")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1975,27 +2025,28 @@ func (client Client) GetTestLogStoreEndpointDetailsForBuildLog(project *string, 
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // buildId (required)
 // testLogStoreOperationType (required)
-func (client Client) TestLogStoreEndpointDetailsForBuild(project *string, buildId *int, testLogStoreOperationType *string) (*TestLogStoreEndpointDetails, error) {
+func (client Client) TestLogStoreEndpointDetailsForBuild(ctx context.Context, project *string, buildId *int, testLogStoreOperationType *string) (*TestLogStoreEndpointDetails, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     queryParams := url.Values{}
     if buildId == nil {
-        return nil, errors.New("buildId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"}
     }
     queryParams.Add("buildId", strconv.Itoa(*buildId))
     if testLogStoreOperationType == nil {
-        return nil, errors.New("testLogStoreOperationType is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testLogStoreOperationType"}
     }
     queryParams.Add("testLogStoreOperationType", *testLogStoreOperationType)
     locationId, _ := uuid.Parse("39b09be7-f0c9-4a83-a513-9ae31b45c56f")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2006,37 +2057,38 @@ func (client Client) TestLogStoreEndpointDetailsForBuild(project *string, buildI
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // resultId (required)
 // type_ (required)
 // filePath (required)
-func (client Client) GetTestLogStoreEndpointDetailsForResultLog(project *string, runId *int, resultId *int, type_ *string, filePath *string) (*TestLogStoreEndpointDetails, error) {
+func (client Client) GetTestLogStoreEndpointDetailsForResultLog(ctx context.Context, project *string, runId *int, resultId *int, type_ *string, filePath *string) (*TestLogStoreEndpointDetails, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
     if resultId == nil {
-        return nil, errors.New("resultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "resultId"} 
     }
     routeValues["resultId"] = strconv.Itoa(*resultId)
 
     queryParams := url.Values{}
     if type_ == nil {
-        return nil, errors.New("type_ is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "type_"}
     }
     queryParams.Add("type_", *type_)
     if filePath == nil {
-        return nil, errors.New("filePath is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "filePath"}
     }
     queryParams.Add("filePath", *filePath)
     locationId, _ := uuid.Parse("da630b37-1236-45b5-945e-1d7bdb673850")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2047,42 +2099,43 @@ func (client Client) GetTestLogStoreEndpointDetailsForResultLog(project *string,
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // resultId (required)
 // subResultId (required)
 // type_ (required)
 // filePath (required)
-func (client Client) GetTestLogStoreEndpointDetailsForSubResultLog(project *string, runId *int, resultId *int, subResultId *int, type_ *string, filePath *string) (*TestLogStoreEndpointDetails, error) {
+func (client Client) GetTestLogStoreEndpointDetailsForSubResultLog(ctx context.Context, project *string, runId *int, resultId *int, subResultId *int, type_ *string, filePath *string) (*TestLogStoreEndpointDetails, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
     if resultId == nil {
-        return nil, errors.New("resultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "resultId"} 
     }
     routeValues["resultId"] = strconv.Itoa(*resultId)
 
     queryParams := url.Values{}
     if subResultId == nil {
-        return nil, errors.New("subResultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "subResultId"}
     }
     queryParams.Add("subResultId", strconv.Itoa(*subResultId))
     if type_ == nil {
-        return nil, errors.New("type_ is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "type_"}
     }
     queryParams.Add("type_", *type_)
     if filePath == nil {
-        return nil, errors.New("filePath is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "filePath"}
     }
     queryParams.Add("filePath", *filePath)
     locationId, _ := uuid.Parse("da630b37-1236-45b5-945e-1d7bdb673850")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2093,42 +2146,43 @@ func (client Client) GetTestLogStoreEndpointDetailsForSubResultLog(project *stri
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // resultId (required)
 // subResultId (required)
 // filePath (required)
 // type_ (required)
-func (client Client) TestLogStoreEndpointDetailsForResult(project *string, runId *int, resultId *int, subResultId *int, filePath *string, type_ *string) (*TestLogStoreEndpointDetails, error) {
+func (client Client) TestLogStoreEndpointDetailsForResult(ctx context.Context, project *string, runId *int, resultId *int, subResultId *int, filePath *string, type_ *string) (*TestLogStoreEndpointDetails, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
     if resultId == nil {
-        return nil, errors.New("resultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "resultId"} 
     }
     routeValues["resultId"] = strconv.Itoa(*resultId)
 
     queryParams := url.Values{}
     if subResultId == nil {
-        return nil, errors.New("subResultId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "subResultId"}
     }
     queryParams.Add("subResultId", strconv.Itoa(*subResultId))
     if filePath == nil {
-        return nil, errors.New("filePath is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "filePath"}
     }
     queryParams.Add("filePath", *filePath)
     if type_ == nil {
-        return nil, errors.New("type_ is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "type_"}
     }
     queryParams.Add("type_", *type_)
     locationId, _ := uuid.Parse("da630b37-1236-45b5-945e-1d7bdb673850")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2139,32 +2193,33 @@ func (client Client) TestLogStoreEndpointDetailsForResult(project *string, runId
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // type_ (required)
 // filePath (required)
-func (client Client) GetTestLogStoreEndpointDetailsForRunLog(project *string, runId *int, type_ *string, filePath *string) (*TestLogStoreEndpointDetails, error) {
+func (client Client) GetTestLogStoreEndpointDetailsForRunLog(ctx context.Context, project *string, runId *int, type_ *string, filePath *string) (*TestLogStoreEndpointDetails, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
 
     queryParams := url.Values{}
     if type_ == nil {
-        return nil, errors.New("type_ is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "type_"}
     }
     queryParams.Add("type_", *type_)
     if filePath == nil {
-        return nil, errors.New("filePath is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "filePath"}
     }
     queryParams.Add("filePath", *filePath)
     locationId, _ := uuid.Parse("67eb3f92-6c97-4fd9-8b63-6cbdc7e526ea")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2175,25 +2230,26 @@ func (client Client) GetTestLogStoreEndpointDetailsForRunLog(project *string, ru
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // runId (required)
 // testLogStoreOperationType (required)
 // filePath (optional)
 // type_ (optional)
-func (client Client) TestLogStoreEndpointDetailsForRun(project *string, runId *int, testLogStoreOperationType *string, filePath *string, type_ *string) (*TestLogStoreEndpointDetails, error) {
+func (client Client) TestLogStoreEndpointDetailsForRun(ctx context.Context, project *string, runId *int, testLogStoreOperationType *string, filePath *string, type_ *string) (*TestLogStoreEndpointDetails, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if runId == nil {
-        return nil, errors.New("runId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*runId)
 
     queryParams := url.Values{}
     if testLogStoreOperationType == nil {
-        return nil, errors.New("testLogStoreOperationType is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testLogStoreOperationType"}
     }
     queryParams.Add("testLogStoreOperationType", *testLogStoreOperationType)
     if filePath != nil {
@@ -2203,7 +2259,7 @@ func (client Client) TestLogStoreEndpointDetailsForRun(project *string, runId *i
         queryParams.Add("type_", *type_)
     }
     locationId, _ := uuid.Parse("67eb3f92-6c97-4fd9-8b63-6cbdc7e526ea")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2214,15 +2270,16 @@ func (client Client) TestLogStoreEndpointDetailsForRun(project *string, runId *i
 }
 
 // [Preview API]
+// ctx
 // testSettings (required)
 // project (required): Project ID or project name
-func (client Client) CreateTestSettings(testSettings *TestSettings, project *string) (*int, error) {
+func (client Client) CreateTestSettings(ctx context.Context, testSettings *TestSettings, project *string) (*int, error) {
     if testSettings == nil {
-        return nil, errors.New("testSettings is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testSettings"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
@@ -2231,7 +2288,7 @@ func (client Client) CreateTestSettings(testSettings *TestSettings, project *str
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("930bad47-f826-4099-9597-f44d0a9c735c")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2242,22 +2299,23 @@ func (client Client) CreateTestSettings(testSettings *TestSettings, project *str
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // testSettingsId (required)
-func (client Client) DeleteTestSettings(project *string, testSettingsId *int) error {
+func (client Client) DeleteTestSettings(ctx context.Context, project *string, testSettingsId *int) error {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return errors.New("project is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     queryParams := url.Values{}
     if testSettingsId == nil {
-        return errors.New("testSettingsId is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "testSettingsId"}
     }
     queryParams.Add("testSettingsId", strconv.Itoa(*testSettingsId))
     locationId, _ := uuid.Parse("930bad47-f826-4099-9597-f44d0a9c735c")
-    _, err := client.Client.Send(http.MethodDelete, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return err
     }
@@ -2266,22 +2324,23 @@ func (client Client) DeleteTestSettings(project *string, testSettingsId *int) er
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // testSettingsId (required)
-func (client Client) GetTestSettingsById(project *string, testSettingsId *int) (*TestSettings, error) {
+func (client Client) GetTestSettingsById(ctx context.Context, project *string, testSettingsId *int) (*TestSettings, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     queryParams := url.Values{}
     if testSettingsId == nil {
-        return nil, errors.New("testSettingsId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testSettingsId"}
     }
     queryParams.Add("testSettingsId", strconv.Itoa(*testSettingsId))
     locationId, _ := uuid.Parse("930bad47-f826-4099-9597-f44d0a9c735c")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2292,15 +2351,16 @@ func (client Client) GetTestSettingsById(project *string, testSettingsId *int) (
 }
 
 // [Preview API]
+// ctx
 // workItemToTestLinks (required)
 // project (required): Project ID or project name
-func (client Client) AddWorkItemToTestLinks(workItemToTestLinks *WorkItemToTestLinks, project *string) (*WorkItemToTestLinks, error) {
+func (client Client) AddWorkItemToTestLinks(ctx context.Context, workItemToTestLinks *WorkItemToTestLinks, project *string) (*WorkItemToTestLinks, error) {
     if workItemToTestLinks == nil {
-        return nil, errors.New("workItemToTestLinks is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "workItemToTestLinks"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
@@ -2309,7 +2369,7 @@ func (client Client) AddWorkItemToTestLinks(workItemToTestLinks *WorkItemToTestL
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("4e3abe63-ca46-4fe0-98b2-363f7ec7aa5f")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2320,27 +2380,28 @@ func (client Client) AddWorkItemToTestLinks(workItemToTestLinks *WorkItemToTestL
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // testName (required)
 // workItemId (required)
-func (client Client) DeleteTestMethodToWorkItemLink(project *string, testName *string, workItemId *int) (*bool, error) {
+func (client Client) DeleteTestMethodToWorkItemLink(ctx context.Context, project *string, testName *string, workItemId *int) (*bool, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     queryParams := url.Values{}
     if testName == nil {
-        return nil, errors.New("testName is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testName"}
     }
     queryParams.Add("testName", *testName)
     if workItemId == nil {
-        return nil, errors.New("workItemId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "workItemId"}
     }
     queryParams.Add("workItemId", strconv.Itoa(*workItemId))
     locationId, _ := uuid.Parse("cbd50bd7-f7ed-4e35-b127-4408ae6bfa2c")
-    resp, err := client.Client.Send(http.MethodDelete, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2351,22 +2412,23 @@ func (client Client) DeleteTestMethodToWorkItemLink(project *string, testName *s
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // testName (required)
-func (client Client) QueryTestMethodLinkedWorkItems(project *string, testName *string) (*TestToWorkItemLinks, error) {
+func (client Client) QueryTestMethodLinkedWorkItems(ctx context.Context, project *string, testName *string) (*TestToWorkItemLinks, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     queryParams := url.Values{}
     if testName == nil {
-        return nil, errors.New("testName is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testName"}
     }
     queryParams.Add("testName", *testName)
     locationId, _ := uuid.Parse("cbd50bd7-f7ed-4e35-b127-4408ae6bfa2c")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2377,6 +2439,7 @@ func (client Client) QueryTestMethodLinkedWorkItems(project *string, testName *s
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // workItemCategory (required)
 // automatedTestName (optional)
@@ -2384,16 +2447,16 @@ func (client Client) QueryTestMethodLinkedWorkItems(project *string, testName *s
 // maxCompleteDate (optional)
 // days (optional)
 // workItemCount (optional)
-func (client Client) QueryTestResultWorkItems(project *string, workItemCategory *string, automatedTestName *string, testCaseId *int, maxCompleteDate *time.Time, days *int, workItemCount *int) (*[]WorkItemReference, error) {
+func (client Client) QueryTestResultWorkItems(ctx context.Context, project *string, workItemCategory *string, automatedTestName *string, testCaseId *int, maxCompleteDate *time.Time, days *int, workItemCount *int) (*[]WorkItemReference, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     queryParams := url.Values{}
     if workItemCategory == nil {
-        return nil, errors.New("workItemCategory is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "workItemCategory"}
     }
     queryParams.Add("workItemCategory", *workItemCategory)
     if automatedTestName != nil {
@@ -2412,7 +2475,7 @@ func (client Client) QueryTestResultWorkItems(project *string, workItemCategory 
         queryParams.Add("$workItemCount", strconv.Itoa(*workItemCount))
     }
     locationId, _ := uuid.Parse("f7401a26-331b-44fe-a470-f7ed35138e4a")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }

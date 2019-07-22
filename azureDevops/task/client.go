@@ -10,8 +10,8 @@ package task
 
 import (
     "bytes"
+    "context"
     "encoding/json"
-    "errors"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevops"
     "net/http"
@@ -23,7 +23,7 @@ type Client struct {
     Client azureDevops.Client
 }
 
-func NewClient(connection azureDevops.Connection) *Client {
+func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -31,31 +31,32 @@ func NewClient(connection azureDevops.Connection) *Client {
 }
 
 // [Preview API]
+// ctx
 // scopeIdentifier (required): The project GUID to scope the request
 // hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
 // planId (required)
 // type_ (required)
-func (client Client) GetPlanAttachments(scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, type_ *string) (*[]TaskAttachment, error) {
+func (client Client) GetPlanAttachments(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, type_ *string) (*[]TaskAttachment, error) {
     routeValues := make(map[string]string)
     if scopeIdentifier == nil {
-        return nil, errors.New("scopeIdentifier is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
     if hubName == nil || *hubName == "" {
-        return nil, errors.New("hubName is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *hubName
     if planId == nil {
-        return nil, errors.New("planId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*planId).String()
     if type_ == nil || *type_ == "" {
-        return nil, errors.New("type_ is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *type_
 
     locationId, _ := uuid.Parse("eb55e5d6-2f30-4295-b5ed-38da50b1fc52")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -66,6 +67,7 @@ func (client Client) GetPlanAttachments(scopeIdentifier *uuid.UUID, hubName *str
 }
 
 // [Preview API]
+// ctx
 // uploadStream (required): Stream to upload
 // scopeIdentifier (required): The project GUID to scope the request
 // hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
@@ -74,37 +76,37 @@ func (client Client) GetPlanAttachments(scopeIdentifier *uuid.UUID, hubName *str
 // recordId (required)
 // type_ (required)
 // name (required)
-func (client Client) CreateAttachment(uploadStream *interface{}, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (*TaskAttachment, error) {
+func (client Client) CreateAttachment(ctx context.Context, uploadStream *interface{}, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (*TaskAttachment, error) {
     if uploadStream == nil {
-        return nil, errors.New("uploadStream is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
     routeValues := make(map[string]string)
     if scopeIdentifier == nil {
-        return nil, errors.New("scopeIdentifier is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
     if hubName == nil || *hubName == "" {
-        return nil, errors.New("hubName is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *hubName
     if planId == nil {
-        return nil, errors.New("planId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*planId).String()
     if timelineId == nil {
-        return nil, errors.New("timelineId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
     }
     routeValues["timelineId"] = (*timelineId).String()
     if recordId == nil {
-        return nil, errors.New("recordId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "recordId"} 
     }
     routeValues["recordId"] = (*recordId).String()
     if type_ == nil || *type_ == "" {
-        return nil, errors.New("type_ is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *type_
     if name == nil || *name == "" {
-        return nil, errors.New("name is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
     routeValues["name"] = *name
 
@@ -113,7 +115,7 @@ func (client Client) CreateAttachment(uploadStream *interface{}, scopeIdentifier
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("7898f959-9cdf-4096-b29e-7f293031629e")
-    resp, err := client.Client.Send(http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -124,6 +126,7 @@ func (client Client) CreateAttachment(uploadStream *interface{}, scopeIdentifier
 }
 
 // [Preview API]
+// ctx
 // scopeIdentifier (required): The project GUID to scope the request
 // hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
 // planId (required)
@@ -131,39 +134,39 @@ func (client Client) CreateAttachment(uploadStream *interface{}, scopeIdentifier
 // recordId (required)
 // type_ (required)
 // name (required)
-func (client Client) GetAttachment(scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (*TaskAttachment, error) {
+func (client Client) GetAttachment(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (*TaskAttachment, error) {
     routeValues := make(map[string]string)
     if scopeIdentifier == nil {
-        return nil, errors.New("scopeIdentifier is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
     if hubName == nil || *hubName == "" {
-        return nil, errors.New("hubName is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *hubName
     if planId == nil {
-        return nil, errors.New("planId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*planId).String()
     if timelineId == nil {
-        return nil, errors.New("timelineId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
     }
     routeValues["timelineId"] = (*timelineId).String()
     if recordId == nil {
-        return nil, errors.New("recordId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "recordId"} 
     }
     routeValues["recordId"] = (*recordId).String()
     if type_ == nil || *type_ == "" {
-        return nil, errors.New("type_ is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *type_
     if name == nil || *name == "" {
-        return nil, errors.New("name is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
     routeValues["name"] = *name
 
     locationId, _ := uuid.Parse("7898f959-9cdf-4096-b29e-7f293031629e")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -174,6 +177,7 @@ func (client Client) GetAttachment(scopeIdentifier *uuid.UUID, hubName *string, 
 }
 
 // [Preview API]
+// ctx
 // scopeIdentifier (required): The project GUID to scope the request
 // hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
 // planId (required)
@@ -181,39 +185,39 @@ func (client Client) GetAttachment(scopeIdentifier *uuid.UUID, hubName *string, 
 // recordId (required)
 // type_ (required)
 // name (required)
-func (client Client) GetAttachmentContent(scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (*interface{}, error) {
+func (client Client) GetAttachmentContent(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (*interface{}, error) {
     routeValues := make(map[string]string)
     if scopeIdentifier == nil {
-        return nil, errors.New("scopeIdentifier is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
     if hubName == nil || *hubName == "" {
-        return nil, errors.New("hubName is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *hubName
     if planId == nil {
-        return nil, errors.New("planId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*planId).String()
     if timelineId == nil {
-        return nil, errors.New("timelineId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
     }
     routeValues["timelineId"] = (*timelineId).String()
     if recordId == nil {
-        return nil, errors.New("recordId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "recordId"} 
     }
     routeValues["recordId"] = (*recordId).String()
     if type_ == nil || *type_ == "" {
-        return nil, errors.New("type_ is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *type_
     if name == nil || *name == "" {
-        return nil, errors.New("name is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
     routeValues["name"] = *name
 
     locationId, _ := uuid.Parse("7898f959-9cdf-4096-b29e-7f293031629e")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/octet-stream", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/octet-stream", nil)
     if err != nil {
         return nil, err
     }
@@ -224,41 +228,42 @@ func (client Client) GetAttachmentContent(scopeIdentifier *uuid.UUID, hubName *s
 }
 
 // [Preview API]
+// ctx
 // scopeIdentifier (required): The project GUID to scope the request
 // hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
 // planId (required)
 // timelineId (required)
 // recordId (required)
 // type_ (required)
-func (client Client) GetAttachments(scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string) (*[]TaskAttachment, error) {
+func (client Client) GetAttachments(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string) (*[]TaskAttachment, error) {
     routeValues := make(map[string]string)
     if scopeIdentifier == nil {
-        return nil, errors.New("scopeIdentifier is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
     if hubName == nil || *hubName == "" {
-        return nil, errors.New("hubName is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *hubName
     if planId == nil {
-        return nil, errors.New("planId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*planId).String()
     if timelineId == nil {
-        return nil, errors.New("timelineId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
     }
     routeValues["timelineId"] = (*timelineId).String()
     if recordId == nil {
-        return nil, errors.New("recordId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "recordId"} 
     }
     routeValues["recordId"] = (*recordId).String()
     if type_ == nil || *type_ == "" {
-        return nil, errors.New("type_ is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *type_
 
     locationId, _ := uuid.Parse("7898f959-9cdf-4096-b29e-7f293031629e")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -268,30 +273,31 @@ func (client Client) GetAttachments(scopeIdentifier *uuid.UUID, hubName *string,
     return &responseValue, err
 }
 
+// ctx
 // uploadStream (required): Stream to upload
 // scopeIdentifier (required): The project GUID to scope the request
 // hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
 // planId (required)
 // logId (required)
-func (client Client) AppendLogContent(uploadStream *interface{}, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, logId *int) (*TaskLog, error) {
+func (client Client) AppendLogContent(ctx context.Context, uploadStream *interface{}, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, logId *int) (*TaskLog, error) {
     if uploadStream == nil {
-        return nil, errors.New("uploadStream is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
     routeValues := make(map[string]string)
     if scopeIdentifier == nil {
-        return nil, errors.New("scopeIdentifier is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
     if hubName == nil || *hubName == "" {
-        return nil, errors.New("hubName is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *hubName
     if planId == nil {
-        return nil, errors.New("planId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*planId).String()
     if logId == nil {
-        return nil, errors.New("logId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "logId"} 
     }
     routeValues["logId"] = strconv.Itoa(*logId)
 
@@ -300,7 +306,7 @@ func (client Client) AppendLogContent(uploadStream *interface{}, scopeIdentifier
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("46f5667d-263a-4684-91b1-dff7fdcf64e2")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -310,25 +316,26 @@ func (client Client) AppendLogContent(uploadStream *interface{}, scopeIdentifier
     return &responseValue, err
 }
 
+// ctx
 // log (required)
 // scopeIdentifier (required): The project GUID to scope the request
 // hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
 // planId (required)
-func (client Client) CreateLog(log *TaskLog, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID) (*TaskLog, error) {
+func (client Client) CreateLog(ctx context.Context, log *TaskLog, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID) (*TaskLog, error) {
     if log == nil {
-        return nil, errors.New("log is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "log"}
     }
     routeValues := make(map[string]string)
     if scopeIdentifier == nil {
-        return nil, errors.New("scopeIdentifier is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
     if hubName == nil || *hubName == "" {
-        return nil, errors.New("hubName is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *hubName
     if planId == nil {
-        return nil, errors.New("planId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*planId).String()
 
@@ -337,7 +344,7 @@ func (client Client) CreateLog(log *TaskLog, scopeIdentifier *uuid.UUID, hubName
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("46f5667d-263a-4684-91b1-dff7fdcf64e2")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -347,28 +354,29 @@ func (client Client) CreateLog(log *TaskLog, scopeIdentifier *uuid.UUID, hubName
     return &responseValue, err
 }
 
+// ctx
 // scopeIdentifier (required): The project GUID to scope the request
 // hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
 // planId (required)
 // logId (required)
 // startLine (optional)
 // endLine (optional)
-func (client Client) GetLog(scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, logId *int, startLine *uint64, endLine *uint64) (*[]string, error) {
+func (client Client) GetLog(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, logId *int, startLine *uint64, endLine *uint64) (*[]string, error) {
     routeValues := make(map[string]string)
     if scopeIdentifier == nil {
-        return nil, errors.New("scopeIdentifier is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
     if hubName == nil || *hubName == "" {
-        return nil, errors.New("hubName is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *hubName
     if planId == nil {
-        return nil, errors.New("planId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*planId).String()
     if logId == nil {
-        return nil, errors.New("logId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "logId"} 
     }
     routeValues["logId"] = strconv.Itoa(*logId)
 
@@ -380,7 +388,7 @@ func (client Client) GetLog(scopeIdentifier *uuid.UUID, hubName *string, planId 
         queryParams.Add("endLine", strconv.FormatUint(*endLine, 10))
     }
     locationId, _ := uuid.Parse("46f5667d-263a-4684-91b1-dff7fdcf64e2")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -390,26 +398,27 @@ func (client Client) GetLog(scopeIdentifier *uuid.UUID, hubName *string, planId 
     return &responseValue, err
 }
 
+// ctx
 // scopeIdentifier (required): The project GUID to scope the request
 // hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
 // planId (required)
-func (client Client) GetLogs(scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID) (*[]TaskLog, error) {
+func (client Client) GetLogs(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID) (*[]TaskLog, error) {
     routeValues := make(map[string]string)
     if scopeIdentifier == nil {
-        return nil, errors.New("scopeIdentifier is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
     if hubName == nil || *hubName == "" {
-        return nil, errors.New("hubName is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *hubName
     if planId == nil {
-        return nil, errors.New("planId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*planId).String()
 
     locationId, _ := uuid.Parse("46f5667d-263a-4684-91b1-dff7fdcf64e2")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -419,27 +428,28 @@ func (client Client) GetLogs(scopeIdentifier *uuid.UUID, hubName *string, planId
     return &responseValue, err
 }
 
+// ctx
 // scopeIdentifier (required): The project GUID to scope the request
 // hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
 // planId (required)
 // timelineId (required)
 // changeId (optional)
-func (client Client) GetRecords(scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, changeId *int) (*[]TimelineRecord, error) {
+func (client Client) GetRecords(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, changeId *int) (*[]TimelineRecord, error) {
     routeValues := make(map[string]string)
     if scopeIdentifier == nil {
-        return nil, errors.New("scopeIdentifier is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
     if hubName == nil || *hubName == "" {
-        return nil, errors.New("hubName is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *hubName
     if planId == nil {
-        return nil, errors.New("planId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*planId).String()
     if timelineId == nil {
-        return nil, errors.New("timelineId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
     }
     routeValues["timelineId"] = (*timelineId).String()
 
@@ -448,7 +458,7 @@ func (client Client) GetRecords(scopeIdentifier *uuid.UUID, hubName *string, pla
         queryParams.Add("changeId", strconv.Itoa(*changeId))
     }
     locationId, _ := uuid.Parse("8893bc5b-35b2-4be7-83cb-99e683551db4")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -458,30 +468,31 @@ func (client Client) GetRecords(scopeIdentifier *uuid.UUID, hubName *string, pla
     return &responseValue, err
 }
 
+// ctx
 // records (required)
 // scopeIdentifier (required): The project GUID to scope the request
 // hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
 // planId (required)
 // timelineId (required)
-func (client Client) UpdateRecords(records *azureDevops.VssJsonCollectionWrapper, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID) (*[]TimelineRecord, error) {
+func (client Client) UpdateRecords(ctx context.Context, records *azureDevops.VssJsonCollectionWrapper, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID) (*[]TimelineRecord, error) {
     if records == nil {
-        return nil, errors.New("records is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "records"}
     }
     routeValues := make(map[string]string)
     if scopeIdentifier == nil {
-        return nil, errors.New("scopeIdentifier is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
     if hubName == nil || *hubName == "" {
-        return nil, errors.New("hubName is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *hubName
     if planId == nil {
-        return nil, errors.New("planId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*planId).String()
     if timelineId == nil {
-        return nil, errors.New("timelineId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
     }
     routeValues["timelineId"] = (*timelineId).String()
 
@@ -490,7 +501,7 @@ func (client Client) UpdateRecords(records *azureDevops.VssJsonCollectionWrapper
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("8893bc5b-35b2-4be7-83cb-99e683551db4")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -500,25 +511,26 @@ func (client Client) UpdateRecords(records *azureDevops.VssJsonCollectionWrapper
     return &responseValue, err
 }
 
+// ctx
 // timeline (required)
 // scopeIdentifier (required): The project GUID to scope the request
 // hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
 // planId (required)
-func (client Client) CreateTimeline(timeline *Timeline, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID) (*Timeline, error) {
+func (client Client) CreateTimeline(ctx context.Context, timeline *Timeline, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID) (*Timeline, error) {
     if timeline == nil {
-        return nil, errors.New("timeline is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "timeline"}
     }
     routeValues := make(map[string]string)
     if scopeIdentifier == nil {
-        return nil, errors.New("scopeIdentifier is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
     if hubName == nil || *hubName == "" {
-        return nil, errors.New("hubName is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *hubName
     if planId == nil {
-        return nil, errors.New("planId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*planId).String()
 
@@ -527,7 +539,7 @@ func (client Client) CreateTimeline(timeline *Timeline, scopeIdentifier *uuid.UU
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("83597576-cc2c-453c-bea6-2882ae6a1653")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -537,31 +549,32 @@ func (client Client) CreateTimeline(timeline *Timeline, scopeIdentifier *uuid.UU
     return &responseValue, err
 }
 
+// ctx
 // scopeIdentifier (required): The project GUID to scope the request
 // hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
 // planId (required)
 // timelineId (required)
-func (client Client) DeleteTimeline(scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID) error {
+func (client Client) DeleteTimeline(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID) error {
     routeValues := make(map[string]string)
     if scopeIdentifier == nil {
-        return errors.New("scopeIdentifier is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
     if hubName == nil || *hubName == "" {
-        return errors.New("hubName is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *hubName
     if planId == nil {
-        return errors.New("planId is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*planId).String()
     if timelineId == nil {
-        return errors.New("timelineId is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
     }
     routeValues["timelineId"] = (*timelineId).String()
 
     locationId, _ := uuid.Parse("83597576-cc2c-453c-bea6-2882ae6a1653")
-    _, err := client.Client.Send(http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return err
     }
@@ -569,28 +582,29 @@ func (client Client) DeleteTimeline(scopeIdentifier *uuid.UUID, hubName *string,
     return nil
 }
 
+// ctx
 // scopeIdentifier (required): The project GUID to scope the request
 // hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
 // planId (required)
 // timelineId (required)
 // changeId (optional)
 // includeRecords (optional)
-func (client Client) GetTimeline(scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, changeId *int, includeRecords *bool) (*Timeline, error) {
+func (client Client) GetTimeline(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, changeId *int, includeRecords *bool) (*Timeline, error) {
     routeValues := make(map[string]string)
     if scopeIdentifier == nil {
-        return nil, errors.New("scopeIdentifier is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
     if hubName == nil || *hubName == "" {
-        return nil, errors.New("hubName is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *hubName
     if planId == nil {
-        return nil, errors.New("planId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*planId).String()
     if timelineId == nil {
-        return nil, errors.New("timelineId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
     }
     routeValues["timelineId"] = (*timelineId).String()
 
@@ -602,7 +616,7 @@ func (client Client) GetTimeline(scopeIdentifier *uuid.UUID, hubName *string, pl
         queryParams.Add("includeRecords", strconv.FormatBool(*includeRecords))
     }
     locationId, _ := uuid.Parse("83597576-cc2c-453c-bea6-2882ae6a1653")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -612,26 +626,27 @@ func (client Client) GetTimeline(scopeIdentifier *uuid.UUID, hubName *string, pl
     return &responseValue, err
 }
 
+// ctx
 // scopeIdentifier (required): The project GUID to scope the request
 // hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
 // planId (required)
-func (client Client) GetTimelines(scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID) (*[]Timeline, error) {
+func (client Client) GetTimelines(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID) (*[]Timeline, error) {
     routeValues := make(map[string]string)
     if scopeIdentifier == nil {
-        return nil, errors.New("scopeIdentifier is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
     if hubName == nil || *hubName == "" {
-        return nil, errors.New("hubName is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *hubName
     if planId == nil {
-        return nil, errors.New("planId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*planId).String()
 
     locationId, _ := uuid.Parse("83597576-cc2c-453c-bea6-2882ae6a1653")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }

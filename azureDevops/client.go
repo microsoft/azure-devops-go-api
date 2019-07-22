@@ -5,6 +5,7 @@ package azureDevops
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"github.com/google/uuid"
 	"io"
@@ -13,13 +14,10 @@ import (
 	"net/url"
 	"regexp"
 	"runtime"
-	"runtime/trace"
 	"strconv"
 	"strings"
 	"sync"
 )
-
-// todo: look into contexts
 
 const (
 	// header keys
@@ -48,6 +46,9 @@ var baseUserAgent = "go/" + runtime.Version() + " (" + runtime.GOOS + " " + runt
 
 func NewClient(connection Connection, baseUrl string) *Client {
 	client := &http.Client{}
+	if connection.Timeout != nil {
+		client.Timeout = *connection.Timeout
+	}
 	return &Client {
 		baseUrl: baseUrl,
 		connection: connection,
@@ -69,7 +70,8 @@ func (client Client) SendRequest(request *http.Request) (response *http.Response
 	return resp, err
 }
 
-func (client Client) Send(httpMethod string,
+func (client Client) Send(ctx context.Context,
+						  httpMethod string,
 						  locationId uuid.UUID,
 						  apiVersion string,
 						  routeValues map[string]string,
@@ -78,7 +80,7 @@ func (client Client) Send(httpMethod string,
 						  mediaType string,
 						  acceptMediaType string,
 						  additionalHeaders map[string]string) (response *http.Response, err error) {
-	location, err := client.getResourceLocation(locationId)
+	location, err := client.getResourceLocation(ctx, locationId)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +91,7 @@ func (client Client) Send(httpMethod string,
 		return nil, err
 	}
 
-	req, err := client.CreateRequestMessage(httpMethod, fullUrl, negotiatedVersion, body, mediaType, acceptMediaType, additionalHeaders)
+	req, err := client.CreateRequestMessage(ctx, httpMethod, fullUrl, negotiatedVersion, body, mediaType, acceptMediaType, additionalHeaders)
 	if err != nil {
 		return nil, err
 	}
@@ -122,7 +124,8 @@ func (client Client) GenerateUrl(apiResourceLocation *ApiResourceLocation, route
 	return builtUrl
 }
 
-func (client Client) CreateRequestMessage(httpMethod string,
+func (client Client) CreateRequestMessage(ctx context.Context,
+											httpMethod string,
 											url string,
 											apiVersion string,
 											body io.Reader,
@@ -130,9 +133,12 @@ func (client Client) CreateRequestMessage(httpMethod string,
 											acceptMediaType string,
 											additionalHeaders map[string]string) (request *http.Request, err error) {
 	req, err := http.NewRequest(httpMethod, url, body)
-
 	if err != nil {
 		return nil, err
+	}
+
+	if ctx != nil {
+		req = req.WithContext(ctx)
 	}
 
 	if client.connection.AuthorizationString != "" {
@@ -172,10 +178,10 @@ func (client Client) CreateRequestMessage(httpMethod string,
 	return req, err
 }
 
-func (client Client) getResourceLocation(locationId uuid.UUID) (*ApiResourceLocation, error) {
+func (client Client) getResourceLocation(ctx context.Context, locationId uuid.UUID) (*ApiResourceLocation, error) {
 	locationsMap, ok := getApiResourceLocationCache(client.baseUrl)
 	if !ok {
-		locations, err := client.getResourceLocationsFromServer()
+		locations, err := client.getResourceLocationsFromServer(ctx)
 		if err != nil {
 			return nil, err
 		}
@@ -209,9 +215,9 @@ func setApiResourceLocationCache(url string, locationsMap *map[uuid.UUID] ApiRes
 	apiResourceLocationCache[url] = locationsMap
 }
 
-func (client Client) getResourceLocationsFromServer() ([]ApiResourceLocation, error) {
+func (client Client) getResourceLocationsFromServer(ctx context.Context,) ([]ApiResourceLocation, error) {
 	optionsUri := combineUrl(client.baseUrl, "_apis")
-	request, err := client.CreateRequestMessage(http.MethodOptions, optionsUri, "", nil, "", MediaTypeApplicationJson, nil)
+	request, err := client.CreateRequestMessage(ctx, http.MethodOptions, optionsUri, "", nil, "", MediaTypeApplicationJson, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -219,10 +225,6 @@ func (client Client) getResourceLocationsFromServer() ([]ApiResourceLocation, er
 	resp, err := client.SendRequest(request)
 	if err != nil {
 		return nil, err
-	}
-
-	if resp != nil {
-		trace.Logf(request.Context(), "azureDevops", "Response status code: %v", resp.StatusCode)
 	}
 
 	// Set session if one was supplied in the response.
@@ -439,10 +441,10 @@ func (client Client) UnwrapError(response *http.Response) (err error) {
 	return wrappedError
 }
 
-func (client Client) GetResourceAreas() (*[]ResourceAreaInfo, error) {
+func (client Client) GetResourceAreas(ctx context.Context,) (*[]ResourceAreaInfo, error) {
 	queryParams := url.Values{}
 	locationId, _ := uuid.Parse("e81700f7-3be2-46de-8624-2eb35882fcaa")
-	resp, err := client.Send(http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
+	resp, err := client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
 	if err != nil {
 		return nil, err
 	}

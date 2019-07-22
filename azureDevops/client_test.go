@@ -42,7 +42,6 @@ func TestNegotiateRequestVersion_ReleasedApi(t *testing.T) {
 	tests["1.0-preview"] = "1.0-preview"
 	tests["2.3-preview"] = "2.2-preview"
 	tests["3.0-preview"] = "2.2-preview"
-
 	tests["3.0"] = "2.2-preview"
 	tests["2.3"] = "2.2-preview"
 	tests["2.2"] = "2.2-preview"

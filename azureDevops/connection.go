@@ -4,10 +4,12 @@
 package azureDevops
 
 import (
+	"context"
 	"encoding/base64"
 	"github.com/google/uuid"
 	"strings"
 	"sync"
+	"time"
 )
 
 func NewConnection(organizationUrl string, personalAccessToken string) *Connection {
@@ -34,6 +36,7 @@ type Connection struct {
 	UserAgent               string
 	SuppressFedAuthRedirect bool
 	ForceMsaPassThrough     bool
+	Timeout                 *time.Duration
 }
 
 func CreateBasicAuthHeaderValue(username, password string) string {
@@ -45,12 +48,18 @@ func normalizeUrl(url string) string {
 	return strings.ToLower(strings.TrimRight(url, "/"))
 }
 
-func (connection Connection) GetClientByResourceAreaId(resourceAreaID uuid.UUID) (*Client, error) {
-	resourceAreInfo, err := connection.getResourceAreaInfo(resourceAreaID)
+func (connection Connection) GetClientByResourceAreaId(ctx context.Context, resourceAreaID uuid.UUID) (*Client, error) {
+	resourceAreaInfo, err := connection.getResourceAreaInfo(ctx, resourceAreaID)
 	if err != nil {
 		return nil, err
 	}
-	client := connection.GetClientByUrl(*resourceAreInfo.LocationUrl)
+	var client *Client
+	if resourceAreaInfo != nil {
+		client = connection.GetClientByUrl(*resourceAreaInfo.LocationUrl)
+	} else {
+        // resourceAreaInfo will be nil for on prem servers
+		client = connection.GetClientByUrl(connection.BaseUrl)
+	}
 	return client, nil
 }
 
@@ -64,19 +73,24 @@ func (connection Connection) GetClientByUrl(baseUrl string) *Client {
 	return azureDevOpsClient
 }
 
-func (connection Connection) getResourceAreaInfo(resourceAreaId uuid.UUID) (*ResourceAreaInfo, error) {
+func (connection Connection) getResourceAreaInfo(ctx context.Context, resourceAreaId uuid.UUID) (*ResourceAreaInfo, error) {
 	resourceAreaInfo, ok := getResourceAreaCacheEntry(resourceAreaId)
 	if !ok {
 		client := connection.GetClientByUrl(connection.BaseUrl)
-		resourceAreaInfos, err := client.GetResourceAreas()
+		resourceAreaInfos, err := client.GetResourceAreas(ctx)
 		if err != nil {
 			return nil, err
 		}
 
-		for _, resourceEntry := range *resourceAreaInfos {
-			setResourceAreaCacheEntry(*resourceEntry.Id, resourceEntry)
+		if len(*resourceAreaInfos) > 0 {
+			for _, resourceEntry := range *resourceAreaInfos {
+				setResourceAreaCacheEntry(*resourceEntry.Id, resourceEntry)
+			}
+			resourceAreaInfo, ok = getResourceAreaCacheEntry(resourceAreaId)
+		} else {
+			// on prem servers return an empty list
+			return nil, nil
 		}
-		resourceAreaInfo, ok = getResourceAreaCacheEntry(resourceAreaId)
 	}
 
 	if ok {

@@ -10,8 +10,8 @@ package workItemTracking
 
 import (
     "bytes"
+    "context"
     "encoding/json"
-    "errors"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevops"
     "net/http"
@@ -27,8 +27,8 @@ type Client struct {
     Client azureDevops.Client
 }
 
-func NewClient(connection azureDevops.Connection) (*Client, error) {
-    client, err := connection.GetClientByResourceAreaId(ResourceAreaId)
+func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+    client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
     }
@@ -38,9 +38,10 @@ func NewClient(connection azureDevops.Connection) (*Client, error) {
 }
 
 // [Preview API] Gets recent work item activities
-func (client Client) GetRecentActivityData() (*[]AccountRecentActivityWorkItemModel2, error) {
+// ctx
+func (client Client) GetRecentActivityData(ctx context.Context, ) (*[]AccountRecentActivityWorkItemModel2, error) {
     locationId, _ := uuid.Parse("1bc988f4-c15f-4072-ad35-497c87e3a909")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.2", nil, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", nil, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -51,9 +52,10 @@ func (client Client) GetRecentActivityData() (*[]AccountRecentActivityWorkItemMo
 }
 
 // [Preview API] Get the list of work item tracking outbound artifact link types.
-func (client Client) GetWorkArtifactLinkTypes() (*[]WorkArtifactLink, error) {
+// ctx
+func (client Client) GetWorkArtifactLinkTypes(ctx context.Context, ) (*[]WorkArtifactLink, error) {
     locationId, _ := uuid.Parse("1a31de40-e318-41cd-a6c6-881077df52e3")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", nil, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -64,11 +66,12 @@ func (client Client) GetWorkArtifactLinkTypes() (*[]WorkArtifactLink, error) {
 }
 
 // [Preview API] Queries work items linked to a given list of artifact URI.
+// ctx
 // artifactUriQuery (required): Defines a list of artifact URI for querying work items.
 // project (optional): Project ID or project name
-func (client Client) QueryWorkItemsForArtifactUris(artifactUriQuery *ArtifactUriQuery, project *string) (*ArtifactUriQueryResult, error) {
+func (client Client) QueryWorkItemsForArtifactUris(ctx context.Context, artifactUriQuery *ArtifactUriQuery, project *string) (*ArtifactUriQueryResult, error) {
     if artifactUriQuery == nil {
-        return nil, errors.New("artifactUriQuery is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "artifactUriQuery"}
     }
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
@@ -80,7 +83,7 @@ func (client Client) QueryWorkItemsForArtifactUris(artifactUriQuery *ArtifactUri
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("a9a9aa7a-8c09-44d3-ad1b-46e855c1e3d3")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -91,14 +94,15 @@ func (client Client) QueryWorkItemsForArtifactUris(artifactUriQuery *ArtifactUri
 }
 
 // Uploads an attachment.
+// ctx
 // uploadStream (required): Stream to upload
 // project (optional): Project ID or project name
 // fileName (optional): The name of the file
 // uploadType (optional): Attachment upload type: Simple or Chunked
 // areaPath (optional): Target project Area Path
-func (client Client) CreateAttachment(uploadStream *interface{}, project *string, fileName *string, uploadType *string, areaPath *string) (*AttachmentReference, error) {
+func (client Client) CreateAttachment(ctx context.Context, uploadStream *interface{}, project *string, fileName *string, uploadType *string, areaPath *string) (*AttachmentReference, error) {
     if uploadStream == nil {
-        return nil, errors.New("uploadStream is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
@@ -120,7 +124,7 @@ func (client Client) CreateAttachment(uploadStream *interface{}, project *string
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("e07b5fa4-1499-494d-a496-64b860fd64ff")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -131,17 +135,18 @@ func (client Client) CreateAttachment(uploadStream *interface{}, project *string
 }
 
 // Downloads an attachment.
+// ctx
 // id (required): Attachment ID
 // project (optional): Project ID or project name
 // fileName (optional): Name of the file
 // download (optional): If set to <c>true</c> always download attachment
-func (client Client) GetAttachmentContent(id *uuid.UUID, project *string, fileName *string, download *bool) (*interface{}, error) {
+func (client Client) GetAttachmentContent(ctx context.Context, id *uuid.UUID, project *string, fileName *string, download *bool) (*interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if id == nil {
-        return nil, errors.New("id is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = (*id).String()
 
@@ -153,7 +158,7 @@ func (client Client) GetAttachmentContent(id *uuid.UUID, project *string, fileNa
         queryParams.Add("download", strconv.FormatBool(*download))
     }
     locationId, _ := uuid.Parse("e07b5fa4-1499-494d-a496-64b860fd64ff")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/octet-stream", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/octet-stream", nil)
     if err != nil {
         return nil, err
     }
@@ -164,17 +169,18 @@ func (client Client) GetAttachmentContent(id *uuid.UUID, project *string, fileNa
 }
 
 // Downloads an attachment.
+// ctx
 // id (required): Attachment ID
 // project (optional): Project ID or project name
 // fileName (optional): Name of the file
 // download (optional): If set to <c>true</c> always download attachment
-func (client Client) GetAttachmentZip(id *uuid.UUID, project *string, fileName *string, download *bool) (*interface{}, error) {
+func (client Client) GetAttachmentZip(ctx context.Context, id *uuid.UUID, project *string, fileName *string, download *bool) (*interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if id == nil {
-        return nil, errors.New("id is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = (*id).String()
 
@@ -186,7 +192,7 @@ func (client Client) GetAttachmentZip(id *uuid.UUID, project *string, fileName *
         queryParams.Add("download", strconv.FormatBool(*download))
     }
     locationId, _ := uuid.Parse("e07b5fa4-1499-494d-a496-64b860fd64ff")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/zip", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/zip", nil)
     if err != nil {
         return nil, err
     }
@@ -197,20 +203,21 @@ func (client Client) GetAttachmentZip(id *uuid.UUID, project *string, fileName *
 }
 
 // Gets root classification nodes or list of classification nodes for a given list of nodes ids, for a given project. In case ids parameter is supplied you will  get list of classification nodes for those ids. Otherwise you will get root classification nodes for this project.
+// ctx
 // project (required): Project ID or project name
 // ids (required): Comma seperated integer classification nodes ids. It's not required, if you want root nodes.
 // depth (optional): Depth of children to fetch.
 // errorPolicy (optional): Flag to handle errors in getting some nodes. Possible options are Fail and Omit.
-func (client Client) GetClassificationNodes(project *string, ids *[]int, depth *int, errorPolicy *string) (*[]WorkItemClassificationNode, error) {
+func (client Client) GetClassificationNodes(ctx context.Context, project *string, ids *[]int, depth *int, errorPolicy *string) (*[]WorkItemClassificationNode, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     queryParams := url.Values{}
     if ids == nil {
-        return nil, errors.New("ids is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "ids"}
     }
     var stringList []string
     for _, item := range *ids {
@@ -225,7 +232,7 @@ func (client Client) GetClassificationNodes(project *string, ids *[]int, depth *
         queryParams.Add("errorPolicy", *errorPolicy)
     }
     locationId, _ := uuid.Parse("a70579d1-f53a-48ee-a5be-7be8659023b9")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -236,12 +243,13 @@ func (client Client) GetClassificationNodes(project *string, ids *[]int, depth *
 }
 
 // Gets root classification nodes under the project.
+// ctx
 // project (required): Project ID or project name
 // depth (optional): Depth of children to fetch.
-func (client Client) GetRootNodes(project *string, depth *int) (*[]WorkItemClassificationNode, error) {
+func (client Client) GetRootNodes(ctx context.Context, project *string, depth *int) (*[]WorkItemClassificationNode, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
@@ -250,7 +258,7 @@ func (client Client) GetRootNodes(project *string, depth *int) (*[]WorkItemClass
         queryParams.Add("$depth", strconv.Itoa(*depth))
     }
     locationId, _ := uuid.Parse("a70579d1-f53a-48ee-a5be-7be8659023b9")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -261,21 +269,22 @@ func (client Client) GetRootNodes(project *string, depth *int) (*[]WorkItemClass
 }
 
 // Create new or update an existing classification node.
+// ctx
 // postedNode (required): Node to create or update.
 // project (required): Project ID or project name
 // structureGroup (required): Structure group of the classification node, area or iteration.
 // path (optional): Path of the classification node.
-func (client Client) CreateOrUpdateClassificationNode(postedNode *WorkItemClassificationNode, project *string, structureGroup *string, path *string) (*WorkItemClassificationNode, error) {
+func (client Client) CreateOrUpdateClassificationNode(ctx context.Context, postedNode *WorkItemClassificationNode, project *string, structureGroup *string, path *string) (*WorkItemClassificationNode, error) {
     if postedNode == nil {
-        return nil, errors.New("postedNode is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "postedNode"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if structureGroup == nil {
-        return nil, errors.New("structureGroup is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "structureGroup"} 
     }
     routeValues["structureGroup"] = *structureGroup
     if path != nil && *path != "" {
@@ -287,7 +296,7 @@ func (client Client) CreateOrUpdateClassificationNode(postedNode *WorkItemClassi
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("5a172953-1b41-49d3-840a-33f79c3ce89f")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -298,18 +307,19 @@ func (client Client) CreateOrUpdateClassificationNode(postedNode *WorkItemClassi
 }
 
 // Delete an existing classification node.
+// ctx
 // project (required): Project ID or project name
 // structureGroup (required): Structure group of the classification node, area or iteration.
 // path (optional): Path of the classification node.
 // reclassifyId (optional): Id of the target classification node for reclassification.
-func (client Client) DeleteClassificationNode(project *string, structureGroup *string, path *string, reclassifyId *int) error {
+func (client Client) DeleteClassificationNode(ctx context.Context, project *string, structureGroup *string, path *string, reclassifyId *int) error {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return errors.New("project is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if structureGroup == nil {
-        return errors.New("structureGroup is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "structureGroup"} 
     }
     routeValues["structureGroup"] = *structureGroup
     if path != nil && *path != "" {
@@ -321,7 +331,7 @@ func (client Client) DeleteClassificationNode(project *string, structureGroup *s
         queryParams.Add("$reclassifyId", strconv.Itoa(*reclassifyId))
     }
     locationId, _ := uuid.Parse("5a172953-1b41-49d3-840a-33f79c3ce89f")
-    _, err := client.Client.Send(http.MethodDelete, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return err
     }
@@ -330,18 +340,19 @@ func (client Client) DeleteClassificationNode(project *string, structureGroup *s
 }
 
 // Gets the classification node for a given node path.
+// ctx
 // project (required): Project ID or project name
 // structureGroup (required): Structure group of the classification node, area or iteration.
 // path (optional): Path of the classification node.
 // depth (optional): Depth of children to fetch.
-func (client Client) GetClassificationNode(project *string, structureGroup *string, path *string, depth *int) (*WorkItemClassificationNode, error) {
+func (client Client) GetClassificationNode(ctx context.Context, project *string, structureGroup *string, path *string, depth *int) (*WorkItemClassificationNode, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if structureGroup == nil {
-        return nil, errors.New("structureGroup is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "structureGroup"} 
     }
     routeValues["structureGroup"] = *structureGroup
     if path != nil && *path != "" {
@@ -353,7 +364,7 @@ func (client Client) GetClassificationNode(project *string, structureGroup *stri
         queryParams.Add("$depth", strconv.Itoa(*depth))
     }
     locationId, _ := uuid.Parse("5a172953-1b41-49d3-840a-33f79c3ce89f")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -364,21 +375,22 @@ func (client Client) GetClassificationNode(project *string, structureGroup *stri
 }
 
 // Update an existing classification node.
+// ctx
 // postedNode (required): Node to create or update.
 // project (required): Project ID or project name
 // structureGroup (required): Structure group of the classification node, area or iteration.
 // path (optional): Path of the classification node.
-func (client Client) UpdateClassificationNode(postedNode *WorkItemClassificationNode, project *string, structureGroup *string, path *string) (*WorkItemClassificationNode, error) {
+func (client Client) UpdateClassificationNode(ctx context.Context, postedNode *WorkItemClassificationNode, project *string, structureGroup *string, path *string) (*WorkItemClassificationNode, error) {
     if postedNode == nil {
-        return nil, errors.New("postedNode is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "postedNode"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if structureGroup == nil {
-        return nil, errors.New("structureGroup is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "structureGroup"} 
     }
     routeValues["structureGroup"] = *structureGroup
     if path != nil && *path != "" {
@@ -390,7 +402,7 @@ func (client Client) UpdateClassificationNode(postedNode *WorkItemClassification
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("5a172953-1b41-49d3-840a-33f79c3ce89f")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -401,28 +413,29 @@ func (client Client) UpdateClassificationNode(postedNode *WorkItemClassification
 }
 
 // [Preview API] Get users who reacted on the comment.
+// ctx
 // project (required): Project ID or project name
 // workItemId (required): WorkItem ID.
 // commentId (required): Comment ID.
 // reactionType (required): Type of the reaction.
 // top (optional)
 // skip (optional)
-func (client Client) GetEngagedUsers(project *string, workItemId *int, commentId *int, reactionType *string, top *int, skip *int) (*[]IdentityRef, error) {
+func (client Client) GetEngagedUsers(ctx context.Context, project *string, workItemId *int, commentId *int, reactionType *string, top *int, skip *int) (*[]IdentityRef, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if workItemId == nil {
-        return nil, errors.New("workItemId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "workItemId"} 
     }
     routeValues["workItemId"] = strconv.Itoa(*workItemId)
     if commentId == nil {
-        return nil, errors.New("commentId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "commentId"} 
     }
     routeValues["commentId"] = strconv.Itoa(*commentId)
     if reactionType == nil {
-        return nil, errors.New("reactionType is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "reactionType"} 
     }
     routeValues["reactionType"] = *reactionType
 
@@ -434,7 +447,7 @@ func (client Client) GetEngagedUsers(project *string, workItemId *int, commentId
         queryParams.Add("$skip", strconv.Itoa(*skip))
     }
     locationId, _ := uuid.Parse("e33ca5e0-2349-4285-af3d-d72d86781c35")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -445,20 +458,21 @@ func (client Client) GetEngagedUsers(project *string, workItemId *int, commentId
 }
 
 // [Preview API] Add a comment on a work item.
+// ctx
 // request (required): Comment create request.
 // project (required): Project ID or project name
 // workItemId (required): Id of a work item.
-func (client Client) AddComment(request *CommentCreate, project *string, workItemId *int) (*Comment, error) {
+func (client Client) AddComment(ctx context.Context, request *CommentCreate, project *string, workItemId *int) (*Comment, error) {
     if request == nil {
-        return nil, errors.New("request is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "request"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if workItemId == nil {
-        return nil, errors.New("workItemId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "workItemId"} 
     }
     routeValues["workItemId"] = strconv.Itoa(*workItemId)
 
@@ -467,7 +481,7 @@ func (client Client) AddComment(request *CommentCreate, project *string, workIte
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("608aac0a-32e1-4493-a863-b9cf4566d257")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.3", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.3", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -478,26 +492,27 @@ func (client Client) AddComment(request *CommentCreate, project *string, workIte
 }
 
 // [Preview API] Delete a comment on a work item.
+// ctx
 // project (required): Project ID or project name
 // workItemId (required): Id of a work item.
 // commentId (required)
-func (client Client) DeleteComment(project *string, workItemId *int, commentId *int) error {
+func (client Client) DeleteComment(ctx context.Context, project *string, workItemId *int, commentId *int) error {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return errors.New("project is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if workItemId == nil {
-        return errors.New("workItemId is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "workItemId"} 
     }
     routeValues["workItemId"] = strconv.Itoa(*workItemId)
     if commentId == nil {
-        return errors.New("commentId is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "commentId"} 
     }
     routeValues["commentId"] = strconv.Itoa(*commentId)
 
     locationId, _ := uuid.Parse("608aac0a-32e1-4493-a863-b9cf4566d257")
-    _, err := client.Client.Send(http.MethodDelete, locationId, "5.1-preview.3", routeValues, nil, nil, "", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.3", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return err
     }
@@ -506,23 +521,24 @@ func (client Client) DeleteComment(project *string, workItemId *int, commentId *
 }
 
 // [Preview API] Returns a work item comment.
+// ctx
 // project (required): Project ID or project name
 // workItemId (required): Id of a work item to get the comment.
 // commentId (required): Id of the comment to return.
 // includeDeleted (optional): Specify if the deleted comment should be retrieved.
 // expand (optional): Specifies the additional data retrieval options for work item comments.
-func (client Client) GetComment(project *string, workItemId *int, commentId *int, includeDeleted *bool, expand *string) (*Comment, error) {
+func (client Client) GetComment(ctx context.Context, project *string, workItemId *int, commentId *int, includeDeleted *bool, expand *string) (*Comment, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if workItemId == nil {
-        return nil, errors.New("workItemId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "workItemId"} 
     }
     routeValues["workItemId"] = strconv.Itoa(*workItemId)
     if commentId == nil {
-        return nil, errors.New("commentId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "commentId"} 
     }
     routeValues["commentId"] = strconv.Itoa(*commentId)
 
@@ -534,7 +550,7 @@ func (client Client) GetComment(project *string, workItemId *int, commentId *int
         queryParams.Add("$expand", *expand)
     }
     locationId, _ := uuid.Parse("608aac0a-32e1-4493-a863-b9cf4566d257")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.3", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.3", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -545,6 +561,7 @@ func (client Client) GetComment(project *string, workItemId *int, commentId *int
 }
 
 // [Preview API] Returns a list of work item comments, pageable.
+// ctx
 // project (required): Project ID or project name
 // workItemId (required): Id of a work item to get comments for.
 // top (optional): Max number of comments to return.
@@ -552,14 +569,14 @@ func (client Client) GetComment(project *string, workItemId *int, commentId *int
 // includeDeleted (optional): Specify if the deleted comments should be retrieved.
 // expand (optional): Specifies the additional data retrieval options for work item comments.
 // order (optional): Order in which the comments should be returned.
-func (client Client) GetComments(project *string, workItemId *int, top *int, continuationToken *string, includeDeleted *bool, expand *string, order *string) (*CommentList, error) {
+func (client Client) GetComments(ctx context.Context, project *string, workItemId *int, top *int, continuationToken *string, includeDeleted *bool, expand *string, order *string) (*CommentList, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if workItemId == nil {
-        return nil, errors.New("workItemId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "workItemId"} 
     }
     routeValues["workItemId"] = strconv.Itoa(*workItemId)
 
@@ -580,7 +597,7 @@ func (client Client) GetComments(project *string, workItemId *int, top *int, con
         queryParams.Add("order", *order)
     }
     locationId, _ := uuid.Parse("608aac0a-32e1-4493-a863-b9cf4566d257")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.3", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.3", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -591,25 +608,26 @@ func (client Client) GetComments(project *string, workItemId *int, top *int, con
 }
 
 // [Preview API] Returns a list of work item comments by ids.
+// ctx
 // project (required): Project ID or project name
 // workItemId (required): Id of a work item to get comments for.
 // ids (required): Comma-separated list of comment ids to return.
 // includeDeleted (optional): Specify if the deleted comments should be retrieved.
 // expand (optional): Specifies the additional data retrieval options for work item comments.
-func (client Client) GetCommentsBatch(project *string, workItemId *int, ids *[]int, includeDeleted *bool, expand *string) (*CommentList, error) {
+func (client Client) GetCommentsBatch(ctx context.Context, project *string, workItemId *int, ids *[]int, includeDeleted *bool, expand *string) (*CommentList, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if workItemId == nil {
-        return nil, errors.New("workItemId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "workItemId"} 
     }
     routeValues["workItemId"] = strconv.Itoa(*workItemId)
 
     queryParams := url.Values{}
     if ids == nil {
-        return nil, errors.New("ids is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "ids"}
     }
     var stringList []string
     for _, item := range *ids {
@@ -624,7 +642,7 @@ func (client Client) GetCommentsBatch(project *string, workItemId *int, ids *[]i
         queryParams.Add("$expand", *expand)
     }
     locationId, _ := uuid.Parse("608aac0a-32e1-4493-a863-b9cf4566d257")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.3", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.3", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -635,25 +653,26 @@ func (client Client) GetCommentsBatch(project *string, workItemId *int, ids *[]i
 }
 
 // [Preview API] Update a comment on a work item.
+// ctx
 // request (required): Comment update request.
 // project (required): Project ID or project name
 // workItemId (required): Id of a work item.
 // commentId (required)
-func (client Client) UpdateComment(request *CommentUpdate, project *string, workItemId *int, commentId *int) (*Comment, error) {
+func (client Client) UpdateComment(ctx context.Context, request *CommentUpdate, project *string, workItemId *int, commentId *int) (*Comment, error) {
     if request == nil {
-        return nil, errors.New("request is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "request"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if workItemId == nil {
-        return nil, errors.New("workItemId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "workItemId"} 
     }
     routeValues["workItemId"] = strconv.Itoa(*workItemId)
     if commentId == nil {
-        return nil, errors.New("commentId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "commentId"} 
     }
     routeValues["commentId"] = strconv.Itoa(*commentId)
 
@@ -662,7 +681,7 @@ func (client Client) UpdateComment(request *CommentUpdate, project *string, work
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("608aac0a-32e1-4493-a863-b9cf4566d257")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1-preview.3", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.3", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -673,31 +692,32 @@ func (client Client) UpdateComment(request *CommentUpdate, project *string, work
 }
 
 // [Preview API] Adds a new reaction to a comment.
+// ctx
 // project (required): Project ID or project name
 // workItemId (required): WorkItem ID
 // commentId (required): Comment ID
 // reactionType (required): Type of the reaction
-func (client Client) CreateCommentReaction(project *string, workItemId *int, commentId *int, reactionType *string) (*CommentReaction, error) {
+func (client Client) CreateCommentReaction(ctx context.Context, project *string, workItemId *int, commentId *int, reactionType *string) (*CommentReaction, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if workItemId == nil {
-        return nil, errors.New("workItemId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "workItemId"} 
     }
     routeValues["workItemId"] = strconv.Itoa(*workItemId)
     if commentId == nil {
-        return nil, errors.New("commentId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "commentId"} 
     }
     routeValues["commentId"] = strconv.Itoa(*commentId)
     if reactionType == nil {
-        return nil, errors.New("reactionType is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "reactionType"} 
     }
     routeValues["reactionType"] = *reactionType
 
     locationId, _ := uuid.Parse("f6cb3f27-1028-4851-af96-887e570dc21f")
-    resp, err := client.Client.Send(http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -708,31 +728,32 @@ func (client Client) CreateCommentReaction(project *string, workItemId *int, com
 }
 
 // [Preview API] Deletes an existing reaction on a comment.
+// ctx
 // project (required): Project ID or project name
 // workItemId (required): WorkItem ID
 // commentId (required): Comment ID
 // reactionType (required): Type of the reaction
-func (client Client) DeleteCommentReaction(project *string, workItemId *int, commentId *int, reactionType *string) (*CommentReaction, error) {
+func (client Client) DeleteCommentReaction(ctx context.Context, project *string, workItemId *int, commentId *int, reactionType *string) (*CommentReaction, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if workItemId == nil {
-        return nil, errors.New("workItemId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "workItemId"} 
     }
     routeValues["workItemId"] = strconv.Itoa(*workItemId)
     if commentId == nil {
-        return nil, errors.New("commentId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "commentId"} 
     }
     routeValues["commentId"] = strconv.Itoa(*commentId)
     if reactionType == nil {
-        return nil, errors.New("reactionType is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "reactionType"} 
     }
     routeValues["reactionType"] = *reactionType
 
     locationId, _ := uuid.Parse("f6cb3f27-1028-4851-af96-887e570dc21f")
-    resp, err := client.Client.Send(http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -743,26 +764,27 @@ func (client Client) DeleteCommentReaction(project *string, workItemId *int, com
 }
 
 // [Preview API] Gets reactions of a comment.
+// ctx
 // project (required): Project ID or project name
 // workItemId (required): WorkItem ID
 // commentId (required): Comment ID
-func (client Client) GetCommentReactions(project *string, workItemId *int, commentId *int) (*[]CommentReaction, error) {
+func (client Client) GetCommentReactions(ctx context.Context, project *string, workItemId *int, commentId *int) (*[]CommentReaction, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if workItemId == nil {
-        return nil, errors.New("workItemId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "workItemId"} 
     }
     routeValues["workItemId"] = strconv.Itoa(*workItemId)
     if commentId == nil {
-        return nil, errors.New("commentId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "commentId"} 
     }
     routeValues["commentId"] = strconv.Itoa(*commentId)
 
     locationId, _ := uuid.Parse("f6cb3f27-1028-4851-af96-887e570dc21f")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -773,31 +795,32 @@ func (client Client) GetCommentReactions(project *string, workItemId *int, comme
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // workItemId (required)
 // commentId (required)
 // version (required)
-func (client Client) GetCommentVersion(project *string, workItemId *int, commentId *int, version *int) (*CommentVersion, error) {
+func (client Client) GetCommentVersion(ctx context.Context, project *string, workItemId *int, commentId *int, version *int) (*CommentVersion, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if workItemId == nil {
-        return nil, errors.New("workItemId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "workItemId"} 
     }
     routeValues["workItemId"] = strconv.Itoa(*workItemId)
     if commentId == nil {
-        return nil, errors.New("commentId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "commentId"} 
     }
     routeValues["commentId"] = strconv.Itoa(*commentId)
     if version == nil {
-        return nil, errors.New("version is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "version"} 
     }
     routeValues["version"] = strconv.Itoa(*version)
 
     locationId, _ := uuid.Parse("49e03b34-3be0-42e3-8a5d-e8dfb88ac954")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -808,26 +831,27 @@ func (client Client) GetCommentVersion(project *string, workItemId *int, comment
 }
 
 // [Preview API]
+// ctx
 // project (required): Project ID or project name
 // workItemId (required)
 // commentId (required)
-func (client Client) GetCommentVersions(project *string, workItemId *int, commentId *int) (*[]CommentVersion, error) {
+func (client Client) GetCommentVersions(ctx context.Context, project *string, workItemId *int, commentId *int) (*[]CommentVersion, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if workItemId == nil {
-        return nil, errors.New("workItemId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "workItemId"} 
     }
     routeValues["workItemId"] = strconv.Itoa(*workItemId)
     if commentId == nil {
-        return nil, errors.New("commentId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "commentId"} 
     }
     routeValues["commentId"] = strconv.Itoa(*commentId)
 
     locationId, _ := uuid.Parse("49e03b34-3be0-42e3-8a5d-e8dfb88ac954")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -838,11 +862,12 @@ func (client Client) GetCommentVersions(project *string, workItemId *int, commen
 }
 
 // Create a new field.
+// ctx
 // workItemField (required): New field definition
 // project (optional): Project ID or project name
-func (client Client) CreateField(workItemField *WorkItemField, project *string) (*WorkItemField, error) {
+func (client Client) CreateField(ctx context.Context, workItemField *WorkItemField, project *string) (*WorkItemField, error) {
     if workItemField == nil {
-        return nil, errors.New("workItemField is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "workItemField"}
     }
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
@@ -854,7 +879,7 @@ func (client Client) CreateField(workItemField *WorkItemField, project *string) 
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("b51fd764-e5c2-4b9b-aaf7-3395cf4bdd94")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -865,20 +890,21 @@ func (client Client) CreateField(workItemField *WorkItemField, project *string) 
 }
 
 // Deletes the field.
+// ctx
 // fieldNameOrRefName (required): Field simple name or reference name
 // project (optional): Project ID or project name
-func (client Client) DeleteField(fieldNameOrRefName *string, project *string) error {
+func (client Client) DeleteField(ctx context.Context, fieldNameOrRefName *string, project *string) error {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if fieldNameOrRefName == nil || *fieldNameOrRefName == "" {
-        return errors.New("fieldNameOrRefName is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "fieldNameOrRefName"} 
     }
     routeValues["fieldNameOrRefName"] = *fieldNameOrRefName
 
     locationId, _ := uuid.Parse("b51fd764-e5c2-4b9b-aaf7-3395cf4bdd94")
-    _, err := client.Client.Send(http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return err
     }
@@ -887,20 +913,21 @@ func (client Client) DeleteField(fieldNameOrRefName *string, project *string) er
 }
 
 // Gets information on a specific field.
+// ctx
 // fieldNameOrRefName (required): Field simple name or reference name
 // project (optional): Project ID or project name
-func (client Client) GetField(fieldNameOrRefName *string, project *string) (*WorkItemField, error) {
+func (client Client) GetField(ctx context.Context, fieldNameOrRefName *string, project *string) (*WorkItemField, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if fieldNameOrRefName == nil || *fieldNameOrRefName == "" {
-        return nil, errors.New("fieldNameOrRefName is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "fieldNameOrRefName"} 
     }
     routeValues["fieldNameOrRefName"] = *fieldNameOrRefName
 
     locationId, _ := uuid.Parse("b51fd764-e5c2-4b9b-aaf7-3395cf4bdd94")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -911,9 +938,10 @@ func (client Client) GetField(fieldNameOrRefName *string, project *string) (*Wor
 }
 
 // Returns information for all fields.
+// ctx
 // project (optional): Project ID or project name
 // expand (optional): Use ExtensionFields to include extension fields, otherwise exclude them. Unless the feature flag for this parameter is enabled, extension fields are always included.
-func (client Client) GetFields(project *string, expand *string) (*[]WorkItemField, error) {
+func (client Client) GetFields(ctx context.Context, project *string, expand *string) (*[]WorkItemField, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -924,7 +952,7 @@ func (client Client) GetFields(project *string, expand *string) (*[]WorkItemFiel
         queryParams.Add("$expand", *expand)
     }
     locationId, _ := uuid.Parse("b51fd764-e5c2-4b9b-aaf7-3395cf4bdd94")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -935,21 +963,22 @@ func (client Client) GetFields(project *string, expand *string) (*[]WorkItemFiel
 }
 
 // Creates a query, or moves a query.
+// ctx
 // postedQuery (required): The query to create.
 // project (required): Project ID or project name
 // query (required): The parent id or path under which the query is to be created.
 // validateWiqlOnly (optional): If you only want to validate your WIQL query without actually creating one, set it to true. Default is false.
-func (client Client) CreateQuery(postedQuery *QueryHierarchyItem, project *string, query *string, validateWiqlOnly *bool) (*QueryHierarchyItem, error) {
+func (client Client) CreateQuery(ctx context.Context, postedQuery *QueryHierarchyItem, project *string, query *string, validateWiqlOnly *bool) (*QueryHierarchyItem, error) {
     if postedQuery == nil {
-        return nil, errors.New("postedQuery is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "postedQuery"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if query == nil || *query == "" {
-        return nil, errors.New("query is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "query"} 
     }
     routeValues["query"] = *query
 
@@ -962,7 +991,7 @@ func (client Client) CreateQuery(postedQuery *QueryHierarchyItem, project *strin
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("a67d190c-c41f-424b-814d-0e906f659301")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -973,21 +1002,22 @@ func (client Client) CreateQuery(postedQuery *QueryHierarchyItem, project *strin
 }
 
 // Delete a query or a folder. This deletes any permission change on the deleted query or folder and any of its descendants if it is a folder. It is important to note that the deleted permission changes cannot be recovered upon undeleting the query or folder.
+// ctx
 // project (required): Project ID or project name
 // query (required): ID or path of the query or folder to delete.
-func (client Client) DeleteQuery(project *string, query *string) error {
+func (client Client) DeleteQuery(ctx context.Context, project *string, query *string) error {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return errors.New("project is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if query == nil || *query == "" {
-        return errors.New("query is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "query"} 
     }
     routeValues["query"] = *query
 
     locationId, _ := uuid.Parse("a67d190c-c41f-424b-814d-0e906f659301")
-    _, err := client.Client.Send(http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return err
     }
@@ -996,14 +1026,15 @@ func (client Client) DeleteQuery(project *string, query *string) error {
 }
 
 // Gets the root queries and their children
+// ctx
 // project (required): Project ID or project name
 // expand (optional): Include the query string (wiql), clauses, query result columns, and sort options in the results.
 // depth (optional): In the folder of queries, return child queries and folders to this depth.
 // includeDeleted (optional): Include deleted queries and folders
-func (client Client) GetQueries(project *string, expand *string, depth *int, includeDeleted *bool) (*[]QueryHierarchyItem, error) {
+func (client Client) GetQueries(ctx context.Context, project *string, expand *string, depth *int, includeDeleted *bool) (*[]QueryHierarchyItem, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
@@ -1018,7 +1049,7 @@ func (client Client) GetQueries(project *string, expand *string, depth *int, inc
         queryParams.Add("$includeDeleted", strconv.FormatBool(*includeDeleted))
     }
     locationId, _ := uuid.Parse("a67d190c-c41f-424b-814d-0e906f659301")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1029,19 +1060,20 @@ func (client Client) GetQueries(project *string, expand *string, depth *int, inc
 }
 
 // Retrieves an individual query and its children
+// ctx
 // project (required): Project ID or project name
 // query (required): ID or path of the query.
 // expand (optional): Include the query string (wiql), clauses, query result columns, and sort options in the results.
 // depth (optional): In the folder of queries, return child queries and folders to this depth.
 // includeDeleted (optional): Include deleted queries and folders
-func (client Client) GetQuery(project *string, query *string, expand *string, depth *int, includeDeleted *bool) (*QueryHierarchyItem, error) {
+func (client Client) GetQuery(ctx context.Context, project *string, query *string, expand *string, depth *int, includeDeleted *bool) (*QueryHierarchyItem, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if query == nil || *query == "" {
-        return nil, errors.New("query is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "query"} 
     }
     routeValues["query"] = *query
 
@@ -1056,7 +1088,7 @@ func (client Client) GetQuery(project *string, query *string, expand *string, de
         queryParams.Add("$includeDeleted", strconv.FormatBool(*includeDeleted))
     }
     locationId, _ := uuid.Parse("a67d190c-c41f-424b-814d-0e906f659301")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1067,21 +1099,22 @@ func (client Client) GetQuery(project *string, query *string, expand *string, de
 }
 
 // Searches all queries the user has access to in the current project
+// ctx
 // project (required): Project ID or project name
 // filter (required): The text to filter the queries with.
 // top (optional): The number of queries to return (Default is 50 and maximum is 200).
 // expand (optional)
 // includeDeleted (optional): Include deleted queries and folders
-func (client Client) SearchQueries(project *string, filter *string, top *int, expand *string, includeDeleted *bool) (*QueryHierarchyItemsResult, error) {
+func (client Client) SearchQueries(ctx context.Context, project *string, filter *string, top *int, expand *string, includeDeleted *bool) (*QueryHierarchyItemsResult, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     queryParams := url.Values{}
     if filter == nil {
-        return nil, errors.New("filter is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "filter"}
     }
     queryParams.Add("$filter", *filter)
     if top != nil {
@@ -1094,7 +1127,7 @@ func (client Client) SearchQueries(project *string, filter *string, top *int, ex
         queryParams.Add("$includeDeleted", strconv.FormatBool(*includeDeleted))
     }
     locationId, _ := uuid.Parse("a67d190c-c41f-424b-814d-0e906f659301")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1105,21 +1138,22 @@ func (client Client) SearchQueries(project *string, filter *string, top *int, ex
 }
 
 // Update a query or a folder. This allows you to update, rename and move queries and folders.
+// ctx
 // queryUpdate (required): The query to update.
 // project (required): Project ID or project name
 // query (required): The ID or path for the query to update.
 // undeleteDescendants (optional): Undelete the children of this folder. It is important to note that this will not bring back the permission changes that were previously applied to the descendants.
-func (client Client) UpdateQuery(queryUpdate *QueryHierarchyItem, project *string, query *string, undeleteDescendants *bool) (*QueryHierarchyItem, error) {
+func (client Client) UpdateQuery(ctx context.Context, queryUpdate *QueryHierarchyItem, project *string, query *string, undeleteDescendants *bool) (*QueryHierarchyItem, error) {
     if queryUpdate == nil {
-        return nil, errors.New("queryUpdate is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "queryUpdate"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if query == nil || *query == "" {
-        return nil, errors.New("query is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "query"} 
     }
     routeValues["query"] = *query
 
@@ -1132,7 +1166,7 @@ func (client Client) UpdateQuery(queryUpdate *QueryHierarchyItem, project *strin
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("a67d190c-c41f-424b-814d-0e906f659301")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1143,15 +1177,16 @@ func (client Client) UpdateQuery(queryUpdate *QueryHierarchyItem, project *strin
 }
 
 // Gets a list of queries by ids (Maximum 1000)
+// ctx
 // queryGetRequest (required)
 // project (required): Project ID or project name
-func (client Client) GetQueriesBatch(queryGetRequest *QueryBatchGetRequest, project *string) (*[]QueryHierarchyItem, error) {
+func (client Client) GetQueriesBatch(ctx context.Context, queryGetRequest *QueryBatchGetRequest, project *string) (*[]QueryHierarchyItem, error) {
     if queryGetRequest == nil {
-        return nil, errors.New("queryGetRequest is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "queryGetRequest"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
@@ -1160,7 +1195,7 @@ func (client Client) GetQueriesBatch(queryGetRequest *QueryBatchGetRequest, proj
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("549816f9-09b0-4e75-9e81-01fbfcd07426")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1171,20 +1206,21 @@ func (client Client) GetQueriesBatch(queryGetRequest *QueryBatchGetRequest, proj
 }
 
 // Destroys the specified work item permanently from the Recycle Bin. This action can not be undone.
+// ctx
 // id (required): ID of the work item to be destroyed permanently
 // project (optional): Project ID or project name
-func (client Client) DestroyWorkItem(id *int, project *string) error {
+func (client Client) DestroyWorkItem(ctx context.Context, id *int, project *string) error {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if id == nil {
-        return errors.New("id is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = strconv.Itoa(*id)
 
     locationId, _ := uuid.Parse("b70d8d39-926c-465e-b927-b1bf0e5ca0e0")
-    _, err := client.Client.Send(http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return err
     }
@@ -1193,20 +1229,21 @@ func (client Client) DestroyWorkItem(id *int, project *string) error {
 }
 
 // Gets a deleted work item from Recycle Bin.
+// ctx
 // id (required): ID of the work item to be returned
 // project (optional): Project ID or project name
-func (client Client) GetDeletedWorkItem(id *int, project *string) (*WorkItemDelete, error) {
+func (client Client) GetDeletedWorkItem(ctx context.Context, id *int, project *string) (*WorkItemDelete, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if id == nil {
-        return nil, errors.New("id is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = strconv.Itoa(*id)
 
     locationId, _ := uuid.Parse("b70d8d39-926c-465e-b927-b1bf0e5ca0e0")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1217,9 +1254,10 @@ func (client Client) GetDeletedWorkItem(id *int, project *string) (*WorkItemDele
 }
 
 // Gets the work items from the recycle bin, whose IDs have been specified in the parameters
+// ctx
 // ids (required): Comma separated list of IDs of the deleted work items to be returned
 // project (optional): Project ID or project name
-func (client Client) GetDeletedWorkItems(ids *[]int, project *string) (*[]WorkItemDeleteReference, error) {
+func (client Client) GetDeletedWorkItems(ctx context.Context, ids *[]int, project *string) (*[]WorkItemDeleteReference, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -1227,7 +1265,7 @@ func (client Client) GetDeletedWorkItems(ids *[]int, project *string) (*[]WorkIt
 
     queryParams := url.Values{}
     if ids == nil {
-        return nil, errors.New("ids is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "ids"}
     }
     var stringList []string
     for _, item := range *ids {
@@ -1236,7 +1274,7 @@ func (client Client) GetDeletedWorkItems(ids *[]int, project *string) (*[]WorkIt
     listAsString := strings.Join((stringList)[:], ",")
     queryParams.Add("definitions", listAsString)
     locationId, _ := uuid.Parse("b70d8d39-926c-465e-b927-b1bf0e5ca0e0")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1247,15 +1285,16 @@ func (client Client) GetDeletedWorkItems(ids *[]int, project *string) (*[]WorkIt
 }
 
 // Gets a list of the IDs and the URLs of the deleted the work items in the Recycle Bin.
+// ctx
 // project (optional): Project ID or project name
-func (client Client) GetDeletedWorkItemShallowReferences(project *string) (*[]WorkItemDeleteShallowReference, error) {
+func (client Client) GetDeletedWorkItemShallowReferences(ctx context.Context, project *string) (*[]WorkItemDeleteShallowReference, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
 
     locationId, _ := uuid.Parse("b70d8d39-926c-465e-b927-b1bf0e5ca0e0")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1266,19 +1305,20 @@ func (client Client) GetDeletedWorkItemShallowReferences(project *string) (*[]Wo
 }
 
 // Restores the deleted work item from Recycle Bin.
+// ctx
 // payload (required): Paylod with instructions to update the IsDeleted flag to false
 // id (required): ID of the work item to be restored
 // project (optional): Project ID or project name
-func (client Client) RestoreWorkItem(payload *WorkItemDeleteUpdate, id *int, project *string) (*WorkItemDelete, error) {
+func (client Client) RestoreWorkItem(ctx context.Context, payload *WorkItemDeleteUpdate, id *int, project *string) (*WorkItemDelete, error) {
     if payload == nil {
-        return nil, errors.New("payload is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "payload"}
     }
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if id == nil {
-        return nil, errors.New("id is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = strconv.Itoa(*id)
 
@@ -1287,7 +1327,7 @@ func (client Client) RestoreWorkItem(payload *WorkItemDeleteUpdate, id *int, pro
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("b70d8d39-926c-465e-b927-b1bf0e5ca0e0")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1298,21 +1338,22 @@ func (client Client) RestoreWorkItem(payload *WorkItemDeleteUpdate, id *int, pro
 }
 
 // Returns a fully hydrated work item for the requested revision
+// ctx
 // id (required)
 // revisionNumber (required)
 // project (optional): Project ID or project name
 // expand (optional)
-func (client Client) GetRevision(id *int, revisionNumber *int, project *string, expand *string) (*WorkItem, error) {
+func (client Client) GetRevision(ctx context.Context, id *int, revisionNumber *int, project *string, expand *string) (*WorkItem, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if id == nil {
-        return nil, errors.New("id is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = strconv.Itoa(*id)
     if revisionNumber == nil {
-        return nil, errors.New("revisionNumber is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "revisionNumber"} 
     }
     routeValues["revisionNumber"] = strconv.Itoa(*revisionNumber)
 
@@ -1321,7 +1362,7 @@ func (client Client) GetRevision(id *int, revisionNumber *int, project *string, 
         queryParams.Add("$expand", *expand)
     }
     locationId, _ := uuid.Parse("a00c85a5-80fa-4565-99c3-bcd2181434bb")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1332,18 +1373,19 @@ func (client Client) GetRevision(id *int, revisionNumber *int, project *string, 
 }
 
 // Returns the list of fully hydrated work item revisions, paged.
+// ctx
 // id (required)
 // project (optional): Project ID or project name
 // top (optional)
 // skip (optional)
 // expand (optional)
-func (client Client) GetRevisions(id *int, project *string, top *int, skip *int, expand *string) (*[]WorkItem, error) {
+func (client Client) GetRevisions(ctx context.Context, id *int, project *string, top *int, skip *int, expand *string) (*[]WorkItem, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if id == nil {
-        return nil, errors.New("id is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = strconv.Itoa(*id)
 
@@ -1358,7 +1400,7 @@ func (client Client) GetRevisions(id *int, project *string, top *int, skip *int,
         queryParams.Add("$expand", *expand)
     }
     locationId, _ := uuid.Parse("a00c85a5-80fa-4565-99c3-bcd2181434bb")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1369,20 +1411,21 @@ func (client Client) GetRevisions(id *int, project *string, top *int, skip *int,
 }
 
 // [Preview API] Creates a template
+// ctx
 // template (required): Template contents
 // project (required): Project ID or project name
 // team (required): Team ID or team name
-func (client Client) CreateTemplate(template *WorkItemTemplate, project *string, team *string) (*WorkItemTemplate, error) {
+func (client Client) CreateTemplate(ctx context.Context, template *WorkItemTemplate, project *string, team *string) (*WorkItemTemplate, error) {
     if template == nil {
-        return nil, errors.New("template is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "template"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team == nil || *team == "" {
-        return nil, errors.New("team is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "team"} 
     }
     routeValues["team"] = *team
 
@@ -1391,7 +1434,7 @@ func (client Client) CreateTemplate(template *WorkItemTemplate, project *string,
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("6a90345f-a676-4969-afce-8e163e1d5642")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1402,17 +1445,18 @@ func (client Client) CreateTemplate(template *WorkItemTemplate, project *string,
 }
 
 // [Preview API] Gets template
+// ctx
 // project (required): Project ID or project name
 // team (required): Team ID or team name
 // workitemtypename (optional): Optional, When specified returns templates for given Work item type.
-func (client Client) GetTemplates(project *string, team *string, workitemtypename *string) (*[]WorkItemTemplateReference, error) {
+func (client Client) GetTemplates(ctx context.Context, project *string, team *string, workitemtypename *string) (*[]WorkItemTemplateReference, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team == nil || *team == "" {
-        return nil, errors.New("team is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "team"} 
     }
     routeValues["team"] = *team
 
@@ -1421,7 +1465,7 @@ func (client Client) GetTemplates(project *string, team *string, workitemtypenam
         queryParams.Add("workitemtypename", *workitemtypename)
     }
     locationId, _ := uuid.Parse("6a90345f-a676-4969-afce-8e163e1d5642")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1432,26 +1476,27 @@ func (client Client) GetTemplates(project *string, team *string, workitemtypenam
 }
 
 // [Preview API] Deletes the template with given id
+// ctx
 // project (required): Project ID or project name
 // team (required): Team ID or team name
 // templateId (required): Template id
-func (client Client) DeleteTemplate(project *string, team *string, templateId *uuid.UUID) error {
+func (client Client) DeleteTemplate(ctx context.Context, project *string, team *string, templateId *uuid.UUID) error {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return errors.New("project is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team == nil || *team == "" {
-        return errors.New("team is a required parameter")
+        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "team"} 
     }
     routeValues["team"] = *team
     if templateId == nil {
-        return errors.New("templateId is a required parameter")
+        return &azureDevops.ArgumentNilError{ArgumentName: "templateId"} 
     }
     routeValues["templateId"] = (*templateId).String()
 
     locationId, _ := uuid.Parse("fb10264a-8836-48a0-8033-1b0ccd2748d5")
-    _, err := client.Client.Send(http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return err
     }
@@ -1460,26 +1505,27 @@ func (client Client) DeleteTemplate(project *string, team *string, templateId *u
 }
 
 // [Preview API] Gets the template with specified id
+// ctx
 // project (required): Project ID or project name
 // team (required): Team ID or team name
 // templateId (required): Template Id
-func (client Client) GetTemplate(project *string, team *string, templateId *uuid.UUID) (*WorkItemTemplate, error) {
+func (client Client) GetTemplate(ctx context.Context, project *string, team *string, templateId *uuid.UUID) (*WorkItemTemplate, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team == nil || *team == "" {
-        return nil, errors.New("team is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "team"} 
     }
     routeValues["team"] = *team
     if templateId == nil {
-        return nil, errors.New("templateId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "templateId"} 
     }
     routeValues["templateId"] = (*templateId).String()
 
     locationId, _ := uuid.Parse("fb10264a-8836-48a0-8033-1b0ccd2748d5")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1490,25 +1536,26 @@ func (client Client) GetTemplate(project *string, team *string, templateId *uuid
 }
 
 // [Preview API] Replace template contents
+// ctx
 // templateContent (required): Template contents to replace with
 // project (required): Project ID or project name
 // team (required): Team ID or team name
 // templateId (required): Template id
-func (client Client) ReplaceTemplate(templateContent *WorkItemTemplate, project *string, team *string, templateId *uuid.UUID) (*WorkItemTemplate, error) {
+func (client Client) ReplaceTemplate(ctx context.Context, templateContent *WorkItemTemplate, project *string, team *string, templateId *uuid.UUID) (*WorkItemTemplate, error) {
     if templateContent == nil {
-        return nil, errors.New("templateContent is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "templateContent"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if team == nil || *team == "" {
-        return nil, errors.New("team is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "team"} 
     }
     routeValues["team"] = *team
     if templateId == nil {
-        return nil, errors.New("templateId is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "templateId"} 
     }
     routeValues["templateId"] = (*templateId).String()
 
@@ -1517,7 +1564,7 @@ func (client Client) ReplaceTemplate(templateContent *WorkItemTemplate, project 
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("fb10264a-8836-48a0-8033-1b0ccd2748d5")
-    resp, err := client.Client.Send(http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1528,25 +1575,26 @@ func (client Client) ReplaceTemplate(templateContent *WorkItemTemplate, project 
 }
 
 // Returns a single update for a work item
+// ctx
 // id (required)
 // updateNumber (required)
 // project (optional): Project ID or project name
-func (client Client) GetUpdate(id *int, updateNumber *int, project *string) (*WorkItemUpdate, error) {
+func (client Client) GetUpdate(ctx context.Context, id *int, updateNumber *int, project *string) (*WorkItemUpdate, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if id == nil {
-        return nil, errors.New("id is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = strconv.Itoa(*id)
     if updateNumber == nil {
-        return nil, errors.New("updateNumber is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "updateNumber"} 
     }
     routeValues["updateNumber"] = strconv.Itoa(*updateNumber)
 
     locationId, _ := uuid.Parse("6570bf97-d02c-4a91-8d93-3abe9895b1a9")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1557,17 +1605,18 @@ func (client Client) GetUpdate(id *int, updateNumber *int, project *string) (*Wo
 }
 
 // Returns a the deltas between work item revisions
+// ctx
 // id (required)
 // project (optional): Project ID or project name
 // top (optional)
 // skip (optional)
-func (client Client) GetUpdates(id *int, project *string, top *int, skip *int) (*[]WorkItemUpdate, error) {
+func (client Client) GetUpdates(ctx context.Context, id *int, project *string, top *int, skip *int) (*[]WorkItemUpdate, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if id == nil {
-        return nil, errors.New("id is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = strconv.Itoa(*id)
 
@@ -1579,7 +1628,7 @@ func (client Client) GetUpdates(id *int, project *string, top *int, skip *int) (
         queryParams.Add("$skip", strconv.Itoa(*skip))
     }
     locationId, _ := uuid.Parse("6570bf97-d02c-4a91-8d93-3abe9895b1a9")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1590,14 +1639,15 @@ func (client Client) GetUpdates(id *int, project *string, top *int, skip *int) (
 }
 
 // Gets the results of the query given its WIQL.
+// ctx
 // wiql (required): The query containing the WIQL.
 // project (optional): Project ID or project name
 // team (optional): Team ID or team name
 // timePrecision (optional): Whether or not to use time precision.
 // top (optional): The max number of results to return.
-func (client Client) QueryByWiql(wiql *Wiql, project *string, team *string, timePrecision *bool, top *int) (*WorkItemQueryResult, error) {
+func (client Client) QueryByWiql(ctx context.Context, wiql *Wiql, project *string, team *string, timePrecision *bool, top *int) (*WorkItemQueryResult, error) {
     if wiql == nil {
-        return nil, errors.New("wiql is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "wiql"}
     }
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
@@ -1619,7 +1669,7 @@ func (client Client) QueryByWiql(wiql *Wiql, project *string, team *string, time
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("1a9c53f7-f243-4447-b110-35ef023636e4")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1630,12 +1680,13 @@ func (client Client) QueryByWiql(wiql *Wiql, project *string, team *string, time
 }
 
 // Gets the results of the query given the query ID.
+// ctx
 // id (required): The query ID.
 // project (optional): Project ID or project name
 // team (optional): Team ID or team name
 // timePrecision (optional): Whether or not to use time precision.
 // top (optional): The max number of results to return.
-func (client Client) GetQueryResultCount(id *uuid.UUID, project *string, team *string, timePrecision *bool, top *int) (*int, error) {
+func (client Client) GetQueryResultCount(ctx context.Context, id *uuid.UUID, project *string, team *string, timePrecision *bool, top *int) (*int, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -1644,7 +1695,7 @@ func (client Client) GetQueryResultCount(id *uuid.UUID, project *string, team *s
         routeValues["team"] = *team
     }
     if id == nil {
-        return nil, errors.New("id is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = (*id).String()
 
@@ -1656,7 +1707,7 @@ func (client Client) GetQueryResultCount(id *uuid.UUID, project *string, team *s
         queryParams.Add("$top", strconv.Itoa(*top))
     }
     locationId, _ := uuid.Parse("a02355f5-5f8a-4671-8e32-369d23aac83d")
-    resp, err := client.Client.Send(http.MethodHead, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodHead, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1667,12 +1718,13 @@ func (client Client) GetQueryResultCount(id *uuid.UUID, project *string, team *s
 }
 
 // Gets the results of the query given the query ID.
+// ctx
 // id (required): The query ID.
 // project (optional): Project ID or project name
 // team (optional): Team ID or team name
 // timePrecision (optional): Whether or not to use time precision.
 // top (optional): The max number of results to return.
-func (client Client) QueryById(id *uuid.UUID, project *string, team *string, timePrecision *bool, top *int) (*WorkItemQueryResult, error) {
+func (client Client) QueryById(ctx context.Context, id *uuid.UUID, project *string, team *string, timePrecision *bool, top *int) (*WorkItemQueryResult, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -1681,7 +1733,7 @@ func (client Client) QueryById(id *uuid.UUID, project *string, team *string, tim
         routeValues["team"] = *team
     }
     if id == nil {
-        return nil, errors.New("id is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = (*id).String()
 
@@ -1693,7 +1745,7 @@ func (client Client) QueryById(id *uuid.UUID, project *string, team *string, tim
         queryParams.Add("$top", strconv.Itoa(*top))
     }
     locationId, _ := uuid.Parse("a02355f5-5f8a-4671-8e32-369d23aac83d")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1704,13 +1756,14 @@ func (client Client) QueryById(id *uuid.UUID, project *string, team *string, tim
 }
 
 // Get a work item icon given the friendly name and icon color.
+// ctx
 // icon (required): The name of the icon
 // color (optional): The 6-digit hex color for the icon
 // v (optional): The version of the icon (used only for cache invalidation)
-func (client Client) GetWorkItemIconJson(icon *string, color *string, v *int) (*WorkItemIcon, error) {
+func (client Client) GetWorkItemIconJson(ctx context.Context, icon *string, color *string, v *int) (*WorkItemIcon, error) {
     routeValues := make(map[string]string)
     if icon == nil || *icon == "" {
-        return nil, errors.New("icon is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "icon"} 
     }
     routeValues["icon"] = *icon
 
@@ -1722,7 +1775,7 @@ func (client Client) GetWorkItemIconJson(icon *string, color *string, v *int) (*
         queryParams.Add("v", strconv.Itoa(*v))
     }
     locationId, _ := uuid.Parse("4e1eb4a5-1970-4228-a682-ec48eb2dca30")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1733,9 +1786,10 @@ func (client Client) GetWorkItemIconJson(icon *string, color *string, v *int) (*
 }
 
 // Get a list of all work item icons.
-func (client Client) GetWorkItemIcons() (*[]WorkItemIcon, error) {
+// ctx
+func (client Client) GetWorkItemIcons(ctx context.Context, ) (*[]WorkItemIcon, error) {
     locationId, _ := uuid.Parse("4e1eb4a5-1970-4228-a682-ec48eb2dca30")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", nil, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1746,13 +1800,14 @@ func (client Client) GetWorkItemIcons() (*[]WorkItemIcon, error) {
 }
 
 // Get a work item icon given the friendly name and icon color.
+// ctx
 // icon (required): The name of the icon
 // color (optional): The 6-digit hex color for the icon
 // v (optional): The version of the icon (used only for cache invalidation)
-func (client Client) GetWorkItemIconSvg(icon *string, color *string, v *int) (*interface{}, error) {
+func (client Client) GetWorkItemIconSvg(ctx context.Context, icon *string, color *string, v *int) (*interface{}, error) {
     routeValues := make(map[string]string)
     if icon == nil || *icon == "" {
-        return nil, errors.New("icon is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "icon"} 
     }
     routeValues["icon"] = *icon
 
@@ -1764,7 +1819,7 @@ func (client Client) GetWorkItemIconSvg(icon *string, color *string, v *int) (*i
         queryParams.Add("v", strconv.Itoa(*v))
     }
     locationId, _ := uuid.Parse("4e1eb4a5-1970-4228-a682-ec48eb2dca30")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "image/svg+xml", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "image/svg+xml", nil)
     if err != nil {
         return nil, err
     }
@@ -1775,13 +1830,14 @@ func (client Client) GetWorkItemIconSvg(icon *string, color *string, v *int) (*i
 }
 
 // Get a work item icon given the friendly name and icon color.
+// ctx
 // icon (required): The name of the icon
 // color (optional): The 6-digit hex color for the icon
 // v (optional): The version of the icon (used only for cache invalidation)
-func (client Client) GetWorkItemIconXaml(icon *string, color *string, v *int) (*interface{}, error) {
+func (client Client) GetWorkItemIconXaml(ctx context.Context, icon *string, color *string, v *int) (*interface{}, error) {
     routeValues := make(map[string]string)
     if icon == nil || *icon == "" {
-        return nil, errors.New("icon is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "icon"} 
     }
     routeValues["icon"] = *icon
 
@@ -1793,7 +1849,7 @@ func (client Client) GetWorkItemIconXaml(icon *string, color *string, v *int) (*
         queryParams.Add("v", strconv.Itoa(*v))
     }
     locationId, _ := uuid.Parse("4e1eb4a5-1970-4228-a682-ec48eb2dca30")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "image/xaml+xml", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "image/xaml+xml", nil)
     if err != nil {
         return nil, err
     }
@@ -1804,12 +1860,13 @@ func (client Client) GetWorkItemIconXaml(icon *string, color *string, v *int) (*
 }
 
 // Get a batch of work item links
+// ctx
 // project (optional): Project ID or project name
 // linkTypes (optional): A list of types to filter the results to specific link types. Omit this parameter to get work item links of all link types.
 // types (optional): A list of types to filter the results to specific work item types. Omit this parameter to get work item links of all work item types.
 // continuationToken (optional): Specifies the continuationToken to start the batch from. Omit this parameter to get the first batch of links.
 // startDateTime (optional): Date/time to use as a starting point for link changes. Only link changes that occurred after that date/time will be returned. Cannot be used in conjunction with 'watermark' parameter.
-func (client Client) GetReportingLinksByLinkType(project *string, linkTypes *[]string, types *[]string, continuationToken *string, startDateTime *time.Time) (*ReportingWorkItemLinksBatch, error) {
+func (client Client) GetReportingLinksByLinkType(ctx context.Context, project *string, linkTypes *[]string, types *[]string, continuationToken *string, startDateTime *time.Time) (*ReportingWorkItemLinksBatch, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -1831,7 +1888,7 @@ func (client Client) GetReportingLinksByLinkType(project *string, linkTypes *[]s
         queryParams.Add("startDateTime", (*startDateTime).String())
     }
     locationId, _ := uuid.Parse("b5b5b6d0-0308-40a1-b3f4-b9bb3c66878f")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1842,16 +1899,17 @@ func (client Client) GetReportingLinksByLinkType(project *string, linkTypes *[]s
 }
 
 // Gets the work item relation type definition.
+// ctx
 // relation (required): The relation name
-func (client Client) GetRelationType(relation *string) (*WorkItemRelationType, error) {
+func (client Client) GetRelationType(ctx context.Context, relation *string) (*WorkItemRelationType, error) {
     routeValues := make(map[string]string)
     if relation == nil || *relation == "" {
-        return nil, errors.New("relation is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "relation"} 
     }
     routeValues["relation"] = *relation
 
     locationId, _ := uuid.Parse("f5d33bc9-5b49-4a3c-a9bd-f3cd46dd2165")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1862,9 +1920,10 @@ func (client Client) GetRelationType(relation *string) (*WorkItemRelationType, e
 }
 
 // Gets the work item relation types.
-func (client Client) GetRelationTypes() (*[]WorkItemRelationType, error) {
+// ctx
+func (client Client) GetRelationTypes(ctx context.Context, ) (*[]WorkItemRelationType, error) {
     locationId, _ := uuid.Parse("f5d33bc9-5b49-4a3c-a9bd-f3cd46dd2165")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", nil, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1875,6 +1934,7 @@ func (client Client) GetRelationTypes() (*[]WorkItemRelationType, error) {
 }
 
 // Get a batch of work item revisions with the option of including deleted items
+// ctx
 // project (optional): Project ID or project name
 // fields (optional): A list of fields to return in work item revisions. Omit this parameter to get all reportable fields.
 // types (optional): A list of types to filter the results to specific work item types. Omit this parameter to get work item revisions of all work item types.
@@ -1887,7 +1947,7 @@ func (client Client) GetRelationTypes() (*[]WorkItemRelationType, error) {
 // expand (optional): Return all the fields in work item revisions, including long text fields which are not returned by default
 // includeDiscussionChangesOnly (optional): Return only the those revisions of work items, where only history field was changed
 // maxPageSize (optional): The maximum number of results to return in this batch
-func (client Client) ReadReportingRevisionsGet(project *string, fields *[]string, types *[]string, continuationToken *string, startDateTime *time.Time, includeIdentityRef *bool, includeDeleted *bool, includeTagRef *bool, includeLatestOnly *bool, expand *string, includeDiscussionChangesOnly *bool, maxPageSize *int) (*ReportingWorkItemRevisionsBatch, error) {
+func (client Client) ReadReportingRevisionsGet(ctx context.Context, project *string, fields *[]string, types *[]string, continuationToken *string, startDateTime *time.Time, includeIdentityRef *bool, includeDeleted *bool, includeTagRef *bool, includeLatestOnly *bool, expand *string, includeDiscussionChangesOnly *bool, maxPageSize *int) (*ReportingWorkItemRevisionsBatch, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -1930,7 +1990,7 @@ func (client Client) ReadReportingRevisionsGet(project *string, fields *[]string
         queryParams.Add("$maxPageSize", strconv.Itoa(*maxPageSize))
     }
     locationId, _ := uuid.Parse("f828fe59-dd87-495d-a17c-7a8d6211ca6c")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1941,14 +2001,15 @@ func (client Client) ReadReportingRevisionsGet(project *string, fields *[]string
 }
 
 // Get a batch of work item revisions. This request may be used if your list of fields is large enough that it may run the URL over the length limit.
+// ctx
 // filter (required): An object that contains request settings: field filter, type filter, identity format
 // project (optional): Project ID or project name
 // continuationToken (optional): Specifies the watermark to start the batch from. Omit this parameter to get the first batch of revisions.
 // startDateTime (optional): Date/time to use as a starting point for revisions, all revisions will occur after this date/time. Cannot be used in conjunction with 'watermark' parameter.
 // expand (optional)
-func (client Client) ReadReportingRevisionsPost(filter *ReportingWorkItemRevisionsFilter, project *string, continuationToken *string, startDateTime *time.Time, expand *string) (*ReportingWorkItemRevisionsBatch, error) {
+func (client Client) ReadReportingRevisionsPost(ctx context.Context, filter *ReportingWorkItemRevisionsFilter, project *string, continuationToken *string, startDateTime *time.Time, expand *string) (*ReportingWorkItemRevisionsBatch, error) {
     if filter == nil {
-        return nil, errors.New("filter is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "filter"}
     }
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
@@ -1970,7 +2031,7 @@ func (client Client) ReadReportingRevisionsPost(filter *ReportingWorkItemRevisio
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("f828fe59-dd87-495d-a17c-7a8d6211ca6c")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1981,10 +2042,11 @@ func (client Client) ReadReportingRevisionsPost(filter *ReportingWorkItemRevisio
 }
 
 // [Preview API]
+// ctx
 // project (optional): Project ID or project name
 // continuationToken (optional)
 // maxPageSize (optional)
-func (client Client) ReadReportingDiscussions(project *string, continuationToken *string, maxPageSize *int) (*ReportingWorkItemRevisionsBatch, error) {
+func (client Client) ReadReportingDiscussions(ctx context.Context, project *string, continuationToken *string, maxPageSize *int) (*ReportingWorkItemRevisionsBatch, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -1998,7 +2060,7 @@ func (client Client) ReadReportingDiscussions(project *string, continuationToken
         queryParams.Add("$maxPageSize", strconv.Itoa(*maxPageSize))
     }
     locationId, _ := uuid.Parse("4a644469-90c5-4fcc-9a9f-be0827d369ec")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2009,6 +2071,7 @@ func (client Client) ReadReportingDiscussions(project *string, continuationToken
 }
 
 // Creates a single work item.
+// ctx
 // document (required): The JSON Patch document representing the work item
 // project (required): Project ID or project name
 // type_ (required): The work item type of the work item to create
@@ -2016,17 +2079,17 @@ func (client Client) ReadReportingDiscussions(project *string, continuationToken
 // bypassRules (optional): Do not enforce the work item type rules on this update
 // suppressNotifications (optional): Do not fire any notifications for this change
 // expand (optional): The expand parameters for work item attributes. Possible options are { None, Relations, Fields, Links, All }.
-func (client Client) CreateWorkItem(document *[]JsonPatchOperation, project *string, type_ *string, validateOnly *bool, bypassRules *bool, suppressNotifications *bool, expand *string) (*WorkItem, error) {
+func (client Client) CreateWorkItem(ctx context.Context, document *[]JsonPatchOperation, project *string, type_ *string, validateOnly *bool, bypassRules *bool, suppressNotifications *bool, expand *string) (*WorkItem, error) {
     if document == nil {
-        return nil, errors.New("document is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "document"}
     }
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if type_ == nil || *type_ == "" {
-        return nil, errors.New("type_ is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *type_
 
@@ -2048,7 +2111,7 @@ func (client Client) CreateWorkItem(document *[]JsonPatchOperation, project *str
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("62d3d110-0047-428c-ad3c-4fe872c91c74")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/json-patch+json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/json-patch+json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2059,19 +2122,20 @@ func (client Client) CreateWorkItem(document *[]JsonPatchOperation, project *str
 }
 
 // Returns a single work item from a template.
+// ctx
 // project (required): Project ID or project name
 // type_ (required): The work item type name
 // fields (optional): Comma-separated list of requested fields
 // asOf (optional): AsOf UTC date time string
 // expand (optional): The expand parameters for work item attributes. Possible options are { None, Relations, Fields, Links, All }.
-func (client Client) GetWorkItemTemplate(project *string, type_ *string, fields *string, asOf *time.Time, expand *string) (*WorkItem, error) {
+func (client Client) GetWorkItemTemplate(ctx context.Context, project *string, type_ *string, fields *string, asOf *time.Time, expand *string) (*WorkItem, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if type_ == nil || *type_ == "" {
-        return nil, errors.New("type_ is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *type_
 
@@ -2086,7 +2150,7 @@ func (client Client) GetWorkItemTemplate(project *string, type_ *string, fields 
         queryParams.Add("$expand", *expand)
     }
     locationId, _ := uuid.Parse("62d3d110-0047-428c-ad3c-4fe872c91c74")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2097,16 +2161,17 @@ func (client Client) GetWorkItemTemplate(project *string, type_ *string, fields 
 }
 
 // Deletes the specified work item and sends it to the Recycle Bin, so that it can be restored back, if required. Optionally, if the destroy parameter has been set to true, it destroys the work item permanently. WARNING: If the destroy parameter is set to true, work items deleted by this command will NOT go to recycle-bin and there is no way to restore/recover them after deletion. It is recommended NOT to use this parameter. If you do, please use this parameter with extreme caution.
+// ctx
 // id (required): ID of the work item to be deleted
 // project (optional): Project ID or project name
 // destroy (optional): Optional parameter, if set to true, the work item is deleted permanently. Please note: the destroy action is PERMANENT and cannot be undone.
-func (client Client) DeleteWorkItem(id *int, project *string, destroy *bool) (*WorkItemDelete, error) {
+func (client Client) DeleteWorkItem(ctx context.Context, id *int, project *string, destroy *bool) (*WorkItemDelete, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if id == nil {
-        return nil, errors.New("id is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = strconv.Itoa(*id)
 
@@ -2115,7 +2180,7 @@ func (client Client) DeleteWorkItem(id *int, project *string, destroy *bool) (*W
         queryParams.Add("destroy", strconv.FormatBool(*destroy))
     }
     locationId, _ := uuid.Parse("72c7ddf8-2cdc-4f60-90cd-ab71c14a399b")
-    resp, err := client.Client.Send(http.MethodDelete, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2126,18 +2191,19 @@ func (client Client) DeleteWorkItem(id *int, project *string, destroy *bool) (*W
 }
 
 // Returns a single work item.
+// ctx
 // id (required): The work item id
 // project (optional): Project ID or project name
 // fields (optional): Comma-separated list of requested fields
 // asOf (optional): AsOf UTC date time string
 // expand (optional): The expand parameters for work item attributes. Possible options are { None, Relations, Fields, Links, All }.
-func (client Client) GetWorkItem(id *int, project *string, fields *[]string, asOf *time.Time, expand *string) (*WorkItem, error) {
+func (client Client) GetWorkItem(ctx context.Context, id *int, project *string, fields *[]string, asOf *time.Time, expand *string) (*WorkItem, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if id == nil {
-        return nil, errors.New("id is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = strconv.Itoa(*id)
 
@@ -2153,7 +2219,7 @@ func (client Client) GetWorkItem(id *int, project *string, fields *[]string, asO
         queryParams.Add("$expand", *expand)
     }
     locationId, _ := uuid.Parse("72c7ddf8-2cdc-4f60-90cd-ab71c14a399b")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2164,13 +2230,14 @@ func (client Client) GetWorkItem(id *int, project *string, fields *[]string, asO
 }
 
 // Returns a list of work items (Maximum 200)
+// ctx
 // ids (required): The comma-separated list of requested work item ids. (Maximum 200 ids allowed).
 // project (optional): Project ID or project name
 // fields (optional): Comma-separated list of requested fields
 // asOf (optional): AsOf UTC date time string
 // expand (optional): The expand parameters for work item attributes. Possible options are { None, Relations, Fields, Links, All }.
 // errorPolicy (optional): The flag to control error policy in a bulk get work items request. Possible options are {Fail, Omit}.
-func (client Client) GetWorkItems(ids *[]int, project *string, fields *[]string, asOf *time.Time, expand *string, errorPolicy *string) (*[]WorkItem, error) {
+func (client Client) GetWorkItems(ctx context.Context, ids *[]int, project *string, fields *[]string, asOf *time.Time, expand *string, errorPolicy *string) (*[]WorkItem, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -2178,7 +2245,7 @@ func (client Client) GetWorkItems(ids *[]int, project *string, fields *[]string,
 
     queryParams := url.Values{}
     if ids == nil {
-        return nil, errors.New("ids is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "ids"}
     }
     var stringList []string
     for _, item := range *ids {
@@ -2200,7 +2267,7 @@ func (client Client) GetWorkItems(ids *[]int, project *string, fields *[]string,
         queryParams.Add("errorPolicy", *errorPolicy)
     }
     locationId, _ := uuid.Parse("72c7ddf8-2cdc-4f60-90cd-ab71c14a399b")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2211,6 +2278,7 @@ func (client Client) GetWorkItems(ids *[]int, project *string, fields *[]string,
 }
 
 // Updates a single work item.
+// ctx
 // document (required): The JSON Patch document representing the update
 // id (required): The id of the work item to update
 // project (optional): Project ID or project name
@@ -2218,16 +2286,16 @@ func (client Client) GetWorkItems(ids *[]int, project *string, fields *[]string,
 // bypassRules (optional): Do not enforce the work item type rules on this update
 // suppressNotifications (optional): Do not fire any notifications for this change
 // expand (optional): The expand parameters for work item attributes. Possible options are { None, Relations, Fields, Links, All }.
-func (client Client) UpdateWorkItem(document *[]JsonPatchOperation, id *int, project *string, validateOnly *bool, bypassRules *bool, suppressNotifications *bool, expand *string) (*WorkItem, error) {
+func (client Client) UpdateWorkItem(ctx context.Context, document *[]JsonPatchOperation, id *int, project *string, validateOnly *bool, bypassRules *bool, suppressNotifications *bool, expand *string) (*WorkItem, error) {
     if document == nil {
-        return nil, errors.New("document is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "document"}
     }
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
     }
     if id == nil {
-        return nil, errors.New("id is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = strconv.Itoa(*id)
 
@@ -2249,7 +2317,7 @@ func (client Client) UpdateWorkItem(document *[]JsonPatchOperation, id *int, pro
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("72c7ddf8-2cdc-4f60-90cd-ab71c14a399b")
-    resp, err := client.Client.Send(http.MethodPatch, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/json-patch+json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/json-patch+json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2260,11 +2328,12 @@ func (client Client) UpdateWorkItem(document *[]JsonPatchOperation, id *int, pro
 }
 
 // Gets work items for a list of work item ids (Maximum 200)
+// ctx
 // workItemGetRequest (required)
 // project (optional): Project ID or project name
-func (client Client) GetWorkItemsBatch(workItemGetRequest *WorkItemBatchGetRequest, project *string) (*[]WorkItem, error) {
+func (client Client) GetWorkItemsBatch(ctx context.Context, workItemGetRequest *WorkItemBatchGetRequest, project *string) (*[]WorkItem, error) {
     if workItemGetRequest == nil {
-        return nil, errors.New("workItemGetRequest is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "workItemGetRequest"}
     }
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
@@ -2276,7 +2345,7 @@ func (client Client) GetWorkItemsBatch(workItemGetRequest *WorkItemBatchGetReque
         return nil, marshalErr
     }
     locationId, _ := uuid.Parse("908509b6-4248-4475-a1cd-829139ba419f")
-    resp, err := client.Client.Send(http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2287,12 +2356,13 @@ func (client Client) GetWorkItemsBatch(workItemGetRequest *WorkItemBatchGetReque
 }
 
 // [Preview API] Returns the next state on the given work item IDs.
+// ctx
 // ids (required): list of work item ids
 // action (optional): possible actions. Currently only supports checkin
-func (client Client) GetWorkItemNextStatesOnCheckinAction(ids *[]int, action *string) (*[]WorkItemNextStateOnTransition, error) {
+func (client Client) GetWorkItemNextStatesOnCheckinAction(ctx context.Context, ids *[]int, action *string) (*[]WorkItemNextStateOnTransition, error) {
     queryParams := url.Values{}
     if ids == nil {
-        return nil, errors.New("ids is a required parameter")
+        return nil, &azureDevops.ArgumentNilError{ArgumentName: "ids"}
     }
     var stringList []string
     for _, item := range *ids {
@@ -2304,7 +2374,7 @@ func (client Client) GetWorkItemNextStatesOnCheckinAction(ids *[]int, action *st
         queryParams.Add("action", *action)
     }
     locationId, _ := uuid.Parse("afae844b-e2f6-44c2-8053-17b3bb936a40")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2315,16 +2385,17 @@ func (client Client) GetWorkItemNextStatesOnCheckinAction(ids *[]int, action *st
 }
 
 // Get all work item type categories.
+// ctx
 // project (required): Project ID or project name
-func (client Client) GetWorkItemTypeCategories(project *string) (*[]WorkItemTypeCategory, error) {
+func (client Client) GetWorkItemTypeCategories(ctx context.Context, project *string) (*[]WorkItemTypeCategory, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     locationId, _ := uuid.Parse("9b9f5734-36c8-415e-ba67-f83b45c31408")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2335,21 +2406,22 @@ func (client Client) GetWorkItemTypeCategories(project *string) (*[]WorkItemType
 }
 
 // Get specific work item type category by name.
+// ctx
 // project (required): Project ID or project name
 // category (required): The category name
-func (client Client) GetWorkItemTypeCategory(project *string, category *string) (*WorkItemTypeCategory, error) {
+func (client Client) GetWorkItemTypeCategory(ctx context.Context, project *string, category *string) (*WorkItemTypeCategory, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if category == nil || *category == "" {
-        return nil, errors.New("category is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "category"} 
     }
     routeValues["category"] = *category
 
     locationId, _ := uuid.Parse("9b9f5734-36c8-415e-ba67-f83b45c31408")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2360,21 +2432,22 @@ func (client Client) GetWorkItemTypeCategory(project *string, category *string) 
 }
 
 // Returns a work item type definition.
+// ctx
 // project (required): Project ID or project name
 // type_ (required): Work item type name
-func (client Client) GetWorkItemType(project *string, type_ *string) (*WorkItemType, error) {
+func (client Client) GetWorkItemType(ctx context.Context, project *string, type_ *string) (*WorkItemType, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if type_ == nil || *type_ == "" {
-        return nil, errors.New("type_ is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *type_
 
     locationId, _ := uuid.Parse("7c8d7a76-4a09-43e8-b5df-bd792f4ac6aa")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2385,16 +2458,17 @@ func (client Client) GetWorkItemType(project *string, type_ *string) (*WorkItemT
 }
 
 // Returns the list of work item types
+// ctx
 // project (required): Project ID or project name
-func (client Client) GetWorkItemTypes(project *string) (*[]WorkItemType, error) {
+func (client Client) GetWorkItemTypes(ctx context.Context, project *string) (*[]WorkItemType, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
 
     locationId, _ := uuid.Parse("7c8d7a76-4a09-43e8-b5df-bd792f4ac6aa")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2405,17 +2479,18 @@ func (client Client) GetWorkItemTypes(project *string) (*[]WorkItemType, error) 
 }
 
 // Get a list of fields for a work item type with detailed references.
+// ctx
 // project (required): Project ID or project name
 // type_ (required): Work item type.
 // expand (optional): Expand level for the API response. Properties: to include allowedvalues, default value, isRequired etc. as a part of response; None: to skip these properties.
-func (client Client) GetWorkItemTypeFieldsWithReferences(project *string, type_ *string, expand *string) (*[]WorkItemTypeFieldWithReferences, error) {
+func (client Client) GetWorkItemTypeFieldsWithReferences(ctx context.Context, project *string, type_ *string, expand *string) (*[]WorkItemTypeFieldWithReferences, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if type_ == nil || *type_ == "" {
-        return nil, errors.New("type_ is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *type_
 
@@ -2424,7 +2499,7 @@ func (client Client) GetWorkItemTypeFieldsWithReferences(project *string, type_ 
         queryParams.Add("$expand", *expand)
     }
     locationId, _ := uuid.Parse("bd293ce5-3d25-4192-8e67-e8092e879efb")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2435,22 +2510,23 @@ func (client Client) GetWorkItemTypeFieldsWithReferences(project *string, type_ 
 }
 
 // Get a field for a work item type with detailed references.
+// ctx
 // project (required): Project ID or project name
 // type_ (required): Work item type.
 // field (required)
 // expand (optional): Expand level for the API response. Properties: to include allowedvalues, default value, isRequired etc. as a part of response; None: to skip these properties.
-func (client Client) GetWorkItemTypeFieldWithReferences(project *string, type_ *string, field *string, expand *string) (*WorkItemTypeFieldWithReferences, error) {
+func (client Client) GetWorkItemTypeFieldWithReferences(ctx context.Context, project *string, type_ *string, field *string, expand *string) (*WorkItemTypeFieldWithReferences, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if type_ == nil || *type_ == "" {
-        return nil, errors.New("type_ is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *type_
     if field == nil || *field == "" {
-        return nil, errors.New("field is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "field"} 
     }
     routeValues["field"] = *field
 
@@ -2459,7 +2535,7 @@ func (client Client) GetWorkItemTypeFieldWithReferences(project *string, type_ *
         queryParams.Add("$expand", *expand)
     }
     locationId, _ := uuid.Parse("bd293ce5-3d25-4192-8e67-e8092e879efb")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -2470,21 +2546,22 @@ func (client Client) GetWorkItemTypeFieldWithReferences(project *string, type_ *
 }
 
 // [Preview API] Returns the state names and colors for a work item type.
+// ctx
 // project (required): Project ID or project name
 // type_ (required): The state name
-func (client Client) GetWorkItemTypeStates(project *string, type_ *string) (*[]WorkItemStateColor, error) {
+func (client Client) GetWorkItemTypeStates(ctx context.Context, project *string, type_ *string) (*[]WorkItemStateColor, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
-        return nil, errors.New("project is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *project
     if type_ == nil || *type_ == "" {
-        return nil, errors.New("type_ is a required parameter")
+        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *type_
 
     locationId, _ := uuid.Parse("7c9d7a76-4a09-43e8-b5df-bd792f4ac6aa")
-    resp, err := client.Client.Send(http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
