@@ -85,7 +85,7 @@ func (client Client) GetBehaviors(ctx context.Context, processId *uuid.UUID) (*[
 // [Preview API] Returns requested process template.
 // ctx
 // id (required): The ID of the process
-func (client Client) ExportProcessTemplate(ctx context.Context, id *uuid.UUID) (interface{}, error) {
+func (client Client) ExportProcessTemplate(ctx context.Context, id *uuid.UUID) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if id == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
@@ -99,9 +99,7 @@ func (client Client) ExportProcessTemplate(ctx context.Context, id *uuid.UUID) (
         return nil, err
     }
 
-    var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, responseValue)
-    return responseValue, err
+    return resp.Body, err
 }
 
 // [Preview API] Imports a process from zip file.

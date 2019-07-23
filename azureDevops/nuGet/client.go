@@ -14,6 +14,7 @@ import (
     "encoding/json"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "io"
     "net/http"
     "net/url"
     "strconv"
@@ -42,7 +43,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 // packageVersion (required): Version of the package.
 // project (optional): Project ID or project name
 // sourceProtocolVersion (optional): Unused
-func (client Client) DownloadPackage(ctx context.Context, feedId *string, packageName *string, packageVersion *string, project *string, sourceProtocolVersion *string) (interface{}, error) {
+func (client Client) DownloadPackage(ctx context.Context, feedId *string, packageName *string, packageVersion *string, project *string, sourceProtocolVersion *string) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -70,9 +71,7 @@ func (client Client) DownloadPackage(ctx context.Context, feedId *string, packag
         return nil, err
     }
 
-    var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, responseValue)
-    return responseValue, err
+    return resp.Body, err
 }
 
 // [Preview API] Update several packages from a single feed in a single request. The updates to the packages do not happen atomically.

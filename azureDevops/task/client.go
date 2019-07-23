@@ -182,7 +182,7 @@ func (client Client) GetAttachment(ctx context.Context, scopeIdentifier *uuid.UU
 // recordId (required)
 // type_ (required)
 // name (required)
-func (client Client) GetAttachmentContent(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (interface{}, error) {
+func (client Client) GetAttachmentContent(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if scopeIdentifier == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
@@ -219,9 +219,7 @@ func (client Client) GetAttachmentContent(ctx context.Context, scopeIdentifier *
         return nil, err
     }
 
-    var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, responseValue)
-    return responseValue, err
+    return resp.Body, err
 }
 
 // [Preview API]
