@@ -37,6 +37,8 @@ type Connection struct {
 	SuppressFedAuthRedirect bool
 	ForceMsaPassThrough     bool
 	Timeout                 *time.Duration
+	clientCache             map[string] *Client
+	clientCacheLock         sync.RWMutex
 }
 
 func CreateBasicAuthHeaderValue(username, password string) string {
@@ -65,10 +67,10 @@ func (connection Connection) GetClientByResourceAreaId(ctx context.Context, reso
 
 func (connection Connection) GetClientByUrl(baseUrl string) *Client {
 	normalizedUrl := normalizeUrl(baseUrl)
-	azureDevOpsClient, ok := getClientCacheEntry(normalizedUrl)
+	azureDevOpsClient, ok := connection.getClientCacheEntry(normalizedUrl)
 	if !ok {
 		azureDevOpsClient = NewClient(connection, normalizedUrl)
-		setClientCacheEntry(normalizedUrl, azureDevOpsClient)
+		connection.setClientCacheEntry(normalizedUrl, azureDevOpsClient)
 	}
 	return azureDevOpsClient
 }
@@ -101,20 +103,23 @@ func (connection Connection) getResourceAreaInfo(ctx context.Context, resourceAr
 }
 
 // Client Cache by Url
-var clientCache = make(map[string] *Client)
-var clientCacheLock = sync.RWMutex{}
-
-func getClientCacheEntry(url string) (*Client, bool) {
-	clientCacheLock.RLock()
-	defer clientCacheLock.RUnlock()
-	locationsMap, ok := clientCache[url]
+func (connection Connection) getClientCacheEntry(url string) (*Client, bool) {
+	if connection.clientCache == nil {
+		return nil, false
+	}
+	connection.clientCacheLock.RLock()
+	defer connection.clientCacheLock.RUnlock()
+	locationsMap, ok := connection.clientCache[url]
 	return locationsMap, ok
 }
 
-func setClientCacheEntry(url string, client *Client) {
-	clientCacheLock.Lock()
-	defer clientCacheLock.Unlock()
-	clientCache[url] = client
+func (connection Connection) setClientCacheEntry(url string, client *Client) {
+	connection.clientCacheLock.Lock()
+	defer connection.clientCacheLock.Unlock()
+	if connection.clientCache == nil {
+		connection.clientCache = make(map[string] *Client)
+	}
+	connection.clientCache[url] = client
 }
 
 // Resource Area Cache by Url
