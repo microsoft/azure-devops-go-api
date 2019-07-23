@@ -96,7 +96,7 @@ type AgentQueuesEvent struct {
 type AgentRefreshMessage struct {
     AgentId *int `json:"agentId,omitempty"`
     TargetVersion *string `json:"targetVersion,omitempty"`
-    Timeout *interface{} `json:"timeout,omitempty"`
+    Timeout interface{} `json:"timeout,omitempty"`
 }
 
 type AuditAction string
@@ -427,7 +427,7 @@ type DeploymentMachine struct {
     // Deployment target Identifier.
     Id *int `json:"id,omitempty"`
     // Properties of the deployment target.
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // Tags of the deployment target.
     Tags *[]string `json:"tags,omitempty"`
 }
@@ -438,7 +438,7 @@ type DeploymentMachineChangedData struct {
     // Deployment target Identifier.
     Id *int `json:"id,omitempty"`
     // Properties of the deployment target.
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // Tags of the deployment target.
     Tags *[]string `json:"tags,omitempty"`
     AddedTags *[]string `json:"addedTags,omitempty"`
@@ -982,7 +982,7 @@ type JobAssignedEvent struct {
 
 type JobCancelMessage struct {
     JobId *uuid.UUID `json:"jobId,omitempty"`
-    Timeout *interface{} `json:"timeout,omitempty"`
+    Timeout interface{} `json:"timeout,omitempty"`
 }
 
 type JobCompletedEvent struct {
@@ -1340,7 +1340,7 @@ type ServiceEndpoint struct {
     // Gets or sets the friendly name of the endpoint.
     Name *string `json:"name,omitempty"`
     // Error message during creation/deletion of endpoint
-    OperationStatus *interface{} `json:"operationStatus,omitempty"`
+    OperationStatus interface{} `json:"operationStatus,omitempty"`
     // Gets or sets the owner of the endpoint.
     Owner *string `json:"owner,omitempty"`
     // Gets or sets the identity reference for the readers group of the service endpoint.
@@ -1409,7 +1409,7 @@ type ServiceEndpointRequest struct {
 
 type ServiceEndpointRequestResult struct {
     ErrorMessage *string `json:"errorMessage,omitempty"`
-    Result *interface{} `json:"result,omitempty"`
+    Result interface{} `json:"result,omitempty"`
     StatusCode *string `json:"statusCode,omitempty"`
 }
 
@@ -1475,7 +1475,7 @@ type TaskAgent struct {
     MaxParallelism *int `json:"maxParallelism,omitempty"`
     // Pending update for this agent.
     PendingUpdate *TaskAgentUpdate `json:"pendingUpdate,omitempty"`
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // Date on which the last connectivity status change occurred.
     StatusChangedOn *time.Time `json:"statusChangedOn,omitempty"`
     SystemCapabilities *map[string]string `json:"systemCapabilities,omitempty"`
@@ -1515,8 +1515,8 @@ type TaskAgentCloudRequest struct {
     Agent *TaskAgentReference `json:"agent,omitempty"`
     AgentCloudId *int `json:"agentCloudId,omitempty"`
     AgentConnectedTime *time.Time `json:"agentConnectedTime,omitempty"`
-    AgentData *interface{} `json:"agentData,omitempty"`
-    AgentSpecification *interface{} `json:"agentSpecification,omitempty"`
+    AgentData interface{} `json:"agentData,omitempty"`
+    AgentSpecification interface{} `json:"agentSpecification,omitempty"`
     Pool *TaskAgentPoolReference `json:"pool,omitempty"`
     ProvisionedTime *time.Time `json:"provisionedTime,omitempty"`
     ProvisionRequestTime *time.Time `json:"provisionRequestTime,omitempty"`
@@ -1550,7 +1550,7 @@ type TaskAgentJob struct {
 // A job request for an agent.
 type TaskAgentJobRequest struct {
     AgentDelays *[]TaskAgentDelaySource `json:"agentDelays,omitempty"`
-    AgentSpecification *interface{} `json:"agentSpecification,omitempty"`
+    AgentSpecification interface{} `json:"agentSpecification,omitempty"`
     // The date/time this request was assigned.
     AssignTime *time.Time `json:"assignTime,omitempty"`
     // Additional data about the request.
@@ -1559,7 +1559,7 @@ type TaskAgentJobRequest struct {
     Definition *TaskOrchestrationOwner `json:"definition,omitempty"`
     // A list of demands required to fulfill this request.
     Demands *[]interface{} `json:"demands,omitempty"`
-    ExpectedDuration *interface{} `json:"expectedDuration,omitempty"`
+    ExpectedDuration interface{} `json:"expectedDuration,omitempty"`
     // The date/time this request was finished.
     FinishTime *time.Time `json:"finishTime,omitempty"`
     // The host which triggered this request.
@@ -1680,7 +1680,7 @@ type TaskAgentMinAgentVersionRequiredUpdate struct {
     Code *TaskAgentUpdateReasonType `json:"code,omitempty"`
     JobDefinition *TaskOrchestrationOwner `json:"jobDefinition,omitempty"`
     JobOwner *TaskOrchestrationOwner `json:"jobOwner,omitempty"`
-    MinAgentVersion *interface{} `json:"minAgentVersion,omitempty"`
+    MinAgentVersion interface{} `json:"minAgentVersion,omitempty"`
 }
 
 // An organization-level grouping of agents.
@@ -1708,7 +1708,7 @@ type TaskAgentPool struct {
     CreatedOn *time.Time `json:"createdOn,omitempty"`
     // Owner or administrator of the pool.
     Owner *IdentityRef `json:"owner,omitempty"`
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // Target parallelism.
     TargetSize *int `json:"targetSize,omitempty"`
 }
@@ -2506,7 +2506,7 @@ type TaskOrchestrationJob struct {
     Demands *[]interface{} `json:"demands,omitempty"`
     ExecuteAs *IdentityRef `json:"executeAs,omitempty"`
     ExecutionMode *string `json:"executionMode,omitempty"`
-    ExecutionTimeout *interface{} `json:"executionTimeout,omitempty"`
+    ExecutionTimeout interface{} `json:"executionTimeout,omitempty"`
     InstanceId *uuid.UUID `json:"instanceId,omitempty"`
     Name *string `json:"name,omitempty"`
     RefName *string `json:"refName,omitempty"`

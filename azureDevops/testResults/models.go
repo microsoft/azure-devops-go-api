@@ -16,7 +16,7 @@ import (
 
 type AggregatedDataForResultTrend struct {
     // This is tests execution duration.
-    Duration *interface{} `json:"duration,omitempty"`
+    Duration interface{} `json:"duration,omitempty"`
     ResultsByOutcome *map[TestOutcome]AggregatedResultsByOutcome `json:"resultsByOutcome,omitempty"`
     RunSummaryByState *map[TestRunState]AggregatedRunsByState `json:"runSummaryByState,omitempty"`
     TestResultsContext *TestResultsContext `json:"testResultsContext,omitempty"`
@@ -24,7 +24,7 @@ type AggregatedDataForResultTrend struct {
 }
 
 type AggregatedResultsAnalysis struct {
-    Duration *interface{} `json:"duration,omitempty"`
+    Duration interface{} `json:"duration,omitempty"`
     NotReportedResultsByOutcome *map[TestOutcome]AggregatedResultsByOutcome `json:"notReportedResultsByOutcome,omitempty"`
     PreviousContext *TestResultsContext `json:"previousContext,omitempty"`
     ResultsByOutcome *map[TestOutcome]AggregatedResultsByOutcome `json:"resultsByOutcome,omitempty"`
@@ -36,15 +36,15 @@ type AggregatedResultsAnalysis struct {
 
 type AggregatedResultsByOutcome struct {
     Count *int `json:"count,omitempty"`
-    Duration *interface{} `json:"duration,omitempty"`
+    Duration interface{} `json:"duration,omitempty"`
     GroupByField *string `json:"groupByField,omitempty"`
-    GroupByValue *interface{} `json:"groupByValue,omitempty"`
+    GroupByValue interface{} `json:"groupByValue,omitempty"`
     Outcome *TestOutcome `json:"outcome,omitempty"`
     RerunResultCount *int `json:"rerunResultCount,omitempty"`
 }
 
 type AggregatedResultsDifference struct {
-    IncreaseInDuration *interface{} `json:"increaseInDuration,omitempty"`
+    IncreaseInDuration interface{} `json:"increaseInDuration,omitempty"`
     IncreaseInFailures *int `json:"increaseInFailures,omitempty"`
     IncreaseInOtherTests *int `json:"increaseInOtherTests,omitempty"`
     IncreaseInPassedTests *int `json:"increaseInPassedTests,omitempty"`
@@ -65,7 +65,7 @@ type AggregatedRunsByState struct {
 type Attachment struct {
     CompressionType *string `json:"compressionType,omitempty"`
     FileName *string `json:"fileName,omitempty"`
-    Stream *interface{} `json:"stream,omitempty"`
+    Stream interface{} `json:"stream,omitempty"`
 }
 
 // The types of test attachments.
@@ -227,7 +227,7 @@ type CustomTestField struct {
     // Field Name.
     FieldName *string `json:"fieldName,omitempty"`
     // Field value.
-    Value *interface{} `json:"value,omitempty"`
+    Value interface{} `json:"value,omitempty"`
 }
 
 // This is a temporary class to provide the details for the test run environment.
@@ -582,7 +582,7 @@ type RunCreateModel struct {
     // Run summary for run Type = NoConfigRun.
     RunSummary *[]RunSummaryModel `json:"runSummary,omitempty"`
     // Timespan till the run times out.
-    RunTimeout *interface{} `json:"runTimeout,omitempty"`
+    RunTimeout interface{} `json:"runTimeout,omitempty"`
     // SourceWorkFlow(CI/CD) of the test run.
     SourceWorkflow *string `json:"sourceWorkflow,omitempty"`
     // Start date time of the run.
@@ -1279,7 +1279,7 @@ type TestResultHistory struct {
 }
 
 type TestResultHistoryDetailsForGroup struct {
-    GroupByValue *interface{} `json:"groupByValue,omitempty"`
+    GroupByValue interface{} `json:"groupByValue,omitempty"`
     LatestResult *TestCaseResult `json:"latestResult,omitempty"`
 }
 
@@ -1378,7 +1378,7 @@ type TestResultsDetails struct {
 }
 
 type TestResultsDetailsForGroup struct {
-    GroupByValue *interface{} `json:"groupByValue,omitempty"`
+    GroupByValue interface{} `json:"groupByValue,omitempty"`
     Results *[]TestCaseResult `json:"results,omitempty"`
     ResultsCountByOutcome *map[TestOutcome]AggregatedResultsByOutcome `json:"resultsCountByOutcome,omitempty"`
     Tags *[]string `json:"tags,omitempty"`

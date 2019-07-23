@@ -64,7 +64,7 @@ func (client Client) RemoveAccessControlEntries(ctx context.Context, securityNam
 // ctx
 // container (required)
 // securityNamespaceId (required): Security namespace identifier.
-func (client Client) SetAccessControlEntries(ctx context.Context, container *interface{}, securityNamespaceId *uuid.UUID) (*[]AccessControlEntry, error) {
+func (client Client) SetAccessControlEntries(ctx context.Context, container interface{}, securityNamespaceId *uuid.UUID) (*[]AccessControlEntry, error) {
     if container == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "container"}
     }
@@ -74,7 +74,7 @@ func (client Client) SetAccessControlEntries(ctx context.Context, container *int
     }
     routeValues["securityNamespaceId"] = (*securityNamespaceId).String()
 
-    body, marshalErr := json.Marshal(*container)
+    body, marshalErr := json.Marshal(container)
     if marshalErr != nil {
         return nil, marshalErr
     }

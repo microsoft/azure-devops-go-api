@@ -42,7 +42,7 @@ type Account struct {
     // Organization that created the account
     OrganizationName *string `json:"organizationName,omitempty"`
     // Extended properties
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // Reason for current status
     StatusReason *string `json:"statusReason,omitempty"`
 }
@@ -52,14 +52,14 @@ type AccountCreateInfoInternal struct {
     Creator *uuid.UUID `json:"creator,omitempty"`
     Organization *string `json:"organization,omitempty"`
     Preferences *AccountPreferencesInternal `json:"preferences,omitempty"`
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     ServiceDefinitions *[]azureDevops.KeyValuePair `json:"serviceDefinitions,omitempty"`
 }
 
 type AccountPreferencesInternal struct {
-    Culture *interface{} `json:"culture,omitempty"`
-    Language *interface{} `json:"language,omitempty"`
-    TimeZone *interface{} `json:"timeZone,omitempty"`
+    Culture interface{} `json:"culture,omitempty"`
+    Language interface{} `json:"language,omitempty"`
+    TimeZone interface{} `json:"timeZone,omitempty"`
 }
 
 type AccountStatus string

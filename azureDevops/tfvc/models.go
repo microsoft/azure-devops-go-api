@@ -29,7 +29,7 @@ type Change struct {
     // The type of change that was made to the item.
     ChangeType *VersionControlChangeType `json:"changeType,omitempty"`
     // Current version.
-    Item *interface{} `json:"item,omitempty"`
+    Item interface{} `json:"item,omitempty"`
     // Content of the item after the change.
     NewContent *ItemContent `json:"newContent,omitempty"`
     // Path of the item on the server.

@@ -205,7 +205,7 @@ func (client Client) DeleteTestResultAttachment(ctx context.Context, project *st
 // runId (required)
 // testCaseResultId (required)
 // attachmentId (required)
-func (client Client) GetTestResultAttachmentContent(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int) (*interface{}, error) {
+func (client Client) GetTestResultAttachmentContent(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -231,8 +231,8 @@ func (client Client) GetTestResultAttachmentContent(ctx context.Context, project
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API]
@@ -272,7 +272,7 @@ func (client Client) GetTestResultAttachments(ctx context.Context, project *stri
 // runId (required)
 // testCaseResultId (required)
 // attachmentId (required)
-func (client Client) GetTestResultAttachmentZip(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int) (*interface{}, error) {
+func (client Client) GetTestResultAttachmentZip(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -298,8 +298,8 @@ func (client Client) GetTestResultAttachmentZip(ctx context.Context, project *st
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Returns a test sub result attachment
@@ -309,7 +309,7 @@ func (client Client) GetTestResultAttachmentZip(ctx context.Context, project *st
 // testCaseResultId (required)
 // attachmentId (required)
 // testSubResultId (required)
-func (client Client) GetTestSubResultAttachmentContent(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int, testSubResultId *int) (*interface{}, error) {
+func (client Client) GetTestSubResultAttachmentContent(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int, testSubResultId *int) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -340,8 +340,8 @@ func (client Client) GetTestSubResultAttachmentContent(ctx context.Context, proj
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Returns attachment references for test sub result.
@@ -388,7 +388,7 @@ func (client Client) GetTestSubResultAttachments(ctx context.Context, project *s
 // testCaseResultId (required)
 // attachmentId (required)
 // testSubResultId (required)
-func (client Client) GetTestSubResultAttachmentZip(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int, testSubResultId *int) (*interface{}, error) {
+func (client Client) GetTestSubResultAttachmentZip(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int, testSubResultId *int) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -419,8 +419,8 @@ func (client Client) GetTestSubResultAttachmentZip(ctx context.Context, project 
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API]
@@ -491,7 +491,7 @@ func (client Client) DeleteTestRunAttachment(ctx context.Context, project *strin
 // project (required): Project ID or project name
 // runId (required)
 // attachmentId (required)
-func (client Client) GetTestRunAttachmentContent(ctx context.Context, project *string, runId *int, attachmentId *int) (*interface{}, error) {
+func (client Client) GetTestRunAttachmentContent(ctx context.Context, project *string, runId *int, attachmentId *int) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -513,8 +513,8 @@ func (client Client) GetTestRunAttachmentContent(ctx context.Context, project *s
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API]
@@ -548,7 +548,7 @@ func (client Client) GetTestRunAttachments(ctx context.Context, project *string,
 // project (required): Project ID or project name
 // runId (required)
 // attachmentId (required)
-func (client Client) GetTestRunAttachmentZip(ctx context.Context, project *string, runId *int, attachmentId *int) (*interface{}, error) {
+func (client Client) GetTestRunAttachmentZip(ctx context.Context, project *string, runId *int, attachmentId *int) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -570,8 +570,8 @@ func (client Client) GetTestRunAttachmentZip(ctx context.Context, project *strin
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API]

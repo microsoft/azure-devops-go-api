@@ -97,7 +97,7 @@ type Event struct {
     // Gets or sets the identifier of the publisher that raised this event.
     PublisherId *string `json:"publisherId,omitempty"`
     // Gets or sets the data associated with this event.
-    Resource *interface{} `json:"resource,omitempty"`
+    Resource interface{} `json:"resource,omitempty"`
     // Gets or sets the resource containers.
     ResourceContainers *map[string]ResourceContainer `json:"resourceContainers,omitempty"`
     // Gets or sets the version of the data associated with this event.
@@ -360,7 +360,7 @@ type InputValuesQuery struct {
     // The input values to return on input, and the result from the consumer on output.
     InputValues *[]InputValues `json:"inputValues,omitempty"`
     // Subscription containing information about the publisher/consumer and the current input values
-    Resource *interface{} `json:"resource,omitempty"`
+    Resource interface{} `json:"resource,omitempty"`
 }
 
 // Defines the data contract of the result of processing an event for a subscription.
@@ -713,7 +713,7 @@ type VersionedResource struct {
     // Gets or sets the reference to the compatible version.
     CompatibleWith *string `json:"compatibleWith,omitempty"`
     // Gets or sets the resource data.
-    Resource *interface{} `json:"resource,omitempty"`
+    Resource interface{} `json:"resource,omitempty"`
     // Gets or sets the version of the resource data.
     ResourceVersion *string `json:"resourceVersion,omitempty"`
 }

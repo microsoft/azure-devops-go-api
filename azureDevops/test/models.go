@@ -50,7 +50,7 @@ type AfnStrip struct {
 
 type AggregatedDataForResultTrend struct {
     // This is tests execution duration.
-    Duration *interface{} `json:"duration,omitempty"`
+    Duration interface{} `json:"duration,omitempty"`
     ResultsByOutcome *map[TestOutcome]AggregatedResultsByOutcome `json:"resultsByOutcome,omitempty"`
     RunSummaryByState *map[TestRunState]AggregatedRunsByState `json:"runSummaryByState,omitempty"`
     TestResultsContext *TestResultsContext `json:"testResultsContext,omitempty"`
@@ -58,7 +58,7 @@ type AggregatedDataForResultTrend struct {
 }
 
 type AggregatedResultsAnalysis struct {
-    Duration *interface{} `json:"duration,omitempty"`
+    Duration interface{} `json:"duration,omitempty"`
     NotReportedResultsByOutcome *map[TestOutcome]AggregatedResultsByOutcome `json:"notReportedResultsByOutcome,omitempty"`
     PreviousContext *TestResultsContext `json:"previousContext,omitempty"`
     ResultsByOutcome *map[TestOutcome]AggregatedResultsByOutcome `json:"resultsByOutcome,omitempty"`
@@ -70,15 +70,15 @@ type AggregatedResultsAnalysis struct {
 
 type AggregatedResultsByOutcome struct {
     Count *int `json:"count,omitempty"`
-    Duration *interface{} `json:"duration,omitempty"`
+    Duration interface{} `json:"duration,omitempty"`
     GroupByField *string `json:"groupByField,omitempty"`
-    GroupByValue *interface{} `json:"groupByValue,omitempty"`
+    GroupByValue interface{} `json:"groupByValue,omitempty"`
     Outcome *TestOutcome `json:"outcome,omitempty"`
     RerunResultCount *int `json:"rerunResultCount,omitempty"`
 }
 
 type AggregatedResultsDifference struct {
-    IncreaseInDuration *interface{} `json:"increaseInDuration,omitempty"`
+    IncreaseInDuration interface{} `json:"increaseInDuration,omitempty"`
     IncreaseInFailures *int `json:"increaseInFailures,omitempty"`
     IncreaseInOtherTests *int `json:"increaseInOtherTests,omitempty"`
     IncreaseInPassedTests *int `json:"increaseInPassedTests,omitempty"`
@@ -435,7 +435,7 @@ type CustomTestField struct {
     // Field Name.
     FieldName *string `json:"fieldName,omitempty"`
     // Field value.
-    Value *interface{} `json:"value,omitempty"`
+    Value interface{} `json:"value,omitempty"`
 }
 
 type CustomTestFieldDefinition struct {
@@ -833,7 +833,7 @@ type LegacyTestRun struct {
     Revision *int `json:"revision,omitempty"`
     RowVersion *[]byte `json:"rowVersion,omitempty"`
     RunHasDtlEnvironment *bool `json:"runHasDtlEnvironment,omitempty"`
-    RunTimeout *interface{} `json:"runTimeout,omitempty"`
+    RunTimeout interface{} `json:"runTimeout,omitempty"`
     ServiceVersion *string `json:"serviceVersion,omitempty"`
     SourceWorkflow *string `json:"sourceWorkflow,omitempty"`
     StartDate *time.Time `json:"startDate,omitempty"`
@@ -1465,7 +1465,7 @@ type RunCreateModel struct {
     // Run summary for run Type = NoConfigRun.
     RunSummary *[]RunSummaryModel `json:"runSummary,omitempty"`
     // Timespan till the run times out.
-    RunTimeout *interface{} `json:"runTimeout,omitempty"`
+    RunTimeout interface{} `json:"runTimeout,omitempty"`
     // SourceWorkFlow(CI/CD) of the test run.
     SourceWorkflow *string `json:"sourceWorkflow,omitempty"`
     // Start date time of the run.
@@ -2211,7 +2211,7 @@ type TestExecutionReportData struct {
 
 type TestExtensionField struct {
     Field *TestExtensionFieldDetails `json:"field,omitempty"`
-    Value *interface{} `json:"value,omitempty"`
+    Value interface{} `json:"value,omitempty"`
 }
 
 type TestExtensionFieldDetails struct {
@@ -2869,7 +2869,7 @@ type TestResultHistory struct {
 }
 
 type TestResultHistoryDetailsForGroup struct {
-    GroupByValue *interface{} `json:"groupByValue,omitempty"`
+    GroupByValue interface{} `json:"groupByValue,omitempty"`
     LatestResult *TestCaseResult `json:"latestResult,omitempty"`
 }
 
@@ -2992,7 +2992,7 @@ type TestResultsDetails struct {
 }
 
 type TestResultsDetailsForGroup struct {
-    GroupByValue *interface{} `json:"groupByValue,omitempty"`
+    GroupByValue interface{} `json:"groupByValue,omitempty"`
     Results *[]TestCaseResult `json:"results,omitempty"`
     ResultsCountByOutcome *map[TestOutcome]AggregatedResultsByOutcome `json:"resultsCountByOutcome,omitempty"`
     Tags *[]string `json:"tags,omitempty"`
@@ -3409,7 +3409,7 @@ type TestRunWithDtlEnvEvent struct {
     TestRun *TestRun `json:"testRun,omitempty"`
     ConfigurationIds *[]int `json:"configurationIds,omitempty"`
     MappedTestRunEventType *string `json:"mappedTestRunEventType,omitempty"`
-    RunTimeout *interface{} `json:"runTimeout,omitempty"`
+    RunTimeout interface{} `json:"runTimeout,omitempty"`
     TestConfigurationsMapping *string `json:"testConfigurationsMapping,omitempty"`
 }
 

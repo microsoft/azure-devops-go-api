@@ -100,7 +100,7 @@ func (client Client) QueryWorkItemsForArtifactUris(ctx context.Context, artifact
 // fileName (optional): The name of the file
 // uploadType (optional): Attachment upload type: Simple or Chunked
 // areaPath (optional): Target project Area Path
-func (client Client) CreateAttachment(ctx context.Context, uploadStream *interface{}, project *string, fileName *string, uploadType *string, areaPath *string) (*AttachmentReference, error) {
+func (client Client) CreateAttachment(ctx context.Context, uploadStream interface{}, project *string, fileName *string, uploadType *string, areaPath *string) (*AttachmentReference, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -119,7 +119,7 @@ func (client Client) CreateAttachment(ctx context.Context, uploadStream *interfa
     if areaPath != nil {
         queryParams.Add("areaPath", *areaPath)
     }
-    body, marshalErr := json.Marshal(*uploadStream)
+    body, marshalErr := json.Marshal(uploadStream)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -140,7 +140,7 @@ func (client Client) CreateAttachment(ctx context.Context, uploadStream *interfa
 // project (optional): Project ID or project name
 // fileName (optional): Name of the file
 // download (optional): If set to <c>true</c> always download attachment
-func (client Client) GetAttachmentContent(ctx context.Context, id *uuid.UUID, project *string, fileName *string, download *bool) (*interface{}, error) {
+func (client Client) GetAttachmentContent(ctx context.Context, id *uuid.UUID, project *string, fileName *string, download *bool) (interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -164,8 +164,8 @@ func (client Client) GetAttachmentContent(ctx context.Context, id *uuid.UUID, pr
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // Downloads an attachment.
@@ -174,7 +174,7 @@ func (client Client) GetAttachmentContent(ctx context.Context, id *uuid.UUID, pr
 // project (optional): Project ID or project name
 // fileName (optional): Name of the file
 // download (optional): If set to <c>true</c> always download attachment
-func (client Client) GetAttachmentZip(ctx context.Context, id *uuid.UUID, project *string, fileName *string, download *bool) (*interface{}, error) {
+func (client Client) GetAttachmentZip(ctx context.Context, id *uuid.UUID, project *string, fileName *string, download *bool) (interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -198,8 +198,8 @@ func (client Client) GetAttachmentZip(ctx context.Context, id *uuid.UUID, projec
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // Gets root classification nodes or list of classification nodes for a given list of nodes ids, for a given project. In case ids parameter is supplied you will  get list of classification nodes for those ids. Otherwise you will get root classification nodes for this project.
@@ -1804,7 +1804,7 @@ func (client Client) GetWorkItemIcons(ctx context.Context, ) (*[]WorkItemIcon, e
 // icon (required): The name of the icon
 // color (optional): The 6-digit hex color for the icon
 // v (optional): The version of the icon (used only for cache invalidation)
-func (client Client) GetWorkItemIconSvg(ctx context.Context, icon *string, color *string, v *int) (*interface{}, error) {
+func (client Client) GetWorkItemIconSvg(ctx context.Context, icon *string, color *string, v *int) (interface{}, error) {
     routeValues := make(map[string]string)
     if icon == nil || *icon == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "icon"} 
@@ -1825,8 +1825,8 @@ func (client Client) GetWorkItemIconSvg(ctx context.Context, icon *string, color
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // Get a work item icon given the friendly name and icon color.
@@ -1834,7 +1834,7 @@ func (client Client) GetWorkItemIconSvg(ctx context.Context, icon *string, color
 // icon (required): The name of the icon
 // color (optional): The 6-digit hex color for the icon
 // v (optional): The version of the icon (used only for cache invalidation)
-func (client Client) GetWorkItemIconXaml(ctx context.Context, icon *string, color *string, v *int) (*interface{}, error) {
+func (client Client) GetWorkItemIconXaml(ctx context.Context, icon *string, color *string, v *int) (interface{}, error) {
     routeValues := make(map[string]string)
     if icon == nil || *icon == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "icon"} 
@@ -1855,8 +1855,8 @@ func (client Client) GetWorkItemIconXaml(ctx context.Context, icon *string, colo
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // Get a batch of work item links

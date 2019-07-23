@@ -159,15 +159,15 @@ type EventBacklogStatus struct {
 }
 
 type EventBatch struct {
-    EndTime *interface{} `json:"endTime,omitempty"`
+    EndTime interface{} `json:"endTime,omitempty"`
     EventCounts *map[string]int `json:"eventCounts,omitempty"`
     EventIds *string `json:"eventIds,omitempty"`
     NotificationCounts *map[string]int `json:"notificationCounts,omitempty"`
-    PreProcessEndTime *interface{} `json:"preProcessEndTime,omitempty"`
-    PreProcessStartTime *interface{} `json:"preProcessStartTime,omitempty"`
-    ProcessEndTime *interface{} `json:"processEndTime,omitempty"`
-    ProcessStartTime *interface{} `json:"processStartTime,omitempty"`
-    StartTime *interface{} `json:"startTime,omitempty"`
+    PreProcessEndTime interface{} `json:"preProcessEndTime,omitempty"`
+    PreProcessStartTime interface{} `json:"preProcessStartTime,omitempty"`
+    ProcessEndTime interface{} `json:"processEndTime,omitempty"`
+    ProcessStartTime interface{} `json:"processStartTime,omitempty"`
+    StartTime interface{} `json:"startTime,omitempty"`
     SubscriptionCounts *map[string]int `json:"subscriptionCounts,omitempty"`
 }
 
@@ -239,7 +239,7 @@ type EventTransformResult struct {
     // Transformed html content.
     Content *string `json:"content,omitempty"`
     // Calculated data.
-    Data *interface{} `json:"data,omitempty"`
+    Data interface{} `json:"data,omitempty"`
     // Calculated system inputs.
     SystemInputs *map[string]string `json:"systemInputs,omitempty"`
 }
@@ -315,7 +315,7 @@ type FieldInputValues struct {
 type FieldValuesQuery struct {
     CurrentValues *map[string]string `json:"currentValues,omitempty"`
     // Subscription containing information about the publisher/consumer and the current input values
-    Resource *interface{} `json:"resource,omitempty"`
+    Resource interface{} `json:"resource,omitempty"`
     InputValues *[]FieldInputValues `json:"inputValues,omitempty"`
     Scope *string `json:"scope,omitempty"`
 }
@@ -420,7 +420,7 @@ type InputValuesQuery struct {
     // The input values to return on input, and the result from the consumer on output.
     InputValues *[]InputValues `json:"inputValues,omitempty"`
     // Subscription containing information about the publisher/consumer and the current input values
-    Resource *interface{} `json:"resource,omitempty"`
+    Resource interface{} `json:"resource,omitempty"`
 }
 
 type ISubscriptionChannel struct {
@@ -466,11 +466,11 @@ type NotificationBacklogStatus struct {
 }
 
 type NotificationBatch struct {
-    EndTime *interface{} `json:"endTime,omitempty"`
+    EndTime interface{} `json:"endTime,omitempty"`
     NotificationCount *int `json:"notificationCount,omitempty"`
     NotificationIds *string `json:"notificationIds,omitempty"`
     ProblematicNotifications *[]DiagnosticNotification `json:"problematicNotifications,omitempty"`
-    StartTime *interface{} `json:"startTime,omitempty"`
+    StartTime interface{} `json:"startTime,omitempty"`
 }
 
 type NotificationDeliveryLog struct {
@@ -515,7 +515,7 @@ type NotificationDiagnosticLogMessage struct {
     // Corresponds to .Net TraceLevel enumeration
     Level *int `json:"level,omitempty"`
     Message *string `json:"message,omitempty"`
-    Time *interface{} `json:"time,omitempty"`
+    Time interface{} `json:"time,omitempty"`
 }
 
 type NotificationEventBacklogStatus struct {
@@ -1436,15 +1436,15 @@ type VssNotificationEvent struct {
     // Optional: A list of artifacts referenced or impacted by this event.
     ArtifactUris *[]string `json:"artifactUris,omitempty"`
     // Required: The event payload.  If Data is a string, it must be in Json or XML format.  Otherwise it must have a serialization format attribute.
-    Data *interface{} `json:"data,omitempty"`
+    Data interface{} `json:"data,omitempty"`
     // Required: The name of the event.  This event must be registered in the context it is being fired.
     EventType *string `json:"eventType,omitempty"`
     // How long before the event expires and will be cleaned up.  The default is to use the system default.
-    ExpiresIn *interface{} `json:"expiresIn,omitempty"`
+    ExpiresIn interface{} `json:"expiresIn,omitempty"`
     // The id of the item, artifact, extension, project, etc.
     ItemId *string `json:"itemId,omitempty"`
     // How long to wait before processing this event.  The default is to process immediately.
-    ProcessDelay *interface{} `json:"processDelay,omitempty"`
+    ProcessDelay interface{} `json:"processDelay,omitempty"`
     // Optional: A list of scopes which are are relevant to the event.
     Scopes *[]EventScope `json:"scopes,omitempty"`
     // This is the time the original source event for this VssNotificationEvent was created.  For example, for something like a build completion notification SourceEventCreatedTime should be the time the build finished not the time this event was raised.

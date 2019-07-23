@@ -79,7 +79,7 @@ type AgentTargetExecutionOptions struct {
 }
 
 type AggregatedResultsAnalysis struct {
-    Duration *interface{} `json:"duration,omitempty"`
+    Duration interface{} `json:"duration,omitempty"`
     NotReportedResultsByOutcome *map[TestOutcome]AggregatedResultsByOutcome `json:"notReportedResultsByOutcome,omitempty"`
     PreviousContext *TestResultsContext `json:"previousContext,omitempty"`
     ResultsByOutcome *map[TestOutcome]AggregatedResultsByOutcome `json:"resultsByOutcome,omitempty"`
@@ -91,15 +91,15 @@ type AggregatedResultsAnalysis struct {
 
 type AggregatedResultsByOutcome struct {
     Count *int `json:"count,omitempty"`
-    Duration *interface{} `json:"duration,omitempty"`
+    Duration interface{} `json:"duration,omitempty"`
     GroupByField *string `json:"groupByField,omitempty"`
-    GroupByValue *interface{} `json:"groupByValue,omitempty"`
+    GroupByValue interface{} `json:"groupByValue,omitempty"`
     Outcome *TestOutcome `json:"outcome,omitempty"`
     RerunResultCount *int `json:"rerunResultCount,omitempty"`
 }
 
 type AggregatedResultsDifference struct {
-    IncreaseInDuration *interface{} `json:"increaseInDuration,omitempty"`
+    IncreaseInDuration interface{} `json:"increaseInDuration,omitempty"`
     IncreaseInFailures *int `json:"increaseInFailures,omitempty"`
     IncreaseInOtherTests *int `json:"increaseInOtherTests,omitempty"`
     IncreaseInPassedTests *int `json:"increaseInPassedTests,omitempty"`
@@ -214,7 +214,7 @@ type Build struct {
     Priority *QueuePriority `json:"priority,omitempty"`
     // The team project.
     Project *TeamProjectReference `json:"project,omitempty"`
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // The quality of the xaml build (good, bad, etc.)
     Quality *string `json:"quality,omitempty"`
     // The queue. This is only set if the definition type is Build.
@@ -419,10 +419,10 @@ type BuildDefinition struct {
     JobTimeoutInMinutes *int `json:"jobTimeoutInMinutes,omitempty"`
     Options *[]BuildOption `json:"options,omitempty"`
     // The build process.
-    Process *interface{} `json:"process,omitempty"`
+    Process interface{} `json:"process,omitempty"`
     // The process parameters for this definition.
     ProcessParameters *ProcessParameters `json:"processParameters,omitempty"`
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // The repository.
     Repository *BuildRepository `json:"repository,omitempty"`
     RetentionRules *[]RetentionPolicy `json:"retentionRules,omitempty"`
@@ -489,7 +489,7 @@ type BuildDefinition3_2 struct {
     Options *[]BuildOption `json:"options,omitempty"`
     // Process Parameters
     ProcessParameters *ProcessParameters `json:"processParameters,omitempty"`
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // The repository
     Repository *BuildRepository `json:"repository,omitempty"`
     RetentionRules *[]RetentionPolicy `json:"retentionRules,omitempty"`
@@ -1601,7 +1601,7 @@ type JsonPatchOperation struct {
     // The path for the operation. In the case of an array, a zero based index can be used to specify the position in the array (e.g. /biscuits/0/name). The "-" character can be used instead of an index to insert at the end of the array (e.g. /biscuits/-).
     Path *string `json:"path,omitempty"`
     // The value for the operation. This is either a primitive or a JToken.
-    Value *interface{} `json:"value,omitempty"`
+    Value interface{} `json:"value,omitempty"`
 }
 
 type JustInTimeProcess struct {

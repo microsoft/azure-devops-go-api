@@ -196,7 +196,7 @@ type ReferenceLinks struct {
 }
 
 type ResourceCreationParameter struct {
-    ResourceToCreate *interface{} `json:"resourceToCreate,omitempty"`
+    ResourceToCreate interface{} `json:"resourceToCreate,omitempty"`
     Type *string `json:"type,omitempty"`
 }
 

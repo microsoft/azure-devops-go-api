@@ -141,7 +141,7 @@ func (client Client) UpdateReleaseApproval(ctx context.Context, approval *Releas
 // recordId (required): Record Id of attachment.
 // type_ (required): Type of the attachment.
 // name (required): Name of the attachment.
-func (client Client) GetReleaseTaskAttachmentContent(ctx context.Context, project *string, releaseId *int, environmentId *int, attemptId *int, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (*interface{}, error) {
+func (client Client) GetReleaseTaskAttachmentContent(ctx context.Context, project *string, releaseId *int, environmentId *int, attemptId *int, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -187,8 +187,8 @@ func (client Client) GetReleaseTaskAttachmentContent(ctx context.Context, projec
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Get the release task attachments.
@@ -718,7 +718,7 @@ func (client Client) UpdateGates(ctx context.Context, gateUpdateMetadata *GateUp
 // ctx
 // project (required): Project ID or project name
 // releaseId (required): Id of the release.
-func (client Client) GetLogs(ctx context.Context, project *string, releaseId *int) (*interface{}, error) {
+func (client Client) GetLogs(ctx context.Context, project *string, releaseId *int) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -736,8 +736,8 @@ func (client Client) GetLogs(ctx context.Context, project *string, releaseId *in
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Gets the task log of a release as a plain text file.
@@ -749,7 +749,7 @@ func (client Client) GetLogs(ctx context.Context, project *string, releaseId *in
 // taskId (required): ReleaseTask Id for the log.
 // startLine (optional): Starting line number for logs
 // endLine (optional): Ending line number for logs
-func (client Client) GetTaskLog(ctx context.Context, project *string, releaseId *int, environmentId *int, releaseDeployPhaseId *int, taskId *int, startLine *uint64, endLine *uint64) (*interface{}, error) {
+func (client Client) GetTaskLog(ctx context.Context, project *string, releaseId *int, environmentId *int, releaseDeployPhaseId *int, taskId *int, startLine *uint64, endLine *uint64) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -786,8 +786,8 @@ func (client Client) GetTaskLog(ctx context.Context, project *string, releaseId 
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // Get manual intervention for a given release and manual intervention id.
@@ -1076,7 +1076,7 @@ func (client Client) GetRelease(ctx context.Context, project *string, releaseId 
 // project (required): Project ID or project name
 // releaseId (required): Id of the release.
 // definitionSnapshotRevision (required): Definition snapshot revision number.
-func (client Client) GetReleaseRevision(ctx context.Context, project *string, releaseId *int, definitionSnapshotRevision *int) (*interface{}, error) {
+func (client Client) GetReleaseRevision(ctx context.Context, project *string, releaseId *int, definitionSnapshotRevision *int) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1099,8 +1099,8 @@ func (client Client) GetReleaseRevision(ctx context.Context, project *string, re
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // Update a complete release object.
@@ -1176,7 +1176,7 @@ func (client Client) UpdateReleaseResource(ctx context.Context, releaseUpdateMet
 // project (required): Project ID or project name
 // definitionId (required): Id of the definition.
 // revision (required): Id of the revision.
-func (client Client) GetDefinitionRevision(ctx context.Context, project *string, definitionId *int, revision *int) (*interface{}, error) {
+func (client Client) GetDefinitionRevision(ctx context.Context, project *string, definitionId *int, revision *int) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1198,8 +1198,8 @@ func (client Client) GetDefinitionRevision(ctx context.Context, project *string,
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Get revision history for a release definition

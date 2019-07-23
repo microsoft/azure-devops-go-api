@@ -516,7 +516,7 @@ type JsonPatchOperation struct {
     // The path for the operation. In the case of an array, a zero based index can be used to specify the position in the array (e.g. /biscuits/0/name). The "-" character can be used instead of an index to insert at the end of the array (e.g. /biscuits/-).
     Path *string `json:"path,omitempty"`
     // The value for the operation. This is either a primitive or a JToken.
-    Value *interface{} `json:"value,omitempty"`
+    Value interface{} `json:"value,omitempty"`
 }
 
 // Link description.
@@ -1169,9 +1169,9 @@ type WorkItemFieldReference struct {
 // Describes an update to a work item field.
 type WorkItemFieldUpdate struct {
     // The new value of the field.
-    NewValue *interface{} `json:"newValue,omitempty"`
+    NewValue interface{} `json:"newValue,omitempty"`
     // The old value of the field.
-    OldValue *interface{} `json:"oldValue,omitempty"`
+    OldValue interface{} `json:"oldValue,omitempty"`
 }
 
 type WorkItemHistory struct {
@@ -1525,7 +1525,7 @@ type WorkItemTypeFieldWithReferences struct {
     // The list of field allowed values.
     AllowedValues *[]interface{} `json:"allowedValues,omitempty"`
     // Represents the default value of the field.
-    DefaultValue *interface{} `json:"defaultValue,omitempty"`
+    DefaultValue interface{} `json:"defaultValue,omitempty"`
 }
 
 // Reference to a work item type.

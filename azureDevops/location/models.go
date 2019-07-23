@@ -93,7 +93,7 @@ type Identity struct {
     MemberOf *[]string `json:"memberOf,omitempty"`
     Members *[]string `json:"members,omitempty"`
     MetaTypeId *int `json:"metaTypeId,omitempty"`
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // The display name for the identity as specified by the source identity provider.
     ProviderDisplayName *string `json:"providerDisplayName,omitempty"`
     ResourceVersion *int `json:"resourceVersion,omitempty"`
@@ -115,7 +115,7 @@ type IdentityBase struct {
     MemberOf *[]string `json:"memberOf,omitempty"`
     Members *[]string `json:"members,omitempty"`
     MetaTypeId *int `json:"metaTypeId,omitempty"`
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // The display name for the identity as specified by the source identity provider.
     ProviderDisplayName *string `json:"providerDisplayName,omitempty"`
     ResourceVersion *int `json:"resourceVersion,omitempty"`
@@ -199,7 +199,7 @@ type ServiceDefinition struct {
     MinVersion *string `json:"minVersion,omitempty"`
     ParentIdentifier *uuid.UUID `json:"parentIdentifier,omitempty"`
     ParentServiceType *string `json:"parentServiceType,omitempty"`
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     RelativePath *string `json:"relativePath,omitempty"`
     RelativeToSetting *RelativeToSetting `json:"relativeToSetting,omitempty"`
     // The latest version of this resource location that is in "Release" (non-preview) mode. Copied from <c>ApiResourceLocation</c>.

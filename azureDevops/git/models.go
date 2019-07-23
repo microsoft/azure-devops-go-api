@@ -75,7 +75,7 @@ type Attachment struct {
     // Id of the attachment.
     Id *int `json:"id,omitempty"`
     // Extended properties.
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // The url to download the content of the attachment.
     Url *string `json:"url,omitempty"`
 }
@@ -102,7 +102,7 @@ type Change struct {
     // The type of change that was made to the item.
     ChangeType *VersionControlChangeType `json:"changeType,omitempty"`
     // Current version.
-    Item *interface{} `json:"item,omitempty"`
+    Item interface{} `json:"item,omitempty"`
     // Content of the item after the change.
     NewContent *ItemContent `json:"newContent,omitempty"`
     // Path of the item on the server.
@@ -220,7 +220,7 @@ type CommentThread struct {
     // The time this thread was last updated.
     LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
     // Optional properties associated with the thread as a collection of key-value pairs.
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // The time this thread was published.
     PublishedDate *time.Time `json:"publishedDate,omitempty"`
     // The status of the comment thread.
@@ -1438,7 +1438,7 @@ type GitPullRequestCommentThread struct {
     // The time this thread was last updated.
     LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
     // Optional properties associated with the thread as a collection of key-value pairs.
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // The time this thread was published.
     PublishedDate *time.Time `json:"publishedDate,omitempty"`
     // The status of the comment thread.
@@ -1650,7 +1650,7 @@ type GitPullRequestStatus struct {
     // ID of the iteration to associate status with. Minimum value is 1.
     IterationId *int `json:"iterationId,omitempty"`
     // Custom properties of the status.
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
 }
 
 type GitPush struct {
@@ -2470,7 +2470,7 @@ type JsonPatchOperation struct {
     // The path for the operation. In the case of an array, a zero based index can be used to specify the position in the array (e.g. /biscuits/0/name). The "-" character can be used instead of an index to insert at the end of the array (e.g. /biscuits/-).
     Path *string `json:"path,omitempty"`
     // The value for the operation. This is either a primitive or a JToken.
-    Value *interface{} `json:"value,omitempty"`
+    Value interface{} `json:"value,omitempty"`
 }
 
 // Real time event (SignalR) for updated labels on a pull request
@@ -2567,7 +2567,7 @@ type PolicyConfiguration struct {
     // Indicates whether the policy is enabled.
     IsEnabled *bool `json:"isEnabled,omitempty"`
     // The policy configuration settings.
-    Settings *interface{} `json:"settings,omitempty"`
+    Settings interface{} `json:"settings,omitempty"`
 }
 
 // Policy configuration reference.

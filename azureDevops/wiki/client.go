@@ -42,7 +42,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 // wikiIdentifier (required): Wiki Id or name.
 // name (required): Wiki attachment name.
 // versionDescriptor (optional): GitVersionDescriptor for the page. (Optional in case of ProjectWiki).
-func (client Client) CreateAttachment(ctx context.Context, uploadStream *interface{}, project *string, wikiIdentifier *string, name *string, versionDescriptor *GitVersionDescriptor) (*WikiAttachmentResponse, error) {
+func (client Client) CreateAttachment(ctx context.Context, uploadStream interface{}, project *string, wikiIdentifier *string, name *string, versionDescriptor *GitVersionDescriptor) (*WikiAttachmentResponse, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -72,7 +72,7 @@ func (client Client) CreateAttachment(ctx context.Context, uploadStream *interfa
             queryParams.Add("versionDescriptor.versionOptions", string(*versionDescriptor.VersionOptions))
         }
     }
-    body, marshalErr := json.Marshal(*uploadStream)
+    body, marshalErr := json.Marshal(uploadStream)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -257,7 +257,7 @@ func (client Client) GetPageById(ctx context.Context, project *string, wikiIdent
 // id (required): Wiki page id.
 // recursionLevel (optional): Recursion level for subpages retrieval. Defaults to `None` (Optional).
 // includeContent (optional): True to include the content of the page in the response for Json content type. Defaults to false (Optional)
-func (client Client) GetPageByIdText(ctx context.Context, project *string, wikiIdentifier *string, id *int, recursionLevel *VersionControlRecursionType, includeContent *bool) (*interface{}, error) {
+func (client Client) GetPageByIdText(ctx context.Context, project *string, wikiIdentifier *string, id *int, recursionLevel *VersionControlRecursionType, includeContent *bool) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -286,8 +286,8 @@ func (client Client) GetPageByIdText(ctx context.Context, project *string, wikiI
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Gets metadata or content of the wiki page for the provided page id. Content negotiation is done based on the `Accept` header sent in the request.
@@ -297,7 +297,7 @@ func (client Client) GetPageByIdText(ctx context.Context, project *string, wikiI
 // id (required): Wiki page id.
 // recursionLevel (optional): Recursion level for subpages retrieval. Defaults to `None` (Optional).
 // includeContent (optional): True to include the content of the page in the response for Json content type. Defaults to false (Optional)
-func (client Client) GetPageByIdZip(ctx context.Context, project *string, wikiIdentifier *string, id *int, recursionLevel *VersionControlRecursionType, includeContent *bool) (*interface{}, error) {
+func (client Client) GetPageByIdZip(ctx context.Context, project *string, wikiIdentifier *string, id *int, recursionLevel *VersionControlRecursionType, includeContent *bool) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -326,8 +326,8 @@ func (client Client) GetPageByIdZip(ctx context.Context, project *string, wikiId
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Edits a wiki page.
@@ -583,7 +583,7 @@ func (client Client) GetPage(ctx context.Context, project *string, wikiIdentifie
 // recursionLevel (optional): Recursion level for subpages retrieval. Defaults to `None` (Optional).
 // versionDescriptor (optional): GitVersionDescriptor for the page. Defaults to the default branch (Optional).
 // includeContent (optional): True to include the content of the page in the response for Json content type. Defaults to false (Optional)
-func (client Client) GetPageText(ctx context.Context, project *string, wikiIdentifier *string, path *string, recursionLevel *VersionControlRecursionType, versionDescriptor *GitVersionDescriptor, includeContent *bool) (*interface{}, error) {
+func (client Client) GetPageText(ctx context.Context, project *string, wikiIdentifier *string, path *string, recursionLevel *VersionControlRecursionType, versionDescriptor *GitVersionDescriptor, includeContent *bool) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -622,8 +622,8 @@ func (client Client) GetPageText(ctx context.Context, project *string, wikiIdent
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // Gets metadata or content of the wiki page for the provided path. Content negotiation is done based on the `Accept` header sent in the request.
@@ -634,7 +634,7 @@ func (client Client) GetPageText(ctx context.Context, project *string, wikiIdent
 // recursionLevel (optional): Recursion level for subpages retrieval. Defaults to `None` (Optional).
 // versionDescriptor (optional): GitVersionDescriptor for the page. Defaults to the default branch (Optional).
 // includeContent (optional): True to include the content of the page in the response for Json content type. Defaults to false (Optional)
-func (client Client) GetPageZip(ctx context.Context, project *string, wikiIdentifier *string, path *string, recursionLevel *VersionControlRecursionType, versionDescriptor *GitVersionDescriptor, includeContent *bool) (*interface{}, error) {
+func (client Client) GetPageZip(ctx context.Context, project *string, wikiIdentifier *string, path *string, recursionLevel *VersionControlRecursionType, versionDescriptor *GitVersionDescriptor, includeContent *bool) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -673,8 +673,8 @@ func (client Client) GetPageZip(ctx context.Context, project *string, wikiIdenti
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // Creates the wiki resource.

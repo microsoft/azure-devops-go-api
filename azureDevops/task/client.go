@@ -76,7 +76,7 @@ func (client Client) GetPlanAttachments(ctx context.Context, scopeIdentifier *uu
 // recordId (required)
 // type_ (required)
 // name (required)
-func (client Client) CreateAttachment(ctx context.Context, uploadStream *interface{}, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (*TaskAttachment, error) {
+func (client Client) CreateAttachment(ctx context.Context, uploadStream interface{}, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (*TaskAttachment, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -110,7 +110,7 @@ func (client Client) CreateAttachment(ctx context.Context, uploadStream *interfa
     }
     routeValues["name"] = *name
 
-    body, marshalErr := json.Marshal(*uploadStream)
+    body, marshalErr := json.Marshal(uploadStream)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -185,7 +185,7 @@ func (client Client) GetAttachment(ctx context.Context, scopeIdentifier *uuid.UU
 // recordId (required)
 // type_ (required)
 // name (required)
-func (client Client) GetAttachmentContent(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (*interface{}, error) {
+func (client Client) GetAttachmentContent(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if scopeIdentifier == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
@@ -223,8 +223,8 @@ func (client Client) GetAttachmentContent(ctx context.Context, scopeIdentifier *
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API]
@@ -279,7 +279,7 @@ func (client Client) GetAttachments(ctx context.Context, scopeIdentifier *uuid.U
 // hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
 // planId (required)
 // logId (required)
-func (client Client) AppendLogContent(ctx context.Context, uploadStream *interface{}, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, logId *int) (*TaskLog, error) {
+func (client Client) AppendLogContent(ctx context.Context, uploadStream interface{}, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, logId *int) (*TaskLog, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -301,7 +301,7 @@ func (client Client) AppendLogContent(ctx context.Context, uploadStream *interfa
     }
     routeValues["logId"] = strconv.Itoa(*logId)
 
-    body, marshalErr := json.Marshal(*uploadStream)
+    body, marshalErr := json.Marshal(uploadStream)
     if marshalErr != nil {
         return nil, marshalErr
     }

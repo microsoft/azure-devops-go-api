@@ -105,7 +105,7 @@ type AcquisitionOptions struct {
     // Operations allowed for the ItemId in this target
     Operations *[]AcquisitionOperation `json:"operations,omitempty"`
     // Additional properties which can be added to the request.
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // The target that this options refer to
     Target *string `json:"target,omitempty"`
 }
@@ -119,7 +119,7 @@ type ClientContribution struct {
     // Includes is a set of contributions that should have this contribution included in their targets list.
     Includes *[]string `json:"includes,omitempty"`
     // Properties/attributes of this contribution
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // The ids of the contribution(s) that this contribution targets. (parent contributions)
     Targets *[]string `json:"targets,omitempty"`
     // Id of the Contribution Type
@@ -170,7 +170,7 @@ type Contribution struct {
     // Includes is a set of contributions that should have this contribution included in their targets list.
     Includes *[]string `json:"includes,omitempty"`
     // Properties/attributes of this contribution
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // List of demanded claims in order for the user to see this contribution (like anonymous, public, member...).
     RestrictedTo *[]string `json:"restrictedTo,omitempty"`
     // The ids of the contribution(s) that this contribution targets. (parent contributions)
@@ -200,7 +200,7 @@ type ContributionConstraint struct {
     // Name of the IContributionFilter plugin
     Name *string `json:"name,omitempty"`
     // Properties that are fed to the contribution filter class
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // Constraints can be optionally be applied to one or more of the relationships defined in the contribution. If no relationships are defined then all relationships are associated with the constraint. This means the default behaviour will elimiate the contribution from the tree completely if the constraint is applied.
     Relationships *[]string `json:"relationships,omitempty"`
 }
@@ -406,7 +406,7 @@ type ExtensionAcquisitionRequest struct {
     // The type of operation, such as install, request, purchase
     OperationType *AcquisitionOperationType `json:"operationType,omitempty"`
     // Additional properties which can be added to the request.
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // How many licenses should be purchased
     Quantity *int `json:"quantity,omitempty"`
 }

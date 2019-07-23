@@ -42,7 +42,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 // packageVersion (required): Version of the package.
 // fileName (required): Name of the file in the package
 // project (optional): Project ID or project name
-func (client Client) DownloadPackage(ctx context.Context, feedId *string, packageName *string, packageVersion *string, fileName *string, project *string) (*interface{}, error) {
+func (client Client) DownloadPackage(ctx context.Context, feedId *string, packageName *string, packageVersion *string, fileName *string, project *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -71,8 +71,8 @@ func (client Client) DownloadPackage(ctx context.Context, feedId *string, packag
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Delete a package version from the feed, moving it to the recycle bin.

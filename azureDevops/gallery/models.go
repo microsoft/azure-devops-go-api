@@ -277,7 +277,7 @@ type ExtensionAcquisitionRequest struct {
     // The type of operation, such as install, request, purchase
     OperationType *AcquisitionOperationType `json:"operationType,omitempty"`
     // Additional properties which can be added to the request.
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // How many licenses should be purchased
     Quantity *int `json:"quantity,omitempty"`
     // A list of target guids where the item should be acquired (installed, requested, etc.), such as account id
@@ -373,7 +373,7 @@ type ExtensionDraftPatch struct {
 type ExtensionEvent struct {
     // Id which identifies each data point uniquely
     Id *uint64 `json:"id,omitempty"`
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // Timestamp of when the event occurred
     StatisticDate *time.Time `json:"statisticDate,omitempty"`
     // Version of the extension
@@ -1266,7 +1266,7 @@ var RestApiResponseStatusValues = restApiResponseStatusValuesType{
 // REST Api Response
 type RestApiResponseStatusModel struct {
     // Gets or sets the operation details
-    OperationDetails *interface{} `json:"operationDetails,omitempty"`
+    OperationDetails interface{} `json:"operationDetails,omitempty"`
     // Gets or sets the operation id
     OperationId *string `json:"operationId,omitempty"`
     // Gets or sets the completed status percentage

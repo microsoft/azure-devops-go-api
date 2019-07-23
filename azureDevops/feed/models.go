@@ -325,7 +325,7 @@ type JsonPatchOperation struct {
     // The path for the operation. In the case of an array, a zero based index can be used to specify the position in the array (e.g. /biscuits/0/name). The "-" character can be used instead of an index to insert at the end of the array (e.g. /biscuits/-).
     Path *string `json:"path,omitempty"`
     // The value for the operation. This is either a primitive or a JToken.
-    Value *interface{} `json:"value,omitempty"`
+    Value interface{} `json:"value,omitempty"`
 }
 
 // Core data about any package, including its id and version information and basic state.
@@ -562,7 +562,7 @@ type ProjectReference struct {
 // Extended metadata for a specific package type.
 type ProtocolMetadata struct {
     // Extended metadata for a specific package type, formatted to the associated schema version definition.
-    Data *interface{} `json:"data,omitempty"`
+    Data interface{} `json:"data,omitempty"`
     // Schema version.
     SchemaVersion *int `json:"schemaVersion,omitempty"`
 }

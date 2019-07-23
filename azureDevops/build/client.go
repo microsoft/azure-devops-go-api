@@ -108,7 +108,7 @@ func (client Client) GetArtifact(ctx context.Context, project *string, buildId *
 // project (required): Project ID or project name
 // buildId (required): The ID of the build.
 // artifactName (required): The name of the artifact.
-func (client Client) GetArtifactContentZip(ctx context.Context, project *string, buildId *int, artifactName *string) (*interface{}, error) {
+func (client Client) GetArtifactContentZip(ctx context.Context, project *string, buildId *int, artifactName *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -131,8 +131,8 @@ func (client Client) GetArtifactContentZip(ctx context.Context, project *string,
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // Gets all artifacts for a build.
@@ -168,7 +168,7 @@ func (client Client) GetArtifacts(ctx context.Context, project *string, buildId 
 // artifactName (required): The name of the artifact.
 // fileId (required): The primary key for the file.
 // fileName (required): The name that the file will be set to.
-func (client Client) GetFile(ctx context.Context, project *string, buildId *int, artifactName *string, fileId *string, fileName *string) (*interface{}, error) {
+func (client Client) GetFile(ctx context.Context, project *string, buildId *int, artifactName *string, fileId *string, fileName *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -199,8 +199,8 @@ func (client Client) GetFile(ctx context.Context, project *string, buildId *int,
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Gets the list of attachments of a specific type that are associated with a build.
@@ -242,7 +242,7 @@ func (client Client) GetAttachments(ctx context.Context, project *string, buildI
 // recordId (required): The ID of the timeline record.
 // type_ (required): The type of the attachment.
 // name (required): The name of the attachment.
-func (client Client) GetAttachment(ctx context.Context, project *string, buildId *int, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (*interface{}, error) {
+func (client Client) GetAttachment(ctx context.Context, project *string, buildId *int, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -276,8 +276,8 @@ func (client Client) GetAttachment(ctx context.Context, project *string, buildId
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API]
@@ -1125,7 +1125,7 @@ func (client Client) UpdateDefinition(ctx context.Context, definition *BuildDefi
 // repository (optional): If specified, the vendor-specific identifier or the name of the repository to get branches. Can only be omitted for providers that do not support multiple repositories.
 // commitOrBranch (optional): The identifier of the commit or branch from which a file's contents are retrieved.
 // path (optional): The path to the file to retrieve, relative to the root of the repository.
-func (client Client) GetFileContents(ctx context.Context, project *string, providerName *string, serviceEndpointId *uuid.UUID, repository *string, commitOrBranch *string, path *string) (*interface{}, error) {
+func (client Client) GetFileContents(ctx context.Context, project *string, providerName *string, serviceEndpointId *uuid.UUID, repository *string, commitOrBranch *string, path *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1156,8 +1156,8 @@ func (client Client) GetFileContents(ctx context.Context, project *string, provi
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Creates a new folder.
@@ -1323,7 +1323,7 @@ func (client Client) GetLatestBuild(ctx context.Context, project *string, defini
 // logId (required): The ID of the log file.
 // startLine (optional): The start line.
 // endLine (optional): The end line.
-func (client Client) GetBuildLog(ctx context.Context, project *string, buildId *int, logId *int, startLine *uint64, endLine *uint64) (*interface{}, error) {
+func (client Client) GetBuildLog(ctx context.Context, project *string, buildId *int, logId *int, startLine *uint64, endLine *uint64) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1352,8 +1352,8 @@ func (client Client) GetBuildLog(ctx context.Context, project *string, buildId *
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // Gets an individual log file for a build.
@@ -1426,7 +1426,7 @@ func (client Client) GetBuildLogs(ctx context.Context, project *string, buildId 
 // ctx
 // project (required): Project ID or project name
 // buildId (required): The ID of the build.
-func (client Client) GetBuildLogsZip(ctx context.Context, project *string, buildId *int) (*interface{}, error) {
+func (client Client) GetBuildLogsZip(ctx context.Context, project *string, buildId *int) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1444,8 +1444,8 @@ func (client Client) GetBuildLogsZip(ctx context.Context, project *string, build
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // Gets an individual log file for a build.
@@ -1455,7 +1455,7 @@ func (client Client) GetBuildLogsZip(ctx context.Context, project *string, build
 // logId (required): The ID of the log file.
 // startLine (optional): The start line.
 // endLine (optional): The end line.
-func (client Client) GetBuildLogZip(ctx context.Context, project *string, buildId *int, logId *int, startLine *uint64, endLine *uint64) (*interface{}, error) {
+func (client Client) GetBuildLogZip(ctx context.Context, project *string, buildId *int, logId *int, startLine *uint64, endLine *uint64) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1484,8 +1484,8 @@ func (client Client) GetBuildLogZip(ctx context.Context, project *string, buildI
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Gets build metrics for a project.
@@ -1617,7 +1617,7 @@ func (client Client) GetPathContents(ctx context.Context, project *string, provi
 // project (required): Project ID or project name
 // buildId (required): The ID of the build.
 // filter (optional): A comma-delimited list of properties. If specified, filters to these specific properties.
-func (client Client) GetBuildProperties(ctx context.Context, project *string, buildId *int, filter *[]string) (*interface{}, error) {
+func (client Client) GetBuildProperties(ctx context.Context, project *string, buildId *int, filter *[]string) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1640,8 +1640,8 @@ func (client Client) GetBuildProperties(ctx context.Context, project *string, bu
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Updates properties for a build.
@@ -1649,7 +1649,7 @@ func (client Client) GetBuildProperties(ctx context.Context, project *string, bu
 // document (required): A json-patch document describing the properties to update.
 // project (required): Project ID or project name
 // buildId (required): The ID of the build.
-func (client Client) UpdateBuildProperties(ctx context.Context, document *[]JsonPatchOperation, project *string, buildId *int) (*interface{}, error) {
+func (client Client) UpdateBuildProperties(ctx context.Context, document *[]JsonPatchOperation, project *string, buildId *int) (interface{}, error) {
     if document == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "document"}
     }
@@ -1674,8 +1674,8 @@ func (client Client) UpdateBuildProperties(ctx context.Context, document *[]Json
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Gets properties for a definition.
@@ -1683,7 +1683,7 @@ func (client Client) UpdateBuildProperties(ctx context.Context, document *[]Json
 // project (required): Project ID or project name
 // definitionId (required): The ID of the definition.
 // filter (optional): A comma-delimited list of properties. If specified, filters to these specific properties.
-func (client Client) GetDefinitionProperties(ctx context.Context, project *string, definitionId *int, filter *[]string) (*interface{}, error) {
+func (client Client) GetDefinitionProperties(ctx context.Context, project *string, definitionId *int, filter *[]string) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1706,8 +1706,8 @@ func (client Client) GetDefinitionProperties(ctx context.Context, project *strin
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Updates properties for a definition.
@@ -1715,7 +1715,7 @@ func (client Client) GetDefinitionProperties(ctx context.Context, project *strin
 // document (required): A json-patch document describing the properties to update.
 // project (required): Project ID or project name
 // definitionId (required): The ID of the definition.
-func (client Client) UpdateDefinitionProperties(ctx context.Context, document *[]JsonPatchOperation, project *string, definitionId *int) (*interface{}, error) {
+func (client Client) UpdateDefinitionProperties(ctx context.Context, document *[]JsonPatchOperation, project *string, definitionId *int) (interface{}, error) {
     if document == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "document"}
     }
@@ -1740,8 +1740,8 @@ func (client Client) UpdateDefinitionProperties(ctx context.Context, document *[
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Gets a pull request object from source provider.
@@ -1820,7 +1820,7 @@ func (client Client) GetBuildReport(ctx context.Context, project *string, buildI
 // project (required): Project ID or project name
 // buildId (required): The ID of the build.
 // type_ (optional)
-func (client Client) GetBuildReportHtmlContent(ctx context.Context, project *string, buildId *int, type_ *string) (*interface{}, error) {
+func (client Client) GetBuildReportHtmlContent(ctx context.Context, project *string, buildId *int, type_ *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1842,8 +1842,8 @@ func (client Client) GetBuildReportHtmlContent(ctx context.Context, project *str
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Gets a list of source code repositories.

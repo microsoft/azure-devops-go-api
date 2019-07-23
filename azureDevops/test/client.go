@@ -167,7 +167,7 @@ func (client Client) CreateTestSubResultAttachment(ctx context.Context, attachme
 // runId (required): ID of the test run that contains the testCaseResultId.
 // testCaseResultId (required): ID of the test result whose attachment has to be downloaded.
 // attachmentId (required): ID of the test result attachment to be downloaded.
-func (client Client) GetTestResultAttachmentContent(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int) (*interface{}, error) {
+func (client Client) GetTestResultAttachmentContent(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -193,8 +193,8 @@ func (client Client) GetTestResultAttachmentContent(ctx context.Context, project
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Get list of test result attachments reference.
@@ -234,7 +234,7 @@ func (client Client) GetTestResultAttachments(ctx context.Context, project *stri
 // runId (required): ID of the test run that contains the testCaseResultId.
 // testCaseResultId (required): ID of the test result whose attachment has to be downloaded.
 // attachmentId (required): ID of the test result attachment to be downloaded.
-func (client Client) GetTestResultAttachmentZip(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int) (*interface{}, error) {
+func (client Client) GetTestResultAttachmentZip(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -260,8 +260,8 @@ func (client Client) GetTestResultAttachmentZip(ctx context.Context, project *st
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Download a test sub result attachment
@@ -271,7 +271,7 @@ func (client Client) GetTestResultAttachmentZip(ctx context.Context, project *st
 // testCaseResultId (required): ID of the test results that contains sub result.
 // attachmentId (required): ID of the test result attachment to be downloaded
 // testSubResultId (required): ID of the test sub result whose attachment has to be downloaded
-func (client Client) GetTestSubResultAttachmentContent(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int, testSubResultId *int) (*interface{}, error) {
+func (client Client) GetTestSubResultAttachmentContent(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int, testSubResultId *int) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -302,8 +302,8 @@ func (client Client) GetTestSubResultAttachmentContent(ctx context.Context, proj
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Get list of test sub result attachments
@@ -350,7 +350,7 @@ func (client Client) GetTestSubResultAttachments(ctx context.Context, project *s
 // testCaseResultId (required): ID of the test results that contains sub result.
 // attachmentId (required): ID of the test result attachment to be downloaded
 // testSubResultId (required): ID of the test sub result whose attachment has to be downloaded
-func (client Client) GetTestSubResultAttachmentZip(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int, testSubResultId *int) (*interface{}, error) {
+func (client Client) GetTestSubResultAttachmentZip(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int, testSubResultId *int) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -381,8 +381,8 @@ func (client Client) GetTestSubResultAttachmentZip(ctx context.Context, project 
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Attach a file to a test run.
@@ -424,7 +424,7 @@ func (client Client) CreateTestRunAttachment(ctx context.Context, attachmentRequ
 // project (required): Project ID or project name
 // runId (required): ID of the test run whose attachment has to be downloaded.
 // attachmentId (required): ID of the test run attachment to be downloaded.
-func (client Client) GetTestRunAttachmentContent(ctx context.Context, project *string, runId *int, attachmentId *int) (*interface{}, error) {
+func (client Client) GetTestRunAttachmentContent(ctx context.Context, project *string, runId *int, attachmentId *int) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -446,8 +446,8 @@ func (client Client) GetTestRunAttachmentContent(ctx context.Context, project *s
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Get list of test run attachments reference.
@@ -481,7 +481,7 @@ func (client Client) GetTestRunAttachments(ctx context.Context, project *string,
 // project (required): Project ID or project name
 // runId (required): ID of the test run whose attachment has to be downloaded.
 // attachmentId (required): ID of the test run attachment to be downloaded.
-func (client Client) GetTestRunAttachmentZip(ctx context.Context, project *string, runId *int, attachmentId *int) (*interface{}, error) {
+func (client Client) GetTestRunAttachmentZip(ctx context.Context, project *string, runId *int, attachmentId *int) (interface{}, error) {
     routeValues := make(map[string]string)
     if project == nil || *project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -503,8 +503,8 @@ func (client Client) GetTestRunAttachmentZip(ctx context.Context, project *strin
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Get code coverage data for a build.

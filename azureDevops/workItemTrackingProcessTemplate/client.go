@@ -86,7 +86,7 @@ func (client Client) GetBehaviors(ctx context.Context, processId *uuid.UUID) (*[
 // [Preview API] Returns requested process template.
 // ctx
 // id (required): The ID of the process
-func (client Client) ExportProcessTemplate(ctx context.Context, id *uuid.UUID) (*interface{}, error) {
+func (client Client) ExportProcessTemplate(ctx context.Context, id *uuid.UUID) (interface{}, error) {
     routeValues := make(map[string]string)
     if id == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
@@ -101,8 +101,8 @@ func (client Client) ExportProcessTemplate(ctx context.Context, id *uuid.UUID) (
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Imports a process from zip file.
@@ -110,7 +110,7 @@ func (client Client) ExportProcessTemplate(ctx context.Context, id *uuid.UUID) (
 // uploadStream (required): Stream to upload
 // ignoreWarnings (optional): Ignores validation warnings. Default value is false.
 // replaceExistingTemplate (optional): Replaces the existing template. Default value is true.
-func (client Client) ImportProcessTemplate(ctx context.Context, uploadStream *interface{}, ignoreWarnings *bool, replaceExistingTemplate *bool) (*ProcessImportResult, error) {
+func (client Client) ImportProcessTemplate(ctx context.Context, uploadStream interface{}, ignoreWarnings *bool, replaceExistingTemplate *bool) (*ProcessImportResult, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -124,7 +124,7 @@ func (client Client) ImportProcessTemplate(ctx context.Context, uploadStream *in
     if replaceExistingTemplate != nil {
         queryParams.Add("replaceExistingTemplate", strconv.FormatBool(*replaceExistingTemplate))
     }
-    body, marshalErr := json.Marshal(*uploadStream)
+    body, marshalErr := json.Marshal(uploadStream)
     if marshalErr != nil {
         return nil, marshalErr
     }

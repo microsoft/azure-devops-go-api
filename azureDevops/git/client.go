@@ -151,7 +151,7 @@ func (client Client) GetBlob(ctx context.Context, repositoryId *string, sha1 *st
 // download (optional): If true, prompt for a download rather than rendering in a browser. Note: this value defaults to true if $format is zip
 // fileName (optional): Provide a fileName to use for a download.
 // resolveLfs (optional): If true, try to resolve a blob to its LFS contents, if it's an LFS pointer file. Only compatible with octet-stream Accept headers or $format types
-func (client Client) GetBlobContent(ctx context.Context, repositoryId *string, sha1 *string, project *string, download *bool, fileName *string, resolveLfs *bool) (*interface{}, error) {
+func (client Client) GetBlobContent(ctx context.Context, repositoryId *string, sha1 *string, project *string, download *bool, fileName *string, resolveLfs *bool) (interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -182,8 +182,8 @@ func (client Client) GetBlobContent(ctx context.Context, repositoryId *string, s
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // Gets one or more blobs in a zip file download.
@@ -192,7 +192,7 @@ func (client Client) GetBlobContent(ctx context.Context, repositoryId *string, s
 // repositoryId (required): The name or ID of the repository.
 // project (optional): Project ID or project name
 // filename (optional)
-func (client Client) GetBlobsZip(ctx context.Context, blobIds *[]string, repositoryId *string, project *string, filename *string) (*interface{}, error) {
+func (client Client) GetBlobsZip(ctx context.Context, blobIds *[]string, repositoryId *string, project *string, filename *string) (interface{}, error) {
     if blobIds == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "blobIds"}
     }
@@ -220,8 +220,8 @@ func (client Client) GetBlobsZip(ctx context.Context, blobIds *[]string, reposit
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // Get a single blob.
@@ -232,7 +232,7 @@ func (client Client) GetBlobsZip(ctx context.Context, blobIds *[]string, reposit
 // download (optional): If true, prompt for a download rather than rendering in a browser. Note: this value defaults to true if $format is zip
 // fileName (optional): Provide a fileName to use for a download.
 // resolveLfs (optional): If true, try to resolve a blob to its LFS contents, if it's an LFS pointer file. Only compatible with octet-stream Accept headers or $format types
-func (client Client) GetBlobZip(ctx context.Context, repositoryId *string, sha1 *string, project *string, download *bool, fileName *string, resolveLfs *bool) (*interface{}, error) {
+func (client Client) GetBlobZip(ctx context.Context, repositoryId *string, sha1 *string, project *string, download *bool, fileName *string, resolveLfs *bool) (interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -263,8 +263,8 @@ func (client Client) GetBlobZip(ctx context.Context, repositoryId *string, sha1 
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // Retrieve statistics about a single branch.
@@ -1154,7 +1154,7 @@ func (client Client) GetItem(ctx context.Context, repositoryId *string, path *st
 // versionDescriptor (optional): Version descriptor.  Default is the default branch for the repository.
 // includeContent (optional): Set to true to include item content when requesting json.  Default is false.
 // resolveLfs (optional): Set to true to resolve Git LFS pointer files to return actual content from Git LFS.  Default is false.
-func (client Client) GetItemContent(ctx context.Context, repositoryId *string, path *string, project *string, scopePath *string, recursionLevel *VersionControlRecursionType, includeContentMetadata *bool, latestProcessedChange *bool, download *bool, versionDescriptor *GitVersionDescriptor, includeContent *bool, resolveLfs *bool) (*interface{}, error) {
+func (client Client) GetItemContent(ctx context.Context, repositoryId *string, path *string, project *string, scopePath *string, recursionLevel *VersionControlRecursionType, includeContentMetadata *bool, latestProcessedChange *bool, download *bool, versionDescriptor *GitVersionDescriptor, includeContent *bool, resolveLfs *bool) (interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -1208,8 +1208,8 @@ func (client Client) GetItemContent(ctx context.Context, repositoryId *string, p
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // Get Item Metadata and/or Content for a collection of items. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content which is always returned as a download.
@@ -1287,7 +1287,7 @@ func (client Client) GetItems(ctx context.Context, repositoryId *string, project
 // versionDescriptor (optional): Version descriptor.  Default is the default branch for the repository.
 // includeContent (optional): Set to true to include item content when requesting json.  Default is false.
 // resolveLfs (optional): Set to true to resolve Git LFS pointer files to return actual content from Git LFS.  Default is false.
-func (client Client) GetItemText(ctx context.Context, repositoryId *string, path *string, project *string, scopePath *string, recursionLevel *VersionControlRecursionType, includeContentMetadata *bool, latestProcessedChange *bool, download *bool, versionDescriptor *GitVersionDescriptor, includeContent *bool, resolveLfs *bool) (*interface{}, error) {
+func (client Client) GetItemText(ctx context.Context, repositoryId *string, path *string, project *string, scopePath *string, recursionLevel *VersionControlRecursionType, includeContentMetadata *bool, latestProcessedChange *bool, download *bool, versionDescriptor *GitVersionDescriptor, includeContent *bool, resolveLfs *bool) (interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -1341,8 +1341,8 @@ func (client Client) GetItemText(ctx context.Context, repositoryId *string, path
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content, which is always returned as a download.
@@ -1358,7 +1358,7 @@ func (client Client) GetItemText(ctx context.Context, repositoryId *string, path
 // versionDescriptor (optional): Version descriptor.  Default is the default branch for the repository.
 // includeContent (optional): Set to true to include item content when requesting json.  Default is false.
 // resolveLfs (optional): Set to true to resolve Git LFS pointer files to return actual content from Git LFS.  Default is false.
-func (client Client) GetItemZip(ctx context.Context, repositoryId *string, path *string, project *string, scopePath *string, recursionLevel *VersionControlRecursionType, includeContentMetadata *bool, latestProcessedChange *bool, download *bool, versionDescriptor *GitVersionDescriptor, includeContent *bool, resolveLfs *bool) (*interface{}, error) {
+func (client Client) GetItemZip(ctx context.Context, repositoryId *string, path *string, project *string, scopePath *string, recursionLevel *VersionControlRecursionType, includeContentMetadata *bool, latestProcessedChange *bool, download *bool, versionDescriptor *GitVersionDescriptor, includeContent *bool, resolveLfs *bool) (interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -1412,8 +1412,8 @@ func (client Client) GetItemZip(ctx context.Context, repositoryId *string, path 
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // Post for retrieving a creating a batch out of a set of items in a repo / project given a list of paths or a long path
@@ -1627,7 +1627,7 @@ func (client Client) GetPolicyConfigurations(ctx context.Context, project *strin
 // repositoryId (required): The repository ID of the pull request’s target branch.
 // pullRequestId (required): ID of the pull request.
 // project (optional): Project ID or project name
-func (client Client) CreateAttachment(ctx context.Context, uploadStream *interface{}, fileName *string, repositoryId *string, pullRequestId *int, project *string) (*Attachment, error) {
+func (client Client) CreateAttachment(ctx context.Context, uploadStream interface{}, fileName *string, repositoryId *string, pullRequestId *int, project *string) (*Attachment, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -1648,7 +1648,7 @@ func (client Client) CreateAttachment(ctx context.Context, uploadStream *interfa
     }
     routeValues["pullRequestId"] = strconv.Itoa(*pullRequestId)
 
-    body, marshalErr := json.Marshal(*uploadStream)
+    body, marshalErr := json.Marshal(uploadStream)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1702,7 +1702,7 @@ func (client Client) DeleteAttachment(ctx context.Context, fileName *string, rep
 // repositoryId (required): The repository ID of the pull request’s target branch.
 // pullRequestId (required): ID of the pull request.
 // project (optional): Project ID or project name
-func (client Client) GetAttachmentContent(ctx context.Context, fileName *string, repositoryId *string, pullRequestId *int, project *string) (*interface{}, error) {
+func (client Client) GetAttachmentContent(ctx context.Context, fileName *string, repositoryId *string, pullRequestId *int, project *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -1727,8 +1727,8 @@ func (client Client) GetAttachmentContent(ctx context.Context, fileName *string,
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Get a list of files attached to a given pull request.
@@ -1767,7 +1767,7 @@ func (client Client) GetAttachments(ctx context.Context, repositoryId *string, p
 // repositoryId (required): The repository ID of the pull request’s target branch.
 // pullRequestId (required): ID of the pull request.
 // project (optional): Project ID or project name
-func (client Client) GetAttachmentZip(ctx context.Context, fileName *string, repositoryId *string, pullRequestId *int, project *string) (*interface{}, error) {
+func (client Client) GetAttachmentZip(ctx context.Context, fileName *string, repositoryId *string, pullRequestId *int, project *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -1792,8 +1792,8 @@ func (client Client) GetAttachmentZip(ctx context.Context, fileName *string, rep
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Add a like on a comment.
@@ -2462,7 +2462,7 @@ func (client Client) GetPullRequestLabels(ctx context.Context, repositoryId *str
 // repositoryId (required): The repository ID of the pull request’s target branch.
 // pullRequestId (required): ID of the pull request.
 // project (optional): Project ID or project name
-func (client Client) GetPullRequestProperties(ctx context.Context, repositoryId *string, pullRequestId *int, project *string) (*interface{}, error) {
+func (client Client) GetPullRequestProperties(ctx context.Context, repositoryId *string, pullRequestId *int, project *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -2483,8 +2483,8 @@ func (client Client) GetPullRequestProperties(ctx context.Context, repositoryId 
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Create or update pull request external properties. The patch operation can be `add`, `replace` or `remove`. For `add` operation, the path can be empty. If the path is empty, the value must be a list of key value pairs. For `replace` operation, the path cannot be empty. If the path does not exist, the property will be added to the collection. For `remove` operation, the path cannot be empty. If the path does not exist, no action will be performed.
@@ -2493,7 +2493,7 @@ func (client Client) GetPullRequestProperties(ctx context.Context, repositoryId 
 // repositoryId (required): The repository ID of the pull request’s target branch.
 // pullRequestId (required): ID of the pull request.
 // project (optional): Project ID or project name
-func (client Client) UpdatePullRequestProperties(ctx context.Context, patchDocument *[]JsonPatchOperation, repositoryId *string, pullRequestId *int, project *string) (*interface{}, error) {
+func (client Client) UpdatePullRequestProperties(ctx context.Context, patchDocument *[]JsonPatchOperation, repositoryId *string, pullRequestId *int, project *string) (interface{}, error) {
     if patchDocument == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "patchDocument"}
     }
@@ -2521,8 +2521,8 @@ func (client Client) UpdatePullRequestProperties(ctx context.Context, patchDocum
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // This API is used to find what pull requests are related to a given commit.  It can be used to either find the pull request that created a particular merge commit or it can be used to find all pull requests that have ever merged a particular commit.  The input is a list of queries which each contain a list of commits. For each commit that you search against, you will get back a dictionary of commit -> pull requests.
@@ -4541,7 +4541,7 @@ func (client Client) GetTree(ctx context.Context, repositoryId *string, sha1 *st
 // projectId (optional): Project Id.
 // recursive (optional): Search recursively. Include trees underneath this tree. Default is false.
 // fileName (optional): Name to use if a .zip file is returned. Default is the object ID.
-func (client Client) GetTreeZip(ctx context.Context, repositoryId *string, sha1 *string, project *string, projectId *string, recursive *bool, fileName *string) (*interface{}, error) {
+func (client Client) GetTreeZip(ctx context.Context, repositoryId *string, sha1 *string, project *string, projectId *string, recursive *bool, fileName *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -4572,7 +4572,7 @@ func (client Client) GetTreeZip(ctx context.Context, repositoryId *string, sha1 
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 

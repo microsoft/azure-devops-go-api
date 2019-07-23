@@ -43,7 +43,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 // version (required): Version of the package
 // fileName (required): File name to download
 // project (optional): Project ID or project name
-func (client Client) DownloadPackage(ctx context.Context, feedId *string, groupId *string, artifactId *string, version *string, fileName *string, project *string) (*interface{}, error) {
+func (client Client) DownloadPackage(ctx context.Context, feedId *string, groupId *string, artifactId *string, version *string, fileName *string, project *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -76,8 +76,8 @@ func (client Client) DownloadPackage(ctx context.Context, feedId *string, groupI
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Permanently delete a package from a feed's recycle bin.

@@ -39,7 +39,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 // packageScope (required)
 // unscopedPackageName (required)
 // packageVersion (required)
-func (client Client) GetContentScopedPackage(ctx context.Context, feedId *string, packageScope *string, unscopedPackageName *string, packageVersion *string) (*interface{}, error) {
+func (client Client) GetContentScopedPackage(ctx context.Context, feedId *string, packageScope *string, unscopedPackageName *string, packageVersion *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if feedId == nil || *feedId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
@@ -65,8 +65,8 @@ func (client Client) GetContentScopedPackage(ctx context.Context, feedId *string
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Get an unscoped npm package.
@@ -74,7 +74,7 @@ func (client Client) GetContentScopedPackage(ctx context.Context, feedId *string
 // feedId (required): Name or ID of the feed.
 // packageName (required): Name of the package.
 // packageVersion (required): Version of the package.
-func (client Client) GetContentUnscopedPackage(ctx context.Context, feedId *string, packageName *string, packageVersion *string) (*interface{}, error) {
+func (client Client) GetContentUnscopedPackage(ctx context.Context, feedId *string, packageName *string, packageVersion *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if feedId == nil || *feedId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
@@ -96,8 +96,8 @@ func (client Client) GetContentUnscopedPackage(ctx context.Context, feedId *stri
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Update several packages from a single feed in a single request. The updates to the packages do not happen atomically.
@@ -133,7 +133,7 @@ func (client Client) UpdatePackages(ctx context.Context, batchRequest *NpmPackag
 // packageScope (required): Scope of the package (the 'scope' part of @scope\name)
 // unscopedPackageName (required): Name of the package (the 'name' part of @scope\name)
 // packageVersion (required): Version of the package.
-func (client Client) GetReadmeScopedPackage(ctx context.Context, feedId *string, packageScope *string, unscopedPackageName *string, packageVersion *string) (*interface{}, error) {
+func (client Client) GetReadmeScopedPackage(ctx context.Context, feedId *string, packageScope *string, unscopedPackageName *string, packageVersion *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if feedId == nil || *feedId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
@@ -159,8 +159,8 @@ func (client Client) GetReadmeScopedPackage(ctx context.Context, feedId *string,
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Get the Readme for a package version that has no npm scope.
@@ -168,7 +168,7 @@ func (client Client) GetReadmeScopedPackage(ctx context.Context, feedId *string,
 // feedId (required): Name or ID of the feed.
 // packageName (required): Name of the package.
 // packageVersion (required): Version of the package.
-func (client Client) GetReadmeUnscopedPackage(ctx context.Context, feedId *string, packageName *string, packageVersion *string) (*interface{}, error) {
+func (client Client) GetReadmeUnscopedPackage(ctx context.Context, feedId *string, packageName *string, packageVersion *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if feedId == nil || *feedId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
@@ -190,8 +190,8 @@ func (client Client) GetReadmeUnscopedPackage(ctx context.Context, feedId *strin
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Delete a package version with an npm scope from the recycle bin.

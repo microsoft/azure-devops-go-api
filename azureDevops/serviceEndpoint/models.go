@@ -639,7 +639,7 @@ type ServiceEndpoint struct {
     // Gets or sets the friendly name of the endpoint.
     Name *string `json:"name,omitempty"`
     // Error message during creation/deletion of endpoint
-    OperationStatus *interface{} `json:"operationStatus,omitempty"`
+    OperationStatus interface{} `json:"operationStatus,omitempty"`
     // Owner of the endpoint Supported values are "library", "agentcloud"
     Owner *string `json:"owner,omitempty"`
     // Gets or sets the identity reference for the readers group of the service endpoint.
@@ -784,7 +784,7 @@ type ServiceEndpointRequestResult struct {
     // Gets or sets the error message of the service endpoint request result.
     ErrorMessage *string `json:"errorMessage,omitempty"`
     // Gets or sets the result of service endpoint request.
-    Result *interface{} `json:"result,omitempty"`
+    Result interface{} `json:"result,omitempty"`
     // Gets or sets the status code of the service endpoint request result.
     StatusCode *string `json:"statusCode,omitempty"`
 }

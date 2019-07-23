@@ -420,7 +420,7 @@ func (client Client) GetItemsBatch(ctx context.Context, itemRequestData *TfvcIte
 // ctx
 // itemRequestData (required)
 // project (optional): Project ID or project name
-func (client Client) GetItemsBatchZip(ctx context.Context, itemRequestData *TfvcItemRequestData, project *string) (*interface{}, error) {
+func (client Client) GetItemsBatchZip(ctx context.Context, itemRequestData *TfvcItemRequestData, project *string) (interface{}, error) {
     if itemRequestData == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "itemRequestData"}
     }
@@ -440,8 +440,8 @@ func (client Client) GetItemsBatchZip(ctx context.Context, itemRequestData *Tfvc
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content which is always returned as a download.
@@ -512,7 +512,7 @@ func (client Client) GetItem(ctx context.Context, path *string, project *string,
 // recursionLevel (optional): None (just the item), or OneLevel (contents of a folder).
 // versionDescriptor (optional): Version descriptor.  Default is null.
 // includeContent (optional): Set to true to include item content when requesting json.  Default is false.
-func (client Client) GetItemContent(ctx context.Context, path *string, project *string, fileName *string, download *bool, scopePath *string, recursionLevel *VersionControlRecursionType, versionDescriptor *TfvcVersionDescriptor, includeContent *bool) (*interface{}, error) {
+func (client Client) GetItemContent(ctx context.Context, path *string, project *string, fileName *string, download *bool, scopePath *string, recursionLevel *VersionControlRecursionType, versionDescriptor *TfvcVersionDescriptor, includeContent *bool) (interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -556,8 +556,8 @@ func (client Client) GetItemContent(ctx context.Context, path *string, project *
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // Get a list of Tfvc items
@@ -615,7 +615,7 @@ func (client Client) GetItems(ctx context.Context, project *string, scopePath *s
 // recursionLevel (optional): None (just the item), or OneLevel (contents of a folder).
 // versionDescriptor (optional): Version descriptor.  Default is null.
 // includeContent (optional): Set to true to include item content when requesting json.  Default is false.
-func (client Client) GetItemText(ctx context.Context, path *string, project *string, fileName *string, download *bool, scopePath *string, recursionLevel *VersionControlRecursionType, versionDescriptor *TfvcVersionDescriptor, includeContent *bool) (*interface{}, error) {
+func (client Client) GetItemText(ctx context.Context, path *string, project *string, fileName *string, download *bool, scopePath *string, recursionLevel *VersionControlRecursionType, versionDescriptor *TfvcVersionDescriptor, includeContent *bool) (interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -659,8 +659,8 @@ func (client Client) GetItemText(ctx context.Context, path *string, project *str
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content which is always returned as a download.
@@ -673,7 +673,7 @@ func (client Client) GetItemText(ctx context.Context, path *string, project *str
 // recursionLevel (optional): None (just the item), or OneLevel (contents of a folder).
 // versionDescriptor (optional): Version descriptor.  Default is null.
 // includeContent (optional): Set to true to include item content when requesting json.  Default is false.
-func (client Client) GetItemZip(ctx context.Context, path *string, project *string, fileName *string, download *bool, scopePath *string, recursionLevel *VersionControlRecursionType, versionDescriptor *TfvcVersionDescriptor, includeContent *bool) (*interface{}, error) {
+func (client Client) GetItemZip(ctx context.Context, path *string, project *string, fileName *string, download *bool, scopePath *string, recursionLevel *VersionControlRecursionType, versionDescriptor *TfvcVersionDescriptor, includeContent *bool) (interface{}, error) {
     routeValues := make(map[string]string)
     if project != nil && *project != "" {
         routeValues["project"] = *project
@@ -717,8 +717,8 @@ func (client Client) GetItemZip(ctx context.Context, path *string, project *stri
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // Get items under a label.

@@ -85,11 +85,11 @@ func (client Client) GetDescriptorById(ctx context.Context, id *uuid.UUID, isMas
 
 // ctx
 // container (required)
-func (client Client) CreateGroups(ctx context.Context, container *interface{}) (*[]Identity, error) {
+func (client Client) CreateGroups(ctx context.Context, container interface{}) (*[]Identity, error) {
     if container == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "container"}
     }
-    body, marshalErr := json.Marshal(*container)
+    body, marshalErr := json.Marshal(container)
     if marshalErr != nil {
         return nil, marshalErr
     }

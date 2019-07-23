@@ -309,7 +309,7 @@ type CreatePlan struct {
     // Name of the plan to create.
     Name *string `json:"name,omitempty"`
     // Plan properties.
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // Type of plan to create.
     Type *PlanType `json:"type,omitempty"`
 }
@@ -527,7 +527,7 @@ type Plan struct {
     // Name of the plan
     Name *string `json:"name,omitempty"`
     // The PlanPropertyCollection instance associated with the plan. These are dependent on the type of the plan. For example, DeliveryTimelineView, it would be of type DeliveryViewPropertyCollection.
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // Revision of the plan. Used to safeguard users from overwriting each other's changes.
     Revision *int `json:"revision,omitempty"`
     // Type of the plan
@@ -953,7 +953,7 @@ type UpdatePlan struct {
     // Name of the plan to create.
     Name *string `json:"name,omitempty"`
     // Plan properties.
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // Revision of the plan that was updated - the value used here should match the one the server gave the client in the Plan.
     Revision *int `json:"revision,omitempty"`
     // Type of the plan

@@ -1537,7 +1537,7 @@ type InputValuesQuery struct {
     // The input values to return on input, and the result from the consumer on output.
     InputValues *[]InputValues `json:"inputValues,omitempty"`
     // Subscription containing information about the publisher/consumer and the current input values
-    Resource *interface{} `json:"resource,omitempty"`
+    Resource interface{} `json:"resource,omitempty"`
 }
 
 type Issue struct {
@@ -1917,7 +1917,7 @@ type Release struct {
     PoolName *string `json:"poolName,omitempty"`
     // Gets or sets project reference.
     ProjectReference *ProjectReference `json:"projectReference,omitempty"`
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // Gets reason of release.
     Reason *ReleaseReason `json:"reason,omitempty"`
     // Gets releaseDefinitionReference which specifies the reference of the release definition to which this release is associated.
@@ -2086,7 +2086,7 @@ type ReleaseDefinition struct {
     // Gets date on which it got modified.
     ModifiedOn *time.Time `json:"modifiedOn,omitempty"`
     // Gets or sets properties.
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // Gets or sets the release name format.
     ReleaseNameFormat *string `json:"releaseNameFormat,omitempty"`
     // Deprecated: Retention policy at Release Definition level is deprecated. Use the Retention Policy at environment and API version 3.0-preview.2 or later
@@ -2168,7 +2168,7 @@ type ReleaseDefinitionEnvironment struct {
     // Gets or sets the environment process parameters.
     ProcessParameters *ProcessParameters `json:"processParameters,omitempty"`
     // Gets or sets the properties on environment.
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // Gets or sets the queue ID.
     QueueId *int `json:"queueId,omitempty"`
     // Gets and sets the rank of the ReleaseDefinitionEnvironment.
@@ -2733,7 +2733,7 @@ type ReleaseStartMetadata struct {
     IsDraft *bool `json:"isDraft,omitempty"`
     // Sets list of environments to manual as condition.
     ManualEnvironments *[]string `json:"manualEnvironments,omitempty"`
-    Properties *interface{} `json:"properties,omitempty"`
+    Properties interface{} `json:"properties,omitempty"`
     // Sets reason to create a release.
     Reason *ReleaseReason `json:"reason,omitempty"`
     // Sets list of release variables to be overridden at deployment time.

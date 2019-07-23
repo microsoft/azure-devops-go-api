@@ -17,7 +17,7 @@ type AddProcessWorkItemTypeFieldRequest struct {
     // Allow setting field value to a group identity. Only applies to identity fields.
     AllowGroups *bool `json:"allowGroups,omitempty"`
     // The default value of the field.
-    DefaultValue *interface{} `json:"defaultValue,omitempty"`
+    DefaultValue interface{} `json:"defaultValue,omitempty"`
     // If true the field cannot be edited.
     ReadOnly *bool `json:"readOnly,omitempty"`
     // Reference name of the field.
@@ -535,7 +535,7 @@ type ProcessWorkItemTypeField struct {
     // Indicates the type of customization on this work item.
     Customization *CustomizationType `json:"customization,omitempty"`
     // The default value of the field.
-    DefaultValue *interface{} `json:"defaultValue,omitempty"`
+    DefaultValue interface{} `json:"defaultValue,omitempty"`
     // Description of the field.
     Description *string `json:"description,omitempty"`
     // Name of the field.
@@ -719,7 +719,7 @@ type UpdateProcessWorkItemTypeFieldRequest struct {
     // Allow setting field value to a group identity. Only applies to identity fields.
     AllowGroups *bool `json:"allowGroups,omitempty"`
     // The default value of the field.
-    DefaultValue *interface{} `json:"defaultValue,omitempty"`
+    DefaultValue interface{} `json:"defaultValue,omitempty"`
     // If true the field cannot be edited.
     ReadOnly *bool `json:"readOnly,omitempty"`
     // The default value of the field.

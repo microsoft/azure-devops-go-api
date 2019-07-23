@@ -62,7 +62,7 @@ func (client Client) CreateAgentGroup(ctx context.Context, group *AgentGroup) (*
 // machineAccessData (optional)
 // outgoingRequestUrls (optional)
 // agentGroupName (optional): Name of the agent group
-func (client Client) GetAgentGroups(ctx context.Context, agentGroupId *string, machineSetupInput *bool, machineAccessData *bool, outgoingRequestUrls *bool, agentGroupName *string) (*interface{}, error) {
+func (client Client) GetAgentGroups(ctx context.Context, agentGroupId *string, machineSetupInput *bool, machineAccessData *bool, outgoingRequestUrls *bool, agentGroupName *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if agentGroupId != nil && *agentGroupId != "" {
         routeValues["agentGroupId"] = *agentGroupId
@@ -88,8 +88,8 @@ func (client Client) GetAgentGroups(ctx context.Context, agentGroupId *string, m
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // ctx
@@ -121,7 +121,7 @@ func (client Client) DeleteStaticAgent(ctx context.Context, agentGroupId *string
 // ctx
 // agentGroupId (required): The agent group identifier
 // agentName (optional): Name of the static agent
-func (client Client) GetStaticAgents(ctx context.Context, agentGroupId *string, agentName *string) (*interface{}, error) {
+func (client Client) GetStaticAgents(ctx context.Context, agentGroupId *string, agentName *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if agentGroupId == nil || *agentGroupId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "agentGroupId"} 
@@ -139,8 +139,8 @@ func (client Client) GetStaticAgents(ctx context.Context, agentGroupId *string, 
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // ctx
@@ -549,7 +549,7 @@ func (client Client) GetTestRun(ctx context.Context, testRunId *string) (*TestRu
 // top (optional): The maximum number of test runs to return.
 // runsourceidentifier (optional)
 // retentionState (optional)
-func (client Client) GetTestRuns(ctx context.Context, name *string, requestedBy *string, status *string, runType *string, fromDate *string, toDate *string, detailed *bool, top *int, runsourceidentifier *string, retentionState *string) (*interface{}, error) {
+func (client Client) GetTestRuns(ctx context.Context, name *string, requestedBy *string, status *string, runType *string, fromDate *string, toDate *string, detailed *bool, top *int, runsourceidentifier *string, retentionState *string) (interface{}, error) {
     queryParams := url.Values{}
     if name != nil {
         queryParams.Add("name", *name)
@@ -588,8 +588,8 @@ func (client Client) GetTestRuns(ctx context.Context, name *string, requestedBy 
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // ctx

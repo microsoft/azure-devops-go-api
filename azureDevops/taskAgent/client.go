@@ -1376,7 +1376,7 @@ func (client Client) UpdateVariableGroup(ctx context.Context, group *VariableGro
 }
 
 // ctx
-func (client Client) GetYamlSchema(ctx context.Context, ) (*interface{}, error) {
+func (client Client) GetYamlSchema(ctx context.Context, ) (interface{}, error) {
     locationId, _ := uuid.Parse("1f9990b9-1dba-441f-9c2e-6485888c42b6")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, nil, nil, "", "application/json", nil)
     if err != nil {
@@ -1384,7 +1384,7 @@ func (client Client) GetYamlSchema(ctx context.Context, ) (*interface{}, error) 
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 

@@ -74,7 +74,7 @@ type PolicyConfiguration struct {
     // Indicates whether the policy is enabled.
     IsEnabled *bool `json:"isEnabled,omitempty"`
     // The policy configuration settings.
-    Settings *interface{} `json:"settings,omitempty"`
+    Settings interface{} `json:"settings,omitempty"`
 }
 
 // Policy configuration reference.
@@ -98,7 +98,7 @@ type PolicyEvaluationRecord struct {
     // Contains all configuration data for the policy which is being evaluated.
     Configuration *PolicyConfiguration `json:"configuration,omitempty"`
     // Internal context data of this policy evaluation.
-    Context *interface{} `json:"context,omitempty"`
+    Context interface{} `json:"context,omitempty"`
     // Guid which uniquely identifies this evaluation record (one policy running on one pull request).
     EvaluationId *uuid.UUID `json:"evaluationId,omitempty"`
     // Time when this policy was first evaluated on this pull request.

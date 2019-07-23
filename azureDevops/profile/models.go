@@ -104,7 +104,7 @@ type ProfileAttributeBase struct {
     // The time the attribute was last changed.
     TimeStamp *time.Time `json:"timeStamp,omitempty"`
     // The value of the attribute.
-    Value *interface{} `json:"value,omitempty"`
+    Value interface{} `json:"value,omitempty"`
 }
 
 // Country/region information

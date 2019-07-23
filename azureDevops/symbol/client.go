@@ -50,7 +50,7 @@ func (client Client) CheckAvailability(ctx context.Context, ) error {
 // [Preview API] Get the client package.
 // ctx
 // clientType (required): Either "EXE" for a zip file containing a Windows symbol client (a.k.a. symbol.exe) along with dependencies, or "TASK" for a VSTS task that can be run on a VSTS build agent. All the other values are invalid. The parameter is case-insensitive.
-func (client Client) GetClient(ctx context.Context, clientType *string) (*interface{}, error) {
+func (client Client) GetClient(ctx context.Context, clientType *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if clientType == nil || *clientType == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "clientType"} 
@@ -64,8 +64,8 @@ func (client Client) GetClient(ctx context.Context, clientType *string) (*interf
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Get client version information.

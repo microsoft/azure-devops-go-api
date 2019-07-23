@@ -208,7 +208,7 @@ func (client Client) RequestAcquisition(ctx context.Context, acquisitionRequest 
 // accountToken (optional)
 // acceptDefault (optional)
 // accountTokenHeader (optional): Header to pass the account token
-func (client Client) GetAssetByName(ctx context.Context, publisherName *string, extensionName *string, version *string, assetType *string, accountToken *string, acceptDefault *bool, accountTokenHeader *string) (*interface{}, error) {
+func (client Client) GetAssetByName(ctx context.Context, publisherName *string, extensionName *string, version *string, assetType *string, accountToken *string, acceptDefault *bool, accountTokenHeader *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if publisherName == nil || *publisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -245,8 +245,8 @@ func (client Client) GetAssetByName(ctx context.Context, publisherName *string, 
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API]
@@ -257,7 +257,7 @@ func (client Client) GetAssetByName(ctx context.Context, publisherName *string, 
 // accountToken (optional)
 // acceptDefault (optional)
 // accountTokenHeader (optional): Header to pass the account token
-func (client Client) GetAsset(ctx context.Context, extensionId *uuid.UUID, version *string, assetType *string, accountToken *string, acceptDefault *bool, accountTokenHeader *string) (*interface{}, error) {
+func (client Client) GetAsset(ctx context.Context, extensionId *uuid.UUID, version *string, assetType *string, accountToken *string, acceptDefault *bool, accountTokenHeader *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if extensionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "extensionId"} 
@@ -290,8 +290,8 @@ func (client Client) GetAsset(ctx context.Context, extensionId *uuid.UUID, versi
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API]
@@ -302,7 +302,7 @@ func (client Client) GetAsset(ctx context.Context, extensionId *uuid.UUID, versi
 // assetType (required)
 // accountToken (optional)
 // accountTokenHeader (optional): Header to pass the account token
-func (client Client) GetAssetAuthenticated(ctx context.Context, publisherName *string, extensionName *string, version *string, assetType *string, accountToken *string, accountTokenHeader *string) (*interface{}, error) {
+func (client Client) GetAssetAuthenticated(ctx context.Context, publisherName *string, extensionName *string, version *string, assetType *string, accountToken *string, accountTokenHeader *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if publisherName == nil || *publisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -336,8 +336,8 @@ func (client Client) GetAssetAuthenticated(ctx context.Context, publisherName *s
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API]
@@ -531,7 +531,7 @@ func (client Client) GetRootCategories(ctx context.Context, product *string, lci
 // publisherName (required)
 // extensionName (required)
 // version (optional)
-func (client Client) GetCertificate(ctx context.Context, publisherName *string, extensionName *string, version *string) (*interface{}, error) {
+func (client Client) GetCertificate(ctx context.Context, publisherName *string, extensionName *string, version *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if publisherName == nil || *publisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -552,15 +552,15 @@ func (client Client) GetCertificate(ctx context.Context, publisherName *string, 
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API]
 // ctx
 // publisherName (required)
 // extensionName (required)
-func (client Client) GetContentVerificationLog(ctx context.Context, publisherName *string, extensionName *string) (*interface{}, error) {
+func (client Client) GetContentVerificationLog(ctx context.Context, publisherName *string, extensionName *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if publisherName == nil || *publisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -578,8 +578,8 @@ func (client Client) GetContentVerificationLog(ctx context.Context, publisherNam
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API]
@@ -654,7 +654,7 @@ func (client Client) PerformEditExtensionDraftOperation(ctx context.Context, dra
 // extensionName (required)
 // draftId (required)
 // fileName (optional): Header to pass the filename of the uploaded data
-func (client Client) UpdatePayloadInDraftForEditExtension(ctx context.Context, uploadStream *interface{}, publisherName *string, extensionName *string, draftId *uuid.UUID, fileName *string) (*ExtensionDraft, error) {
+func (client Client) UpdatePayloadInDraftForEditExtension(ctx context.Context, uploadStream interface{}, publisherName *string, extensionName *string, draftId *uuid.UUID, fileName *string) (*ExtensionDraft, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -676,7 +676,7 @@ func (client Client) UpdatePayloadInDraftForEditExtension(ctx context.Context, u
     if fileName != nil {
         additionalHeaders["X-Market-UploadFileName"] = *fileName
     }
-    body, marshalErr := json.Marshal(*uploadStream)
+    body, marshalErr := json.Marshal(uploadStream)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -698,7 +698,7 @@ func (client Client) UpdatePayloadInDraftForEditExtension(ctx context.Context, u
 // extensionName (required)
 // draftId (required)
 // assetType (required)
-func (client Client) AddAssetForEditExtensionDraft(ctx context.Context, uploadStream *interface{}, publisherName *string, extensionName *string, draftId *uuid.UUID, assetType *string) (*ExtensionDraftAsset, error) {
+func (client Client) AddAssetForEditExtensionDraft(ctx context.Context, uploadStream interface{}, publisherName *string, extensionName *string, draftId *uuid.UUID, assetType *string) (*ExtensionDraftAsset, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -720,7 +720,7 @@ func (client Client) AddAssetForEditExtensionDraft(ctx context.Context, uploadSt
     }
     routeValues["assetType"] = *assetType
 
-    body, marshalErr := json.Marshal(*uploadStream)
+    body, marshalErr := json.Marshal(uploadStream)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -741,7 +741,7 @@ func (client Client) AddAssetForEditExtensionDraft(ctx context.Context, uploadSt
 // publisherName (required)
 // product (required): Header to pass the product type of the payload file
 // fileName (optional): Header to pass the filename of the uploaded data
-func (client Client) CreateDraftForNewExtension(ctx context.Context, uploadStream *interface{}, publisherName *string, product *string, fileName *string) (*ExtensionDraft, error) {
+func (client Client) CreateDraftForNewExtension(ctx context.Context, uploadStream interface{}, publisherName *string, product *string, fileName *string) (*ExtensionDraft, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -758,7 +758,7 @@ func (client Client) CreateDraftForNewExtension(ctx context.Context, uploadStrea
     if fileName != nil {
         additionalHeaders["X-Market-UploadFileName"] = *fileName
     }
-    body, marshalErr := json.Marshal(*uploadStream)
+    body, marshalErr := json.Marshal(uploadStream)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -813,7 +813,7 @@ func (client Client) PerformNewExtensionDraftOperation(ctx context.Context, draf
 // publisherName (required)
 // draftId (required)
 // fileName (optional): Header to pass the filename of the uploaded data
-func (client Client) UpdatePayloadInDraftForNewExtension(ctx context.Context, uploadStream *interface{}, publisherName *string, draftId *uuid.UUID, fileName *string) (*ExtensionDraft, error) {
+func (client Client) UpdatePayloadInDraftForNewExtension(ctx context.Context, uploadStream interface{}, publisherName *string, draftId *uuid.UUID, fileName *string) (*ExtensionDraft, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -831,7 +831,7 @@ func (client Client) UpdatePayloadInDraftForNewExtension(ctx context.Context, up
     if fileName != nil {
         additionalHeaders["X-Market-UploadFileName"] = *fileName
     }
-    body, marshalErr := json.Marshal(*uploadStream)
+    body, marshalErr := json.Marshal(uploadStream)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -852,7 +852,7 @@ func (client Client) UpdatePayloadInDraftForNewExtension(ctx context.Context, up
 // publisherName (required)
 // draftId (required)
 // assetType (required)
-func (client Client) AddAssetForNewExtensionDraft(ctx context.Context, uploadStream *interface{}, publisherName *string, draftId *uuid.UUID, assetType *string) (*ExtensionDraftAsset, error) {
+func (client Client) AddAssetForNewExtensionDraft(ctx context.Context, uploadStream interface{}, publisherName *string, draftId *uuid.UUID, assetType *string) (*ExtensionDraftAsset, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -870,7 +870,7 @@ func (client Client) AddAssetForNewExtensionDraft(ctx context.Context, uploadStr
     }
     routeValues["assetType"] = *assetType
 
-    body, marshalErr := json.Marshal(*uploadStream)
+    body, marshalErr := json.Marshal(uploadStream)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -891,7 +891,7 @@ func (client Client) AddAssetForNewExtensionDraft(ctx context.Context, uploadStr
 // draftId (required)
 // assetType (required)
 // extensionName (required)
-func (client Client) GetAssetFromEditExtensionDraft(ctx context.Context, publisherName *string, draftId *uuid.UUID, assetType *string, extensionName *string) (*interface{}, error) {
+func (client Client) GetAssetFromEditExtensionDraft(ctx context.Context, publisherName *string, draftId *uuid.UUID, assetType *string, extensionName *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if publisherName == nil || *publisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -918,8 +918,8 @@ func (client Client) GetAssetFromEditExtensionDraft(ctx context.Context, publish
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API]
@@ -927,7 +927,7 @@ func (client Client) GetAssetFromEditExtensionDraft(ctx context.Context, publish
 // publisherName (required)
 // draftId (required)
 // assetType (required)
-func (client Client) GetAssetFromNewExtensionDraft(ctx context.Context, publisherName *string, draftId *uuid.UUID, assetType *string) (*interface{}, error) {
+func (client Client) GetAssetFromNewExtensionDraft(ctx context.Context, publisherName *string, draftId *uuid.UUID, assetType *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if publisherName == nil || *publisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -949,8 +949,8 @@ func (client Client) GetAssetFromNewExtensionDraft(ctx context.Context, publishe
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Get install/uninstall events of an extension. If both count and afterDate parameters are specified, count takes precedence.
@@ -1051,11 +1051,11 @@ func (client Client) QueryExtensions(ctx context.Context, extensionQuery *Extens
 // [Preview API]
 // ctx
 // uploadStream (required): Stream to upload
-func (client Client) CreateExtension(ctx context.Context, uploadStream *interface{}) (*PublishedExtension, error) {
+func (client Client) CreateExtension(ctx context.Context, uploadStream interface{}) (*PublishedExtension, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
-    body, marshalErr := json.Marshal(*uploadStream)
+    body, marshalErr := json.Marshal(uploadStream)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1149,7 +1149,7 @@ func (client Client) UpdateExtensionById(ctx context.Context, extensionId *uuid.
 // ctx
 // uploadStream (required): Stream to upload
 // publisherName (required)
-func (client Client) CreateExtensionWithPublisher(ctx context.Context, uploadStream *interface{}, publisherName *string) (*PublishedExtension, error) {
+func (client Client) CreateExtensionWithPublisher(ctx context.Context, uploadStream interface{}, publisherName *string) (*PublishedExtension, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -1159,7 +1159,7 @@ func (client Client) CreateExtensionWithPublisher(ctx context.Context, uploadStr
     }
     routeValues["publisherName"] = *publisherName
 
-    body, marshalErr := json.Marshal(*uploadStream)
+    body, marshalErr := json.Marshal(uploadStream)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1253,7 +1253,7 @@ func (client Client) GetExtension(ctx context.Context, publisherName *string, ex
 // publisherName (required): Name of the publisher
 // extensionName (required): Name of the extension
 // bypassScopeCheck (optional): This parameter decides if the scope change check needs to be invoked or not
-func (client Client) UpdateExtension(ctx context.Context, uploadStream *interface{}, publisherName *string, extensionName *string, bypassScopeCheck *bool) (*PublishedExtension, error) {
+func (client Client) UpdateExtension(ctx context.Context, uploadStream interface{}, publisherName *string, extensionName *string, bypassScopeCheck *bool) (*PublishedExtension, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -1271,7 +1271,7 @@ func (client Client) UpdateExtension(ctx context.Context, uploadStream *interfac
     if bypassScopeCheck != nil {
         queryParams.Add("bypassScopeCheck", strconv.FormatBool(*bypassScopeCheck))
     }
-    body, marshalErr := json.Marshal(*uploadStream)
+    body, marshalErr := json.Marshal(uploadStream)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1434,7 +1434,7 @@ func (client Client) SendNotifications(ctx context.Context, notificationData *No
 // accountToken (optional)
 // acceptDefault (optional)
 // accountTokenHeader (optional): Header to pass the account token
-func (client Client) GetPackage(ctx context.Context, publisherName *string, extensionName *string, version *string, accountToken *string, acceptDefault *bool, accountTokenHeader *string) (*interface{}, error) {
+func (client Client) GetPackage(ctx context.Context, publisherName *string, extensionName *string, version *string, accountToken *string, acceptDefault *bool, accountTokenHeader *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if publisherName == nil || *publisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -1467,8 +1467,8 @@ func (client Client) GetPackage(ctx context.Context, publisherName *string, exte
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API]
@@ -1481,7 +1481,7 @@ func (client Client) GetPackage(ctx context.Context, publisherName *string, exte
 // accountToken (optional)
 // acceptDefault (optional)
 // accountTokenHeader (optional): Header to pass the account token
-func (client Client) GetAssetWithToken(ctx context.Context, publisherName *string, extensionName *string, version *string, assetType *string, assetToken *string, accountToken *string, acceptDefault *bool, accountTokenHeader *string) (*interface{}, error) {
+func (client Client) GetAssetWithToken(ctx context.Context, publisherName *string, extensionName *string, version *string, assetType *string, assetToken *string, accountToken *string, acceptDefault *bool, accountTokenHeader *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if publisherName == nil || *publisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -1521,8 +1521,8 @@ func (client Client) GetAssetWithToken(ctx context.Context, publisherName *strin
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Delete publisher asset like logo
@@ -1553,7 +1553,7 @@ func (client Client) DeletePublisherAsset(ctx context.Context, publisherName *st
 // ctx
 // publisherName (required): Internal name of the publisher
 // assetType (optional): Type of asset. Default value is 'logo'.
-func (client Client) GetPublisherAsset(ctx context.Context, publisherName *string, assetType *string) (*interface{}, error) {
+func (client Client) GetPublisherAsset(ctx context.Context, publisherName *string, assetType *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if publisherName == nil || *publisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -1571,8 +1571,8 @@ func (client Client) GetPublisherAsset(ctx context.Context, publisherName *strin
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Update publisher asset like logo. It accepts asset file as an octet stream and file name is passed in header values.
@@ -1581,7 +1581,7 @@ func (client Client) GetPublisherAsset(ctx context.Context, publisherName *strin
 // publisherName (required): Internal name of the publisher
 // assetType (optional): Type of asset. Default value is 'logo'.
 // fileName (optional): Header to pass the filename of the uploaded data
-func (client Client) UpdatePublisherAsset(ctx context.Context, uploadStream *interface{}, publisherName *string, assetType *string, fileName *string) (*map[string]string, error) {
+func (client Client) UpdatePublisherAsset(ctx context.Context, uploadStream interface{}, publisherName *string, assetType *string, fileName *string) (*map[string]string, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -1599,7 +1599,7 @@ func (client Client) UpdatePublisherAsset(ctx context.Context, uploadStream *int
     if fileName != nil {
         additionalHeaders["X-Market-UploadFileName"] = *fileName
     }
-    body, marshalErr := json.Marshal(*uploadStream)
+    body, marshalErr := json.Marshal(uploadStream)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -2070,7 +2070,7 @@ func (client Client) UpdateResponse(ctx context.Context, response *Response, pub
 // days (optional): Last n days report. If afterDate and days are specified, days will take priority
 // count (optional): Number of events to be returned
 // afterDate (optional): Use if you want to fetch events newer than the specified date
-func (client Client) GetExtensionReports(ctx context.Context, publisherName *string, extensionName *string, days *int, count *int, afterDate *time.Time) (*interface{}, error) {
+func (client Client) GetExtensionReports(ctx context.Context, publisherName *string, extensionName *string, days *int, count *int, afterDate *time.Time) (interface{}, error) {
     routeValues := make(map[string]string)
     if publisherName == nil || *publisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -2098,8 +2098,8 @@ func (client Client) GetExtensionReports(ctx context.Context, publisherName *str
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
 // [Preview API] Returns a list of reviews associated with an extension
@@ -2543,7 +2543,7 @@ func (client Client) IncrementExtensionDailyStat(ctx context.Context, publisherN
 // publisherName (required)
 // extensionName (required)
 // version (required)
-func (client Client) GetVerificationLog(ctx context.Context, publisherName *string, extensionName *string, version *string) (*interface{}, error) {
+func (client Client) GetVerificationLog(ctx context.Context, publisherName *string, extensionName *string, version *string) (interface{}, error) {
     routeValues := make(map[string]string)
     if publisherName == nil || *publisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -2565,7 +2565,7 @@ func (client Client) GetVerificationLog(ctx context.Context, publisherName *stri
     }
 
     var responseValue interface{}
-    err = client.Client.UnmarshalBody(resp, &responseValue)
-    return &responseValue, err
+    err = client.Client.UnmarshalBody(resp, responseValue)
+    return responseValue, err
 }
 
