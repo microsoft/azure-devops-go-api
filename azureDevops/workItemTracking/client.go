@@ -14,6 +14,7 @@ import (
     "encoding/json"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "io"
     "net/http"
     "net/url"
     "strconv"
@@ -100,7 +101,7 @@ func (client Client) QueryWorkItemsForArtifactUris(ctx context.Context, artifact
 // fileName (optional): The name of the file
 // uploadType (optional): Attachment upload type: Simple or Chunked
 // areaPath (optional): Target project Area Path
-func (client Client) CreateAttachment(ctx context.Context, uploadStream interface{}, project *string, fileName *string, uploadType *string, areaPath *string) (*AttachmentReference, error) {
+func (client Client) CreateAttachment(ctx context.Context, uploadStream io.Reader, project *string, fileName *string, uploadType *string, areaPath *string) (*AttachmentReference, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -119,12 +120,8 @@ func (client Client) CreateAttachment(ctx context.Context, uploadStream interfac
     if areaPath != nil {
         queryParams.Add("areaPath", *areaPath)
     }
-    body, marshalErr := json.Marshal(uploadStream)
-    if marshalErr != nil {
-        return nil, marshalErr
-    }
     locationId, _ := uuid.Parse("e07b5fa4-1499-494d-a496-64b860fd64ff")
-    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, queryParams, uploadStream, "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }

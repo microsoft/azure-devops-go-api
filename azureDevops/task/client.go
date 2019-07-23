@@ -14,6 +14,7 @@ import (
     "encoding/json"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "io"
     "net/http"
     "net/url"
     "strconv"
@@ -76,7 +77,7 @@ func (client Client) GetPlanAttachments(ctx context.Context, scopeIdentifier *uu
 // recordId (required)
 // type_ (required)
 // name (required)
-func (client Client) CreateAttachment(ctx context.Context, uploadStream interface{}, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (*TaskAttachment, error) {
+func (client Client) CreateAttachment(ctx context.Context, uploadStream io.Reader, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (*TaskAttachment, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -110,12 +111,8 @@ func (client Client) CreateAttachment(ctx context.Context, uploadStream interfac
     }
     routeValues["name"] = *name
 
-    body, marshalErr := json.Marshal(uploadStream)
-    if marshalErr != nil {
-        return nil, marshalErr
-    }
     locationId, _ := uuid.Parse("7898f959-9cdf-4096-b29e-7f293031629e")
-    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, uploadStream, "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -279,7 +276,7 @@ func (client Client) GetAttachments(ctx context.Context, scopeIdentifier *uuid.U
 // hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
 // planId (required)
 // logId (required)
-func (client Client) AppendLogContent(ctx context.Context, uploadStream interface{}, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, logId *int) (*TaskLog, error) {
+func (client Client) AppendLogContent(ctx context.Context, uploadStream io.Reader, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, logId *int) (*TaskLog, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -301,12 +298,8 @@ func (client Client) AppendLogContent(ctx context.Context, uploadStream interfac
     }
     routeValues["logId"] = strconv.Itoa(*logId)
 
-    body, marshalErr := json.Marshal(uploadStream)
-    if marshalErr != nil {
-        return nil, marshalErr
-    }
     locationId, _ := uuid.Parse("46f5667d-263a-4684-91b1-dff7fdcf64e2")
-    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, uploadStream, "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }

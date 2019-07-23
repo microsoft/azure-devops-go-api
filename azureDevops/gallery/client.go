@@ -14,6 +14,7 @@ import (
     "encoding/json"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "io"
     "net/http"
     "net/url"
     "strconv"
@@ -654,7 +655,7 @@ func (client Client) PerformEditExtensionDraftOperation(ctx context.Context, dra
 // extensionName (required)
 // draftId (required)
 // fileName (optional): Header to pass the filename of the uploaded data
-func (client Client) UpdatePayloadInDraftForEditExtension(ctx context.Context, uploadStream interface{}, publisherName *string, extensionName *string, draftId *uuid.UUID, fileName *string) (*ExtensionDraft, error) {
+func (client Client) UpdatePayloadInDraftForEditExtension(ctx context.Context, uploadStream io.Reader, publisherName *string, extensionName *string, draftId *uuid.UUID, fileName *string) (*ExtensionDraft, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -676,12 +677,8 @@ func (client Client) UpdatePayloadInDraftForEditExtension(ctx context.Context, u
     if fileName != nil {
         additionalHeaders["X-Market-UploadFileName"] = *fileName
     }
-    body, marshalErr := json.Marshal(uploadStream)
-    if marshalErr != nil {
-        return nil, marshalErr
-    }
     locationId, _ := uuid.Parse("02b33873-4e61-496e-83a2-59d1df46b7d8")
-    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/octet-stream", "application/json", additionalHeaders)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, uploadStream, "application/octet-stream", "application/json", additionalHeaders)
     if err != nil {
         return nil, err
     }
@@ -698,7 +695,7 @@ func (client Client) UpdatePayloadInDraftForEditExtension(ctx context.Context, u
 // extensionName (required)
 // draftId (required)
 // assetType (required)
-func (client Client) AddAssetForEditExtensionDraft(ctx context.Context, uploadStream interface{}, publisherName *string, extensionName *string, draftId *uuid.UUID, assetType *string) (*ExtensionDraftAsset, error) {
+func (client Client) AddAssetForEditExtensionDraft(ctx context.Context, uploadStream io.Reader, publisherName *string, extensionName *string, draftId *uuid.UUID, assetType *string) (*ExtensionDraftAsset, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -720,12 +717,8 @@ func (client Client) AddAssetForEditExtensionDraft(ctx context.Context, uploadSt
     }
     routeValues["assetType"] = *assetType
 
-    body, marshalErr := json.Marshal(uploadStream)
-    if marshalErr != nil {
-        return nil, marshalErr
-    }
     locationId, _ := uuid.Parse("f1db9c47-6619-4998-a7e5-d7f9f41a4617")
-    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, uploadStream, "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -741,7 +734,7 @@ func (client Client) AddAssetForEditExtensionDraft(ctx context.Context, uploadSt
 // publisherName (required)
 // product (required): Header to pass the product type of the payload file
 // fileName (optional): Header to pass the filename of the uploaded data
-func (client Client) CreateDraftForNewExtension(ctx context.Context, uploadStream interface{}, publisherName *string, product *string, fileName *string) (*ExtensionDraft, error) {
+func (client Client) CreateDraftForNewExtension(ctx context.Context, uploadStream io.Reader, publisherName *string, product *string, fileName *string) (*ExtensionDraft, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -758,12 +751,8 @@ func (client Client) CreateDraftForNewExtension(ctx context.Context, uploadStrea
     if fileName != nil {
         additionalHeaders["X-Market-UploadFileName"] = *fileName
     }
-    body, marshalErr := json.Marshal(uploadStream)
-    if marshalErr != nil {
-        return nil, marshalErr
-    }
     locationId, _ := uuid.Parse("b3ab127d-ebb9-4d22-b611-4e09593c8d79")
-    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/octet-stream", "application/json", additionalHeaders)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, uploadStream, "application/octet-stream", "application/json", additionalHeaders)
     if err != nil {
         return nil, err
     }
@@ -813,7 +802,7 @@ func (client Client) PerformNewExtensionDraftOperation(ctx context.Context, draf
 // publisherName (required)
 // draftId (required)
 // fileName (optional): Header to pass the filename of the uploaded data
-func (client Client) UpdatePayloadInDraftForNewExtension(ctx context.Context, uploadStream interface{}, publisherName *string, draftId *uuid.UUID, fileName *string) (*ExtensionDraft, error) {
+func (client Client) UpdatePayloadInDraftForNewExtension(ctx context.Context, uploadStream io.Reader, publisherName *string, draftId *uuid.UUID, fileName *string) (*ExtensionDraft, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -831,12 +820,8 @@ func (client Client) UpdatePayloadInDraftForNewExtension(ctx context.Context, up
     if fileName != nil {
         additionalHeaders["X-Market-UploadFileName"] = *fileName
     }
-    body, marshalErr := json.Marshal(uploadStream)
-    if marshalErr != nil {
-        return nil, marshalErr
-    }
     locationId, _ := uuid.Parse("b3ab127d-ebb9-4d22-b611-4e09593c8d79")
-    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/octet-stream", "application/json", additionalHeaders)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, uploadStream, "application/octet-stream", "application/json", additionalHeaders)
     if err != nil {
         return nil, err
     }
@@ -852,7 +837,7 @@ func (client Client) UpdatePayloadInDraftForNewExtension(ctx context.Context, up
 // publisherName (required)
 // draftId (required)
 // assetType (required)
-func (client Client) AddAssetForNewExtensionDraft(ctx context.Context, uploadStream interface{}, publisherName *string, draftId *uuid.UUID, assetType *string) (*ExtensionDraftAsset, error) {
+func (client Client) AddAssetForNewExtensionDraft(ctx context.Context, uploadStream io.Reader, publisherName *string, draftId *uuid.UUID, assetType *string) (*ExtensionDraftAsset, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -870,12 +855,8 @@ func (client Client) AddAssetForNewExtensionDraft(ctx context.Context, uploadStr
     }
     routeValues["assetType"] = *assetType
 
-    body, marshalErr := json.Marshal(uploadStream)
-    if marshalErr != nil {
-        return nil, marshalErr
-    }
     locationId, _ := uuid.Parse("88c0b1c8-b4f1-498a-9b2a-8446ef9f32e7")
-    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, uploadStream, "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1051,16 +1032,12 @@ func (client Client) QueryExtensions(ctx context.Context, extensionQuery *Extens
 // [Preview API]
 // ctx
 // uploadStream (required): Stream to upload
-func (client Client) CreateExtension(ctx context.Context, uploadStream interface{}) (*PublishedExtension, error) {
+func (client Client) CreateExtension(ctx context.Context, uploadStream io.Reader) (*PublishedExtension, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
-    body, marshalErr := json.Marshal(uploadStream)
-    if marshalErr != nil {
-        return nil, marshalErr
-    }
     locationId, _ := uuid.Parse("a41192c8-9525-4b58-bc86-179fa549d80d")
-    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.2", nil, nil, bytes.NewReader(body), "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.2", nil, nil, uploadStream, "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1149,7 +1126,7 @@ func (client Client) UpdateExtensionById(ctx context.Context, extensionId *uuid.
 // ctx
 // uploadStream (required): Stream to upload
 // publisherName (required)
-func (client Client) CreateExtensionWithPublisher(ctx context.Context, uploadStream interface{}, publisherName *string) (*PublishedExtension, error) {
+func (client Client) CreateExtensionWithPublisher(ctx context.Context, uploadStream io.Reader, publisherName *string) (*PublishedExtension, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -1159,12 +1136,8 @@ func (client Client) CreateExtensionWithPublisher(ctx context.Context, uploadStr
     }
     routeValues["publisherName"] = *publisherName
 
-    body, marshalErr := json.Marshal(uploadStream)
-    if marshalErr != nil {
-        return nil, marshalErr
-    }
     locationId, _ := uuid.Parse("e11ea35a-16fe-4b80-ab11-c4cab88a0966")
-    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.2", routeValues, nil, bytes.NewReader(body), "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.2", routeValues, nil, uploadStream, "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1253,7 +1226,7 @@ func (client Client) GetExtension(ctx context.Context, publisherName *string, ex
 // publisherName (required): Name of the publisher
 // extensionName (required): Name of the extension
 // bypassScopeCheck (optional): This parameter decides if the scope change check needs to be invoked or not
-func (client Client) UpdateExtension(ctx context.Context, uploadStream interface{}, publisherName *string, extensionName *string, bypassScopeCheck *bool) (*PublishedExtension, error) {
+func (client Client) UpdateExtension(ctx context.Context, uploadStream io.Reader, publisherName *string, extensionName *string, bypassScopeCheck *bool) (*PublishedExtension, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -1271,12 +1244,8 @@ func (client Client) UpdateExtension(ctx context.Context, uploadStream interface
     if bypassScopeCheck != nil {
         queryParams.Add("bypassScopeCheck", strconv.FormatBool(*bypassScopeCheck))
     }
-    body, marshalErr := json.Marshal(uploadStream)
-    if marshalErr != nil {
-        return nil, marshalErr
-    }
     locationId, _ := uuid.Parse("e11ea35a-16fe-4b80-ab11-c4cab88a0966")
-    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.2", routeValues, queryParams, bytes.NewReader(body), "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.2", routeValues, queryParams, uploadStream, "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1581,7 +1550,7 @@ func (client Client) GetPublisherAsset(ctx context.Context, publisherName *strin
 // publisherName (required): Internal name of the publisher
 // assetType (optional): Type of asset. Default value is 'logo'.
 // fileName (optional): Header to pass the filename of the uploaded data
-func (client Client) UpdatePublisherAsset(ctx context.Context, uploadStream interface{}, publisherName *string, assetType *string, fileName *string) (*map[string]string, error) {
+func (client Client) UpdatePublisherAsset(ctx context.Context, uploadStream io.Reader, publisherName *string, assetType *string, fileName *string) (*map[string]string, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -1599,12 +1568,8 @@ func (client Client) UpdatePublisherAsset(ctx context.Context, uploadStream inte
     if fileName != nil {
         additionalHeaders["X-Market-UploadFileName"] = *fileName
     }
-    body, marshalErr := json.Marshal(uploadStream)
-    if marshalErr != nil {
-        return nil, marshalErr
-    }
     locationId, _ := uuid.Parse("21143299-34f9-4c62-8ca8-53da691192f9")
-    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/octet-stream", "application/json", additionalHeaders)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, queryParams, uploadStream, "application/octet-stream", "application/json", additionalHeaders)
     if err != nil {
         return nil, err
     }

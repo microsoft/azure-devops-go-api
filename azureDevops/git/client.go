@@ -14,6 +14,7 @@ import (
     "encoding/json"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "io"
     "net/http"
     "net/url"
     "strconv"
@@ -1627,7 +1628,7 @@ func (client Client) GetPolicyConfigurations(ctx context.Context, project *strin
 // repositoryId (required): The repository ID of the pull request’s target branch.
 // pullRequestId (required): ID of the pull request.
 // project (optional): Project ID or project name
-func (client Client) CreateAttachment(ctx context.Context, uploadStream interface{}, fileName *string, repositoryId *string, pullRequestId *int, project *string) (*Attachment, error) {
+func (client Client) CreateAttachment(ctx context.Context, uploadStream io.Reader, fileName *string, repositoryId *string, pullRequestId *int, project *string) (*Attachment, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -1648,12 +1649,8 @@ func (client Client) CreateAttachment(ctx context.Context, uploadStream interfac
     }
     routeValues["pullRequestId"] = strconv.Itoa(*pullRequestId)
 
-    body, marshalErr := json.Marshal(uploadStream)
-    if marshalErr != nil {
-        return nil, marshalErr
-    }
     locationId, _ := uuid.Parse("965d9361-878b-413b-a494-45d5b5fd8ab7")
-    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, uploadStream, "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }

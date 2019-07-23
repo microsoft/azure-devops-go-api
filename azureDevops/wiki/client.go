@@ -14,6 +14,7 @@ import (
     "encoding/json"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "io"
     "net/http"
     "net/url"
     "strconv"
@@ -42,7 +43,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 // wikiIdentifier (required): Wiki Id or name.
 // name (required): Wiki attachment name.
 // versionDescriptor (optional): GitVersionDescriptor for the page. (Optional in case of ProjectWiki).
-func (client Client) CreateAttachment(ctx context.Context, uploadStream interface{}, project *string, wikiIdentifier *string, name *string, versionDescriptor *GitVersionDescriptor) (*WikiAttachmentResponse, error) {
+func (client Client) CreateAttachment(ctx context.Context, uploadStream io.Reader, project *string, wikiIdentifier *string, name *string, versionDescriptor *GitVersionDescriptor) (*WikiAttachmentResponse, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -72,12 +73,8 @@ func (client Client) CreateAttachment(ctx context.Context, uploadStream interfac
             queryParams.Add("versionDescriptor.versionOptions", string(*versionDescriptor.VersionOptions))
         }
     }
-    body, marshalErr := json.Marshal(uploadStream)
-    if marshalErr != nil {
-        return nil, marshalErr
-    }
     locationId, _ := uuid.Parse("c4382d8d-fefc-40e0-92c5-49852e9e17c0")
-    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1", routeValues, queryParams, uploadStream, "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }

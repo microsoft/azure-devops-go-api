@@ -9,11 +9,10 @@
 package workItemTrackingProcessTemplate
 
 import (
-    "bytes"
     "context"
-    "encoding/json"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "io"
     "net/http"
     "net/url"
     "strconv"
@@ -110,7 +109,7 @@ func (client Client) ExportProcessTemplate(ctx context.Context, id *uuid.UUID) (
 // uploadStream (required): Stream to upload
 // ignoreWarnings (optional): Ignores validation warnings. Default value is false.
 // replaceExistingTemplate (optional): Replaces the existing template. Default value is true.
-func (client Client) ImportProcessTemplate(ctx context.Context, uploadStream interface{}, ignoreWarnings *bool, replaceExistingTemplate *bool) (*ProcessImportResult, error) {
+func (client Client) ImportProcessTemplate(ctx context.Context, uploadStream io.Reader, ignoreWarnings *bool, replaceExistingTemplate *bool) (*ProcessImportResult, error) {
     if uploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -124,12 +123,8 @@ func (client Client) ImportProcessTemplate(ctx context.Context, uploadStream int
     if replaceExistingTemplate != nil {
         queryParams.Add("replaceExistingTemplate", strconv.FormatBool(*replaceExistingTemplate))
     }
-    body, marshalErr := json.Marshal(uploadStream)
-    if marshalErr != nil {
-        return nil, marshalErr
-    }
     locationId, _ := uuid.Parse("29e1f38d-9e9c-4358-86a5-cdf9896a5759")
-    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, uploadStream, "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }
