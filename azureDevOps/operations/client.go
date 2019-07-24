@@ -11,16 +11,16 @@ package operations
 import (
     "context"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "net/http"
     "net/url"
 )
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -31,7 +31,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
 func (client Client) GetOperation(ctx context.Context, args GetOperationArgs) (*Operation, error) {
     routeValues := make(map[string]string)
     if args.OperationId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "operationId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "operationId"} 
     }
     routeValues["operationId"] = (*args.OperationId).String()
 

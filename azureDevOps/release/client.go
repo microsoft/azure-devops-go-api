@@ -13,7 +13,7 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "io"
     "net/http"
     "net/url"
@@ -25,10 +25,10 @@ import (
 var ResourceAreaId, _ = uuid.Parse("efc2f575-36ef-48e9-b672-0c6fb4a48ac5")
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -42,7 +42,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 func (client Client) GetApprovals(ctx context.Context, args GetApprovalsArgs) (*[]ReleaseApproval, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -112,15 +112,15 @@ type GetApprovalsArgs struct {
 // Update status of an approval
 func (client Client) UpdateReleaseApproval(ctx context.Context, args UpdateReleaseApprovalArgs) (*ReleaseApproval, error) {
     if args.Approval == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "approval"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "approval"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.ApprovalId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "approvalId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "approvalId"} 
     }
     routeValues["approvalId"] = strconv.Itoa(*args.ApprovalId)
 
@@ -153,39 +153,39 @@ type UpdateReleaseApprovalArgs struct {
 func (client Client) GetReleaseTaskAttachmentContent(ctx context.Context, args GetReleaseTaskAttachmentContentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.ReleaseId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseId"} 
     }
     routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
     if args.EnvironmentId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "environmentId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "environmentId"} 
     }
     routeValues["environmentId"] = strconv.Itoa(*args.EnvironmentId)
     if args.AttemptId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "attemptId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "attemptId"} 
     }
     routeValues["attemptId"] = strconv.Itoa(*args.AttemptId)
     if args.PlanId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*args.PlanId).String()
     if args.TimelineId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "timelineId"} 
     }
     routeValues["timelineId"] = (*args.TimelineId).String()
     if args.RecordId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "recordId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "recordId"} 
     }
     routeValues["recordId"] = (*args.RecordId).String()
     if args.Type_ == nil || *args.Type_ == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *args.Type_
     if args.Name == nil || *args.Name == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
     routeValues["name"] = *args.Name
 
@@ -224,27 +224,27 @@ type GetReleaseTaskAttachmentContentArgs struct {
 func (client Client) GetReleaseTaskAttachments(ctx context.Context, args GetReleaseTaskAttachmentsArgs) (*[]ReleaseTaskAttachment, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.ReleaseId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseId"} 
     }
     routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
     if args.EnvironmentId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "environmentId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "environmentId"} 
     }
     routeValues["environmentId"] = strconv.Itoa(*args.EnvironmentId)
     if args.AttemptId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "attemptId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "attemptId"} 
     }
     routeValues["attemptId"] = strconv.Itoa(*args.AttemptId)
     if args.PlanId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*args.PlanId).String()
     if args.Type_ == nil || *args.Type_ == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *args.Type_
 
@@ -278,11 +278,11 @@ type GetReleaseTaskAttachmentsArgs struct {
 // Create a release definition
 func (client Client) CreateReleaseDefinition(ctx context.Context, args CreateReleaseDefinitionArgs) (*ReleaseDefinition, error) {
     if args.ReleaseDefinition == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseDefinition"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseDefinition"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -313,11 +313,11 @@ type CreateReleaseDefinitionArgs struct {
 func (client Client) DeleteReleaseDefinition(ctx context.Context, args DeleteReleaseDefinitionArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DefinitionId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "definitionId"} 
     }
     routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
@@ -353,11 +353,11 @@ type DeleteReleaseDefinitionArgs struct {
 func (client Client) GetReleaseDefinition(ctx context.Context, args GetReleaseDefinitionArgs) (*ReleaseDefinition, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DefinitionId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "definitionId"} 
     }
     routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
@@ -391,7 +391,7 @@ type GetReleaseDefinitionArgs struct {
 func (client Client) GetReleaseDefinitions(ctx context.Context, args GetReleaseDefinitionsArgs) (*[]ReleaseDefinition, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -489,11 +489,11 @@ type GetReleaseDefinitionsArgs struct {
 // Update a release definition.
 func (client Client) UpdateReleaseDefinition(ctx context.Context, args UpdateReleaseDefinitionArgs) (*ReleaseDefinition, error) {
     if args.ReleaseDefinition == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseDefinition"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseDefinition"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -523,7 +523,7 @@ type UpdateReleaseDefinitionArgs struct {
 func (client Client) GetDeployments(ctx context.Context, args GetDeploymentsArgs) (*[]Deployment, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -624,15 +624,15 @@ type GetDeploymentsArgs struct {
 func (client Client) GetReleaseEnvironment(ctx context.Context, args GetReleaseEnvironmentArgs) (*ReleaseEnvironment, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.ReleaseId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseId"} 
     }
     routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
     if args.EnvironmentId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "environmentId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "environmentId"} 
     }
     routeValues["environmentId"] = strconv.Itoa(*args.EnvironmentId)
 
@@ -660,19 +660,19 @@ type GetReleaseEnvironmentArgs struct {
 // [Preview API] Update the status of a release environment
 func (client Client) UpdateReleaseEnvironment(ctx context.Context, args UpdateReleaseEnvironmentArgs) (*ReleaseEnvironment, error) {
     if args.EnvironmentUpdateData == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "environmentUpdateData"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "environmentUpdateData"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.ReleaseId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseId"} 
     }
     routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
     if args.EnvironmentId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "environmentId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "environmentId"} 
     }
     routeValues["environmentId"] = strconv.Itoa(*args.EnvironmentId)
 
@@ -707,11 +707,11 @@ type UpdateReleaseEnvironmentArgs struct {
 func (client Client) DeleteFolder(ctx context.Context, args DeleteFolderArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Path == nil || *args.Path == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "path"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "path"} 
     }
     routeValues["path"] = *args.Path
 
@@ -736,7 +736,7 @@ type DeleteFolderArgs struct {
 func (client Client) GetFolders(ctx context.Context, args GetFoldersArgs) (*[]Folder, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Path != nil && *args.Path != "" {
@@ -771,15 +771,15 @@ type GetFoldersArgs struct {
 // [Preview API] Updates an existing folder at given existing path.
 func (client Client) UpdateFolder(ctx context.Context, args UpdateFolderArgs) (*Folder, error) {
     if args.Folder == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "folder"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "folder"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Path == nil || *args.Path == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "path"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "path"} 
     }
     routeValues["path"] = *args.Path
 
@@ -811,15 +811,15 @@ type UpdateFolderArgs struct {
 // [Preview API] Updates the gate for a deployment.
 func (client Client) UpdateGates(ctx context.Context, args UpdateGatesArgs) (*ReleaseGates, error) {
     if args.GateUpdateMetadata == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "gateUpdateMetadata"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "gateUpdateMetadata"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.GateStepId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "gateStepId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "gateStepId"} 
     }
     routeValues["gateStepId"] = strconv.Itoa(*args.GateStepId)
 
@@ -852,11 +852,11 @@ type UpdateGatesArgs struct {
 func (client Client) GetLogs(ctx context.Context, args GetLogsArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.ReleaseId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseId"} 
     }
     routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
 
@@ -881,23 +881,23 @@ type GetLogsArgs struct {
 func (client Client) GetTaskLog(ctx context.Context, args GetTaskLogArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.ReleaseId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseId"} 
     }
     routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
     if args.EnvironmentId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "environmentId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "environmentId"} 
     }
     routeValues["environmentId"] = strconv.Itoa(*args.EnvironmentId)
     if args.ReleaseDeployPhaseId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseDeployPhaseId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseDeployPhaseId"} 
     }
     routeValues["releaseDeployPhaseId"] = strconv.Itoa(*args.ReleaseDeployPhaseId)
     if args.TaskId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "taskId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "taskId"} 
     }
     routeValues["taskId"] = strconv.Itoa(*args.TaskId)
 
@@ -939,15 +939,15 @@ type GetTaskLogArgs struct {
 func (client Client) GetManualIntervention(ctx context.Context, args GetManualInterventionArgs) (*ManualIntervention, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.ReleaseId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseId"} 
     }
     routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
     if args.ManualInterventionId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "manualInterventionId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "manualInterventionId"} 
     }
     routeValues["manualInterventionId"] = strconv.Itoa(*args.ManualInterventionId)
 
@@ -976,11 +976,11 @@ type GetManualInterventionArgs struct {
 func (client Client) GetManualInterventions(ctx context.Context, args GetManualInterventionsArgs) (*[]ManualIntervention, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.ReleaseId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseId"} 
     }
     routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
 
@@ -1006,19 +1006,19 @@ type GetManualInterventionsArgs struct {
 // Update manual intervention.
 func (client Client) UpdateManualIntervention(ctx context.Context, args UpdateManualInterventionArgs) (*ManualIntervention, error) {
     if args.ManualInterventionUpdateMetadata == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "manualInterventionUpdateMetadata"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "manualInterventionUpdateMetadata"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.ReleaseId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseId"} 
     }
     routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
     if args.ManualInterventionId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "manualInterventionId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "manualInterventionId"} 
     }
     routeValues["manualInterventionId"] = strconv.Itoa(*args.ManualInterventionId)
 
@@ -1189,11 +1189,11 @@ type GetReleasesArgs struct {
 // Create a release.
 func (client Client) CreateRelease(ctx context.Context, args CreateReleaseArgs) (*Release, error) {
     if args.ReleaseStartMetadata == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseStartMetadata"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseStartMetadata"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -1224,11 +1224,11 @@ type CreateReleaseArgs struct {
 func (client Client) GetRelease(ctx context.Context, args GetReleaseArgs) (*Release, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.ReleaseId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseId"} 
     }
     routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
 
@@ -1277,17 +1277,17 @@ type GetReleaseArgs struct {
 func (client Client) GetReleaseRevision(ctx context.Context, args GetReleaseRevisionArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.ReleaseId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseId"} 
     }
     routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
 
     queryParams := url.Values{}
     if args.DefinitionSnapshotRevision == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionSnapshotRevision"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "definitionSnapshotRevision"}
     }
     queryParams.Add("definitionSnapshotRevision", strconv.Itoa(*args.DefinitionSnapshotRevision))
     locationId, _ := uuid.Parse("a166fde7-27ad-408e-ba75-703c2cc9d500")
@@ -1312,15 +1312,15 @@ type GetReleaseRevisionArgs struct {
 // Update a complete release object.
 func (client Client) UpdateRelease(ctx context.Context, args UpdateReleaseArgs) (*Release, error) {
     if args.Release == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "release"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "release"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.ReleaseId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseId"} 
     }
     routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
 
@@ -1352,15 +1352,15 @@ type UpdateReleaseArgs struct {
 // Update few properties of a release.
 func (client Client) UpdateReleaseResource(ctx context.Context, args UpdateReleaseResourceArgs) (*Release, error) {
     if args.ReleaseUpdateMetadata == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseUpdateMetadata"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseUpdateMetadata"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.ReleaseId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseId"} 
     }
     routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
 
@@ -1393,15 +1393,15 @@ type UpdateReleaseResourceArgs struct {
 func (client Client) GetDefinitionRevision(ctx context.Context, args GetDefinitionRevisionArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DefinitionId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "definitionId"} 
     }
     routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
     if args.Revision == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "revision"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "revision"} 
     }
     routeValues["revision"] = strconv.Itoa(*args.Revision)
 
@@ -1428,11 +1428,11 @@ type GetDefinitionRevisionArgs struct {
 func (client Client) GetReleaseDefinitionHistory(ctx context.Context, args GetReleaseDefinitionHistoryArgs) (*[]ReleaseDefinitionRevision, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DefinitionId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "definitionId"} 
     }
     routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 

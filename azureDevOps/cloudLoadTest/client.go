@@ -13,7 +13,7 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "net/http"
     "net/url"
     "strconv"
@@ -22,10 +22,10 @@ import (
 var ResourceAreaId, _ = uuid.Parse("7ae6d0a6-cda5-44cf-a261-28c392bed25c")
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -37,7 +37,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 
 func (client Client) CreateAgentGroup(ctx context.Context, args CreateAgentGroupArgs) (*AgentGroup, error) {
     if args.Group == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "group"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "group"}
     }
     body, marshalErr := json.Marshal(*args.Group)
     if marshalErr != nil {
@@ -107,13 +107,13 @@ type GetAgentGroupsArgs struct {
 func (client Client) DeleteStaticAgent(ctx context.Context, args DeleteStaticAgentArgs) (*string, error) {
     routeValues := make(map[string]string)
     if args.AgentGroupId == nil || *args.AgentGroupId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "agentGroupId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "agentGroupId"} 
     }
     routeValues["agentGroupId"] = *args.AgentGroupId
 
     queryParams := url.Values{}
     if args.AgentName == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "agentName"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "agentName"}
     }
     queryParams.Add("agentName", *args.AgentName)
     locationId, _ := uuid.Parse("87e4b63d-7142-4b50-801e-72ba9ff8ee9b")
@@ -138,7 +138,7 @@ type DeleteStaticAgentArgs struct {
 func (client Client) GetStaticAgents(ctx context.Context, args GetStaticAgentsArgs) (interface{}, error) {
     routeValues := make(map[string]string)
     if args.AgentGroupId == nil || *args.AgentGroupId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "agentGroupId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "agentGroupId"} 
     }
     routeValues["agentGroupId"] = *args.AgentGroupId
 
@@ -168,7 +168,7 @@ type GetStaticAgentsArgs struct {
 func (client Client) GetApplication(ctx context.Context, args GetApplicationArgs) (*Application, error) {
     routeValues := make(map[string]string)
     if args.ApplicationId == nil || *args.ApplicationId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "applicationId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "applicationId"} 
     }
     routeValues["applicationId"] = *args.ApplicationId
 
@@ -214,13 +214,13 @@ type GetApplicationsArgs struct {
 func (client Client) GetCounters(ctx context.Context, args GetCountersArgs) (*[]TestRunCounterInstance, error) {
     routeValues := make(map[string]string)
     if args.TestRunId == nil || *args.TestRunId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "testRunId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "testRunId"} 
     }
     routeValues["testRunId"] = *args.TestRunId
 
     queryParams := url.Values{}
     if args.GroupNames == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "groupNames"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "groupNames"}
     }
     queryParams.Add("groupNames", *args.GroupNames)
     if args.IncludeSummary != nil {
@@ -276,11 +276,11 @@ type GetApplicationCountersArgs struct {
 
 func (client Client) GetCounterSamples(ctx context.Context, args GetCounterSamplesArgs) (*CounterSamplesResult, error) {
     if args.CounterSampleQueryDetails == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "counterSampleQueryDetails"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "counterSampleQueryDetails"}
     }
     routeValues := make(map[string]string)
     if args.TestRunId == nil || *args.TestRunId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "testRunId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "testRunId"} 
     }
     routeValues["testRunId"] = *args.TestRunId
 
@@ -302,7 +302,7 @@ func (client Client) GetCounterSamples(ctx context.Context, args GetCounterSampl
 // Arguments for the GetCounterSamples function
 type GetCounterSamplesArgs struct {
     // (required)
-    CounterSampleQueryDetails *azureDevops.VssJsonCollectionWrapper
+    CounterSampleQueryDetails *azureDevOps.VssJsonCollectionWrapper
     // (required) The test run identifier
     TestRunId *string
 }
@@ -310,7 +310,7 @@ type GetCounterSamplesArgs struct {
 func (client Client) GetLoadTestRunErrors(ctx context.Context, args GetLoadTestRunErrorsArgs) (*LoadTestErrors, error) {
     routeValues := make(map[string]string)
     if args.TestRunId == nil || *args.TestRunId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "testRunId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "testRunId"} 
     }
     routeValues["testRunId"] = *args.TestRunId
 
@@ -350,7 +350,7 @@ type GetLoadTestRunErrorsArgs struct {
 func (client Client) GetTestRunMessages(ctx context.Context, args GetTestRunMessagesArgs) (*[]TestRunMessage, error) {
     routeValues := make(map[string]string)
     if args.TestRunId == nil || *args.TestRunId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "testRunId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "testRunId"} 
     }
     routeValues["testRunId"] = *args.TestRunId
 
@@ -374,7 +374,7 @@ type GetTestRunMessagesArgs struct {
 func (client Client) GetPlugin(ctx context.Context, args GetPluginArgs) (*ApplicationType, error) {
     routeValues := make(map[string]string)
     if args.Type_ == nil || *args.Type_ == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *args.Type_
 
@@ -414,7 +414,7 @@ type GetPluginsArgs struct {
 func (client Client) GetLoadTestResult(ctx context.Context, args GetLoadTestResultArgs) (*TestResults, error) {
     routeValues := make(map[string]string)
     if args.TestRunId == nil || *args.TestRunId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "testRunId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "testRunId"} 
     }
     routeValues["testRunId"] = *args.TestRunId
 
@@ -437,7 +437,7 @@ type GetLoadTestResultArgs struct {
 
 func (client Client) CreateTestDefinition(ctx context.Context, args CreateTestDefinitionArgs) (*TestDefinition, error) {
     if args.TestDefinition == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testDefinition"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "testDefinition"}
     }
     body, marshalErr := json.Marshal(*args.TestDefinition)
     if marshalErr != nil {
@@ -463,7 +463,7 @@ type CreateTestDefinitionArgs struct {
 func (client Client) GetTestDefinition(ctx context.Context, args GetTestDefinitionArgs) (*TestDefinition, error) {
     routeValues := make(map[string]string)
     if args.TestDefinitionId == nil || *args.TestDefinitionId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "testDefinitionId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "testDefinitionId"} 
     }
     routeValues["testDefinitionId"] = *args.TestDefinitionId
 
@@ -518,7 +518,7 @@ type GetTestDefinitionsArgs struct {
 
 func (client Client) UpdateTestDefinition(ctx context.Context, args UpdateTestDefinitionArgs) (*TestDefinition, error) {
     if args.TestDefinition == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "testDefinition"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "testDefinition"}
     }
     body, marshalErr := json.Marshal(*args.TestDefinition)
     if marshalErr != nil {
@@ -543,7 +543,7 @@ type UpdateTestDefinitionArgs struct {
 
 func (client Client) CreateTestDrop(ctx context.Context, args CreateTestDropArgs) (*TestDrop, error) {
     if args.WebTestDrop == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "webTestDrop"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "webTestDrop"}
     }
     body, marshalErr := json.Marshal(*args.WebTestDrop)
     if marshalErr != nil {
@@ -569,7 +569,7 @@ type CreateTestDropArgs struct {
 func (client Client) GetTestDrop(ctx context.Context, args GetTestDropArgs) (*TestDrop, error) {
     routeValues := make(map[string]string)
     if args.TestDropId == nil || *args.TestDropId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "testDropId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "testDropId"} 
     }
     routeValues["testDropId"] = *args.TestDropId
 
@@ -592,7 +592,7 @@ type GetTestDropArgs struct {
 
 func (client Client) CreateTestRun(ctx context.Context, args CreateTestRunArgs) (*TestRun, error) {
     if args.WebTestRun == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "webTestRun"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "webTestRun"}
     }
     body, marshalErr := json.Marshal(*args.WebTestRun)
     if marshalErr != nil {
@@ -618,7 +618,7 @@ type CreateTestRunArgs struct {
 func (client Client) GetTestRun(ctx context.Context, args GetTestRunArgs) (*TestRun, error) {
     routeValues := make(map[string]string)
     if args.TestRunId == nil || *args.TestRunId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "testRunId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "testRunId"} 
     }
     routeValues["testRunId"] = *args.TestRunId
 
@@ -709,11 +709,11 @@ type GetTestRunsArgs struct {
 
 func (client Client) UpdateTestRun(ctx context.Context, args UpdateTestRunArgs) error {
     if args.WebTestRun == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "webTestRun"}
+        return &azureDevOps.ArgumentNilError{ArgumentName: "webTestRun"}
     }
     routeValues := make(map[string]string)
     if args.TestRunId == nil || *args.TestRunId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "testRunId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "testRunId"} 
     }
     routeValues["testRunId"] = *args.TestRunId
 

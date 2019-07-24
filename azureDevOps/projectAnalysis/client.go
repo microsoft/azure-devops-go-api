@@ -11,7 +11,7 @@ package projectAnalysis
 import (
     "context"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "net/http"
     "net/url"
     "strconv"
@@ -21,10 +21,10 @@ import (
 var ResourceAreaId, _ = uuid.Parse("7658fa33-b1bf-4580-990f-fac5896773d3")
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -38,7 +38,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 func (client Client) GetProjectLanguageAnalytics(ctx context.Context, args GetProjectLanguageAnalyticsArgs) (*ProjectLanguageAnalytics, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -63,17 +63,17 @@ type GetProjectLanguageAnalyticsArgs struct {
 func (client Client) GetProjectActivityMetrics(ctx context.Context, args GetProjectActivityMetricsArgs) (*ProjectActivityMetrics, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
     if args.FromDate == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "fromDate"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "fromDate"}
     }
     queryParams.Add("fromDate", (*args.FromDate).String())
     if args.AggregationType == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "aggregationType"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "aggregationType"}
     }
     queryParams.Add("aggregationType", string(*args.AggregationType))
     locationId, _ := uuid.Parse("e40ae584-9ea6-4f06-a7c7-6284651b466b")
@@ -101,25 +101,25 @@ type GetProjectActivityMetricsArgs struct {
 func (client Client) GetGitRepositoriesActivityMetrics(ctx context.Context, args GetGitRepositoriesActivityMetricsArgs) (*[]RepositoryActivityMetrics, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
     if args.FromDate == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "fromDate"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "fromDate"}
     }
     queryParams.Add("fromDate", (*args.FromDate).String())
     if args.AggregationType == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "aggregationType"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "aggregationType"}
     }
     queryParams.Add("aggregationType", string(*args.AggregationType))
     if args.Skip == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "skip"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "skip"}
     }
     queryParams.Add("$skip", strconv.Itoa(*args.Skip))
     if args.Top == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "top"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "top"}
     }
     queryParams.Add("$top", strconv.Itoa(*args.Top))
     locationId, _ := uuid.Parse("df7fbbca-630a-40e3-8aa3-7a3faf66947e")
@@ -151,21 +151,21 @@ type GetGitRepositoriesActivityMetricsArgs struct {
 func (client Client) GetRepositoryActivityMetrics(ctx context.Context, args GetRepositoryActivityMetricsArgs) (*RepositoryActivityMetrics, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.RepositoryId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = (*args.RepositoryId).String()
 
     queryParams := url.Values{}
     if args.FromDate == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "fromDate"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "fromDate"}
     }
     queryParams.Add("fromDate", (*args.FromDate).String())
     if args.AggregationType == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "aggregationType"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "aggregationType"}
     }
     queryParams.Add("aggregationType", string(*args.AggregationType))
     locationId, _ := uuid.Parse("df7fbbca-630a-40e3-8aa3-7a3faf66947e")

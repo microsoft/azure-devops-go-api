@@ -1,4 +1,4 @@
-package azureDevops
+package azureDevOps
 
 type ArgumentNilError struct {
 	ArgumentName string

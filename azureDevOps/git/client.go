@@ -13,7 +13,7 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "io"
     "net/http"
     "net/url"
@@ -23,10 +23,10 @@ import (
 var ResourceAreaId, _ = uuid.Parse("4e080c62-fa21-4fbc-8fef-2a10a2b38049")
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -39,15 +39,15 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 // [Preview API] Create an annotated tag.
 func (client Client) CreateAnnotatedTag(ctx context.Context, args CreateAnnotatedTagArgs) (*GitAnnotatedTag, error) {
     if args.TagObject == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "tagObject"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "tagObject"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -80,15 +80,15 @@ type CreateAnnotatedTagArgs struct {
 func (client Client) GetAnnotatedTag(ctx context.Context, args GetAnnotatedTagArgs) (*GitAnnotatedTag, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.ObjectId == nil || *args.ObjectId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "objectId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "objectId"} 
     }
     routeValues["objectId"] = *args.ObjectId
 
@@ -120,11 +120,11 @@ func (client Client) GetBlob(ctx context.Context, args GetBlobArgs) (*GitBlobRef
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.Sha1 == nil || *args.Sha1 == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "sha1"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "sha1"} 
     }
     routeValues["sha1"] = *args.Sha1
 
@@ -172,11 +172,11 @@ func (client Client) GetBlobContent(ctx context.Context, args GetBlobContentArgs
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.Sha1 == nil || *args.Sha1 == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "sha1"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "sha1"} 
     }
     routeValues["sha1"] = *args.Sha1
 
@@ -218,14 +218,14 @@ type GetBlobContentArgs struct {
 // Gets one or more blobs in a zip file download.
 func (client Client) GetBlobsZip(ctx context.Context, args GetBlobsZipArgs) (io.ReadCloser, error) {
     if args.BlobIds == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "blobIds"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "blobIds"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -265,11 +265,11 @@ func (client Client) GetBlobZip(ctx context.Context, args GetBlobZipArgs) (io.Re
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.Sha1 == nil || *args.Sha1 == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "sha1"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "sha1"} 
     }
     routeValues["sha1"] = *args.Sha1
 
@@ -315,13 +315,13 @@ func (client Client) GetBranch(ctx context.Context, args GetBranchArgs) (*GitBra
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
     queryParams := url.Values{}
     if args.Name == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "name"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "name"}
     }
     queryParams.Add("name", *args.Name)
     if args.BaseVersionDescriptor != nil {
@@ -365,7 +365,7 @@ func (client Client) GetBranches(ctx context.Context, args GetBranchesArgs) (*[]
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -409,11 +409,11 @@ func (client Client) GetChanges(ctx context.Context, args GetChangesArgs) (*GitC
         routeValues["project"] = *args.Project
     }
     if args.CommitId == nil || *args.CommitId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "commitId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "commitId"} 
     }
     routeValues["commitId"] = *args.CommitId
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -452,15 +452,15 @@ type GetChangesArgs struct {
 // [Preview API] Cherry pick a specific commit or commits that are associated to a pull request into a new branch.
 func (client Client) CreateCherryPick(ctx context.Context, args CreateCherryPickArgs) (*GitCherryPick, error) {
     if args.CherryPickToCreate == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "cherryPickToCreate"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "cherryPickToCreate"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -493,15 +493,15 @@ type CreateCherryPickArgs struct {
 func (client Client) GetCherryPick(ctx context.Context, args GetCherryPickArgs) (*GitCherryPick, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.CherryPickId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "cherryPickId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "cherryPickId"} 
     }
     routeValues["cherryPickId"] = strconv.Itoa(*args.CherryPickId)
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -530,17 +530,17 @@ type GetCherryPickArgs struct {
 func (client Client) GetCherryPickForRefName(ctx context.Context, args GetCherryPickForRefNameArgs) (*GitCherryPick, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
     queryParams := url.Values{}
     if args.RefName == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "refName"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "refName"}
     }
     queryParams.Add("refName", *args.RefName)
     locationId, _ := uuid.Parse("033bad68-9a14-43d1-90e0-59cb8856fef6")
@@ -571,7 +571,7 @@ func (client Client) GetCommitDiffs(ctx context.Context, args GetCommitDiffsArgs
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -643,11 +643,11 @@ func (client Client) GetCommit(ctx context.Context, args GetCommitArgs) (*GitCom
         routeValues["project"] = *args.Project
     }
     if args.CommitId == nil || *args.CommitId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "commitId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "commitId"} 
     }
     routeValues["commitId"] = *args.CommitId
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -685,13 +685,13 @@ func (client Client) GetCommits(ctx context.Context, args GetCommitsArgs) (*[]Gi
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
     queryParams := url.Values{}
     if args.SearchCriteria == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "searchCriteria"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "searchCriteria"}
     }
     if args.SearchCriteria.Ids != nil {
         for index, item := range *args.SearchCriteria.Ids {
@@ -793,13 +793,13 @@ func (client Client) GetPushCommits(ctx context.Context, args GetPushCommitsArgs
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
     queryParams := url.Values{}
     if args.PushId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pushId"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pushId"}
     }
     queryParams.Add("pushId", strconv.Itoa(*args.PushId))
     if args.Top != nil {
@@ -841,14 +841,14 @@ type GetPushCommitsArgs struct {
 // Retrieve git commits for a project matching the search criteria
 func (client Client) GetCommitsBatch(ctx context.Context, args GetCommitsBatchArgs) (*[]GitCommitRef, error) {
     if args.SearchCriteria == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "searchCriteria"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "searchCriteria"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -897,7 +897,7 @@ type GetCommitsBatchArgs struct {
 func (client Client) GetDeletedRepositories(ctx context.Context, args GetDeletedRepositoriesArgs) (*[]GitDeletedRepository, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -925,11 +925,11 @@ func (client Client) GetForks(ctx context.Context, args GetForksArgs) (*[]GitRep
         routeValues["project"] = *args.Project
     }
     if args.RepositoryNameOrId == nil || *args.RepositoryNameOrId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryNameOrId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryNameOrId"} 
     }
     routeValues["repositoryNameOrId"] = *args.RepositoryNameOrId
     if args.CollectionId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "collectionId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "collectionId"} 
     }
     routeValues["collectionId"] = (*args.CollectionId).String()
 
@@ -963,14 +963,14 @@ type GetForksArgs struct {
 // [Preview API] Request that another repository's refs be fetched into this one. It syncs two existing forks. To create a fork, please see the <a href="https://docs.microsoft.com/en-us/rest/api/vsts/git/repositories/create?view=azure-devops-rest-5.1"> repositories endpoint</a>
 func (client Client) CreateForkSyncRequest(ctx context.Context, args CreateForkSyncRequestArgs) (*GitForkSyncRequest, error) {
     if args.SyncParams == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "syncParams"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "syncParams"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryNameOrId == nil || *args.RepositoryNameOrId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryNameOrId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryNameOrId"} 
     }
     routeValues["repositoryNameOrId"] = *args.RepositoryNameOrId
 
@@ -1012,11 +1012,11 @@ func (client Client) GetForkSyncRequest(ctx context.Context, args GetForkSyncReq
         routeValues["project"] = *args.Project
     }
     if args.RepositoryNameOrId == nil || *args.RepositoryNameOrId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryNameOrId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryNameOrId"} 
     }
     routeValues["repositoryNameOrId"] = *args.RepositoryNameOrId
     if args.ForkSyncOperationId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "forkSyncOperationId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "forkSyncOperationId"} 
     }
     routeValues["forkSyncOperationId"] = strconv.Itoa(*args.ForkSyncOperationId)
 
@@ -1054,7 +1054,7 @@ func (client Client) GetForkSyncRequests(ctx context.Context, args GetForkSyncRe
         routeValues["project"] = *args.Project
     }
     if args.RepositoryNameOrId == nil || *args.RepositoryNameOrId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryNameOrId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryNameOrId"} 
     }
     routeValues["repositoryNameOrId"] = *args.RepositoryNameOrId
 
@@ -1091,15 +1091,15 @@ type GetForkSyncRequestsArgs struct {
 // [Preview API] Create an import request.
 func (client Client) CreateImportRequest(ctx context.Context, args CreateImportRequestArgs) (*GitImportRequest, error) {
     if args.ImportRequest == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "importRequest"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "importRequest"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -1132,15 +1132,15 @@ type CreateImportRequestArgs struct {
 func (client Client) GetImportRequest(ctx context.Context, args GetImportRequestArgs) (*GitImportRequest, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.ImportRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "importRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "importRequestId"} 
     }
     routeValues["importRequestId"] = strconv.Itoa(*args.ImportRequestId)
 
@@ -1169,11 +1169,11 @@ type GetImportRequestArgs struct {
 func (client Client) QueryImportRequests(ctx context.Context, args QueryImportRequestsArgs) (*[]GitImportRequest, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -1205,19 +1205,19 @@ type QueryImportRequestsArgs struct {
 // [Preview API] Retry or abandon a failed import request.
 func (client Client) UpdateImportRequest(ctx context.Context, args UpdateImportRequestArgs) (*GitImportRequest, error) {
     if args.ImportRequestToUpdate == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "importRequestToUpdate"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "importRequestToUpdate"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.ImportRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "importRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "importRequestId"} 
     }
     routeValues["importRequestId"] = strconv.Itoa(*args.ImportRequestId)
 
@@ -1255,13 +1255,13 @@ func (client Client) GetItem(ctx context.Context, args GetItemArgs) (*GitItem, e
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
     queryParams := url.Values{}
     if args.Path == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "path"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "path"}
     }
     queryParams.Add("path", *args.Path)
     if args.ScopePath != nil {
@@ -1340,13 +1340,13 @@ func (client Client) GetItemContent(ctx context.Context, args GetItemContentArgs
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
     queryParams := url.Values{}
     if args.Path == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "path"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "path"}
     }
     queryParams.Add("path", *args.Path)
     if args.ScopePath != nil {
@@ -1423,7 +1423,7 @@ func (client Client) GetItems(ctx context.Context, args GetItemsArgs) (*[]GitIte
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -1497,13 +1497,13 @@ func (client Client) GetItemText(ctx context.Context, args GetItemTextArgs) (io.
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
     queryParams := url.Values{}
     if args.Path == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "path"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "path"}
     }
     queryParams.Add("path", *args.Path)
     if args.ScopePath != nil {
@@ -1580,13 +1580,13 @@ func (client Client) GetItemZip(ctx context.Context, args GetItemZipArgs) (io.Re
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
     queryParams := url.Values{}
     if args.Path == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "path"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "path"}
     }
     queryParams.Add("path", *args.Path)
     if args.ScopePath != nil {
@@ -1659,14 +1659,14 @@ type GetItemZipArgs struct {
 // Post for retrieving a creating a batch out of a set of items in a repo / project given a list of paths or a long path
 func (client Client) GetItemsBatch(ctx context.Context, args GetItemsBatchArgs) (*[][]GitItem, error) {
     if args.RequestData == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "requestData"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "requestData"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -1702,17 +1702,17 @@ func (client Client) GetMergeBases(ctx context.Context, args GetMergeBasesArgs) 
         routeValues["project"] = *args.Project
     }
     if args.RepositoryNameOrId == nil || *args.RepositoryNameOrId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryNameOrId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryNameOrId"} 
     }
     routeValues["repositoryNameOrId"] = *args.RepositoryNameOrId
     if args.CommitId == nil || *args.CommitId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "commitId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "commitId"} 
     }
     routeValues["commitId"] = *args.CommitId
 
     queryParams := url.Values{}
     if args.OtherCommitId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "otherCommitId"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "otherCommitId"}
     }
     queryParams.Add("otherCommitId", *args.OtherCommitId)
     if args.OtherCollectionId != nil {
@@ -1751,15 +1751,15 @@ type GetMergeBasesArgs struct {
 // [Preview API] Request a git merge operation. Currently we support merging only 2 commits.
 func (client Client) CreateMergeRequest(ctx context.Context, args CreateMergeRequestArgs) (*GitMerge, error) {
     if args.MergeParameters == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "mergeParameters"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "mergeParameters"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.RepositoryNameOrId == nil || *args.RepositoryNameOrId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryNameOrId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryNameOrId"} 
     }
     routeValues["repositoryNameOrId"] = *args.RepositoryNameOrId
 
@@ -1798,15 +1798,15 @@ type CreateMergeRequestArgs struct {
 func (client Client) GetMergeRequest(ctx context.Context, args GetMergeRequestArgs) (*GitMerge, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.RepositoryNameOrId == nil || *args.RepositoryNameOrId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryNameOrId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryNameOrId"} 
     }
     routeValues["repositoryNameOrId"] = *args.RepositoryNameOrId
     if args.MergeOperationId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "mergeOperationId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "mergeOperationId"} 
     }
     routeValues["mergeOperationId"] = strconv.Itoa(*args.MergeOperationId)
 
@@ -1841,7 +1841,7 @@ type GetMergeRequestArgs struct {
 func (client Client) GetPolicyConfigurations(ctx context.Context, args GetPolicyConfigurationsArgs) (*GitPolicyConfigurationResponse, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -1901,22 +1901,22 @@ type GetPolicyConfigurationsArgs struct {
 // [Preview API] Attach a new file to a pull request.
 func (client Client) CreateAttachment(ctx context.Context, args CreateAttachmentArgs) (*Attachment, error) {
     if args.UploadStream == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "uploadStream"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.FileName == nil || *args.FileName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "fileName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "fileName"} 
     }
     routeValues["fileName"] = *args.FileName
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -1952,15 +1952,15 @@ func (client Client) DeleteAttachment(ctx context.Context, args DeleteAttachment
         routeValues["project"] = *args.Project
     }
     if args.FileName == nil || *args.FileName == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "fileName"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "fileName"} 
     }
     routeValues["fileName"] = *args.FileName
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -1992,15 +1992,15 @@ func (client Client) GetAttachmentContent(ctx context.Context, args GetAttachmen
         routeValues["project"] = *args.Project
     }
     if args.FileName == nil || *args.FileName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "fileName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "fileName"} 
     }
     routeValues["fileName"] = *args.FileName
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -2032,11 +2032,11 @@ func (client Client) GetAttachments(ctx context.Context, args GetAttachmentsArgs
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -2068,15 +2068,15 @@ func (client Client) GetAttachmentZip(ctx context.Context, args GetAttachmentZip
         routeValues["project"] = *args.Project
     }
     if args.FileName == nil || *args.FileName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "fileName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "fileName"} 
     }
     routeValues["fileName"] = *args.FileName
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -2108,19 +2108,19 @@ func (client Client) CreateLike(ctx context.Context, args CreateLikeArgs) error 
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.ThreadId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "threadId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "threadId"} 
     }
     routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
     if args.CommentId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "commentId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "commentId"} 
     }
     routeValues["commentId"] = strconv.Itoa(*args.CommentId)
 
@@ -2154,19 +2154,19 @@ func (client Client) DeleteLike(ctx context.Context, args DeleteLikeArgs) error 
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.ThreadId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "threadId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "threadId"} 
     }
     routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
     if args.CommentId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "commentId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "commentId"} 
     }
     routeValues["commentId"] = strconv.Itoa(*args.CommentId)
 
@@ -2200,19 +2200,19 @@ func (client Client) GetLikes(ctx context.Context, args GetLikesArgs) (*[]Identi
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.ThreadId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "threadId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "threadId"} 
     }
     routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
     if args.CommentId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "commentId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "commentId"} 
     }
     routeValues["commentId"] = strconv.Itoa(*args.CommentId)
 
@@ -2248,15 +2248,15 @@ func (client Client) GetPullRequestIterationCommits(ctx context.Context, args Ge
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.IterationId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = strconv.Itoa(*args.IterationId)
 
@@ -2301,11 +2301,11 @@ func (client Client) GetPullRequestCommits(ctx context.Context, args GetPullRequ
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -2337,15 +2337,15 @@ func (client Client) GetPullRequestIterationChanges(ctx context.Context, args Ge
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.IterationId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = strconv.Itoa(*args.IterationId)
 
@@ -2395,15 +2395,15 @@ func (client Client) GetPullRequestIteration(ctx context.Context, args GetPullRe
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.IterationId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = strconv.Itoa(*args.IterationId)
 
@@ -2437,11 +2437,11 @@ func (client Client) GetPullRequestIterations(ctx context.Context, args GetPullR
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -2475,22 +2475,22 @@ type GetPullRequestIterationsArgs struct {
 // [Preview API] Create a pull request status on the iteration. This operation will have the same result as Create status on pull request with specified iteration ID in the request body.
 func (client Client) CreatePullRequestIterationStatus(ctx context.Context, args CreatePullRequestIterationStatusArgs) (*GitPullRequestStatus, error) {
     if args.Status == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "status"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "status"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.IterationId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = strconv.Itoa(*args.IterationId)
 
@@ -2530,19 +2530,19 @@ func (client Client) DeletePullRequestIterationStatus(ctx context.Context, args 
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.IterationId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = strconv.Itoa(*args.IterationId)
     if args.StatusId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "statusId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "statusId"} 
     }
     routeValues["statusId"] = strconv.Itoa(*args.StatusId)
 
@@ -2576,19 +2576,19 @@ func (client Client) GetPullRequestIterationStatus(ctx context.Context, args Get
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.IterationId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = strconv.Itoa(*args.IterationId)
     if args.StatusId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "statusId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "statusId"} 
     }
     routeValues["statusId"] = strconv.Itoa(*args.StatusId)
 
@@ -2624,15 +2624,15 @@ func (client Client) GetPullRequestIterationStatuses(ctx context.Context, args G
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.IterationId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = strconv.Itoa(*args.IterationId)
 
@@ -2662,22 +2662,22 @@ type GetPullRequestIterationStatusesArgs struct {
 // [Preview API] Update pull request iteration statuses collection. The only supported operation type is `remove`.
 func (client Client) UpdatePullRequestIterationStatuses(ctx context.Context, args UpdatePullRequestIterationStatusesArgs) error {
     if args.PatchDocument == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "patchDocument"}
+        return &azureDevOps.ArgumentNilError{ArgumentName: "patchDocument"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.IterationId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = strconv.Itoa(*args.IterationId)
 
@@ -2711,18 +2711,18 @@ type UpdatePullRequestIterationStatusesArgs struct {
 // [Preview API] Create a label for a specified pull request. The only required field is the name of the new label.
 func (client Client) CreatePullRequestLabel(ctx context.Context, args CreatePullRequestLabelArgs) (*WebApiTagDefinition, error) {
     if args.Label == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "label"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "label"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -2766,15 +2766,15 @@ func (client Client) DeletePullRequestLabels(ctx context.Context, args DeletePul
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.LabelIdOrName == nil || *args.LabelIdOrName == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "labelIdOrName"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "labelIdOrName"} 
     }
     routeValues["labelIdOrName"] = *args.LabelIdOrName
 
@@ -2812,15 +2812,15 @@ func (client Client) GetPullRequestLabel(ctx context.Context, args GetPullReques
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.LabelIdOrName == nil || *args.LabelIdOrName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "labelIdOrName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "labelIdOrName"} 
     }
     routeValues["labelIdOrName"] = *args.LabelIdOrName
 
@@ -2860,11 +2860,11 @@ func (client Client) GetPullRequestLabels(ctx context.Context, args GetPullReque
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -2902,11 +2902,11 @@ func (client Client) GetPullRequestProperties(ctx context.Context, args GetPullR
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -2934,18 +2934,18 @@ type GetPullRequestPropertiesArgs struct {
 // [Preview API] Create or update pull request external properties. The patch operation can be `add`, `replace` or `remove`. For `add` operation, the path can be empty. If the path is empty, the value must be a list of key value pairs. For `replace` operation, the path cannot be empty. If the path does not exist, the property will be added to the collection. For `remove` operation, the path cannot be empty. If the path does not exist, no action will be performed.
 func (client Client) UpdatePullRequestProperties(ctx context.Context, args UpdatePullRequestPropertiesArgs) (interface{}, error) {
     if args.PatchDocument == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "patchDocument"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "patchDocument"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -2979,14 +2979,14 @@ type UpdatePullRequestPropertiesArgs struct {
 // This API is used to find what pull requests are related to a given commit.  It can be used to either find the pull request that created a particular merge commit or it can be used to find all pull requests that have ever merged a particular commit.  The input is a list of queries which each contain a list of commits. For each commit that you search against, you will get back a dictionary of commit -> pull requests.
 func (client Client) GetPullRequestQuery(ctx context.Context, args GetPullRequestQueryArgs) (*GitPullRequestQuery, error) {
     if args.Queries == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "queries"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "queries"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -3018,22 +3018,22 @@ type GetPullRequestQueryArgs struct {
 // Add a reviewer to a pull request or cast a vote.
 func (client Client) CreatePullRequestReviewer(ctx context.Context, args CreatePullRequestReviewerArgs) (*IdentityRefWithVote, error) {
     if args.Reviewer == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "reviewer"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "reviewer"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.ReviewerId == nil || *args.ReviewerId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "reviewerId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "reviewerId"} 
     }
     routeValues["reviewerId"] = *args.ReviewerId
 
@@ -3069,18 +3069,18 @@ type CreatePullRequestReviewerArgs struct {
 // Add reviewers to a pull request.
 func (client Client) CreatePullRequestReviewers(ctx context.Context, args CreatePullRequestReviewersArgs) (*[]IdentityRefWithVote, error) {
     if args.Reviewers == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "reviewers"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "reviewers"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -3118,15 +3118,15 @@ func (client Client) DeletePullRequestReviewer(ctx context.Context, args DeleteP
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.ReviewerId == nil || *args.ReviewerId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "reviewerId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "reviewerId"} 
     }
     routeValues["reviewerId"] = *args.ReviewerId
 
@@ -3158,15 +3158,15 @@ func (client Client) GetPullRequestReviewer(ctx context.Context, args GetPullReq
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.ReviewerId == nil || *args.ReviewerId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "reviewerId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "reviewerId"} 
     }
     routeValues["reviewerId"] = *args.ReviewerId
 
@@ -3200,11 +3200,11 @@ func (client Client) GetPullRequestReviewers(ctx context.Context, args GetPullRe
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -3232,18 +3232,18 @@ type GetPullRequestReviewersArgs struct {
 // Reset the votes of multiple reviewers on a pull request.  NOTE: This endpoint only supports updating votes, but does not support updating required reviewers (use policy) or display names.
 func (client Client) UpdatePullRequestReviewers(ctx context.Context, args UpdatePullRequestReviewersArgs) error {
     if args.PatchVotes == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "patchVotes"}
+        return &azureDevOps.ArgumentNilError{ArgumentName: "patchVotes"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -3279,7 +3279,7 @@ func (client Client) GetPullRequestById(ctx context.Context, args GetPullRequest
         routeValues["project"] = *args.Project
     }
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -3306,13 +3306,13 @@ type GetPullRequestByIdArgs struct {
 func (client Client) GetPullRequestsByProject(ctx context.Context, args GetPullRequestsByProjectArgs) (*[]GitPullRequest, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
     if args.SearchCriteria == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "searchCriteria"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "searchCriteria"}
     }
     if args.SearchCriteria.RepositoryId != nil {
         queryParams.Add("searchCriteria.repositoryId", (*args.SearchCriteria.RepositoryId).String())
@@ -3375,14 +3375,14 @@ type GetPullRequestsByProjectArgs struct {
 // Create a pull request.
 func (client Client) CreatePullRequest(ctx context.Context, args CreatePullRequestArgs) (*GitPullRequest, error) {
     if args.GitPullRequestToCreate == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "gitPullRequestToCreate"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "gitPullRequestToCreate"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -3424,11 +3424,11 @@ func (client Client) GetPullRequest(ctx context.Context, args GetPullRequestArgs
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -3486,13 +3486,13 @@ func (client Client) GetPullRequests(ctx context.Context, args GetPullRequestsAr
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
     queryParams := url.Values{}
     if args.SearchCriteria == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "searchCriteria"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "searchCriteria"}
     }
     if args.SearchCriteria.RepositoryId != nil {
         queryParams.Add("searchCriteria.repositoryId", (*args.SearchCriteria.RepositoryId).String())
@@ -3557,18 +3557,18 @@ type GetPullRequestsArgs struct {
 // Update a pull request
 func (client Client) UpdatePullRequest(ctx context.Context, args UpdatePullRequestArgs) (*GitPullRequest, error) {
     if args.GitPullRequestToUpdate == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "gitPullRequestToUpdate"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "gitPullRequestToUpdate"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -3602,18 +3602,18 @@ type UpdatePullRequestArgs struct {
 // [Preview API] Sends an e-mail notification about a specific pull request to a set of recipients
 func (client Client) SharePullRequest(ctx context.Context, args SharePullRequestArgs) error {
     if args.UserMessage == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "userMessage"}
+        return &azureDevOps.ArgumentNilError{ArgumentName: "userMessage"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -3645,18 +3645,18 @@ type SharePullRequestArgs struct {
 // [Preview API] Create a pull request status.
 func (client Client) CreatePullRequestStatus(ctx context.Context, args CreatePullRequestStatusArgs) (*GitPullRequestStatus, error) {
     if args.Status == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "status"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "status"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -3694,15 +3694,15 @@ func (client Client) DeletePullRequestStatus(ctx context.Context, args DeletePul
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.StatusId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "statusId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "statusId"} 
     }
     routeValues["statusId"] = strconv.Itoa(*args.StatusId)
 
@@ -3734,15 +3734,15 @@ func (client Client) GetPullRequestStatus(ctx context.Context, args GetPullReque
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.StatusId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "statusId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "statusId"} 
     }
     routeValues["statusId"] = strconv.Itoa(*args.StatusId)
 
@@ -3776,11 +3776,11 @@ func (client Client) GetPullRequestStatuses(ctx context.Context, args GetPullReq
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -3808,18 +3808,18 @@ type GetPullRequestStatusesArgs struct {
 // [Preview API] Update pull request statuses collection. The only supported operation type is `remove`.
 func (client Client) UpdatePullRequestStatuses(ctx context.Context, args UpdatePullRequestStatusesArgs) error {
     if args.PatchDocument == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "patchDocument"}
+        return &azureDevOps.ArgumentNilError{ArgumentName: "patchDocument"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -3851,22 +3851,22 @@ type UpdatePullRequestStatusesArgs struct {
 // Create a comment on a specific thread in a pull request (up to 500 comments can be created per thread).
 func (client Client) CreateComment(ctx context.Context, args CreateCommentArgs) (*Comment, error) {
     if args.Comment == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "comment"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "comment"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.ThreadId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "threadId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "threadId"} 
     }
     routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
 
@@ -3906,19 +3906,19 @@ func (client Client) DeleteComment(ctx context.Context, args DeleteCommentArgs) 
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.ThreadId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "threadId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "threadId"} 
     }
     routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
     if args.CommentId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "commentId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "commentId"} 
     }
     routeValues["commentId"] = strconv.Itoa(*args.CommentId)
 
@@ -3952,19 +3952,19 @@ func (client Client) GetComment(ctx context.Context, args GetCommentArgs) (*Comm
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.ThreadId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "threadId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "threadId"} 
     }
     routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
     if args.CommentId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "commentId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "commentId"} 
     }
     routeValues["commentId"] = strconv.Itoa(*args.CommentId)
 
@@ -4000,15 +4000,15 @@ func (client Client) GetComments(ctx context.Context, args GetCommentsArgs) (*[]
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.ThreadId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "threadId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "threadId"} 
     }
     routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
 
@@ -4038,26 +4038,26 @@ type GetCommentsArgs struct {
 // Update a comment associated with a specific thread in a pull request.
 func (client Client) UpdateComment(ctx context.Context, args UpdateCommentArgs) (*Comment, error) {
     if args.Comment == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "comment"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "comment"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.ThreadId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "threadId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "threadId"} 
     }
     routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
     if args.CommentId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "commentId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "commentId"} 
     }
     routeValues["commentId"] = strconv.Itoa(*args.CommentId)
 
@@ -4095,18 +4095,18 @@ type UpdateCommentArgs struct {
 // Create a thread in a pull request.
 func (client Client) CreateThread(ctx context.Context, args CreateThreadArgs) (*GitPullRequestCommentThread, error) {
     if args.CommentThread == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "commentThread"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "commentThread"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -4144,15 +4144,15 @@ func (client Client) GetPullRequestThread(ctx context.Context, args GetPullReque
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.ThreadId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "threadId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "threadId"} 
     }
     routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
 
@@ -4197,11 +4197,11 @@ func (client Client) GetThreads(ctx context.Context, args GetThreadsArgs) (*[]Gi
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -4240,22 +4240,22 @@ type GetThreadsArgs struct {
 // Update a thread in a pull request.
 func (client Client) UpdateThread(ctx context.Context, args UpdateThreadArgs) (*GitPullRequestCommentThread, error) {
     if args.CommentThread == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "commentThread"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "commentThread"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
     if args.ThreadId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "threadId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "threadId"} 
     }
     routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
 
@@ -4295,11 +4295,11 @@ func (client Client) GetPullRequestWorkItemRefs(ctx context.Context, args GetPul
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PullRequestId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
 
@@ -4327,14 +4327,14 @@ type GetPullRequestWorkItemRefsArgs struct {
 // Push changes to the repository.
 func (client Client) CreatePush(ctx context.Context, args CreatePushArgs) (*GitPush, error) {
     if args.Push == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "push"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "push"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -4370,11 +4370,11 @@ func (client Client) GetPush(ctx context.Context, args GetPushArgs) (*GitPush, e
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.PushId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pushId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pushId"} 
     }
     routeValues["pushId"] = strconv.Itoa(*args.PushId)
 
@@ -4417,7 +4417,7 @@ func (client Client) GetPushes(ctx context.Context, args GetPushesArgs) (*[]GitP
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -4477,11 +4477,11 @@ type GetPushesArgs struct {
 func (client Client) DeleteRepositoryFromRecycleBin(ctx context.Context, args DeleteRepositoryFromRecycleBinArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.RepositoryId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "repositoryId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = (*args.RepositoryId).String()
 
@@ -4506,7 +4506,7 @@ type DeleteRepositoryFromRecycleBinArgs struct {
 func (client Client) GetRecycleBinRepositories(ctx context.Context, args GetRecycleBinRepositoriesArgs) (*[]GitDeletedRepository, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -4530,15 +4530,15 @@ type GetRecycleBinRepositoriesArgs struct {
 // [Preview API] Recover a soft-deleted Git repository. Recently deleted repositories go into a soft-delete state for a period of time before they are hard deleted and become unrecoverable.
 func (client Client) RestoreRepositoryFromRecycleBin(ctx context.Context, args RestoreRepositoryFromRecycleBinArgs) (*GitRepository, error) {
     if args.RepositoryDetails == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "repositoryDetails"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "repositoryDetails"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.RepositoryId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = (*args.RepositoryId).String()
 
@@ -4574,7 +4574,7 @@ func (client Client) GetRefs(ctx context.Context, args GetRefsArgs) (*[]GitRef, 
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -4636,20 +4636,20 @@ type GetRefsArgs struct {
 // Lock or Unlock a branch.
 func (client Client) UpdateRef(ctx context.Context, args UpdateRefArgs) (*GitRef, error) {
     if args.NewRefInfo == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "newRefInfo"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "newRefInfo"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
     queryParams := url.Values{}
     if args.Filter == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "filter"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "filter"}
     }
     queryParams.Add("filter", *args.Filter)
     if args.ProjectId != nil {
@@ -4687,14 +4687,14 @@ type UpdateRefArgs struct {
 // Creating, updating, or deleting refs(branches).
 func (client Client) UpdateRefs(ctx context.Context, args UpdateRefsArgs) (*[]GitRefUpdateResult, error) {
     if args.RefUpdates == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "refUpdates"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "refUpdates"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -4732,11 +4732,11 @@ type UpdateRefsArgs struct {
 // [Preview API] Creates a ref favorite
 func (client Client) CreateFavorite(ctx context.Context, args CreateFavoriteArgs) (*GitRefFavorite, error) {
     if args.Favorite == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "favorite"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "favorite"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -4767,11 +4767,11 @@ type CreateFavoriteArgs struct {
 func (client Client) DeleteRefFavorite(ctx context.Context, args DeleteRefFavoriteArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.FavoriteId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "favoriteId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "favoriteId"} 
     }
     routeValues["favoriteId"] = strconv.Itoa(*args.FavoriteId)
 
@@ -4796,11 +4796,11 @@ type DeleteRefFavoriteArgs struct {
 func (client Client) GetRefFavorite(ctx context.Context, args GetRefFavoriteArgs) (*GitRefFavorite, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.FavoriteId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "favoriteId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "favoriteId"} 
     }
     routeValues["favoriteId"] = strconv.Itoa(*args.FavoriteId)
 
@@ -4827,7 +4827,7 @@ type GetRefFavoriteArgs struct {
 func (client Client) GetRefFavorites(ctx context.Context, args GetRefFavoritesArgs) (*[]GitRefFavorite, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -4862,7 +4862,7 @@ type GetRefFavoritesArgs struct {
 // Create a git repository in a team project.
 func (client Client) CreateRepository(ctx context.Context, args CreateRepositoryArgs) (*GitRepository, error) {
     if args.GitRepositoryToCreate == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "gitRepositoryToCreate"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "gitRepositoryToCreate"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
@@ -4905,7 +4905,7 @@ func (client Client) DeleteRepository(ctx context.Context, args DeleteRepository
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "repositoryId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = (*args.RepositoryId).String()
 
@@ -4973,7 +4973,7 @@ func (client Client) GetRepository(ctx context.Context, args GetRepositoryArgs) 
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -5003,13 +5003,13 @@ func (client Client) GetRepositoryWithParent(ctx context.Context, args GetReposi
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
     queryParams := url.Values{}
     if args.IncludeParent == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "includeParent"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "includeParent"}
     }
     queryParams.Add("includeParent", strconv.FormatBool(*args.IncludeParent))
     locationId, _ := uuid.Parse("225f7195-f9c7-4d14-ab28-a83f7ff77e1f")
@@ -5036,14 +5036,14 @@ type GetRepositoryWithParentArgs struct {
 // Updates the Git repository with either a new repo name or a new default branch.
 func (client Client) UpdateRepository(ctx context.Context, args UpdateRepositoryArgs) (*GitRepository, error) {
     if args.NewRepositoryInfo == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "newRepositoryInfo"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "newRepositoryInfo"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = (*args.RepositoryId).String()
 
@@ -5075,15 +5075,15 @@ type UpdateRepositoryArgs struct {
 // [Preview API] Starts the operation to create a new branch which reverts changes introduced by either a specific commit or commits that are associated to a pull request.
 func (client Client) CreateRevert(ctx context.Context, args CreateRevertArgs) (*GitRevert, error) {
     if args.RevertToCreate == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "revertToCreate"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "revertToCreate"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -5116,15 +5116,15 @@ type CreateRevertArgs struct {
 func (client Client) GetRevert(ctx context.Context, args GetRevertArgs) (*GitRevert, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.RevertId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "revertId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "revertId"} 
     }
     routeValues["revertId"] = strconv.Itoa(*args.RevertId)
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -5153,17 +5153,17 @@ type GetRevertArgs struct {
 func (client Client) GetRevertForRefName(ctx context.Context, args GetRevertForRefNameArgs) (*GitRevert, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
     queryParams := url.Values{}
     if args.RefName == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "refName"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "refName"}
     }
     queryParams.Add("refName", *args.RefName)
     locationId, _ := uuid.Parse("bc866058-5449-4715-9cf1-a510b6ff193c")
@@ -5190,18 +5190,18 @@ type GetRevertForRefNameArgs struct {
 // Create Git commit status.
 func (client Client) CreateCommitStatus(ctx context.Context, args CreateCommitStatusArgs) (*GitStatus, error) {
     if args.GitCommitStatusToCreate == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "gitCommitStatusToCreate"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "gitCommitStatusToCreate"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.CommitId == nil || *args.CommitId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "commitId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "commitId"} 
     }
     routeValues["commitId"] = *args.CommitId
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -5239,11 +5239,11 @@ func (client Client) GetStatuses(ctx context.Context, args GetStatusesArgs) (*[]
         routeValues["project"] = *args.Project
     }
     if args.CommitId == nil || *args.CommitId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "commitId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "commitId"} 
     }
     routeValues["commitId"] = *args.CommitId
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -5291,7 +5291,7 @@ func (client Client) GetSuggestions(ctx context.Context, args GetSuggestionsArgs
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
 
@@ -5321,11 +5321,11 @@ func (client Client) GetTree(ctx context.Context, args GetTreeArgs) (*GitTreeRef
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.Sha1 == nil || *args.Sha1 == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "sha1"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "sha1"} 
     }
     routeValues["sha1"] = *args.Sha1
 
@@ -5373,11 +5373,11 @@ func (client Client) GetTreeZip(ctx context.Context, args GetTreeZipArgs) (io.Re
         routeValues["project"] = *args.Project
     }
     if args.RepositoryId == nil || *args.RepositoryId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repositoryId"} 
     }
     routeValues["repositoryId"] = *args.RepositoryId
     if args.Sha1 == nil || *args.Sha1 == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "sha1"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "sha1"} 
     }
     routeValues["sha1"] = *args.Sha1
 

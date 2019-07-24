@@ -13,17 +13,17 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "net/http"
     "net/url"
     "strconv"
 )
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -34,7 +34,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
 func (client Client) RemoveAccessControlEntries(ctx context.Context, args RemoveAccessControlEntriesArgs) (*bool, error) {
     routeValues := make(map[string]string)
     if args.SecurityNamespaceId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "securityNamespaceId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "securityNamespaceId"} 
     }
     routeValues["securityNamespaceId"] = (*args.SecurityNamespaceId).String()
 
@@ -69,11 +69,11 @@ type RemoveAccessControlEntriesArgs struct {
 // Add or update ACEs in the ACL for the provided token. The request body contains the target token, a list of [ACEs](https://docs.microsoft.com/en-us/rest/api/azure/devops/security/access%20control%20entries/set%20access%20control%20entries?#accesscontrolentry) and a optional merge parameter. In the case of a collision (by identity descriptor) with an existing ACE in the ACL, the "merge" parameter determines the behavior. If set, the existing ACE has its allow and deny merged with the incoming ACE's allow and deny. If unset, the existing ACE is displaced.
 func (client Client) SetAccessControlEntries(ctx context.Context, args SetAccessControlEntriesArgs) (*[]AccessControlEntry, error) {
     if args.Container == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "container"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "container"}
     }
     routeValues := make(map[string]string)
     if args.SecurityNamespaceId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "securityNamespaceId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "securityNamespaceId"} 
     }
     routeValues["securityNamespaceId"] = (*args.SecurityNamespaceId).String()
 
@@ -104,7 +104,7 @@ type SetAccessControlEntriesArgs struct {
 func (client Client) QueryAccessControlLists(ctx context.Context, args QueryAccessControlListsArgs) (*[]AccessControlList, error) {
     routeValues := make(map[string]string)
     if args.SecurityNamespaceId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "securityNamespaceId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "securityNamespaceId"} 
     }
     routeValues["securityNamespaceId"] = (*args.SecurityNamespaceId).String()
 
@@ -150,7 +150,7 @@ type QueryAccessControlListsArgs struct {
 func (client Client) RemoveAccessControlLists(ctx context.Context, args RemoveAccessControlListsArgs) (*bool, error) {
     routeValues := make(map[string]string)
     if args.SecurityNamespaceId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "securityNamespaceId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "securityNamespaceId"} 
     }
     routeValues["securityNamespaceId"] = (*args.SecurityNamespaceId).String()
 
@@ -185,11 +185,11 @@ type RemoveAccessControlListsArgs struct {
 // Create or update one or more access control lists. All data that currently exists for the ACLs supplied will be overwritten.
 func (client Client) SetAccessControlLists(ctx context.Context, args SetAccessControlListsArgs) error {
     if args.AccessControlLists == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "accessControlLists"}
+        return &azureDevOps.ArgumentNilError{ArgumentName: "accessControlLists"}
     }
     routeValues := make(map[string]string)
     if args.SecurityNamespaceId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "securityNamespaceId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "securityNamespaceId"} 
     }
     routeValues["securityNamespaceId"] = (*args.SecurityNamespaceId).String()
 
@@ -209,7 +209,7 @@ func (client Client) SetAccessControlLists(ctx context.Context, args SetAccessCo
 // Arguments for the SetAccessControlLists function
 type SetAccessControlListsArgs struct {
     // (required) A list of ACLs to create or update.
-    AccessControlLists *azureDevops.VssJsonCollectionWrapper
+    AccessControlLists *azureDevOps.VssJsonCollectionWrapper
     // (required) Security namespace identifier.
     SecurityNamespaceId *uuid.UUID
 }
@@ -217,7 +217,7 @@ type SetAccessControlListsArgs struct {
 // Evaluates multiple permissions for the calling user.  Note: This method does not aggregate the results, nor does it short-circuit if one of the permissions evaluates to false.
 func (client Client) HasPermissionsBatch(ctx context.Context, args HasPermissionsBatchArgs) (*PermissionEvaluationBatch, error) {
     if args.EvalBatch == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "evalBatch"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "evalBatch"}
     }
     body, marshalErr := json.Marshal(*args.EvalBatch)
     if marshalErr != nil {
@@ -244,7 +244,7 @@ type HasPermissionsBatchArgs struct {
 func (client Client) HasPermissions(ctx context.Context, args HasPermissionsArgs) (*[]bool, error) {
     routeValues := make(map[string]string)
     if args.SecurityNamespaceId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "securityNamespaceId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "securityNamespaceId"} 
     }
     routeValues["securityNamespaceId"] = (*args.SecurityNamespaceId).String()
     if args.Permissions != nil {
@@ -290,7 +290,7 @@ type HasPermissionsArgs struct {
 func (client Client) RemovePermission(ctx context.Context, args RemovePermissionArgs) (*AccessControlEntry, error) {
     routeValues := make(map[string]string)
     if args.SecurityNamespaceId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "securityNamespaceId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "securityNamespaceId"} 
     }
     routeValues["securityNamespaceId"] = (*args.SecurityNamespaceId).String()
     if args.Permissions != nil {
@@ -299,7 +299,7 @@ func (client Client) RemovePermission(ctx context.Context, args RemovePermission
 
     queryParams := url.Values{}
     if args.Descriptor == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "descriptor"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "descriptor"}
     }
     queryParams.Add("descriptor", *args.Descriptor)
     if args.Token != nil {

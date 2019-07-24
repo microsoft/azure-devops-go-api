@@ -13,7 +13,7 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "net/http"
     "net/url"
     "strconv"
@@ -23,10 +23,10 @@ import (
 var ResourceAreaId, _ = uuid.Parse("79134c72-4a58-4b42-976c-04e7115f32bf")
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -40,7 +40,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 func (client Client) RemoveProjectAvatar(ctx context.Context, args RemoveProjectAvatarArgs) error {
     routeValues := make(map[string]string)
     if args.ProjectId == nil || *args.ProjectId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
     routeValues["projectId"] = *args.ProjectId
 
@@ -62,11 +62,11 @@ type RemoveProjectAvatarArgs struct {
 // [Preview API] Sets the avatar for the project.
 func (client Client) SetProjectAvatar(ctx context.Context, args SetProjectAvatarArgs) error {
     if args.AvatarBlob == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "avatarBlob"}
+        return &azureDevOps.ArgumentNilError{ArgumentName: "avatarBlob"}
     }
     routeValues := make(map[string]string)
     if args.ProjectId == nil || *args.ProjectId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
     routeValues["projectId"] = *args.ProjectId
 
@@ -94,11 +94,11 @@ type SetProjectAvatarArgs struct {
 // [Preview API]
 func (client Client) CreateConnectedService(ctx context.Context, args CreateConnectedServiceArgs) (*WebApiConnectedService, error) {
     if args.ConnectedServiceCreationData == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "connectedServiceCreationData"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "connectedServiceCreationData"}
     }
     routeValues := make(map[string]string)
     if args.ProjectId == nil || *args.ProjectId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
     routeValues["projectId"] = *args.ProjectId
 
@@ -129,11 +129,11 @@ type CreateConnectedServiceArgs struct {
 func (client Client) GetConnectedServiceDetails(ctx context.Context, args GetConnectedServiceDetailsArgs) (*WebApiConnectedServiceDetails, error) {
     routeValues := make(map[string]string)
     if args.ProjectId == nil || *args.ProjectId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
     routeValues["projectId"] = *args.ProjectId
     if args.Name == nil || *args.Name == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
     routeValues["name"] = *args.Name
 
@@ -160,7 +160,7 @@ type GetConnectedServiceDetailsArgs struct {
 func (client Client) GetConnectedServices(ctx context.Context, args GetConnectedServicesArgs) (*[]WebApiConnectedService, error) {
     routeValues := make(map[string]string)
     if args.ProjectId == nil || *args.ProjectId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
     routeValues["projectId"] = *args.ProjectId
 
@@ -191,11 +191,11 @@ type GetConnectedServicesArgs struct {
 func (client Client) GetTeamMembersWithExtendedProperties(ctx context.Context, args GetTeamMembersWithExtendedPropertiesArgs) (*[]TeamMember, error) {
     routeValues := make(map[string]string)
     if args.ProjectId == nil || *args.ProjectId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
     routeValues["projectId"] = *args.ProjectId
     if args.TeamId == nil || *args.TeamId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "teamId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "teamId"} 
     }
     routeValues["teamId"] = *args.TeamId
 
@@ -233,7 +233,7 @@ type GetTeamMembersWithExtendedPropertiesArgs struct {
 func (client Client) GetProcessById(ctx context.Context, args GetProcessByIdArgs) (*Process, error) {
     routeValues := make(map[string]string)
     if args.ProcessId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "processId"} 
     }
     routeValues["processId"] = (*args.ProcessId).String()
 
@@ -275,7 +275,7 @@ type GetProcessesArgs struct {
 func (client Client) GetProjectCollection(ctx context.Context, args GetProjectCollectionArgs) (*TeamProjectCollection, error) {
     routeValues := make(map[string]string)
     if args.CollectionId == nil || *args.CollectionId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "collectionId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "collectionId"} 
     }
     routeValues["collectionId"] = *args.CollectionId
 
@@ -328,7 +328,7 @@ type GetProjectCollectionsArgs struct {
 func (client Client) GetProject(ctx context.Context, args GetProjectArgs) (*TeamProject, error) {
     routeValues := make(map[string]string)
     if args.ProjectId == nil || *args.ProjectId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
     routeValues["projectId"] = *args.ProjectId
 
@@ -406,7 +406,7 @@ type GetProjectsArgs struct {
 // Queues a project to be created. Use the [GetOperation](../../operations/operations/get) to periodically check for create project status.
 func (client Client) QueueCreateProject(ctx context.Context, args QueueCreateProjectArgs) (*OperationReference, error) {
     if args.ProjectToCreate == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "projectToCreate"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "projectToCreate"}
     }
     body, marshalErr := json.Marshal(*args.ProjectToCreate)
     if marshalErr != nil {
@@ -433,7 +433,7 @@ type QueueCreateProjectArgs struct {
 func (client Client) QueueDeleteProject(ctx context.Context, args QueueDeleteProjectArgs) (*OperationReference, error) {
     routeValues := make(map[string]string)
     if args.ProjectId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "projectId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "projectId"} 
     }
     routeValues["projectId"] = (*args.ProjectId).String()
 
@@ -457,11 +457,11 @@ type QueueDeleteProjectArgs struct {
 // Update an existing project's name, abbreviation, description, or restore a project.
 func (client Client) UpdateProject(ctx context.Context, args UpdateProjectArgs) (*OperationReference, error) {
     if args.ProjectUpdate == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "projectUpdate"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "projectUpdate"}
     }
     routeValues := make(map[string]string)
     if args.ProjectId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "projectId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "projectId"} 
     }
     routeValues["projectId"] = (*args.ProjectId).String()
 
@@ -492,7 +492,7 @@ type UpdateProjectArgs struct {
 func (client Client) GetProjectProperties(ctx context.Context, args GetProjectPropertiesArgs) (*[]ProjectProperty, error) {
     routeValues := make(map[string]string)
     if args.ProjectId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "projectId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "projectId"} 
     }
     routeValues["projectId"] = (*args.ProjectId).String()
 
@@ -523,11 +523,11 @@ type GetProjectPropertiesArgs struct {
 // [Preview API] Create, update, and delete team project properties.
 func (client Client) SetProjectProperties(ctx context.Context, args SetProjectPropertiesArgs) error {
     if args.PatchDocument == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "patchDocument"}
+        return &azureDevOps.ArgumentNilError{ArgumentName: "patchDocument"}
     }
     routeValues := make(map[string]string)
     if args.ProjectId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "projectId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "projectId"} 
     }
     routeValues["projectId"] = (*args.ProjectId).String()
 
@@ -555,7 +555,7 @@ type SetProjectPropertiesArgs struct {
 // [Preview API]
 func (client Client) CreateOrUpdateProxy(ctx context.Context, args CreateOrUpdateProxyArgs) (*Proxy, error) {
     if args.Proxy == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "proxy"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "proxy"}
     }
     body, marshalErr := json.Marshal(*args.Proxy)
     if marshalErr != nil {
@@ -582,7 +582,7 @@ type CreateOrUpdateProxyArgs struct {
 func (client Client) DeleteProxy(ctx context.Context, args DeleteProxyArgs) error {
     queryParams := url.Values{}
     if args.ProxyUrl == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "proxyUrl"}
+        return &azureDevOps.ArgumentNilError{ArgumentName: "proxyUrl"}
     }
     queryParams.Add("proxyUrl", *args.ProxyUrl)
     if args.Site != nil {
@@ -631,11 +631,11 @@ type GetProxiesArgs struct {
 // Create a team in a team project.
 func (client Client) CreateTeam(ctx context.Context, args CreateTeamArgs) (*WebApiTeam, error) {
     if args.Team == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "team"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "team"}
     }
     routeValues := make(map[string]string)
     if args.ProjectId == nil || *args.ProjectId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
     routeValues["projectId"] = *args.ProjectId
 
@@ -666,11 +666,11 @@ type CreateTeamArgs struct {
 func (client Client) DeleteTeam(ctx context.Context, args DeleteTeamArgs) error {
     routeValues := make(map[string]string)
     if args.ProjectId == nil || *args.ProjectId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
     routeValues["projectId"] = *args.ProjectId
     if args.TeamId == nil || *args.TeamId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "teamId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "teamId"} 
     }
     routeValues["teamId"] = *args.TeamId
 
@@ -695,11 +695,11 @@ type DeleteTeamArgs struct {
 func (client Client) GetTeam(ctx context.Context, args GetTeamArgs) (*WebApiTeam, error) {
     routeValues := make(map[string]string)
     if args.ProjectId == nil || *args.ProjectId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
     routeValues["projectId"] = *args.ProjectId
     if args.TeamId == nil || *args.TeamId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "teamId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "teamId"} 
     }
     routeValues["teamId"] = *args.TeamId
 
@@ -732,7 +732,7 @@ type GetTeamArgs struct {
 func (client Client) GetTeams(ctx context.Context, args GetTeamsArgs) (*[]WebApiTeam, error) {
     routeValues := make(map[string]string)
     if args.ProjectId == nil || *args.ProjectId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
     routeValues["projectId"] = *args.ProjectId
 
@@ -777,15 +777,15 @@ type GetTeamsArgs struct {
 // Update a team's name and/or description.
 func (client Client) UpdateTeam(ctx context.Context, args UpdateTeamArgs) (*WebApiTeam, error) {
     if args.TeamData == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "teamData"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "teamData"}
     }
     routeValues := make(map[string]string)
     if args.ProjectId == nil || *args.ProjectId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
     routeValues["projectId"] = *args.ProjectId
     if args.TeamId == nil || *args.TeamId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "teamId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "teamId"} 
     }
     routeValues["teamId"] = *args.TeamId
 

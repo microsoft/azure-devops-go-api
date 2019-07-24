@@ -11,7 +11,7 @@ package profile
 import (
     "context"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "net/http"
     "net/url"
     "strconv"
@@ -20,10 +20,10 @@ import (
 var ResourceAreaId, _ = uuid.Parse("8ccfef3d-2b87-4e99-8ccb-66e343d2daa8")
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -37,7 +37,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 func (client Client) GetProfile(ctx context.Context, args GetProfileArgs) (*Profile, error) {
     routeValues := make(map[string]string)
     if args.Id == nil || *args.Id == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "id"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "id"} 
     }
     routeValues["id"] = *args.Id
 

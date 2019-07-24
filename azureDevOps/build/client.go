@@ -13,7 +13,7 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "io"
     "net/http"
     "net/url"
@@ -25,10 +25,10 @@ import (
 var ResourceAreaId, _ = uuid.Parse("965220d5-5bb9-42cf-8d67-9b146df2a5a4")
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -41,15 +41,15 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 // Associates an artifact with a build.
 func (client Client) CreateArtifact(ctx context.Context, args CreateArtifactArgs) (*BuildArtifact, error) {
     if args.Artifact == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "artifact"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "artifact"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
@@ -82,17 +82,17 @@ type CreateArtifactArgs struct {
 func (client Client) GetArtifact(ctx context.Context, args GetArtifactArgs) (*BuildArtifact, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
     queryParams := url.Values{}
     if args.ArtifactName == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "artifactName"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "artifactName"}
     }
     queryParams.Add("artifactName", *args.ArtifactName)
     locationId, _ := uuid.Parse("1db06c96-014e-44e1-ac91-90b2d4b3e984")
@@ -120,17 +120,17 @@ type GetArtifactArgs struct {
 func (client Client) GetArtifactContentZip(ctx context.Context, args GetArtifactContentZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
     queryParams := url.Values{}
     if args.ArtifactName == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "artifactName"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "artifactName"}
     }
     queryParams.Add("artifactName", *args.ArtifactName)
     locationId, _ := uuid.Parse("1db06c96-014e-44e1-ac91-90b2d4b3e984")
@@ -156,11 +156,11 @@ type GetArtifactContentZipArgs struct {
 func (client Client) GetArtifacts(ctx context.Context, args GetArtifactsArgs) (*[]BuildArtifact, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
@@ -187,25 +187,25 @@ type GetArtifactsArgs struct {
 func (client Client) GetFile(ctx context.Context, args GetFileArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
     queryParams := url.Values{}
     if args.ArtifactName == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "artifactName"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "artifactName"}
     }
     queryParams.Add("artifactName", *args.ArtifactName)
     if args.FileId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "fileId"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "fileId"}
     }
     queryParams.Add("fileId", *args.FileId)
     if args.FileName == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "fileName"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "fileName"}
     }
     queryParams.Add("fileName", *args.FileName)
     locationId, _ := uuid.Parse("1db06c96-014e-44e1-ac91-90b2d4b3e984")
@@ -235,15 +235,15 @@ type GetFileArgs struct {
 func (client Client) GetAttachments(ctx context.Context, args GetAttachmentsArgs) (*[]Attachment, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
     if args.Type_ == nil || *args.Type_ == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *args.Type_
 
@@ -272,27 +272,27 @@ type GetAttachmentsArgs struct {
 func (client Client) GetAttachment(ctx context.Context, args GetAttachmentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
     if args.TimelineId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "timelineId"} 
     }
     routeValues["timelineId"] = (*args.TimelineId).String()
     if args.RecordId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "recordId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "recordId"} 
     }
     routeValues["recordId"] = (*args.RecordId).String()
     if args.Type_ == nil || *args.Type_ == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *args.Type_
     if args.Name == nil || *args.Name == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
     routeValues["name"] = *args.Name
 
@@ -324,11 +324,11 @@ type GetAttachmentArgs struct {
 // [Preview API]
 func (client Client) AuthorizeProjectResources(ctx context.Context, args AuthorizeProjectResourcesArgs) (*[]DefinitionResourceReference, error) {
     if args.Resources == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "resources"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "resources"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -359,7 +359,7 @@ type AuthorizeProjectResourcesArgs struct {
 func (client Client) GetProjectResources(ctx context.Context, args GetProjectResourcesArgs) (*[]DefinitionResourceReference, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -395,11 +395,11 @@ type GetProjectResourcesArgs struct {
 func (client Client) ListBranches(ctx context.Context, args ListBranchesArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.ProviderName == nil || *args.ProviderName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "providerName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "providerName"} 
     }
     routeValues["providerName"] = *args.ProviderName
 
@@ -442,11 +442,11 @@ type ListBranchesArgs struct {
 func (client Client) GetBuildBadge(ctx context.Context, args GetBuildBadgeArgs) (*BuildBadge, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.RepoType == nil || *args.RepoType == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repoType"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repoType"} 
     }
     routeValues["repoType"] = *args.RepoType
 
@@ -484,11 +484,11 @@ type GetBuildBadgeArgs struct {
 func (client Client) GetBuildBadgeData(ctx context.Context, args GetBuildBadgeDataArgs) (*string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.RepoType == nil || *args.RepoType == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repoType"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "repoType"} 
     }
     routeValues["repoType"] = *args.RepoType
 
@@ -526,11 +526,11 @@ type GetBuildBadgeDataArgs struct {
 func (client Client) DeleteBuild(ctx context.Context, args DeleteBuildArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
@@ -555,11 +555,11 @@ type DeleteBuildArgs struct {
 func (client Client) GetBuild(ctx context.Context, args GetBuildArgs) (*Build, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
@@ -592,7 +592,7 @@ type GetBuildArgs struct {
 func (client Client) GetBuilds(ctx context.Context, args GetBuildsArgs) (*[]Build, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -734,11 +734,11 @@ type GetBuildsArgs struct {
 // Queues a build
 func (client Client) QueueBuild(ctx context.Context, args QueueBuildArgs) (*Build, error) {
     if args.Build == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "build"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "build"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -784,15 +784,15 @@ type QueueBuildArgs struct {
 // Updates a build.
 func (client Client) UpdateBuild(ctx context.Context, args UpdateBuildArgs) (*Build, error) {
     if args.Build == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "build"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "build"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
@@ -830,11 +830,11 @@ type UpdateBuildArgs struct {
 // Updates multiple builds.
 func (client Client) UpdateBuilds(ctx context.Context, args UpdateBuildsArgs) (*[]Build, error) {
     if args.Builds == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "builds"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "builds"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -865,11 +865,11 @@ type UpdateBuildsArgs struct {
 func (client Client) GetBuildChanges(ctx context.Context, args GetBuildChangesArgs) (*[]Change, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
@@ -912,7 +912,7 @@ type GetBuildChangesArgs struct {
 func (client Client) GetChangesBetweenBuilds(ctx context.Context, args GetChangesBetweenBuildsArgs) (*[]Change, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -953,7 +953,7 @@ type GetChangesBetweenBuildsArgs struct {
 func (client Client) GetBuildController(ctx context.Context, args GetBuildControllerArgs) (*BuildController, error) {
     routeValues := make(map[string]string)
     if args.ControllerId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "controllerId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "controllerId"} 
     }
     routeValues["controllerId"] = strconv.Itoa(*args.ControllerId)
 
@@ -1000,11 +1000,11 @@ type GetBuildControllersArgs struct {
 // Creates a new definition.
 func (client Client) CreateDefinition(ctx context.Context, args CreateDefinitionArgs) (*BuildDefinition, error) {
     if args.Definition == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "definition"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "definition"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -1046,11 +1046,11 @@ type CreateDefinitionArgs struct {
 func (client Client) DeleteDefinition(ctx context.Context, args DeleteDefinitionArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DefinitionId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "definitionId"} 
     }
     routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
@@ -1075,11 +1075,11 @@ type DeleteDefinitionArgs struct {
 func (client Client) GetDefinition(ctx context.Context, args GetDefinitionArgs) (*BuildDefinition, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DefinitionId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "definitionId"} 
     }
     routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
@@ -1128,7 +1128,7 @@ type GetDefinitionArgs struct {
 func (client Client) GetDefinitions(ctx context.Context, args GetDefinitionsArgs) (*[]BuildDefinitionReference, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -1239,17 +1239,17 @@ type GetDefinitionsArgs struct {
 func (client Client) RestoreDefinition(ctx context.Context, args RestoreDefinitionArgs) (*BuildDefinition, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DefinitionId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "definitionId"} 
     }
     routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
     queryParams := url.Values{}
     if args.Deleted == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "deleted"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "deleted"}
     }
     queryParams.Add("deleted", strconv.FormatBool(*args.Deleted))
     locationId, _ := uuid.Parse("dbeaf647-6167-421a-bda9-c9327b25e2e6")
@@ -1276,15 +1276,15 @@ type RestoreDefinitionArgs struct {
 // Updates an existing definition.
 func (client Client) UpdateDefinition(ctx context.Context, args UpdateDefinitionArgs) (*BuildDefinition, error) {
     if args.Definition == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "definition"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "definition"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DefinitionId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "definitionId"} 
     }
     routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
@@ -1328,11 +1328,11 @@ type UpdateDefinitionArgs struct {
 func (client Client) GetFileContents(ctx context.Context, args GetFileContentsArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.ProviderName == nil || *args.ProviderName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "providerName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "providerName"} 
     }
     routeValues["providerName"] = *args.ProviderName
 
@@ -1377,17 +1377,17 @@ type GetFileContentsArgs struct {
 // [Preview API] Creates a new folder.
 func (client Client) CreateFolder(ctx context.Context, args CreateFolderArgs) (*Folder, error) {
     if args.Folder == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "folder"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "folder"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
     if args.Path == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "path"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "path"}
     }
     queryParams.Add("path", *args.Path)
     body, marshalErr := json.Marshal(*args.Folder)
@@ -1419,13 +1419,13 @@ type CreateFolderArgs struct {
 func (client Client) DeleteFolder(ctx context.Context, args DeleteFolderArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
     if args.Path == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "path"}
+        return &azureDevOps.ArgumentNilError{ArgumentName: "path"}
     }
     queryParams.Add("path", *args.Path)
     locationId, _ := uuid.Parse("a906531b-d2da-4f55-bda7-f3e676cc50d9")
@@ -1449,7 +1449,7 @@ type DeleteFolderArgs struct {
 func (client Client) GetFolders(ctx context.Context, args GetFoldersArgs) (*[]Folder, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Path != nil && *args.Path != "" {
@@ -1484,17 +1484,17 @@ type GetFoldersArgs struct {
 // [Preview API] Updates an existing folder at given  existing path
 func (client Client) UpdateFolder(ctx context.Context, args UpdateFolderArgs) (*Folder, error) {
     if args.Folder == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "folder"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "folder"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
     if args.Path == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "path"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "path"}
     }
     queryParams.Add("path", *args.Path)
     body, marshalErr := json.Marshal(*args.Folder)
@@ -1526,11 +1526,11 @@ type UpdateFolderArgs struct {
 func (client Client) GetLatestBuild(ctx context.Context, args GetLatestBuildArgs) (*Build, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Definition == nil || *args.Definition == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "definition"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "definition"} 
     }
     routeValues["definition"] = *args.Definition
 
@@ -1563,15 +1563,15 @@ type GetLatestBuildArgs struct {
 func (client Client) GetBuildLog(ctx context.Context, args GetBuildLogArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
     if args.LogId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "logId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "logId"} 
     }
     routeValues["logId"] = strconv.Itoa(*args.LogId)
 
@@ -1609,15 +1609,15 @@ type GetBuildLogArgs struct {
 func (client Client) GetBuildLogLines(ctx context.Context, args GetBuildLogLinesArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
     if args.LogId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "logId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "logId"} 
     }
     routeValues["logId"] = strconv.Itoa(*args.LogId)
 
@@ -1657,11 +1657,11 @@ type GetBuildLogLinesArgs struct {
 func (client Client) GetBuildLogs(ctx context.Context, args GetBuildLogsArgs) (*[]BuildLog, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
@@ -1688,11 +1688,11 @@ type GetBuildLogsArgs struct {
 func (client Client) GetBuildLogsZip(ctx context.Context, args GetBuildLogsZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
@@ -1717,15 +1717,15 @@ type GetBuildLogsZipArgs struct {
 func (client Client) GetBuildLogZip(ctx context.Context, args GetBuildLogZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
     if args.LogId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "logId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "logId"} 
     }
     routeValues["logId"] = strconv.Itoa(*args.LogId)
 
@@ -1763,7 +1763,7 @@ type GetBuildLogZipArgs struct {
 func (client Client) GetProjectMetrics(ctx context.Context, args GetProjectMetricsArgs) (*[]BuildMetric, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.MetricAggregationType != nil && *args.MetricAggregationType != "" {
@@ -1799,11 +1799,11 @@ type GetProjectMetricsArgs struct {
 func (client Client) GetDefinitionMetrics(ctx context.Context, args GetDefinitionMetricsArgs) (*[]BuildMetric, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DefinitionId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "definitionId"} 
     }
     routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
@@ -1860,11 +1860,11 @@ type GetBuildOptionDefinitionsArgs struct {
 func (client Client) GetPathContents(ctx context.Context, args GetPathContentsArgs) (*[]SourceRepositoryItem, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.ProviderName == nil || *args.ProviderName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "providerName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "providerName"} 
     }
     routeValues["providerName"] = *args.ProviderName
 
@@ -1912,11 +1912,11 @@ type GetPathContentsArgs struct {
 func (client Client) GetBuildProperties(ctx context.Context, args GetBuildPropertiesArgs) (interface{}, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
@@ -1949,15 +1949,15 @@ type GetBuildPropertiesArgs struct {
 // [Preview API] Updates properties for a build.
 func (client Client) UpdateBuildProperties(ctx context.Context, args UpdateBuildPropertiesArgs) (interface{}, error) {
     if args.Document == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "document"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "document"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
@@ -1990,11 +1990,11 @@ type UpdateBuildPropertiesArgs struct {
 func (client Client) GetDefinitionProperties(ctx context.Context, args GetDefinitionPropertiesArgs) (interface{}, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DefinitionId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "definitionId"} 
     }
     routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
@@ -2027,15 +2027,15 @@ type GetDefinitionPropertiesArgs struct {
 // [Preview API] Updates properties for a definition.
 func (client Client) UpdateDefinitionProperties(ctx context.Context, args UpdateDefinitionPropertiesArgs) (interface{}, error) {
     if args.Document == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "document"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "document"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DefinitionId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "definitionId"} 
     }
     routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
@@ -2068,15 +2068,15 @@ type UpdateDefinitionPropertiesArgs struct {
 func (client Client) GetPullRequest(ctx context.Context, args GetPullRequestArgs) (*PullRequest, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.ProviderName == nil || *args.ProviderName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "providerName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "providerName"} 
     }
     routeValues["providerName"] = *args.ProviderName
     if args.PullRequestId == nil || *args.PullRequestId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "pullRequestId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "pullRequestId"} 
     }
     routeValues["pullRequestId"] = *args.PullRequestId
 
@@ -2116,11 +2116,11 @@ type GetPullRequestArgs struct {
 func (client Client) GetBuildReport(ctx context.Context, args GetBuildReportArgs) (*BuildReportMetadata, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
@@ -2153,11 +2153,11 @@ type GetBuildReportArgs struct {
 func (client Client) GetBuildReportHtmlContent(ctx context.Context, args GetBuildReportHtmlContentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
@@ -2188,11 +2188,11 @@ type GetBuildReportHtmlContentArgs struct {
 func (client Client) ListRepositories(ctx context.Context, args ListRepositoriesArgs) (*SourceRepositories, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.ProviderName == nil || *args.ProviderName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "providerName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "providerName"} 
     }
     routeValues["providerName"] = *args.ProviderName
 
@@ -2244,15 +2244,15 @@ type ListRepositoriesArgs struct {
 // [Preview API]
 func (client Client) AuthorizeDefinitionResources(ctx context.Context, args AuthorizeDefinitionResourcesArgs) (*[]DefinitionResourceReference, error) {
     if args.Resources == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "resources"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "resources"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DefinitionId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "definitionId"} 
     }
     routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
@@ -2285,11 +2285,11 @@ type AuthorizeDefinitionResourcesArgs struct {
 func (client Client) GetDefinitionResources(ctx context.Context, args GetDefinitionResourcesArgs) (*[]DefinitionResourceReference, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DefinitionId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "definitionId"} 
     }
     routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
@@ -2333,11 +2333,11 @@ type GetResourceUsageArgs struct {
 func (client Client) GetDefinitionRevisions(ctx context.Context, args GetDefinitionRevisionsArgs) (*[]BuildDefinitionRevision, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DefinitionId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "definitionId"} 
     }
     routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
@@ -2387,7 +2387,7 @@ type GetBuildSettingsArgs struct {
 // Updates the build settings.
 func (client Client) UpdateBuildSettings(ctx context.Context, args UpdateBuildSettingsArgs) (*BuildSettings, error) {
     if args.Settings == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "settings"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "settings"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
@@ -2421,7 +2421,7 @@ type UpdateBuildSettingsArgs struct {
 func (client Client) ListSourceProviders(ctx context.Context, args ListSourceProvidersArgs) (*[]SourceProviderAttributes, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -2446,11 +2446,11 @@ type ListSourceProvidersArgs struct {
 func (client Client) GetStatusBadge(ctx context.Context, args GetStatusBadgeArgs) (*string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Definition == nil || *args.Definition == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "definition"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "definition"} 
     }
     routeValues["definition"] = *args.Definition
 
@@ -2503,15 +2503,15 @@ type GetStatusBadgeArgs struct {
 func (client Client) AddBuildTag(ctx context.Context, args AddBuildTagArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
     if args.Tag == nil || *args.Tag == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "tag"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "tag"} 
     }
     routeValues["tag"] = *args.Tag
 
@@ -2539,15 +2539,15 @@ type AddBuildTagArgs struct {
 // Adds tags to a build.
 func (client Client) AddBuildTags(ctx context.Context, args AddBuildTagsArgs) (*[]string, error) {
     if args.Tags == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "tags"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "tags"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
@@ -2580,15 +2580,15 @@ type AddBuildTagsArgs struct {
 func (client Client) DeleteBuildTag(ctx context.Context, args DeleteBuildTagArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
     if args.Tag == nil || *args.Tag == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "tag"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "tag"} 
     }
     routeValues["tag"] = *args.Tag
 
@@ -2617,11 +2617,11 @@ type DeleteBuildTagArgs struct {
 func (client Client) GetBuildTags(ctx context.Context, args GetBuildTagsArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
@@ -2648,7 +2648,7 @@ type GetBuildTagsArgs struct {
 func (client Client) GetTags(ctx context.Context, args GetTagsArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -2673,15 +2673,15 @@ type GetTagsArgs struct {
 func (client Client) AddDefinitionTag(ctx context.Context, args AddDefinitionTagArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DefinitionId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "definitionId"} 
     }
     routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
     if args.Tag == nil || *args.Tag == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "tag"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "tag"} 
     }
     routeValues["tag"] = *args.Tag
 
@@ -2709,15 +2709,15 @@ type AddDefinitionTagArgs struct {
 // [Preview API] Adds multiple tags to a definition.
 func (client Client) AddDefinitionTags(ctx context.Context, args AddDefinitionTagsArgs) (*[]string, error) {
     if args.Tags == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "tags"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "tags"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DefinitionId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "definitionId"} 
     }
     routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
@@ -2750,15 +2750,15 @@ type AddDefinitionTagsArgs struct {
 func (client Client) DeleteDefinitionTag(ctx context.Context, args DeleteDefinitionTagArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DefinitionId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "definitionId"} 
     }
     routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
     if args.Tag == nil || *args.Tag == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "tag"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "tag"} 
     }
     routeValues["tag"] = *args.Tag
 
@@ -2787,11 +2787,11 @@ type DeleteDefinitionTagArgs struct {
 func (client Client) GetDefinitionTags(ctx context.Context, args GetDefinitionTagsArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DefinitionId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "definitionId"} 
     }
     routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
@@ -2824,11 +2824,11 @@ type GetDefinitionTagsArgs struct {
 func (client Client) DeleteTemplate(ctx context.Context, args DeleteTemplateArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.TemplateId == nil || *args.TemplateId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "templateId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "templateId"} 
     }
     routeValues["templateId"] = *args.TemplateId
 
@@ -2853,11 +2853,11 @@ type DeleteTemplateArgs struct {
 func (client Client) GetTemplate(ctx context.Context, args GetTemplateArgs) (*BuildDefinitionTemplate, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.TemplateId == nil || *args.TemplateId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "templateId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "templateId"} 
     }
     routeValues["templateId"] = *args.TemplateId
 
@@ -2884,7 +2884,7 @@ type GetTemplateArgs struct {
 func (client Client) GetTemplates(ctx context.Context, args GetTemplatesArgs) (*[]BuildDefinitionTemplate, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -2908,15 +2908,15 @@ type GetTemplatesArgs struct {
 // Updates an existing build definition template.
 func (client Client) SaveTemplate(ctx context.Context, args SaveTemplateArgs) (*BuildDefinitionTemplate, error) {
     if args.Template == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "template"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "template"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.TemplateId == nil || *args.TemplateId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "templateId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "templateId"} 
     }
     routeValues["templateId"] = *args.TemplateId
 
@@ -2949,11 +2949,11 @@ type SaveTemplateArgs struct {
 func (client Client) GetBuildTimeline(ctx context.Context, args GetBuildTimelineArgs) (*Timeline, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
     if args.TimelineId != nil {
@@ -2995,15 +2995,15 @@ type GetBuildTimelineArgs struct {
 // [Preview API] Recreates the webhooks for the specified triggers in the given source code repository.
 func (client Client) RestoreWebhooks(ctx context.Context, args RestoreWebhooksArgs) error {
     if args.TriggerTypes == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "triggerTypes"}
+        return &azureDevOps.ArgumentNilError{ArgumentName: "triggerTypes"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.ProviderName == nil || *args.ProviderName == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "providerName"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "providerName"} 
     }
     routeValues["providerName"] = *args.ProviderName
 
@@ -3045,11 +3045,11 @@ type RestoreWebhooksArgs struct {
 func (client Client) ListWebhooks(ctx context.Context, args ListWebhooksArgs) (*[]RepositoryWebhook, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.ProviderName == nil || *args.ProviderName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "providerName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "providerName"} 
     }
     routeValues["providerName"] = *args.ProviderName
 
@@ -3087,11 +3087,11 @@ type ListWebhooksArgs struct {
 func (client Client) GetBuildWorkItemsRefs(ctx context.Context, args GetBuildWorkItemsRefsArgs) (*[]ResourceRef, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
@@ -3123,15 +3123,15 @@ type GetBuildWorkItemsRefsArgs struct {
 // Gets the work items associated with a build, filtered to specific commits.
 func (client Client) GetBuildWorkItemsRefsFromCommits(ctx context.Context, args GetBuildWorkItemsRefsFromCommitsArgs) (*[]ResourceRef, error) {
     if args.CommitIds == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "commitIds"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "commitIds"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.BuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "buildId"} 
     }
     routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
@@ -3170,17 +3170,17 @@ type GetBuildWorkItemsRefsFromCommitsArgs struct {
 func (client Client) GetWorkItemsBetweenBuilds(ctx context.Context, args GetWorkItemsBetweenBuildsArgs) (*[]ResourceRef, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
     if args.FromBuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "fromBuildId"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "fromBuildId"}
     }
     queryParams.Add("fromBuildId", strconv.Itoa(*args.FromBuildId))
     if args.ToBuildId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "toBuildId"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "toBuildId"}
     }
     queryParams.Add("toBuildId", strconv.Itoa(*args.ToBuildId))
     if args.Top != nil {

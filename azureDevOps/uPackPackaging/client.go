@@ -13,7 +13,7 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "net/http"
     "net/url"
 )
@@ -21,10 +21,10 @@ import (
 var ResourceAreaId, _ = uuid.Parse("d397749b-f115-4027-b6dd-77a65dd10d21")
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -37,19 +37,19 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 // [Preview API]
 func (client Client) AddPackage(ctx context.Context, args AddPackageArgs) error {
     if args.Metadata == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "metadata"}
+        return &azureDevOps.ArgumentNilError{ArgumentName: "metadata"}
     }
     routeValues := make(map[string]string)
     if args.FeedId == nil || *args.FeedId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
     if args.PackageName == nil || *args.PackageName == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "packageName"} 
     }
     routeValues["packageName"] = *args.PackageName
     if args.PackageVersion == nil || *args.PackageVersion == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageVersion"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "packageVersion"} 
     }
     routeValues["packageVersion"] = *args.PackageVersion
 
@@ -82,15 +82,15 @@ type AddPackageArgs struct {
 func (client Client) GetPackageMetadata(ctx context.Context, args GetPackageMetadataArgs) (*UPackPackageMetadata, error) {
     routeValues := make(map[string]string)
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
     if args.PackageName == nil || *args.PackageName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "packageName"} 
     }
     routeValues["packageName"] = *args.PackageName
     if args.PackageVersion == nil || *args.PackageVersion == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageVersion"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "packageVersion"} 
     }
     routeValues["packageVersion"] = *args.PackageVersion
 
@@ -125,11 +125,11 @@ type GetPackageMetadataArgs struct {
 func (client Client) GetPackageVersionsMetadata(ctx context.Context, args GetPackageVersionsMetadataArgs) (*UPackLimitedPackageMetadataListResponse, error) {
     routeValues := make(map[string]string)
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
     if args.PackageName == nil || *args.PackageName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "packageName"} 
     }
     routeValues["packageName"] = *args.PackageName
 

@@ -13,7 +13,7 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "io"
     "net/http"
     "net/url"
@@ -21,10 +21,10 @@ import (
 )
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -35,19 +35,19 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
 func (client Client) GetPlanAttachments(ctx context.Context, args GetPlanAttachmentsArgs) (*[]TaskAttachment, error) {
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
     if args.HubName == nil || *args.HubName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *args.HubName
     if args.PlanId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*args.PlanId).String()
     if args.Type_ == nil || *args.Type_ == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *args.Type_
 
@@ -77,35 +77,35 @@ type GetPlanAttachmentsArgs struct {
 // [Preview API]
 func (client Client) CreateAttachment(ctx context.Context, args CreateAttachmentArgs) (*TaskAttachment, error) {
     if args.UploadStream == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "uploadStream"}
     }
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
     if args.HubName == nil || *args.HubName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *args.HubName
     if args.PlanId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*args.PlanId).String()
     if args.TimelineId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "timelineId"} 
     }
     routeValues["timelineId"] = (*args.TimelineId).String()
     if args.RecordId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "recordId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "recordId"} 
     }
     routeValues["recordId"] = (*args.RecordId).String()
     if args.Type_ == nil || *args.Type_ == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *args.Type_
     if args.Name == nil || *args.Name == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
     routeValues["name"] = *args.Name
 
@@ -144,31 +144,31 @@ type CreateAttachmentArgs struct {
 func (client Client) GetAttachment(ctx context.Context, args GetAttachmentArgs) (*TaskAttachment, error) {
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
     if args.HubName == nil || *args.HubName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *args.HubName
     if args.PlanId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*args.PlanId).String()
     if args.TimelineId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "timelineId"} 
     }
     routeValues["timelineId"] = (*args.TimelineId).String()
     if args.RecordId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "recordId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "recordId"} 
     }
     routeValues["recordId"] = (*args.RecordId).String()
     if args.Type_ == nil || *args.Type_ == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *args.Type_
     if args.Name == nil || *args.Name == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
     routeValues["name"] = *args.Name
 
@@ -205,31 +205,31 @@ type GetAttachmentArgs struct {
 func (client Client) GetAttachmentContent(ctx context.Context, args GetAttachmentContentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
     if args.HubName == nil || *args.HubName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *args.HubName
     if args.PlanId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*args.PlanId).String()
     if args.TimelineId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "timelineId"} 
     }
     routeValues["timelineId"] = (*args.TimelineId).String()
     if args.RecordId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "recordId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "recordId"} 
     }
     routeValues["recordId"] = (*args.RecordId).String()
     if args.Type_ == nil || *args.Type_ == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *args.Type_
     if args.Name == nil || *args.Name == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
     routeValues["name"] = *args.Name
 
@@ -264,27 +264,27 @@ type GetAttachmentContentArgs struct {
 func (client Client) GetAttachments(ctx context.Context, args GetAttachmentsArgs) (*[]TaskAttachment, error) {
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
     if args.HubName == nil || *args.HubName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *args.HubName
     if args.PlanId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*args.PlanId).String()
     if args.TimelineId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "timelineId"} 
     }
     routeValues["timelineId"] = (*args.TimelineId).String()
     if args.RecordId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "recordId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "recordId"} 
     }
     routeValues["recordId"] = (*args.RecordId).String()
     if args.Type_ == nil || *args.Type_ == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
     routeValues["type_"] = *args.Type_
 
@@ -317,23 +317,23 @@ type GetAttachmentsArgs struct {
 
 func (client Client) AppendLogContent(ctx context.Context, args AppendLogContentArgs) (*TaskLog, error) {
     if args.UploadStream == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "uploadStream"}
     }
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
     if args.HubName == nil || *args.HubName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *args.HubName
     if args.PlanId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*args.PlanId).String()
     if args.LogId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "logId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "logId"} 
     }
     routeValues["logId"] = strconv.Itoa(*args.LogId)
 
@@ -364,19 +364,19 @@ type AppendLogContentArgs struct {
 
 func (client Client) CreateLog(ctx context.Context, args CreateLogArgs) (*TaskLog, error) {
     if args.Log == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "log"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "log"}
     }
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
     if args.HubName == nil || *args.HubName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *args.HubName
     if args.PlanId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*args.PlanId).String()
 
@@ -410,19 +410,19 @@ type CreateLogArgs struct {
 func (client Client) GetLog(ctx context.Context, args GetLogArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
     if args.HubName == nil || *args.HubName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *args.HubName
     if args.PlanId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*args.PlanId).String()
     if args.LogId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "logId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "logId"} 
     }
     routeValues["logId"] = strconv.Itoa(*args.LogId)
 
@@ -463,15 +463,15 @@ type GetLogArgs struct {
 func (client Client) GetLogs(ctx context.Context, args GetLogsArgs) (*[]TaskLog, error) {
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
     if args.HubName == nil || *args.HubName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *args.HubName
     if args.PlanId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*args.PlanId).String()
 
@@ -499,19 +499,19 @@ type GetLogsArgs struct {
 func (client Client) GetRecords(ctx context.Context, args GetRecordsArgs) (*[]TimelineRecord, error) {
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
     if args.HubName == nil || *args.HubName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *args.HubName
     if args.PlanId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*args.PlanId).String()
     if args.TimelineId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "timelineId"} 
     }
     routeValues["timelineId"] = (*args.TimelineId).String()
 
@@ -546,23 +546,23 @@ type GetRecordsArgs struct {
 
 func (client Client) UpdateRecords(ctx context.Context, args UpdateRecordsArgs) (*[]TimelineRecord, error) {
     if args.Records == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "records"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "records"}
     }
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
     if args.HubName == nil || *args.HubName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *args.HubName
     if args.PlanId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*args.PlanId).String()
     if args.TimelineId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "timelineId"} 
     }
     routeValues["timelineId"] = (*args.TimelineId).String()
 
@@ -584,7 +584,7 @@ func (client Client) UpdateRecords(ctx context.Context, args UpdateRecordsArgs) 
 // Arguments for the UpdateRecords function
 type UpdateRecordsArgs struct {
     // (required)
-    Records *azureDevops.VssJsonCollectionWrapper
+    Records *azureDevOps.VssJsonCollectionWrapper
     // (required) The project GUID to scope the request
     ScopeIdentifier *uuid.UUID
     // (required) The name of the server hub: "build" for the Build server or "rm" for the Release Management server
@@ -597,19 +597,19 @@ type UpdateRecordsArgs struct {
 
 func (client Client) CreateTimeline(ctx context.Context, args CreateTimelineArgs) (*Timeline, error) {
     if args.Timeline == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "timeline"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "timeline"}
     }
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
     if args.HubName == nil || *args.HubName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *args.HubName
     if args.PlanId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*args.PlanId).String()
 
@@ -643,19 +643,19 @@ type CreateTimelineArgs struct {
 func (client Client) DeleteTimeline(ctx context.Context, args DeleteTimelineArgs) error {
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
     if args.HubName == nil || *args.HubName == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *args.HubName
     if args.PlanId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*args.PlanId).String()
     if args.TimelineId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "timelineId"} 
     }
     routeValues["timelineId"] = (*args.TimelineId).String()
 
@@ -683,19 +683,19 @@ type DeleteTimelineArgs struct {
 func (client Client) GetTimeline(ctx context.Context, args GetTimelineArgs) (*Timeline, error) {
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
     if args.HubName == nil || *args.HubName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *args.HubName
     if args.PlanId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*args.PlanId).String()
     if args.TimelineId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "timelineId"} 
     }
     routeValues["timelineId"] = (*args.TimelineId).String()
 
@@ -736,15 +736,15 @@ type GetTimelineArgs struct {
 func (client Client) GetTimelines(ctx context.Context, args GetTimelinesArgs) (*[]Timeline, error) {
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
     routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
     if args.HubName == nil || *args.HubName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
     routeValues["hubName"] = *args.HubName
     if args.PlanId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "planId"} 
     }
     routeValues["planId"] = (*args.PlanId).String()
 

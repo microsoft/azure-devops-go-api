@@ -13,17 +13,17 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "net/http"
     "net/url"
     "strconv"
 )
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -33,11 +33,11 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
 // [Preview API] Creates the specified items in in the referenced container.
 func (client Client) CreateItems(ctx context.Context, args CreateItemsArgs) (*[]FileContainerItem, error) {
     if args.Items == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "items"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "items"}
     }
     routeValues := make(map[string]string)
     if args.ContainerId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "containerId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "containerId"} 
     }
     routeValues["containerId"] = strconv.Itoa(*args.ContainerId)
 
@@ -63,7 +63,7 @@ func (client Client) CreateItems(ctx context.Context, args CreateItemsArgs) (*[]
 // Arguments for the CreateItems function
 type CreateItemsArgs struct {
     // (required)
-    Items *azureDevops.VssJsonCollectionWrapper
+    Items *azureDevOps.VssJsonCollectionWrapper
     // (required)
     ContainerId *int
     // (optional) A guid representing the scope of the container. This is often the project id.
@@ -74,13 +74,13 @@ type CreateItemsArgs struct {
 func (client Client) DeleteItem(ctx context.Context, args DeleteItemArgs) error {
     routeValues := make(map[string]string)
     if args.ContainerId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "containerId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "containerId"} 
     }
     routeValues["containerId"] = strconv.FormatUint(*args.ContainerId, 10)
 
     queryParams := url.Values{}
     if args.ItemPath == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "itemPath"}
+        return &azureDevOps.ArgumentNilError{ArgumentName: "itemPath"}
     }
     queryParams.Add("itemPath", *args.ItemPath)
     if args.Scope != nil {
@@ -137,7 +137,7 @@ type GetContainersArgs struct {
 func (client Client) GetItems(ctx context.Context, args GetItemsArgs) (*[]FileContainerItem, error) {
     routeValues := make(map[string]string)
     if args.ContainerId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "containerId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "containerId"} 
     }
     routeValues["containerId"] = strconv.FormatUint(*args.ContainerId, 10)
 

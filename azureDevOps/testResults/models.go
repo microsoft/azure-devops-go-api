@@ -10,7 +10,7 @@ package testResults
 
 import (
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "time"
 )
 
@@ -1723,7 +1723,7 @@ type TestTagSummary struct {
 
 // Tags to update to a run or result.
 type TestTagsUpdateModel struct {
-    Tags *[]azureDevops.KeyValuePair `json:"tags,omitempty"`
+    Tags *[]azureDevOps.KeyValuePair `json:"tags,omitempty"`
 }
 
 type TestToWorkItemLinks struct {

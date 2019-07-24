@@ -13,17 +13,17 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "net/http"
     "net/url"
     "strconv"
 )
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -34,19 +34,19 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
 func (client Client) GetLog(ctx context.Context, args GetLogArgs) (*Log, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.PipelineId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pipelineId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pipelineId"} 
     }
     routeValues["pipelineId"] = strconv.Itoa(*args.PipelineId)
     if args.RunId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*args.RunId)
     if args.LogId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "logId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "logId"} 
     }
     routeValues["logId"] = strconv.Itoa(*args.LogId)
 
@@ -83,15 +83,15 @@ type GetLogArgs struct {
 func (client Client) ListLogs(ctx context.Context, args ListLogsArgs) (*LogCollection, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.PipelineId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pipelineId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pipelineId"} 
     }
     routeValues["pipelineId"] = strconv.Itoa(*args.PipelineId)
     if args.RunId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*args.RunId)
 
@@ -125,11 +125,11 @@ type ListLogsArgs struct {
 // [Preview API]
 func (client Client) CreatePipeline(ctx context.Context, args CreatePipelineArgs) (*Pipeline, error) {
     if args.InputParameters == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "inputParameters"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "inputParameters"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -160,11 +160,11 @@ type CreatePipelineArgs struct {
 func (client Client) GetPipeline(ctx context.Context, args GetPipelineArgs) (*Pipeline, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.PipelineId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pipelineId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pipelineId"} 
     }
     routeValues["pipelineId"] = strconv.Itoa(*args.PipelineId)
 
@@ -197,7 +197,7 @@ type GetPipelineArgs struct {
 func (client Client) ListPipelines(ctx context.Context, args ListPipelinesArgs) (*[]Pipeline, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -238,15 +238,15 @@ type ListPipelinesArgs struct {
 func (client Client) GetRun(ctx context.Context, args GetRunArgs) (*Run, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.PipelineId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pipelineId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pipelineId"} 
     }
     routeValues["pipelineId"] = strconv.Itoa(*args.PipelineId)
     if args.RunId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "runId"} 
     }
     routeValues["runId"] = strconv.Itoa(*args.RunId)
 
@@ -275,11 +275,11 @@ type GetRunArgs struct {
 func (client Client) ListRuns(ctx context.Context, args ListRunsArgs) (*[]Run, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.PipelineId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pipelineId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pipelineId"} 
     }
     routeValues["pipelineId"] = strconv.Itoa(*args.PipelineId)
 
@@ -305,15 +305,15 @@ type ListRunsArgs struct {
 // [Preview API] Runs a pipeline.
 func (client Client) RunPipeline(ctx context.Context, args RunPipelineArgs) (*Run, error) {
     if args.RunParameters == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "runParameters"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "runParameters"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.PipelineId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pipelineId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pipelineId"} 
     }
     routeValues["pipelineId"] = strconv.Itoa(*args.PipelineId)
 

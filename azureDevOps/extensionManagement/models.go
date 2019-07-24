@@ -10,7 +10,7 @@ package extensionManagement
 
 import (
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "time"
 )
 
@@ -828,7 +828,7 @@ type ExtensionVersion struct {
     Files *[]ExtensionFile `json:"files,omitempty"`
     Flags *ExtensionVersionFlags `json:"flags,omitempty"`
     LastUpdated *time.Time `json:"lastUpdated,omitempty"`
-    Properties *[]azureDevops.KeyValuePair `json:"properties,omitempty"`
+    Properties *[]azureDevOps.KeyValuePair `json:"properties,omitempty"`
     ValidationResultMessage *string `json:"validationResultMessage,omitempty"`
     Version *string `json:"version,omitempty"`
     VersionDescription *string `json:"versionDescription,omitempty"`

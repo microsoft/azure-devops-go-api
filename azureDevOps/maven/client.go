@@ -13,7 +13,7 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "net/http"
     "net/url"
     "strconv"
@@ -22,10 +22,10 @@ import (
 var ResourceAreaId, _ = uuid.Parse("6f7f8c07-ff36-473c-bcf3-bd6cc9b6c066")
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -42,23 +42,23 @@ func (client Client) DownloadPackage(ctx context.Context, args DownloadPackageAr
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
     if args.GroupId == nil || *args.GroupId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
     }
     routeValues["groupId"] = *args.GroupId
     if args.ArtifactId == nil || *args.ArtifactId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "artifactId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "artifactId"} 
     }
     routeValues["artifactId"] = *args.ArtifactId
     if args.Version == nil || *args.Version == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "version"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "version"} 
     }
     routeValues["version"] = *args.Version
     if args.FileName == nil || *args.FileName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "fileName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "fileName"} 
     }
     routeValues["fileName"] = *args.FileName
 
@@ -96,19 +96,19 @@ func (client Client) DeletePackageVersionFromRecycleBin(ctx context.Context, arg
         routeValues["project"] = *args.Project
     }
     if args.Feed == nil || *args.Feed == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feed"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feed"} 
     }
     routeValues["feed"] = *args.Feed
     if args.GroupId == nil || *args.GroupId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
     }
     routeValues["groupId"] = *args.GroupId
     if args.ArtifactId == nil || *args.ArtifactId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "artifactId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "artifactId"} 
     }
     routeValues["artifactId"] = *args.ArtifactId
     if args.Version == nil || *args.Version == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "version"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "version"} 
     }
     routeValues["version"] = *args.Version
 
@@ -142,19 +142,19 @@ func (client Client) GetPackageVersionMetadataFromRecycleBin(ctx context.Context
         routeValues["project"] = *args.Project
     }
     if args.Feed == nil || *args.Feed == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feed"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feed"} 
     }
     routeValues["feed"] = *args.Feed
     if args.GroupId == nil || *args.GroupId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
     }
     routeValues["groupId"] = *args.GroupId
     if args.ArtifactId == nil || *args.ArtifactId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "artifactId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "artifactId"} 
     }
     routeValues["artifactId"] = *args.ArtifactId
     if args.Version == nil || *args.Version == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "version"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "version"} 
     }
     routeValues["version"] = *args.Version
 
@@ -186,26 +186,26 @@ type GetPackageVersionMetadataFromRecycleBinArgs struct {
 // [Preview API] Restore a package version from the recycle bin to its associated feed.
 func (client Client) RestorePackageVersionFromRecycleBin(ctx context.Context, args RestorePackageVersionFromRecycleBinArgs) error {
     if args.PackageVersionDetails == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "packageVersionDetails"}
+        return &azureDevOps.ArgumentNilError{ArgumentName: "packageVersionDetails"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.Feed == nil || *args.Feed == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feed"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feed"} 
     }
     routeValues["feed"] = *args.Feed
     if args.GroupId == nil || *args.GroupId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
     }
     routeValues["groupId"] = *args.GroupId
     if args.ArtifactId == nil || *args.ArtifactId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "artifactId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "artifactId"} 
     }
     routeValues["artifactId"] = *args.ArtifactId
     if args.Version == nil || *args.Version == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "version"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "version"} 
     }
     routeValues["version"] = *args.Version
 
@@ -245,19 +245,19 @@ func (client Client) GetPackageVersion(ctx context.Context, args GetPackageVersi
         routeValues["project"] = *args.Project
     }
     if args.Feed == nil || *args.Feed == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feed"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feed"} 
     }
     routeValues["feed"] = *args.Feed
     if args.GroupId == nil || *args.GroupId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
     }
     routeValues["groupId"] = *args.GroupId
     if args.ArtifactId == nil || *args.ArtifactId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "artifactId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "artifactId"} 
     }
     routeValues["artifactId"] = *args.ArtifactId
     if args.Version == nil || *args.Version == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "version"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "version"} 
     }
     routeValues["version"] = *args.Version
 
@@ -299,19 +299,19 @@ func (client Client) PackageDelete(ctx context.Context, args PackageDeleteArgs) 
         routeValues["project"] = *args.Project
     }
     if args.Feed == nil || *args.Feed == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feed"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feed"} 
     }
     routeValues["feed"] = *args.Feed
     if args.GroupId == nil || *args.GroupId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
     }
     routeValues["groupId"] = *args.GroupId
     if args.ArtifactId == nil || *args.ArtifactId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "artifactId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "artifactId"} 
     }
     routeValues["artifactId"] = *args.ArtifactId
     if args.Version == nil || *args.Version == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "version"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "version"} 
     }
     routeValues["version"] = *args.Version
 

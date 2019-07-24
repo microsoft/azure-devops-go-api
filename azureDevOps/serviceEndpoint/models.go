@@ -10,7 +10,7 @@ package serviceEndpoint
 
 import (
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "math/big"
     "time"
 )
@@ -299,7 +299,7 @@ type DependencyData struct {
     // Gets or sets the category of dependency data.
     Input *string `json:"input,omitempty"`
     // Gets or sets the key-value pair to specify properties and their values.
-    Map *[]azureDevops.KeyValuePair `json:"map,omitempty"`
+    Map *[]azureDevOps.KeyValuePair `json:"map,omitempty"`
 }
 
 // Represents the inputs on which any given input is dependent.

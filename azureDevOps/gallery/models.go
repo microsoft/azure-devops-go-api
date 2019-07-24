@@ -10,7 +10,7 @@ package gallery
 
 import (
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "time"
 )
 
@@ -354,8 +354,8 @@ type ExtensionDraft struct {
     Payload *ExtensionPayload `json:"payload,omitempty"`
     Product *string `json:"product,omitempty"`
     PublisherName *string `json:"publisherName,omitempty"`
-    ValidationErrors *[]azureDevops.KeyValuePair `json:"validationErrors,omitempty"`
-    ValidationWarnings *[]azureDevops.KeyValuePair `json:"validationWarnings,omitempty"`
+    ValidationErrors *[]azureDevOps.KeyValuePair `json:"validationErrors,omitempty"`
+    ValidationWarnings *[]azureDevOps.KeyValuePair `json:"validationWarnings,omitempty"`
 }
 
 type ExtensionDraftAsset struct {
@@ -459,7 +459,7 @@ type ExtensionPayload struct {
     IsPreview *bool `json:"isPreview,omitempty"`
     IsSignedByMicrosoft *bool `json:"isSignedByMicrosoft,omitempty"`
     IsValid *bool `json:"isValid,omitempty"`
-    Metadata *[]azureDevops.KeyValuePair `json:"metadata,omitempty"`
+    Metadata *[]azureDevOps.KeyValuePair `json:"metadata,omitempty"`
     Type *ExtensionDeploymentTechnology `json:"type,omitempty"`
 }
 
@@ -704,7 +704,7 @@ type ExtensionVersion struct {
     Files *[]ExtensionFile `json:"files,omitempty"`
     Flags *ExtensionVersionFlags `json:"flags,omitempty"`
     LastUpdated *time.Time `json:"lastUpdated,omitempty"`
-    Properties *[]azureDevops.KeyValuePair `json:"properties,omitempty"`
+    Properties *[]azureDevOps.KeyValuePair `json:"properties,omitempty"`
     ValidationResultMessage *string `json:"validationResultMessage,omitempty"`
     Version *string `json:"version,omitempty"`
     VersionDescription *string `json:"versionDescription,omitempty"`

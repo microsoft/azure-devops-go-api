@@ -13,17 +13,17 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "net/http"
 )
 
 var ResourceAreaId, _ = uuid.Parse("b40c1171-807a-493a-8f3f-5c26d5e2f5aa")
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -36,14 +36,14 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 // [Preview API] Creates a session, a wrapper around a feed that can store additional metadata on the packages published to it.
 func (client Client) CreateSession(ctx context.Context, args CreateSessionArgs) (*SessionResponse, error) {
     if args.SessionRequest == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "sessionRequest"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "sessionRequest"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.Protocol == nil || *args.Protocol == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "protocol"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "protocol"} 
     }
     routeValues["protocol"] = *args.Protocol
 

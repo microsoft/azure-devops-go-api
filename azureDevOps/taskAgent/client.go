@@ -13,7 +13,7 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "net/http"
     "net/url"
     "strconv"
@@ -24,10 +24,10 @@ import (
 var ResourceAreaId, _ = uuid.Parse("a85b8835-c1a1-4aac-ae97-1c3d0ba72dbd")
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -40,7 +40,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 // [Preview API]
 func (client Client) AddAgentCloud(ctx context.Context, args AddAgentCloudArgs) (*TaskAgentCloud, error) {
     if args.AgentCloud == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "agentCloud"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "agentCloud"}
     }
     body, marshalErr := json.Marshal(*args.AgentCloud)
     if marshalErr != nil {
@@ -67,7 +67,7 @@ type AddAgentCloudArgs struct {
 func (client Client) DeleteAgentCloud(ctx context.Context, args DeleteAgentCloudArgs) (*TaskAgentCloud, error) {
     routeValues := make(map[string]string)
     if args.AgentCloudId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "agentCloudId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "agentCloudId"} 
     }
     routeValues["agentCloudId"] = strconv.Itoa(*args.AgentCloudId)
 
@@ -92,7 +92,7 @@ type DeleteAgentCloudArgs struct {
 func (client Client) GetAgentCloud(ctx context.Context, args GetAgentCloudArgs) (*TaskAgentCloud, error) {
     routeValues := make(map[string]string)
     if args.AgentCloudId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "agentCloudId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "agentCloudId"} 
     }
     routeValues["agentCloudId"] = strconv.Itoa(*args.AgentCloudId)
 
@@ -150,11 +150,11 @@ type GetAgentCloudTypesArgs struct {
 // Adds an agent to a pool.  You probably don't want to call this endpoint directly. Instead, [configure an agent](https://docs.microsoft.com/azure/devops/pipelines/agents/agents) using the agent download package.
 func (client Client) AddAgent(ctx context.Context, args AddAgentArgs) (*TaskAgent, error) {
     if args.Agent == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "agent"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "agent"}
     }
     routeValues := make(map[string]string)
     if args.PoolId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "poolId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "poolId"} 
     }
     routeValues["poolId"] = strconv.Itoa(*args.PoolId)
 
@@ -185,11 +185,11 @@ type AddAgentArgs struct {
 func (client Client) DeleteAgent(ctx context.Context, args DeleteAgentArgs) error {
     routeValues := make(map[string]string)
     if args.PoolId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "poolId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "poolId"} 
     }
     routeValues["poolId"] = strconv.Itoa(*args.PoolId)
     if args.AgentId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "agentId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "agentId"} 
     }
     routeValues["agentId"] = strconv.Itoa(*args.AgentId)
 
@@ -214,11 +214,11 @@ type DeleteAgentArgs struct {
 func (client Client) GetAgent(ctx context.Context, args GetAgentArgs) (*TaskAgent, error) {
     routeValues := make(map[string]string)
     if args.PoolId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "poolId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "poolId"} 
     }
     routeValues["poolId"] = strconv.Itoa(*args.PoolId)
     if args.AgentId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "agentId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "agentId"} 
     }
     routeValues["agentId"] = strconv.Itoa(*args.AgentId)
 
@@ -267,7 +267,7 @@ type GetAgentArgs struct {
 func (client Client) GetAgents(ctx context.Context, args GetAgentsArgs) (*[]TaskAgent, error) {
     routeValues := make(map[string]string)
     if args.PoolId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "poolId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "poolId"} 
     }
     routeValues["poolId"] = strconv.Itoa(*args.PoolId)
 
@@ -324,15 +324,15 @@ type GetAgentsArgs struct {
 // Replace an agent.  You probably don't want to call this endpoint directly. Instead, [use the agent configuration script](https://docs.microsoft.com/azure/devops/pipelines/agents/agents) to remove and reconfigure an agent from your organization.
 func (client Client) ReplaceAgent(ctx context.Context, args ReplaceAgentArgs) (*TaskAgent, error) {
     if args.Agent == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "agent"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "agent"}
     }
     routeValues := make(map[string]string)
     if args.PoolId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "poolId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "poolId"} 
     }
     routeValues["poolId"] = strconv.Itoa(*args.PoolId)
     if args.AgentId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "agentId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "agentId"} 
     }
     routeValues["agentId"] = strconv.Itoa(*args.AgentId)
 
@@ -364,15 +364,15 @@ type ReplaceAgentArgs struct {
 // Update agent details.
 func (client Client) UpdateAgent(ctx context.Context, args UpdateAgentArgs) (*TaskAgent, error) {
     if args.Agent == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "agent"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "agent"}
     }
     routeValues := make(map[string]string)
     if args.PoolId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "poolId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "poolId"} 
     }
     routeValues["poolId"] = strconv.Itoa(*args.PoolId)
     if args.AgentId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "agentId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "agentId"} 
     }
     routeValues["agentId"] = strconv.Itoa(*args.AgentId)
 
@@ -404,11 +404,11 @@ type UpdateAgentArgs struct {
 // [Preview API] Create a deployment group.
 func (client Client) AddDeploymentGroup(ctx context.Context, args AddDeploymentGroupArgs) (*DeploymentGroup, error) {
     if args.DeploymentGroup == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "deploymentGroup"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "deploymentGroup"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -439,11 +439,11 @@ type AddDeploymentGroupArgs struct {
 func (client Client) DeleteDeploymentGroup(ctx context.Context, args DeleteDeploymentGroupArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DeploymentGroupId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "deploymentGroupId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "deploymentGroupId"} 
     }
     routeValues["deploymentGroupId"] = strconv.Itoa(*args.DeploymentGroupId)
 
@@ -468,11 +468,11 @@ type DeleteDeploymentGroupArgs struct {
 func (client Client) GetDeploymentGroup(ctx context.Context, args GetDeploymentGroupArgs) (*DeploymentGroup, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DeploymentGroupId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "deploymentGroupId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "deploymentGroupId"} 
     }
     routeValues["deploymentGroupId"] = strconv.Itoa(*args.DeploymentGroupId)
 
@@ -510,7 +510,7 @@ type GetDeploymentGroupArgs struct {
 func (client Client) GetDeploymentGroups(ctx context.Context, args GetDeploymentGroupsArgs) (*[]DeploymentGroup, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -570,15 +570,15 @@ type GetDeploymentGroupsArgs struct {
 // [Preview API] Update a deployment group.
 func (client Client) UpdateDeploymentGroup(ctx context.Context, args UpdateDeploymentGroupArgs) (*DeploymentGroup, error) {
     if args.DeploymentGroup == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "deploymentGroup"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "deploymentGroup"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DeploymentGroupId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "deploymentGroupId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "deploymentGroupId"} 
     }
     routeValues["deploymentGroupId"] = strconv.Itoa(*args.DeploymentGroupId)
 
@@ -610,7 +610,7 @@ type UpdateDeploymentGroupArgs struct {
 // Create an agent pool.
 func (client Client) AddAgentPool(ctx context.Context, args AddAgentPoolArgs) (*TaskAgentPool, error) {
     if args.Pool == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pool"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pool"}
     }
     body, marshalErr := json.Marshal(*args.Pool)
     if marshalErr != nil {
@@ -637,7 +637,7 @@ type AddAgentPoolArgs struct {
 func (client Client) DeleteAgentPool(ctx context.Context, args DeleteAgentPoolArgs) error {
     routeValues := make(map[string]string)
     if args.PoolId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "poolId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "poolId"} 
     }
     routeValues["poolId"] = strconv.Itoa(*args.PoolId)
 
@@ -660,7 +660,7 @@ type DeleteAgentPoolArgs struct {
 func (client Client) GetAgentPool(ctx context.Context, args GetAgentPoolArgs) (*TaskAgentPool, error) {
     routeValues := make(map[string]string)
     if args.PoolId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "poolId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "poolId"} 
     }
     routeValues["poolId"] = strconv.Itoa(*args.PoolId)
 
@@ -736,7 +736,7 @@ type GetAgentPoolsArgs struct {
 func (client Client) GetAgentPoolsByIds(ctx context.Context, args GetAgentPoolsByIdsArgs) (*[]TaskAgentPool, error) {
     queryParams := url.Values{}
     if args.PoolIds == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "poolIds"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "poolIds"}
     }
     var stringList []string
     for _, item := range *args.PoolIds {
@@ -769,11 +769,11 @@ type GetAgentPoolsByIdsArgs struct {
 // Update properties on an agent pool
 func (client Client) UpdateAgentPool(ctx context.Context, args UpdateAgentPoolArgs) (*TaskAgentPool, error) {
     if args.Pool == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "pool"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pool"}
     }
     routeValues := make(map[string]string)
     if args.PoolId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "poolId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "poolId"} 
     }
     routeValues["poolId"] = strconv.Itoa(*args.PoolId)
 
@@ -803,7 +803,7 @@ type UpdateAgentPoolArgs struct {
 // [Preview API] Create a new agent queue to connect a project to an agent pool.
 func (client Client) AddAgentQueue(ctx context.Context, args AddAgentQueueArgs) (*TaskAgentQueue, error) {
     if args.Queue == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "queue"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "queue"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
@@ -846,7 +846,7 @@ func (client Client) DeleteAgentQueue(ctx context.Context, args DeleteAgentQueue
         routeValues["project"] = *args.Project
     }
     if args.QueueId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "queueId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "queueId"} 
     }
     routeValues["queueId"] = strconv.Itoa(*args.QueueId)
 
@@ -874,7 +874,7 @@ func (client Client) GetAgentQueue(ctx context.Context, args GetAgentQueueArgs) 
         routeValues["project"] = *args.Project
     }
     if args.QueueId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "queueId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "queueId"} 
     }
     routeValues["queueId"] = strconv.Itoa(*args.QueueId)
 
@@ -947,7 +947,7 @@ func (client Client) GetAgentQueuesByIds(ctx context.Context, args GetAgentQueue
 
     queryParams := url.Values{}
     if args.QueueIds == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "queueIds"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "queueIds"}
     }
     var stringList []string
     for _, item := range *args.QueueIds {
@@ -988,7 +988,7 @@ func (client Client) GetAgentQueuesByNames(ctx context.Context, args GetAgentQue
 
     queryParams := url.Values{}
     if args.QueueNames == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "queueNames"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "queueNames"}
     }
     listAsString := strings.Join((*args.QueueNames)[:], ",")
     queryParams.Add("queueNames", listAsString)
@@ -1020,7 +1020,7 @@ type GetAgentQueuesByNamesArgs struct {
 func (client Client) GetAgentCloudRequests(ctx context.Context, args GetAgentCloudRequestsArgs) (*[]TaskAgentCloudRequest, error) {
     routeValues := make(map[string]string)
     if args.AgentCloudId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "agentCloudId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "agentCloudId"} 
     }
     routeValues["agentCloudId"] = strconv.Itoa(*args.AgentCloudId)
 
@@ -1045,15 +1045,15 @@ type GetAgentCloudRequestsArgs struct {
 func (client Client) DeleteDeploymentTarget(ctx context.Context, args DeleteDeploymentTargetArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DeploymentGroupId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "deploymentGroupId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "deploymentGroupId"} 
     }
     routeValues["deploymentGroupId"] = strconv.Itoa(*args.DeploymentGroupId)
     if args.TargetId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "targetId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "targetId"} 
     }
     routeValues["targetId"] = strconv.Itoa(*args.TargetId)
 
@@ -1080,15 +1080,15 @@ type DeleteDeploymentTargetArgs struct {
 func (client Client) GetDeploymentTarget(ctx context.Context, args GetDeploymentTargetArgs) (*DeploymentMachine, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DeploymentGroupId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "deploymentGroupId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "deploymentGroupId"} 
     }
     routeValues["deploymentGroupId"] = strconv.Itoa(*args.DeploymentGroupId)
     if args.TargetId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "targetId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "targetId"} 
     }
     routeValues["targetId"] = strconv.Itoa(*args.TargetId)
 
@@ -1123,11 +1123,11 @@ type GetDeploymentTargetArgs struct {
 func (client Client) GetDeploymentTargets(ctx context.Context, args GetDeploymentTargetsArgs) (*[]DeploymentMachine, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DeploymentGroupId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "deploymentGroupId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "deploymentGroupId"} 
     }
     routeValues["deploymentGroupId"] = strconv.Itoa(*args.DeploymentGroupId)
 
@@ -1206,15 +1206,15 @@ type GetDeploymentTargetsArgs struct {
 // [Preview API] Update tags of a list of deployment targets in a deployment group.
 func (client Client) UpdateDeploymentTargets(ctx context.Context, args UpdateDeploymentTargetsArgs) (*[]DeploymentMachine, error) {
     if args.Machines == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "machines"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "machines"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.DeploymentGroupId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "deploymentGroupId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "deploymentGroupId"} 
     }
     routeValues["deploymentGroupId"] = strconv.Itoa(*args.DeploymentGroupId)
 
@@ -1246,11 +1246,11 @@ type UpdateDeploymentTargetsArgs struct {
 // [Preview API] Create a task group.
 func (client Client) AddTaskGroup(ctx context.Context, args AddTaskGroupArgs) (*TaskGroup, error) {
     if args.TaskGroup == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "taskGroup"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "taskGroup"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -1281,11 +1281,11 @@ type AddTaskGroupArgs struct {
 func (client Client) DeleteTaskGroup(ctx context.Context, args DeleteTaskGroupArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.TaskGroupId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "taskGroupId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "taskGroupId"} 
     }
     routeValues["taskGroupId"] = (*args.TaskGroupId).String()
 
@@ -1316,7 +1316,7 @@ type DeleteTaskGroupArgs struct {
 func (client Client) GetTaskGroups(ctx context.Context, args GetTaskGroupsArgs) (*[]TaskGroup, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.TaskGroupId != nil {
@@ -1376,11 +1376,11 @@ type GetTaskGroupsArgs struct {
 // [Preview API] Update a task group.
 func (client Client) UpdateTaskGroup(ctx context.Context, args UpdateTaskGroupArgs) (*TaskGroup, error) {
     if args.TaskGroup == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "taskGroup"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "taskGroup"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.TaskGroupId != nil {
@@ -1415,11 +1415,11 @@ type UpdateTaskGroupArgs struct {
 // [Preview API] Add a variable group.
 func (client Client) AddVariableGroup(ctx context.Context, args AddVariableGroupArgs) (*VariableGroup, error) {
     if args.Group == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "group"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "group"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -1450,11 +1450,11 @@ type AddVariableGroupArgs struct {
 func (client Client) DeleteVariableGroup(ctx context.Context, args DeleteVariableGroupArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.GroupId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "groupId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "groupId"} 
     }
     routeValues["groupId"] = strconv.Itoa(*args.GroupId)
 
@@ -1479,11 +1479,11 @@ type DeleteVariableGroupArgs struct {
 func (client Client) GetVariableGroup(ctx context.Context, args GetVariableGroupArgs) (*VariableGroup, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.GroupId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "groupId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "groupId"} 
     }
     routeValues["groupId"] = strconv.Itoa(*args.GroupId)
 
@@ -1510,7 +1510,7 @@ type GetVariableGroupArgs struct {
 func (client Client) GetVariableGroups(ctx context.Context, args GetVariableGroupsArgs) (*[]VariableGroup, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -1561,13 +1561,13 @@ type GetVariableGroupsArgs struct {
 func (client Client) GetVariableGroupsById(ctx context.Context, args GetVariableGroupsByIdArgs) (*[]VariableGroup, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
     if args.GroupIds == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "groupIds"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "groupIds"}
     }
     var stringList []string
     for _, item := range *args.GroupIds {
@@ -1597,15 +1597,15 @@ type GetVariableGroupsByIdArgs struct {
 // [Preview API] Update a variable group.
 func (client Client) UpdateVariableGroup(ctx context.Context, args UpdateVariableGroupArgs) (*VariableGroup, error) {
     if args.Group == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "group"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "group"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.GroupId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "groupId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "groupId"} 
     }
     routeValues["groupId"] = strconv.Itoa(*args.GroupId)
 

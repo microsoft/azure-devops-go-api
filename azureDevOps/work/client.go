@@ -13,7 +13,7 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "net/http"
     "net/url"
     "strconv"
@@ -24,10 +24,10 @@ import (
 var ResourceAreaId, _ = uuid.Parse("1d4f49f9-02b9-4e26-b826-2cdb6195f2a9")
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -41,7 +41,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 func (client Client) GetBacklogConfigurations(ctx context.Context, args GetBacklogConfigurationsArgs) (*BacklogConfiguration, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
@@ -71,15 +71,15 @@ type GetBacklogConfigurationsArgs struct {
 func (client Client) GetBacklogLevelWorkItems(ctx context.Context, args GetBacklogLevelWorkItemsArgs) (*BacklogLevelWorkItems, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team == nil || *args.Team == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "team"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "team"} 
     }
     routeValues["team"] = *args.Team
     if args.BacklogId == nil || *args.BacklogId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "backlogId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "backlogId"} 
     }
     routeValues["backlogId"] = *args.BacklogId
 
@@ -108,15 +108,15 @@ type GetBacklogLevelWorkItemsArgs struct {
 func (client Client) GetBacklog(ctx context.Context, args GetBacklogArgs) (*BacklogLevelConfiguration, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team == nil || *args.Team == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "team"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "team"} 
     }
     routeValues["team"] = *args.Team
     if args.Id == nil || *args.Id == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "id"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "id"} 
     }
     routeValues["id"] = *args.Id
 
@@ -145,11 +145,11 @@ type GetBacklogArgs struct {
 func (client Client) GetBacklogs(ctx context.Context, args GetBacklogsArgs) (*[]BacklogLevelConfiguration, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team == nil || *args.Team == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "team"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "team"} 
     }
     routeValues["team"] = *args.Team
 
@@ -200,7 +200,7 @@ type GetColumnSuggestedValuesArgs struct {
 func (client Client) GetBoardMappingParentItems(ctx context.Context, args GetBoardMappingParentItemsArgs) (*[]ParentChildWIMap, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
@@ -209,11 +209,11 @@ func (client Client) GetBoardMappingParentItems(ctx context.Context, args GetBoa
 
     queryParams := url.Values{}
     if args.ChildBacklogContextCategoryRefName == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "childBacklogContextCategoryRefName"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "childBacklogContextCategoryRefName"}
     }
     queryParams.Add("childBacklogContextCategoryRefName", *args.ChildBacklogContextCategoryRefName)
     if args.WorkitemIds == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "workitemIds"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "workitemIds"}
     }
     var stringList []string
     for _, item := range *args.WorkitemIds {
@@ -272,14 +272,14 @@ type GetRowSuggestedValuesArgs struct {
 func (client Client) GetBoard(ctx context.Context, args GetBoardArgs) (*Board, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.Id == nil || *args.Id == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "id"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "id"} 
     }
     routeValues["id"] = *args.Id
 
@@ -308,7 +308,7 @@ type GetBoardArgs struct {
 func (client Client) GetBoards(ctx context.Context, args GetBoardsArgs) (*[]BoardReference, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
@@ -337,18 +337,18 @@ type GetBoardsArgs struct {
 // Update board options
 func (client Client) SetBoardOptions(ctx context.Context, args SetBoardOptionsArgs) (*map[string]string, error) {
     if args.Options == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "options"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "options"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.Id == nil || *args.Id == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "id"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "id"} 
     }
     routeValues["id"] = *args.Id
 
@@ -383,14 +383,14 @@ type SetBoardOptionsArgs struct {
 func (client Client) GetBoardUserSettings(ctx context.Context, args GetBoardUserSettingsArgs) (*BoardUserSettings, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.Board == nil || *args.Board == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *args.Board
 
@@ -418,18 +418,18 @@ type GetBoardUserSettingsArgs struct {
 // [Preview API] Update board user settings for the board id
 func (client Client) UpdateBoardUserSettings(ctx context.Context, args UpdateBoardUserSettingsArgs) (*BoardUserSettings, error) {
     if args.BoardUserSettings == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "boardUserSettings"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "boardUserSettings"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.Board == nil || *args.Board == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *args.Board
 
@@ -464,14 +464,14 @@ type UpdateBoardUserSettingsArgs struct {
 func (client Client) GetCapacitiesWithIdentityRef(ctx context.Context, args GetCapacitiesWithIdentityRefArgs) (*[]TeamMemberCapacityIdentityRef, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.IterationId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = (*args.IterationId).String()
 
@@ -500,18 +500,18 @@ type GetCapacitiesWithIdentityRefArgs struct {
 func (client Client) GetCapacityWithIdentityRef(ctx context.Context, args GetCapacityWithIdentityRefArgs) (*TeamMemberCapacityIdentityRef, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.IterationId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = (*args.IterationId).String()
     if args.TeamMemberId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "teamMemberId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "teamMemberId"} 
     }
     routeValues["teamMemberId"] = (*args.TeamMemberId).String()
 
@@ -541,18 +541,18 @@ type GetCapacityWithIdentityRefArgs struct {
 // Replace a team's capacity
 func (client Client) ReplaceCapacitiesWithIdentityRef(ctx context.Context, args ReplaceCapacitiesWithIdentityRefArgs) (*[]TeamMemberCapacityIdentityRef, error) {
     if args.Capacities == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "capacities"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "capacities"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.IterationId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = (*args.IterationId).String()
 
@@ -586,22 +586,22 @@ type ReplaceCapacitiesWithIdentityRefArgs struct {
 // Update a team member's capacity
 func (client Client) UpdateCapacityWithIdentityRef(ctx context.Context, args UpdateCapacityWithIdentityRefArgs) (*TeamMemberCapacityIdentityRef, error) {
     if args.Patch == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "patch"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "patch"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.IterationId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = (*args.IterationId).String()
     if args.TeamMemberId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "teamMemberId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "teamMemberId"} 
     }
     routeValues["teamMemberId"] = (*args.TeamMemberId).String()
 
@@ -638,14 +638,14 @@ type UpdateCapacityWithIdentityRefArgs struct {
 func (client Client) GetBoardCardRuleSettings(ctx context.Context, args GetBoardCardRuleSettingsArgs) (*BoardCardRuleSettings, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.Board == nil || *args.Board == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *args.Board
 
@@ -673,18 +673,18 @@ type GetBoardCardRuleSettingsArgs struct {
 // Update board card Rule settings for the board id or board by name
 func (client Client) UpdateBoardCardRuleSettings(ctx context.Context, args UpdateBoardCardRuleSettingsArgs) (*BoardCardRuleSettings, error) {
     if args.BoardCardRuleSettings == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "boardCardRuleSettings"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "boardCardRuleSettings"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.Board == nil || *args.Board == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *args.Board
 
@@ -718,15 +718,15 @@ type UpdateBoardCardRuleSettingsArgs struct {
 // [Preview API] Update taskboard card Rule settings
 func (client Client) UpdateTaskboardCardRuleSettings(ctx context.Context, args UpdateTaskboardCardRuleSettingsArgs) error {
     if args.BoardCardRuleSettings == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "boardCardRuleSettings"}
+        return &azureDevOps.ArgumentNilError{ArgumentName: "boardCardRuleSettings"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team == nil || *args.Team == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "team"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "team"} 
     }
     routeValues["team"] = *args.Team
 
@@ -757,14 +757,14 @@ type UpdateTaskboardCardRuleSettingsArgs struct {
 func (client Client) GetBoardCardSettings(ctx context.Context, args GetBoardCardSettingsArgs) (*BoardCardSettings, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.Board == nil || *args.Board == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *args.Board
 
@@ -792,18 +792,18 @@ type GetBoardCardSettingsArgs struct {
 // Update board card settings for the board id or board by name
 func (client Client) UpdateBoardCardSettings(ctx context.Context, args UpdateBoardCardSettingsArgs) (*BoardCardSettings, error) {
     if args.BoardCardSettingsToSave == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "boardCardSettingsToSave"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "boardCardSettingsToSave"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.Board == nil || *args.Board == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *args.Board
 
@@ -837,15 +837,15 @@ type UpdateBoardCardSettingsArgs struct {
 // [Preview API] Update taskboard card settings
 func (client Client) UpdateTaskboardCardSettings(ctx context.Context, args UpdateTaskboardCardSettingsArgs) error {
     if args.BoardCardSettingsToSave == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "boardCardSettingsToSave"}
+        return &azureDevOps.ArgumentNilError{ArgumentName: "boardCardSettingsToSave"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team == nil || *args.Team == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "team"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "team"} 
     }
     routeValues["team"] = *args.Team
 
@@ -876,18 +876,18 @@ type UpdateTaskboardCardSettingsArgs struct {
 func (client Client) GetBoardChart(ctx context.Context, args GetBoardChartArgs) (*BoardChart, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.Board == nil || *args.Board == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *args.Board
     if args.Name == nil || *args.Name == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
     routeValues["name"] = *args.Name
 
@@ -918,14 +918,14 @@ type GetBoardChartArgs struct {
 func (client Client) GetBoardCharts(ctx context.Context, args GetBoardChartsArgs) (*[]BoardChartReference, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.Board == nil || *args.Board == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *args.Board
 
@@ -953,22 +953,22 @@ type GetBoardChartsArgs struct {
 // Update a board chart
 func (client Client) UpdateBoardChart(ctx context.Context, args UpdateBoardChartArgs) (*BoardChart, error) {
     if args.Chart == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "chart"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "chart"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.Board == nil || *args.Board == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *args.Board
     if args.Name == nil || *args.Name == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
     routeValues["name"] = *args.Name
 
@@ -1005,14 +1005,14 @@ type UpdateBoardChartArgs struct {
 func (client Client) GetBoardColumns(ctx context.Context, args GetBoardColumnsArgs) (*[]BoardColumn, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.Board == nil || *args.Board == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *args.Board
 
@@ -1040,18 +1040,18 @@ type GetBoardColumnsArgs struct {
 // Update columns on a board
 func (client Client) UpdateBoardColumns(ctx context.Context, args UpdateBoardColumnsArgs) (*[]BoardColumn, error) {
     if args.BoardColumns == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "boardColumns"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "boardColumns"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.Board == nil || *args.Board == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *args.Board
 
@@ -1086,11 +1086,11 @@ type UpdateBoardColumnsArgs struct {
 func (client Client) GetDeliveryTimelineData(ctx context.Context, args GetDeliveryTimelineDataArgs) (*DeliveryViewData, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Id == nil || *args.Id == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "id"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "id"} 
     }
     routeValues["id"] = *args.Id
 
@@ -1133,14 +1133,14 @@ type GetDeliveryTimelineDataArgs struct {
 func (client Client) DeleteTeamIteration(ctx context.Context, args DeleteTeamIterationArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.Id == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "id"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = (*args.Id).String()
 
@@ -1167,14 +1167,14 @@ type DeleteTeamIterationArgs struct {
 func (client Client) GetTeamIteration(ctx context.Context, args GetTeamIterationArgs) (*TeamSettingsIteration, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.Id == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = (*args.Id).String()
 
@@ -1203,7 +1203,7 @@ type GetTeamIterationArgs struct {
 func (client Client) GetTeamIterations(ctx context.Context, args GetTeamIterationsArgs) (*[]TeamSettingsIteration, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
@@ -1238,11 +1238,11 @@ type GetTeamIterationsArgs struct {
 // Add an iteration to the team
 func (client Client) PostTeamIteration(ctx context.Context, args PostTeamIterationArgs) (*TeamSettingsIteration, error) {
     if args.Iteration == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iteration"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "iteration"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
@@ -1277,11 +1277,11 @@ type PostTeamIterationArgs struct {
 // Add a new plan for the team
 func (client Client) CreatePlan(ctx context.Context, args CreatePlanArgs) (*Plan, error) {
     if args.PostedPlan == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "postedPlan"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "postedPlan"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -1312,11 +1312,11 @@ type CreatePlanArgs struct {
 func (client Client) DeletePlan(ctx context.Context, args DeletePlanArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Id == nil || *args.Id == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "id"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "id"} 
     }
     routeValues["id"] = *args.Id
 
@@ -1341,11 +1341,11 @@ type DeletePlanArgs struct {
 func (client Client) GetPlan(ctx context.Context, args GetPlanArgs) (*Plan, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Id == nil || *args.Id == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "id"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "id"} 
     }
     routeValues["id"] = *args.Id
 
@@ -1372,7 +1372,7 @@ type GetPlanArgs struct {
 func (client Client) GetPlans(ctx context.Context, args GetPlansArgs) (*[]Plan, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -1396,15 +1396,15 @@ type GetPlansArgs struct {
 // Update the information for the specified plan
 func (client Client) UpdatePlan(ctx context.Context, args UpdatePlanArgs) (*Plan, error) {
     if args.UpdatedPlan == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "updatedPlan"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "updatedPlan"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Id == nil || *args.Id == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "id"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "id"} 
     }
     routeValues["id"] = *args.Id
 
@@ -1437,7 +1437,7 @@ type UpdatePlanArgs struct {
 func (client Client) GetProcessConfiguration(ctx context.Context, args GetProcessConfigurationArgs) (*ProcessConfiguration, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
 
@@ -1462,14 +1462,14 @@ type GetProcessConfigurationArgs struct {
 func (client Client) GetBoardRows(ctx context.Context, args GetBoardRowsArgs) (*[]BoardRow, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.Board == nil || *args.Board == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *args.Board
 
@@ -1497,18 +1497,18 @@ type GetBoardRowsArgs struct {
 // Update rows on a board
 func (client Client) UpdateBoardRows(ctx context.Context, args UpdateBoardRowsArgs) (*[]BoardRow, error) {
     if args.BoardRows == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "boardRows"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "boardRows"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.Board == nil || *args.Board == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "board"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "board"} 
     }
     routeValues["board"] = *args.Board
 
@@ -1543,14 +1543,14 @@ type UpdateBoardRowsArgs struct {
 func (client Client) GetTeamDaysOff(ctx context.Context, args GetTeamDaysOffArgs) (*TeamSettingsDaysOff, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.IterationId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = (*args.IterationId).String()
 
@@ -1578,18 +1578,18 @@ type GetTeamDaysOffArgs struct {
 // Set a team's days off for an iteration
 func (client Client) UpdateTeamDaysOff(ctx context.Context, args UpdateTeamDaysOffArgs) (*TeamSettingsDaysOff, error) {
     if args.DaysOffPatch == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "daysOffPatch"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "daysOffPatch"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.IterationId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = (*args.IterationId).String()
 
@@ -1624,7 +1624,7 @@ type UpdateTeamDaysOffArgs struct {
 func (client Client) GetTeamFieldValues(ctx context.Context, args GetTeamFieldValuesArgs) (*TeamFieldValues, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
@@ -1653,11 +1653,11 @@ type GetTeamFieldValuesArgs struct {
 // Update team field values
 func (client Client) UpdateTeamFieldValues(ctx context.Context, args UpdateTeamFieldValuesArgs) (*TeamFieldValues, error) {
     if args.Patch == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "patch"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "patch"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
@@ -1693,7 +1693,7 @@ type UpdateTeamFieldValuesArgs struct {
 func (client Client) GetTeamSettings(ctx context.Context, args GetTeamSettingsArgs) (*TeamSetting, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
@@ -1722,11 +1722,11 @@ type GetTeamSettingsArgs struct {
 // Update a team's settings
 func (client Client) UpdateTeamSettings(ctx context.Context, args UpdateTeamSettingsArgs) (*TeamSetting, error) {
     if args.TeamSettingsPatch == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "teamSettingsPatch"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "teamSettingsPatch"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
@@ -1762,14 +1762,14 @@ type UpdateTeamSettingsArgs struct {
 func (client Client) GetIterationWorkItems(ctx context.Context, args GetIterationWorkItemsArgs) (*IterationWorkItems, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team != nil && *args.Team != "" {
         routeValues["team"] = *args.Team
     }
     if args.IterationId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = (*args.IterationId).String()
 
@@ -1797,15 +1797,15 @@ type GetIterationWorkItemsArgs struct {
 // [Preview API] Reorder Product Backlog/Boards Work Items
 func (client Client) ReorderBacklogWorkItems(ctx context.Context, args ReorderBacklogWorkItemsArgs) (*[]ReorderResult, error) {
     if args.Operation == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "operation"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "operation"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team == nil || *args.Team == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "team"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "team"} 
     }
     routeValues["team"] = *args.Team
 
@@ -1837,19 +1837,19 @@ type ReorderBacklogWorkItemsArgs struct {
 // [Preview API] Reorder Sprint Backlog/Taskboard Work Items
 func (client Client) ReorderIterationWorkItems(ctx context.Context, args ReorderIterationWorkItemsArgs) (*[]ReorderResult, error) {
     if args.Operation == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "operation"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "operation"}
     }
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
     if args.Team == nil || *args.Team == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "team"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "team"} 
     }
     routeValues["team"] = *args.Team
     if args.IterationId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "iterationId"} 
     }
     routeValues["iterationId"] = (*args.IterationId).String()
 

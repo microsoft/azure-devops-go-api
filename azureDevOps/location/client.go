@@ -13,17 +13,17 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "net/http"
     "net/url"
     "strconv"
 )
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -67,7 +67,7 @@ type GetConnectionDataArgs struct {
 func (client Client) GetResourceArea(ctx context.Context, args GetResourceAreaArgs) (*ResourceAreaInfo, error) {
     routeValues := make(map[string]string)
     if args.AreaId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "areaId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "areaId"} 
     }
     routeValues["areaId"] = (*args.AreaId).String()
 
@@ -103,13 +103,13 @@ type GetResourceAreaArgs struct {
 func (client Client) GetResourceAreaByHost(ctx context.Context, args GetResourceAreaByHostArgs) (*ResourceAreaInfo, error) {
     routeValues := make(map[string]string)
     if args.AreaId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "areaId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "areaId"} 
     }
     routeValues["areaId"] = (*args.AreaId).String()
 
     queryParams := url.Values{}
     if args.HostId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "hostId"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "hostId"}
     }
     queryParams.Add("hostId", (*args.HostId).String())
     locationId, _ := uuid.Parse("e81700f7-3be2-46de-8624-2eb35882fcaa")
@@ -163,7 +163,7 @@ type GetResourceAreasArgs struct {
 func (client Client) GetResourceAreasByHost(ctx context.Context, args GetResourceAreasByHostArgs) (*[]ResourceAreaInfo, error) {
     queryParams := url.Values{}
     if args.HostId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "hostId"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "hostId"}
     }
     queryParams.Add("hostId", (*args.HostId).String())
     locationId, _ := uuid.Parse("e81700f7-3be2-46de-8624-2eb35882fcaa")
@@ -187,11 +187,11 @@ type GetResourceAreasByHostArgs struct {
 func (client Client) DeleteServiceDefinition(ctx context.Context, args DeleteServiceDefinitionArgs) error {
     routeValues := make(map[string]string)
     if args.ServiceType == nil || *args.ServiceType == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "serviceType"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "serviceType"} 
     }
     routeValues["serviceType"] = *args.ServiceType
     if args.Identifier == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "identifier"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "identifier"} 
     }
     routeValues["identifier"] = (*args.Identifier).String()
 
@@ -216,11 +216,11 @@ type DeleteServiceDefinitionArgs struct {
 func (client Client) GetServiceDefinition(ctx context.Context, args GetServiceDefinitionArgs) (*ServiceDefinition, error) {
     routeValues := make(map[string]string)
     if args.ServiceType == nil || *args.ServiceType == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "serviceType"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "serviceType"} 
     }
     routeValues["serviceType"] = *args.ServiceType
     if args.Identifier == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "identifier"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "identifier"} 
     }
     routeValues["identifier"] = (*args.Identifier).String()
 
@@ -281,7 +281,7 @@ type GetServiceDefinitionsArgs struct {
 // [Preview API]
 func (client Client) UpdateServiceDefinitions(ctx context.Context, args UpdateServiceDefinitionsArgs) error {
     if args.ServiceDefinitions == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "serviceDefinitions"}
+        return &azureDevOps.ArgumentNilError{ArgumentName: "serviceDefinitions"}
     }
     body, marshalErr := json.Marshal(*args.ServiceDefinitions)
     if marshalErr != nil {
@@ -299,6 +299,6 @@ func (client Client) UpdateServiceDefinitions(ctx context.Context, args UpdateSe
 // Arguments for the UpdateServiceDefinitions function
 type UpdateServiceDefinitionsArgs struct {
     // (required)
-    ServiceDefinitions *azureDevops.VssJsonCollectionWrapper
+    ServiceDefinitions *azureDevOps.VssJsonCollectionWrapper
 }
 

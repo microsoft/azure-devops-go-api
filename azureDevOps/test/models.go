@@ -10,7 +10,7 @@ package test
 
 import (
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "time"
 )
 
@@ -1066,7 +1066,7 @@ type PointUpdateModel struct {
 // Test point workitem property.
 type PointWorkItemProperty struct {
     // key value pair of test point work item property.
-    WorkItem *azureDevops.KeyValuePair `json:"workItem,omitempty"`
+    WorkItem *azureDevOps.KeyValuePair `json:"workItem,omitempty"`
 }
 
 type ProjectState string
@@ -3692,7 +3692,7 @@ type TestTagSummary struct {
 
 // Tags to update to a run or result.
 type TestTagsUpdateModel struct {
-    Tags *[]azureDevops.KeyValuePair `json:"tags,omitempty"`
+    Tags *[]azureDevOps.KeyValuePair `json:"tags,omitempty"`
 }
 
 type TestToWorkItemLinks struct {

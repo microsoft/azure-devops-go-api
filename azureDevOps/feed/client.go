@@ -13,7 +13,7 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "net/http"
     "net/url"
     "strconv"
@@ -22,10 +22,10 @@ import (
 var ResourceAreaId, _ = uuid.Parse("7ab4e64e-c4d8-4f50-ae73-5ef2e21642a5")
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -42,11 +42,11 @@ func (client Client) GetBadge(ctx context.Context, args GetBadgeArgs) (*string, 
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
     if args.PackageId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "packageId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "packageId"} 
     }
     routeValues["packageId"] = (*args.PackageId).String()
 
@@ -78,7 +78,7 @@ func (client Client) GetFeedChange(ctx context.Context, args GetFeedChangeArgs) 
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
 
@@ -144,7 +144,7 @@ type GetFeedChangesArgs struct {
 // [Preview API] Create a feed, a container for various package types.
 func (client Client) CreateFeed(ctx context.Context, args CreateFeedArgs) (*Feed, error) {
     if args.Feed == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "feed"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "feed"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
@@ -181,7 +181,7 @@ func (client Client) DeleteFeed(ctx context.Context, args DeleteFeedArgs) error 
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
 
@@ -209,7 +209,7 @@ func (client Client) GetFeed(ctx context.Context, args GetFeedArgs) (*Feed, erro
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
 
@@ -276,14 +276,14 @@ type GetFeedsArgs struct {
 // [Preview API] Change the attributes of a feed.
 func (client Client) UpdateFeed(ctx context.Context, args UpdateFeedArgs) (*Feed, error) {
     if args.Feed == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "feed"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "feed"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
 
@@ -338,7 +338,7 @@ type GetGlobalPermissionsArgs struct {
 // [Preview API] Set service-wide permissions that govern feed creation and administration.
 func (client Client) SetGlobalPermissions(ctx context.Context, args SetGlobalPermissionsArgs) (*[]GlobalPermission, error) {
     if args.GlobalPermissions == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "globalPermissions"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "globalPermissions"}
     }
     body, marshalErr := json.Marshal(*args.GlobalPermissions)
     if marshalErr != nil {
@@ -368,7 +368,7 @@ func (client Client) GetPackageChanges(ctx context.Context, args GetPackageChang
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
 
@@ -405,14 +405,14 @@ type GetPackageChangesArgs struct {
 // [Preview API]
 func (client Client) QueryPackageMetrics(ctx context.Context, args QueryPackageMetricsArgs) (*[]PackageMetrics, error) {
     if args.PackageIdQuery == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "packageIdQuery"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "packageIdQuery"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
 
@@ -448,11 +448,11 @@ func (client Client) GetPackage(ctx context.Context, args GetPackageArgs) (*Pack
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
     if args.PackageId == nil || *args.PackageId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "packageId"} 
     }
     routeValues["packageId"] = *args.PackageId
 
@@ -515,7 +515,7 @@ func (client Client) GetPackages(ctx context.Context, args GetPackagesArgs) (*[]
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
 
@@ -616,7 +616,7 @@ func (client Client) GetFeedPermissions(ctx context.Context, args GetFeedPermiss
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
 
@@ -658,14 +658,14 @@ type GetFeedPermissionsArgs struct {
 // [Preview API] Update the permissions on a feed.
 func (client Client) SetFeedPermissions(ctx context.Context, args SetFeedPermissionsArgs) (*[]FeedPermission, error) {
     if args.FeedPermission == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "feedPermission"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "feedPermission"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
 
@@ -701,15 +701,15 @@ func (client Client) GetPackageVersionProvenance(ctx context.Context, args GetPa
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
     if args.PackageId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "packageId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "packageId"} 
     }
     routeValues["packageId"] = (*args.PackageId).String()
     if args.PackageVersionId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "packageVersionId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "packageVersionId"} 
     }
     routeValues["packageVersionId"] = (*args.PackageVersionId).String()
 
@@ -743,11 +743,11 @@ func (client Client) GetRecycleBinPackage(ctx context.Context, args GetRecycleBi
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
     if args.PackageId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "packageId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "packageId"} 
     }
     routeValues["packageId"] = (*args.PackageId).String()
 
@@ -785,7 +785,7 @@ func (client Client) GetRecycleBinPackages(ctx context.Context, args GetRecycleB
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
 
@@ -846,15 +846,15 @@ func (client Client) GetRecycleBinPackageVersion(ctx context.Context, args GetRe
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
     if args.PackageId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "packageId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "packageId"} 
     }
     routeValues["packageId"] = (*args.PackageId).String()
     if args.PackageVersionId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "packageVersionId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "packageVersionId"} 
     }
     routeValues["packageVersionId"] = (*args.PackageVersionId).String()
 
@@ -894,11 +894,11 @@ func (client Client) GetRecycleBinPackageVersions(ctx context.Context, args GetR
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
     if args.PackageId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "packageId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "packageId"} 
     }
     routeValues["packageId"] = (*args.PackageId).String()
 
@@ -936,7 +936,7 @@ func (client Client) DeleteFeedRetentionPolicies(ctx context.Context, args Delet
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
 
@@ -964,7 +964,7 @@ func (client Client) GetFeedRetentionPolicies(ctx context.Context, args GetFeedR
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
 
@@ -990,14 +990,14 @@ type GetFeedRetentionPoliciesArgs struct {
 // [Preview API] Set the retention policy for a feed.
 func (client Client) SetFeedRetentionPolicies(ctx context.Context, args SetFeedRetentionPoliciesArgs) (*FeedRetentionPolicy, error) {
     if args.Policy == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "policy"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "policy"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
 
@@ -1029,18 +1029,18 @@ type SetFeedRetentionPoliciesArgs struct {
 // [Preview API]
 func (client Client) QueryPackageVersionMetrics(ctx context.Context, args QueryPackageVersionMetricsArgs) (*[]PackageVersionMetrics, error) {
     if args.PackageVersionIdQuery == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "packageVersionIdQuery"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "packageVersionIdQuery"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
     if args.PackageId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "packageId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "packageId"} 
     }
     routeValues["packageId"] = (*args.PackageId).String()
 
@@ -1078,15 +1078,15 @@ func (client Client) GetPackageVersion(ctx context.Context, args GetPackageVersi
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
     if args.PackageId == nil || *args.PackageId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "packageId"} 
     }
     routeValues["packageId"] = *args.PackageId
     if args.PackageVersionId == nil || *args.PackageVersionId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageVersionId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "packageVersionId"} 
     }
     routeValues["packageVersionId"] = *args.PackageVersionId
 
@@ -1136,11 +1136,11 @@ func (client Client) GetPackageVersions(ctx context.Context, args GetPackageVers
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
     if args.PackageId == nil || *args.PackageId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "packageId"} 
     }
     routeValues["packageId"] = *args.PackageId
 
@@ -1184,14 +1184,14 @@ type GetPackageVersionsArgs struct {
 // [Preview API] Create a new view on the referenced feed.
 func (client Client) CreateFeedView(ctx context.Context, args CreateFeedViewArgs) (*FeedView, error) {
     if args.View == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "view"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "view"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
 
@@ -1227,11 +1227,11 @@ func (client Client) DeleteFeedView(ctx context.Context, args DeleteFeedViewArgs
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
     if args.ViewId == nil || *args.ViewId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "viewId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "viewId"} 
     }
     routeValues["viewId"] = *args.ViewId
 
@@ -1261,11 +1261,11 @@ func (client Client) GetFeedView(ctx context.Context, args GetFeedViewArgs) (*Fe
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
     if args.ViewId == nil || *args.ViewId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "viewId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "viewId"} 
     }
     routeValues["viewId"] = *args.ViewId
 
@@ -1297,7 +1297,7 @@ func (client Client) GetFeedViews(ctx context.Context, args GetFeedViewsArgs) (*
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
 
@@ -1323,18 +1323,18 @@ type GetFeedViewsArgs struct {
 // [Preview API] Update a view.
 func (client Client) UpdateFeedView(ctx context.Context, args UpdateFeedViewArgs) (*FeedView, error) {
     if args.View == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "view"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "view"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
     }
     if args.FeedId == nil || *args.FeedId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
     routeValues["feedId"] = *args.FeedId
     if args.ViewId == nil || *args.ViewId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "viewId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "viewId"} 
     }
     routeValues["viewId"] = *args.ViewId
 

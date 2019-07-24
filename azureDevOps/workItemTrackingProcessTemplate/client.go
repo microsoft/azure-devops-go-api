@@ -11,7 +11,7 @@ package workItemTrackingProcessTemplate
 import (
     "context"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "io"
     "net/http"
     "net/url"
@@ -21,10 +21,10 @@ import (
 var ResourceAreaId, _ = uuid.Parse("5264459e-e5e0-4bd8-b118-0985e68a4ec5")
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -38,13 +38,13 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 func (client Client) GetBehavior(ctx context.Context, args GetBehaviorArgs) (*AdminBehavior, error) {
     routeValues := make(map[string]string)
     if args.ProcessId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "processId"} 
     }
     routeValues["processId"] = (*args.ProcessId).String()
 
     queryParams := url.Values{}
     if args.BehaviorRefName == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "behaviorRefName"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "behaviorRefName"}
     }
     queryParams.Add("behaviorRefName", *args.BehaviorRefName)
     locationId, _ := uuid.Parse("90bf9317-3571-487b-bc8c-a523ba0e05d7")
@@ -70,7 +70,7 @@ type GetBehaviorArgs struct {
 func (client Client) GetBehaviors(ctx context.Context, args GetBehaviorsArgs) (*[]AdminBehavior, error) {
     routeValues := make(map[string]string)
     if args.ProcessId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "processId"} 
     }
     routeValues["processId"] = (*args.ProcessId).String()
 
@@ -95,7 +95,7 @@ type GetBehaviorsArgs struct {
 func (client Client) ExportProcessTemplate(ctx context.Context, args ExportProcessTemplateArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Id == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = (*args.Id).String()
     routeValues["action"] = "Export"
@@ -118,7 +118,7 @@ type ExportProcessTemplateArgs struct {
 // [Preview API] Imports a process from zip file.
 func (client Client) ImportProcessTemplate(ctx context.Context, args ImportProcessTemplateArgs) (*ProcessImportResult, error) {
     if args.UploadStream == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "uploadStream"}
     }
     routeValues := make(map[string]string)
     routeValues["action"] = "Import"
@@ -155,7 +155,7 @@ type ImportProcessTemplateArgs struct {
 func (client Client) ImportProcessTemplateStatus(ctx context.Context, args ImportProcessTemplateStatusArgs) (*ProcessPromoteStatus, error) {
     routeValues := make(map[string]string)
     if args.Id == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = (*args.Id).String()
     routeValues["action"] = "Status"

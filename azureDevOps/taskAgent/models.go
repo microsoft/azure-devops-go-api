@@ -10,7 +10,7 @@ package taskAgent
 
 import (
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "math/big"
     "time"
 )
@@ -306,7 +306,7 @@ type DependencyBinding struct {
 
 type DependencyData struct {
     Input *string `json:"input,omitempty"`
-    Map *[]azureDevops.KeyValuePair `json:"map,omitempty"`
+    Map *[]azureDevOps.KeyValuePair `json:"map,omitempty"`
 }
 
 type DependsOn struct {

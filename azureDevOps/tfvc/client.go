@@ -13,7 +13,7 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "io"
     "net/http"
     "net/url"
@@ -23,10 +23,10 @@ import (
 var ResourceAreaId, _ = uuid.Parse("8aa40520-446d-40e6-89f6-9c9f9ce44c48")
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -45,7 +45,7 @@ func (client Client) GetBranch(ctx context.Context, args GetBranchArgs) (*TfvcBr
 
     queryParams := url.Values{}
     if args.Path == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "path"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "path"}
     }
     queryParams.Add("path", *args.Path)
     if args.IncludeParent != nil {
@@ -131,7 +131,7 @@ func (client Client) GetBranchRefs(ctx context.Context, args GetBranchRefsArgs) 
 
     queryParams := url.Values{}
     if args.ScopePath == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopePath"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopePath"}
     }
     queryParams.Add("scopePath", *args.ScopePath)
     if args.IncludeDeleted != nil {
@@ -201,7 +201,7 @@ type GetChangesetChangesArgs struct {
 // Create a new changeset.
 func (client Client) CreateChangeset(ctx context.Context, args CreateChangesetArgs) (*TfvcChangesetRef, error) {
     if args.Changeset == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "changeset"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "changeset"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
@@ -238,7 +238,7 @@ func (client Client) GetChangeset(ctx context.Context, args GetChangesetArgs) (*
         routeValues["project"] = *args.Project
     }
     if args.Id == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = strconv.Itoa(*args.Id)
 
@@ -406,7 +406,7 @@ type GetChangesetsArgs struct {
 // Returns changesets for a given list of changeset Ids.
 func (client Client) GetBatchedChangesets(ctx context.Context, args GetBatchedChangesetsArgs) (*[]TfvcChangesetRef, error) {
     if args.ChangesetsRequestData == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "changesetsRequestData"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "changesetsRequestData"}
     }
     body, marshalErr := json.Marshal(*args.ChangesetsRequestData)
     if marshalErr != nil {
@@ -456,7 +456,7 @@ type GetChangesetWorkItemsArgs struct {
 // Post for retrieving a set of items given a list of paths or a long path. Allows for specifying the recursionLevel and version descriptors for each path.
 func (client Client) GetItemsBatch(ctx context.Context, args GetItemsBatchArgs) (*[][]TfvcItem, error) {
     if args.ItemRequestData == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "itemRequestData"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "itemRequestData"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
@@ -489,7 +489,7 @@ type GetItemsBatchArgs struct {
 // Post for retrieving a set of items given a list of paths or a long path. Allows for specifying the recursionLevel and version descriptors for each path.
 func (client Client) GetItemsBatchZip(ctx context.Context, args GetItemsBatchZipArgs) (io.ReadCloser, error) {
     if args.ItemRequestData == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "itemRequestData"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "itemRequestData"}
     }
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
@@ -526,7 +526,7 @@ func (client Client) GetItem(ctx context.Context, args GetItemArgs) (*TfvcItem, 
 
     queryParams := url.Values{}
     if args.Path == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "path"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "path"}
     }
     queryParams.Add("path", *args.Path)
     if args.FileName != nil {
@@ -595,7 +595,7 @@ func (client Client) GetItemContent(ctx context.Context, args GetItemContentArgs
 
     queryParams := url.Values{}
     if args.Path == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "path"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "path"}
     }
     queryParams.Add("path", *args.Path)
     if args.FileName != nil {
@@ -715,7 +715,7 @@ func (client Client) GetItemText(ctx context.Context, args GetItemTextArgs) (io.
 
     queryParams := url.Values{}
     if args.Path == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "path"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "path"}
     }
     queryParams.Add("path", *args.Path)
     if args.FileName != nil {
@@ -782,7 +782,7 @@ func (client Client) GetItemZip(ctx context.Context, args GetItemZipArgs) (io.Re
 
     queryParams := url.Values{}
     if args.Path == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "path"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "path"}
     }
     queryParams.Add("path", *args.Path)
     if args.FileName != nil {
@@ -844,7 +844,7 @@ type GetItemZipArgs struct {
 func (client Client) GetLabelItems(ctx context.Context, args GetLabelItemsArgs) (*[]TfvcItem, error) {
     routeValues := make(map[string]string)
     if args.LabelId == nil || *args.LabelId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "labelId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "labelId"} 
     }
     routeValues["labelId"] = *args.LabelId
 
@@ -883,13 +883,13 @@ func (client Client) GetLabel(ctx context.Context, args GetLabelArgs) (*TfvcLabe
         routeValues["project"] = *args.Project
     }
     if args.LabelId == nil || *args.LabelId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "labelId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "labelId"} 
     }
     routeValues["labelId"] = *args.LabelId
 
     queryParams := url.Values{}
     if args.RequestData == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "requestData"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "requestData"}
     }
     if args.RequestData.LabelScope != nil {
         queryParams.Add("requestData.labelScope", *args.RequestData.LabelScope)
@@ -939,7 +939,7 @@ func (client Client) GetLabels(ctx context.Context, args GetLabelsArgs) (*[]Tfvc
 
     queryParams := url.Values{}
     if args.RequestData == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "requestData"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "requestData"}
     }
     if args.RequestData.LabelScope != nil {
         queryParams.Add("requestData.labelScope", *args.RequestData.LabelScope)
@@ -992,7 +992,7 @@ type GetLabelsArgs struct {
 func (client Client) GetShelvesetChanges(ctx context.Context, args GetShelvesetChangesArgs) (*[]TfvcChange, error) {
     queryParams := url.Values{}
     if args.ShelvesetId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "shelvesetId"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "shelvesetId"}
     }
     queryParams.Add("shelvesetId", *args.ShelvesetId)
     if args.Top != nil {
@@ -1026,7 +1026,7 @@ type GetShelvesetChangesArgs struct {
 func (client Client) GetShelveset(ctx context.Context, args GetShelvesetArgs) (*TfvcShelveset, error) {
     queryParams := url.Values{}
     if args.ShelvesetId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "shelvesetId"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "shelvesetId"}
     }
     queryParams.Add("shelvesetId", *args.ShelvesetId)
     if args.RequestData != nil {
@@ -1128,7 +1128,7 @@ type GetShelvesetsArgs struct {
 func (client Client) GetShelvesetWorkItems(ctx context.Context, args GetShelvesetWorkItemsArgs) (*[]AssociatedWorkItem, error) {
     queryParams := url.Values{}
     if args.ShelvesetId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "shelvesetId"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "shelvesetId"}
     }
     queryParams.Add("shelvesetId", *args.ShelvesetId)
     locationId, _ := uuid.Parse("a7a0c1c1-373e-425a-b031-a519474d743d")

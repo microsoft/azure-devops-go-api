@@ -13,16 +13,16 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "net/http"
     "net/url"
 )
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -33,7 +33,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
 func (client Client) GetFeature(ctx context.Context, args GetFeatureArgs) (*ContributedFeature, error) {
     routeValues := make(map[string]string)
     if args.FeatureId == nil || *args.FeatureId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "featureId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "featureId"} 
     }
     routeValues["featureId"] = *args.FeatureId
 
@@ -81,11 +81,11 @@ type GetFeaturesArgs struct {
 func (client Client) GetFeatureState(ctx context.Context, args GetFeatureStateArgs) (*ContributedFeatureState, error) {
     routeValues := make(map[string]string)
     if args.FeatureId == nil || *args.FeatureId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "featureId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "featureId"} 
     }
     routeValues["featureId"] = *args.FeatureId
     if args.UserScope == nil || *args.UserScope == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "userScope"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "userScope"} 
     }
     routeValues["userScope"] = *args.UserScope
 
@@ -111,15 +111,15 @@ type GetFeatureStateArgs struct {
 // [Preview API] Set the state of a feature
 func (client Client) SetFeatureState(ctx context.Context, args SetFeatureStateArgs) (*ContributedFeatureState, error) {
     if args.Feature == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "feature"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "feature"}
     }
     routeValues := make(map[string]string)
     if args.FeatureId == nil || *args.FeatureId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "featureId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "featureId"} 
     }
     routeValues["featureId"] = *args.FeatureId
     if args.UserScope == nil || *args.UserScope == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "userScope"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "userScope"} 
     }
     routeValues["userScope"] = *args.UserScope
 
@@ -163,19 +163,19 @@ type SetFeatureStateArgs struct {
 func (client Client) GetFeatureStateForScope(ctx context.Context, args GetFeatureStateForScopeArgs) (*ContributedFeatureState, error) {
     routeValues := make(map[string]string)
     if args.FeatureId == nil || *args.FeatureId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "featureId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "featureId"} 
     }
     routeValues["featureId"] = *args.FeatureId
     if args.UserScope == nil || *args.UserScope == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "userScope"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "userScope"} 
     }
     routeValues["userScope"] = *args.UserScope
     if args.ScopeName == nil || *args.ScopeName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "scopeName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "scopeName"} 
     }
     routeValues["scopeName"] = *args.ScopeName
     if args.ScopeValue == nil || *args.ScopeValue == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "scopeValue"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "scopeValue"} 
     }
     routeValues["scopeValue"] = *args.ScopeValue
 
@@ -205,23 +205,23 @@ type GetFeatureStateForScopeArgs struct {
 // [Preview API] Set the state of a feature at a specific scope
 func (client Client) SetFeatureStateForScope(ctx context.Context, args SetFeatureStateForScopeArgs) (*ContributedFeatureState, error) {
     if args.Feature == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "feature"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "feature"}
     }
     routeValues := make(map[string]string)
     if args.FeatureId == nil || *args.FeatureId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "featureId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "featureId"} 
     }
     routeValues["featureId"] = *args.FeatureId
     if args.UserScope == nil || *args.UserScope == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "userScope"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "userScope"} 
     }
     routeValues["userScope"] = *args.UserScope
     if args.ScopeName == nil || *args.ScopeName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "scopeName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "scopeName"} 
     }
     routeValues["scopeName"] = *args.ScopeName
     if args.ScopeValue == nil || *args.ScopeValue == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "scopeValue"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "scopeValue"} 
     }
     routeValues["scopeValue"] = *args.ScopeValue
 
@@ -268,7 +268,7 @@ type SetFeatureStateForScopeArgs struct {
 // [Preview API] Get the effective state for a list of feature ids
 func (client Client) QueryFeatureStates(ctx context.Context, args QueryFeatureStatesArgs) (*ContributedFeatureStateQuery, error) {
     if args.Query == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "query"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "query"}
     }
     body, marshalErr := json.Marshal(*args.Query)
     if marshalErr != nil {
@@ -294,11 +294,11 @@ type QueryFeatureStatesArgs struct {
 // [Preview API] Get the states of the specified features for the default scope
 func (client Client) QueryFeatureStatesForDefaultScope(ctx context.Context, args QueryFeatureStatesForDefaultScopeArgs) (*ContributedFeatureStateQuery, error) {
     if args.Query == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "query"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "query"}
     }
     routeValues := make(map[string]string)
     if args.UserScope == nil || *args.UserScope == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "userScope"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "userScope"} 
     }
     routeValues["userScope"] = *args.UserScope
 
@@ -328,19 +328,19 @@ type QueryFeatureStatesForDefaultScopeArgs struct {
 // [Preview API] Get the states of the specified features for the specific named scope
 func (client Client) QueryFeatureStatesForNamedScope(ctx context.Context, args QueryFeatureStatesForNamedScopeArgs) (*ContributedFeatureStateQuery, error) {
     if args.Query == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "query"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "query"}
     }
     routeValues := make(map[string]string)
     if args.UserScope == nil || *args.UserScope == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "userScope"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "userScope"} 
     }
     routeValues["userScope"] = *args.UserScope
     if args.ScopeName == nil || *args.ScopeName == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "scopeName"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "scopeName"} 
     }
     routeValues["scopeName"] = *args.ScopeName
     if args.ScopeValue == nil || *args.ScopeValue == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "scopeValue"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "scopeValue"} 
     }
     routeValues["scopeValue"] = *args.ScopeValue
 

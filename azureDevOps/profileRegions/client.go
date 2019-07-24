@@ -11,7 +11,7 @@ package profileRegions
 import (
     "context"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "net/http"
     "net/url"
 )
@@ -19,10 +19,10 @@ import (
 var ResourceAreaId, _ = uuid.Parse("8ccfef3d-2b87-4e99-8ccb-66e343d2daa8")
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -36,7 +36,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 func (client Client) GetGeoRegion(ctx context.Context, args GetGeoRegionArgs) (*GeoRegion, error) {
     queryParams := url.Values{}
     if args.Ip == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "ip"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "ip"}
     }
     queryParams.Add("ip", *args.Ip)
     locationId, _ := uuid.Parse("35b3ff1d-ab4c-4d1c-98bb-f6ea21d86bd9")

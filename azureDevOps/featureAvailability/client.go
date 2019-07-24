@@ -13,17 +13,17 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "net/http"
     "net/url"
     "strconv"
 )
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -57,7 +57,7 @@ type GetAllFeatureFlagsArgs struct {
 func (client Client) GetFeatureFlagByName(ctx context.Context, args GetFeatureFlagByNameArgs) (*FeatureFlag, error) {
     routeValues := make(map[string]string)
     if args.Name == nil || *args.Name == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
     routeValues["name"] = *args.Name
 
@@ -88,13 +88,13 @@ type GetFeatureFlagByNameArgs struct {
 func (client Client) GetFeatureFlagByNameAndUserEmail(ctx context.Context, args GetFeatureFlagByNameAndUserEmailArgs) (*FeatureFlag, error) {
     routeValues := make(map[string]string)
     if args.Name == nil || *args.Name == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
     routeValues["name"] = *args.Name
 
     queryParams := url.Values{}
     if args.UserEmail == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "userEmail"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "userEmail"}
     }
     queryParams.Add("userEmail", *args.UserEmail)
     if args.CheckFeatureExists != nil {
@@ -125,13 +125,13 @@ type GetFeatureFlagByNameAndUserEmailArgs struct {
 func (client Client) GetFeatureFlagByNameAndUserId(ctx context.Context, args GetFeatureFlagByNameAndUserIdArgs) (*FeatureFlag, error) {
     routeValues := make(map[string]string)
     if args.Name == nil || *args.Name == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
     routeValues["name"] = *args.Name
 
     queryParams := url.Values{}
     if args.UserId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "userId"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "userId"}
     }
     queryParams.Add("userId", (*args.UserId).String())
     if args.CheckFeatureExists != nil {
@@ -161,11 +161,11 @@ type GetFeatureFlagByNameAndUserIdArgs struct {
 // [Preview API] Change the state of an individual feature flag for a name
 func (client Client) UpdateFeatureFlag(ctx context.Context, args UpdateFeatureFlagArgs) (*FeatureFlag, error) {
     if args.State == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "state"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "state"}
     }
     routeValues := make(map[string]string)
     if args.Name == nil || *args.Name == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
     routeValues["name"] = *args.Name
 

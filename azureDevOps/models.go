@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-package azureDevops
+package azureDevOps
 
 import (
 	"github.com/google/uuid"

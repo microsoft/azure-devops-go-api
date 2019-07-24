@@ -10,7 +10,7 @@ package memberEntitlementManagement
 
 import (
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "time"
 )
 
@@ -96,7 +96,7 @@ var AssignmentSourceValues = assignmentSourceValuesType{
 
 type BaseOperationResult struct {
     // List of error codes paired with their corresponding error messages
-    Errors *[]azureDevops.KeyValuePair `json:"errors,omitempty"`
+    Errors *[]azureDevOps.KeyValuePair `json:"errors,omitempty"`
     // Success status of the operation
     IsSuccess *bool `json:"isSuccess,omitempty"`
 }
@@ -322,7 +322,7 @@ var GroupLicensingRuleStatusValues = groupLicensingRuleStatusValuesType{
 
 type GroupOperationResult struct {
     // List of error codes paired with their corresponding error messages
-    Errors *[]azureDevops.KeyValuePair `json:"errors,omitempty"`
+    Errors *[]azureDevOps.KeyValuePair `json:"errors,omitempty"`
     // Success status of the operation
     IsSuccess *bool `json:"isSuccess,omitempty"`
     // Identifier of the Group being acted upon
@@ -563,7 +563,7 @@ type OperationReference struct {
 
 type OperationResult struct {
     // List of error codes paired with their corresponding error messages.
-    Errors *[]azureDevops.KeyValuePair `json:"errors,omitempty"`
+    Errors *[]azureDevOps.KeyValuePair `json:"errors,omitempty"`
     // Success status of the operation.
     IsSuccess *bool `json:"isSuccess,omitempty"`
     // Identifier of the Member being acted upon.
@@ -744,7 +744,7 @@ type UserEntitlementOperationReference struct {
 
 type UserEntitlementOperationResult struct {
     // List of error codes paired with their corresponding error messages.
-    Errors *[]azureDevops.KeyValuePair `json:"errors,omitempty"`
+    Errors *[]azureDevOps.KeyValuePair `json:"errors,omitempty"`
     // Success status of the operation.
     IsSuccess *bool `json:"isSuccess,omitempty"`
     // Result of the MemberEntitlement after the operation.

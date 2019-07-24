@@ -13,7 +13,7 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "net/http"
     "net/url"
     "strconv"
@@ -22,10 +22,10 @@ import (
 var ResourceAreaId, _ = uuid.Parse("af607f94-69ba-4821-8159-f04e37b66350")
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -54,7 +54,7 @@ type CheckAvailabilityArgs struct {
 func (client Client) GetClient(ctx context.Context, args GetClientArgs) (interface{}, error) {
     routeValues := make(map[string]string)
     if args.ClientType == nil || *args.ClientType == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "clientType"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "clientType"} 
     }
     routeValues["clientType"] = *args.ClientType
 
@@ -93,7 +93,7 @@ type HeadClientArgs struct {
 // [Preview API] Create a new symbol request.
 func (client Client) CreateRequests(ctx context.Context, args CreateRequestsArgs) (*Request, error) {
     if args.RequestToCreate == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "requestToCreate"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "requestToCreate"}
     }
     body, marshalErr := json.Marshal(*args.RequestToCreate)
     if marshalErr != nil {
@@ -119,17 +119,17 @@ type CreateRequestsArgs struct {
 // [Preview API] Create debug entries for a symbol request as specified by its identifier.
 func (client Client) CreateRequestsRequestIdDebugEntries(ctx context.Context, args CreateRequestsRequestIdDebugEntriesArgs) (*[]DebugEntry, error) {
     if args.Batch == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "batch"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "batch"}
     }
     routeValues := make(map[string]string)
     if args.RequestId == nil || *args.RequestId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "requestId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "requestId"} 
     }
     routeValues["requestId"] = *args.RequestId
 
     queryParams := url.Values{}
     if args.Collection == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "collection"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "collection"}
     }
     queryParams.Add("collection", *args.Collection)
     body, marshalErr := json.Marshal(*args.Batch)
@@ -160,15 +160,15 @@ type CreateRequestsRequestIdDebugEntriesArgs struct {
 // [Preview API] Create debug entries for a symbol request as specified by its name.
 func (client Client) CreateRequestsRequestNameDebugEntries(ctx context.Context, args CreateRequestsRequestNameDebugEntriesArgs) (*[]DebugEntry, error) {
     if args.Batch == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "batch"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "batch"}
     }
     queryParams := url.Values{}
     if args.RequestName == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "requestName"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "requestName"}
     }
     queryParams.Add("requestName", *args.RequestName)
     if args.Collection == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "collection"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "collection"}
     }
     queryParams.Add("collection", *args.Collection)
     body, marshalErr := json.Marshal(*args.Batch)
@@ -200,7 +200,7 @@ type CreateRequestsRequestNameDebugEntriesArgs struct {
 func (client Client) DeleteRequestsRequestId(ctx context.Context, args DeleteRequestsRequestIdArgs) error {
     routeValues := make(map[string]string)
     if args.RequestId == nil || *args.RequestId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "requestId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "requestId"} 
     }
     routeValues["requestId"] = *args.RequestId
 
@@ -229,7 +229,7 @@ type DeleteRequestsRequestIdArgs struct {
 func (client Client) DeleteRequestsRequestName(ctx context.Context, args DeleteRequestsRequestNameArgs) error {
     queryParams := url.Values{}
     if args.RequestName == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "requestName"}
+        return &azureDevOps.ArgumentNilError{ArgumentName: "requestName"}
     }
     queryParams.Add("requestName", *args.RequestName)
     if args.Synchronous != nil {
@@ -256,7 +256,7 @@ type DeleteRequestsRequestNameArgs struct {
 func (client Client) GetRequestsRequestId(ctx context.Context, args GetRequestsRequestIdArgs) (*Request, error) {
     routeValues := make(map[string]string)
     if args.RequestId == nil || *args.RequestId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "requestId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "requestId"} 
     }
     routeValues["requestId"] = *args.RequestId
 
@@ -281,7 +281,7 @@ type GetRequestsRequestIdArgs struct {
 func (client Client) GetRequestsRequestName(ctx context.Context, args GetRequestsRequestNameArgs) (*Request, error) {
     queryParams := url.Values{}
     if args.RequestName == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "requestName"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "requestName"}
     }
     queryParams.Add("requestName", *args.RequestName)
     locationId, _ := uuid.Parse("ebc09fe3-1b20-4667-abc5-f2b60fe8de52")
@@ -304,11 +304,11 @@ type GetRequestsRequestNameArgs struct {
 // [Preview API] Update a symbol request by request identifier.
 func (client Client) UpdateRequestsRequestId(ctx context.Context, args UpdateRequestsRequestIdArgs) (*Request, error) {
     if args.UpdateRequest == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "updateRequest"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "updateRequest"}
     }
     routeValues := make(map[string]string)
     if args.RequestId == nil || *args.RequestId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "requestId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "requestId"} 
     }
     routeValues["requestId"] = *args.RequestId
 
@@ -338,11 +338,11 @@ type UpdateRequestsRequestIdArgs struct {
 // [Preview API] Update a symbol request by request name.
 func (client Client) UpdateRequestsRequestName(ctx context.Context, args UpdateRequestsRequestNameArgs) (*Request, error) {
     if args.UpdateRequest == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "updateRequest"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "updateRequest"}
     }
     queryParams := url.Values{}
     if args.RequestName == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "requestName"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "requestName"}
     }
     queryParams.Add("requestName", *args.RequestName)
     body, marshalErr := json.Marshal(*args.UpdateRequest)
@@ -372,7 +372,7 @@ type UpdateRequestsRequestNameArgs struct {
 func (client Client) GetSymSrvDebugEntryClientKey(ctx context.Context, args GetSymSrvDebugEntryClientKeyArgs) error {
     routeValues := make(map[string]string)
     if args.DebugEntryClientKey == nil || *args.DebugEntryClientKey == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "debugEntryClientKey"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "debugEntryClientKey"} 
     }
     routeValues["debugEntryClientKey"] = *args.DebugEntryClientKey
 

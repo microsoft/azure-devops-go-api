@@ -13,15 +13,15 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "net/http"
 )
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -31,7 +31,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
 // [Preview API]
 func (client Client) PublishEvents(ctx context.Context, args PublishEventsArgs) error {
     if args.Events == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "events"}
+        return &azureDevOps.ArgumentNilError{ArgumentName: "events"}
     }
     body, marshalErr := json.Marshal(*args.Events)
     if marshalErr != nil {

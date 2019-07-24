@@ -13,7 +13,7 @@ import (
     "context"
     "encoding/json"
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "net/http"
     "net/url"
     "strconv"
@@ -22,10 +22,10 @@ import (
 var ResourceAreaId, _ = uuid.Parse("8a3d49b8-91f0-46ef-b33d-dda338c25db3")
 
 type Client struct {
-    Client azureDevops.Client
+    Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -38,7 +38,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 // [Preview API]
 func (client Client) CreateOrBindWithClaims(ctx context.Context, args CreateOrBindWithClaimsArgs) (*Identity, error) {
     if args.SourceIdentity == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "sourceIdentity"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "sourceIdentity"}
     }
     body, marshalErr := json.Marshal(*args.SourceIdentity)
     if marshalErr != nil {
@@ -65,7 +65,7 @@ type CreateOrBindWithClaimsArgs struct {
 func (client Client) GetDescriptorById(ctx context.Context, args GetDescriptorByIdArgs) (*string, error) {
     routeValues := make(map[string]string)
     if args.Id == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "id"} 
     }
     routeValues["id"] = (*args.Id).String()
 
@@ -94,7 +94,7 @@ type GetDescriptorByIdArgs struct {
 
 func (client Client) CreateGroups(ctx context.Context, args CreateGroupsArgs) (*[]Identity, error) {
     if args.Container == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "container"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "container"}
     }
     body, marshalErr := json.Marshal(args.Container)
     if marshalErr != nil {
@@ -120,7 +120,7 @@ type CreateGroupsArgs struct {
 func (client Client) DeleteGroup(ctx context.Context, args DeleteGroupArgs) error {
     routeValues := make(map[string]string)
     if args.GroupId == nil || *args.GroupId == "" {
-        return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
+        return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
     }
     routeValues["groupId"] = *args.GroupId
 
@@ -179,11 +179,11 @@ type ListGroupsArgs struct {
 func (client Client) GetIdentityChanges(ctx context.Context, args GetIdentityChangesArgs) (*ChangedIdentities, error) {
     queryParams := url.Values{}
     if args.IdentitySequenceId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "identitySequenceId"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "identitySequenceId"}
     }
     queryParams.Add("identitySequenceId", strconv.Itoa(*args.IdentitySequenceId))
     if args.GroupSequenceId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "groupSequenceId"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "groupSequenceId"}
     }
     queryParams.Add("groupSequenceId", strconv.Itoa(*args.GroupSequenceId))
     if args.OrganizationIdentitySequenceId != nil {
@@ -223,7 +223,7 @@ type GetIdentityChangesArgs struct {
 func (client Client) GetUserIdentityIdsByDomainId(ctx context.Context, args GetUserIdentityIdsByDomainIdArgs) (*[]uuid.UUID, error) {
     queryParams := url.Values{}
     if args.DomainId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "domainId"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "domainId"}
     }
     queryParams.Add("domainId", (*args.DomainId).String())
     locationId, _ := uuid.Parse("28010c54-d0c0-4c89-a5b0-1c9e188b9fb7")
@@ -313,7 +313,7 @@ type ReadIdentitiesArgs struct {
 func (client Client) ReadIdentitiesByScope(ctx context.Context, args ReadIdentitiesByScopeArgs) (*[]Identity, error) {
     queryParams := url.Values{}
     if args.ScopeId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeId"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeId"}
     }
     queryParams.Add("scopeId", (*args.ScopeId).String())
     if args.QueryMembership != nil {
@@ -346,7 +346,7 @@ type ReadIdentitiesByScopeArgs struct {
 func (client Client) ReadIdentity(ctx context.Context, args ReadIdentityArgs) (*Identity, error) {
     routeValues := make(map[string]string)
     if args.IdentityId == nil || *args.IdentityId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "identityId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "identityId"} 
     }
     routeValues["identityId"] = *args.IdentityId
 
@@ -380,7 +380,7 @@ type ReadIdentityArgs struct {
 
 func (client Client) UpdateIdentities(ctx context.Context, args UpdateIdentitiesArgs) (*[]IdentityUpdateData, error) {
     if args.Identities == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "identities"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "identities"}
     }
     body, marshalErr := json.Marshal(*args.Identities)
     if marshalErr != nil {
@@ -400,16 +400,16 @@ func (client Client) UpdateIdentities(ctx context.Context, args UpdateIdentities
 // Arguments for the UpdateIdentities function
 type UpdateIdentitiesArgs struct {
     // (required)
-    Identities *azureDevops.VssJsonCollectionWrapper
+    Identities *azureDevOps.VssJsonCollectionWrapper
 }
 
 func (client Client) UpdateIdentity(ctx context.Context, args UpdateIdentityArgs) error {
     if args.Identity == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "identity"}
+        return &azureDevOps.ArgumentNilError{ArgumentName: "identity"}
     }
     routeValues := make(map[string]string)
     if args.IdentityId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "identityId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "identityId"} 
     }
     routeValues["identityId"] = (*args.IdentityId).String()
 
@@ -436,7 +436,7 @@ type UpdateIdentityArgs struct {
 
 func (client Client) CreateIdentity(ctx context.Context, args CreateIdentityArgs) (*Identity, error) {
     if args.FrameworkIdentityInfo == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "frameworkIdentityInfo"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "frameworkIdentityInfo"}
     }
     body, marshalErr := json.Marshal(*args.FrameworkIdentityInfo)
     if marshalErr != nil {
@@ -462,7 +462,7 @@ type CreateIdentityArgs struct {
 // [Preview API]
 func (client Client) ReadIdentityBatch(ctx context.Context, args ReadIdentityBatchArgs) (*[]Identity, error) {
     if args.BatchInfo == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "batchInfo"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "batchInfo"}
     }
     body, marshalErr := json.Marshal(*args.BatchInfo)
     if marshalErr != nil {
@@ -489,7 +489,7 @@ type ReadIdentityBatchArgs struct {
 func (client Client) GetIdentitySnapshot(ctx context.Context, args GetIdentitySnapshotArgs) (*IdentitySnapshot, error) {
     routeValues := make(map[string]string)
     if args.ScopeId == nil || *args.ScopeId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "scopeId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "scopeId"} 
     }
     routeValues["scopeId"] = *args.ScopeId
 
@@ -548,11 +548,11 @@ type GetSelfArgs struct {
 func (client Client) AddMember(ctx context.Context, args AddMemberArgs) (*bool, error) {
     routeValues := make(map[string]string)
     if args.ContainerId == nil || *args.ContainerId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "containerId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "containerId"} 
     }
     routeValues["containerId"] = *args.ContainerId
     if args.MemberId == nil || *args.MemberId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "memberId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "memberId"} 
     }
     routeValues["memberId"] = *args.MemberId
 
@@ -579,11 +579,11 @@ type AddMemberArgs struct {
 func (client Client) ReadMember(ctx context.Context, args ReadMemberArgs) (*string, error) {
     routeValues := make(map[string]string)
     if args.ContainerId == nil || *args.ContainerId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "containerId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "containerId"} 
     }
     routeValues["containerId"] = *args.ContainerId
     if args.MemberId == nil || *args.MemberId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "memberId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "memberId"} 
     }
     routeValues["memberId"] = *args.MemberId
 
@@ -616,7 +616,7 @@ type ReadMemberArgs struct {
 func (client Client) ReadMembers(ctx context.Context, args ReadMembersArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.ContainerId == nil || *args.ContainerId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "containerId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "containerId"} 
     }
     routeValues["containerId"] = *args.ContainerId
 
@@ -647,11 +647,11 @@ type ReadMembersArgs struct {
 func (client Client) RemoveMember(ctx context.Context, args RemoveMemberArgs) (*bool, error) {
     routeValues := make(map[string]string)
     if args.ContainerId == nil || *args.ContainerId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "containerId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "containerId"} 
     }
     routeValues["containerId"] = *args.ContainerId
     if args.MemberId == nil || *args.MemberId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "memberId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "memberId"} 
     }
     routeValues["memberId"] = *args.MemberId
 
@@ -678,11 +678,11 @@ type RemoveMemberArgs struct {
 func (client Client) ReadMemberOf(ctx context.Context, args ReadMemberOfArgs) (*string, error) {
     routeValues := make(map[string]string)
     if args.MemberId == nil || *args.MemberId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "memberId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "memberId"} 
     }
     routeValues["memberId"] = *args.MemberId
     if args.ContainerId == nil || *args.ContainerId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "containerId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "containerId"} 
     }
     routeValues["containerId"] = *args.ContainerId
 
@@ -715,7 +715,7 @@ type ReadMemberOfArgs struct {
 func (client Client) ReadMembersOf(ctx context.Context, args ReadMembersOfArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.MemberId == nil || *args.MemberId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "memberId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "memberId"} 
     }
     routeValues["memberId"] = *args.MemberId
 
@@ -745,11 +745,11 @@ type ReadMembersOfArgs struct {
 // [Preview API]
 func (client Client) CreateScope(ctx context.Context, args CreateScopeArgs) (*IdentityScope, error) {
     if args.Info == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "info"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "info"}
     }
     routeValues := make(map[string]string)
     if args.ScopeId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeId"} 
     }
     routeValues["scopeId"] = (*args.ScopeId).String()
 
@@ -780,7 +780,7 @@ type CreateScopeArgs struct {
 func (client Client) DeleteScope(ctx context.Context, args DeleteScopeArgs) error {
     routeValues := make(map[string]string)
     if args.ScopeId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "scopeId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "scopeId"} 
     }
     routeValues["scopeId"] = (*args.ScopeId).String()
 
@@ -803,7 +803,7 @@ type DeleteScopeArgs struct {
 func (client Client) GetScopeById(ctx context.Context, args GetScopeByIdArgs) (*IdentityScope, error) {
     routeValues := make(map[string]string)
     if args.ScopeId == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeId"} 
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeId"} 
     }
     routeValues["scopeId"] = (*args.ScopeId).String()
 
@@ -828,7 +828,7 @@ type GetScopeByIdArgs struct {
 func (client Client) GetScopeByName(ctx context.Context, args GetScopeByNameArgs) (*IdentityScope, error) {
     queryParams := url.Values{}
     if args.ScopeName == nil {
-        return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeName"}
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeName"}
     }
     queryParams.Add("scopeName", *args.ScopeName)
     locationId, _ := uuid.Parse("4e11e2bf-1e79-4eb5-8f34-a6337bd0de38")
@@ -851,11 +851,11 @@ type GetScopeByNameArgs struct {
 // [Preview API]
 func (client Client) UpdateScope(ctx context.Context, args UpdateScopeArgs) error {
     if args.PatchDocument == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "patchDocument"}
+        return &azureDevOps.ArgumentNilError{ArgumentName: "patchDocument"}
     }
     routeValues := make(map[string]string)
     if args.ScopeId == nil {
-        return &azureDevops.ArgumentNilError{ArgumentName: "scopeId"} 
+        return &azureDevOps.ArgumentNilError{ArgumentName: "scopeId"} 
     }
     routeValues["scopeId"] = (*args.ScopeId).String()
 
@@ -918,7 +918,7 @@ type GetSignoutTokenArgs struct {
 func (client Client) GetTenant(ctx context.Context, args GetTenantArgs) (*TenantInfo, error) {
     routeValues := make(map[string]string)
     if args.TenantId == nil || *args.TenantId == "" {
-        return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "tenantId"} 
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "tenantId"} 
     }
     routeValues["tenantId"] = *args.TenantId
 

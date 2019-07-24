@@ -10,7 +10,7 @@ package accounts
 
 import (
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevops"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps"
     "time"
 )
 
@@ -53,7 +53,7 @@ type AccountCreateInfoInternal struct {
     Organization *string `json:"organization,omitempty"`
     Preferences *AccountPreferencesInternal `json:"preferences,omitempty"`
     Properties interface{} `json:"properties,omitempty"`
-    ServiceDefinitions *[]azureDevops.KeyValuePair `json:"serviceDefinitions,omitempty"`
+    ServiceDefinitions *[]azureDevOps.KeyValuePair `json:"serviceDefinitions,omitempty"`
 }
 
 type AccountPreferencesInternal struct {
