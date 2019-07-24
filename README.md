@@ -19,7 +19,7 @@ func main() {
     personalAccessToken := "XXXXXXXXXXXXXXXXXXXXXXX"  // todo: replace value with your PAT
 
     // Create a connection to your organization
-    connection := azureDevops.NewConnection(organizationUrl, personalAccessToken)
+    connection := azureDevops.NewPatConnection(organizationUrl, personalAccessToken)
 
     ctx := context.Background()
 

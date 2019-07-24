@@ -12,7 +12,8 @@ import (
 	"time"
 )
 
-func NewConnection(organizationUrl string, personalAccessToken string) *Connection {
+// Creates a new Azure DevOps connection instance using a personal access token.
+func NewPatConnection(organizationUrl string, personalAccessToken string) *Connection {
 	authorizationString := CreateBasicAuthHeaderValue("", personalAccessToken)
 	organizationUrl = normalizeUrl(organizationUrl)
 	return &Connection{
