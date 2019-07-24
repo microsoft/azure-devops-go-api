@@ -31,20 +31,16 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
 }
 
 // [Preview API] This was copied and adapted from TeamFoundationConnectionService.Connect()
-// ctx
-// connectOptions (optional)
-// lastChangeId (optional): Obsolete 32-bit LastChangeId
-// lastChangeId64 (optional): Non-truncated 64-bit LastChangeId
-func (client Client) GetConnectionData(ctx context.Context, connectOptions *ConnectOptions, lastChangeId *int, lastChangeId64 *uint64) (*ConnectionData, error) {
+func (client Client) GetConnectionData(ctx context.Context, args GetConnectionDataArgs) (*ConnectionData, error) {
     queryParams := url.Values{}
-    if connectOptions != nil {
-        queryParams.Add("connectOptions", string(*connectOptions))
+    if args.ConnectOptions != nil {
+        queryParams.Add("connectOptions", string(*args.ConnectOptions))
     }
-    if lastChangeId != nil {
-        queryParams.Add("lastChangeId", strconv.Itoa(*lastChangeId))
+    if args.LastChangeId != nil {
+        queryParams.Add("lastChangeId", strconv.Itoa(*args.LastChangeId))
     }
-    if lastChangeId64 != nil {
-        queryParams.Add("lastChangeId64", strconv.FormatUint(*lastChangeId64, 10))
+    if args.LastChangeId64 != nil {
+        queryParams.Add("lastChangeId64", strconv.FormatUint(*args.LastChangeId64, 10))
     }
     locationId, _ := uuid.Parse("00d9565f-ed9c-4a06-9a50-00e7896ccab4")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
@@ -57,24 +53,30 @@ func (client Client) GetConnectionData(ctx context.Context, connectOptions *Conn
     return &responseValue, err
 }
 
+// Arguments for the GetConnectionData function
+type GetConnectionDataArgs struct {
+    // (optional)
+    ConnectOptions *ConnectOptions
+    // (optional) Obsolete 32-bit LastChangeId
+    LastChangeId *int
+    // (optional) Non-truncated 64-bit LastChangeId
+    LastChangeId64 *uint64
+}
+
 // [Preview API]
-// ctx
-// areaId (required)
-// enterpriseName (optional)
-// organizationName (optional)
-func (client Client) GetResourceArea(ctx context.Context, areaId *uuid.UUID, enterpriseName *string, organizationName *string) (*ResourceAreaInfo, error) {
+func (client Client) GetResourceArea(ctx context.Context, args GetResourceAreaArgs) (*ResourceAreaInfo, error) {
     routeValues := make(map[string]string)
-    if areaId == nil {
+    if args.AreaId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "areaId"} 
     }
-    routeValues["areaId"] = (*areaId).String()
+    routeValues["areaId"] = (*args.AreaId).String()
 
     queryParams := url.Values{}
-    if enterpriseName != nil {
-        queryParams.Add("enterpriseName", *enterpriseName)
+    if args.EnterpriseName != nil {
+        queryParams.Add("enterpriseName", *args.EnterpriseName)
     }
-    if organizationName != nil {
-        queryParams.Add("organizationName", *organizationName)
+    if args.OrganizationName != nil {
+        queryParams.Add("organizationName", *args.OrganizationName)
     }
     locationId, _ := uuid.Parse("e81700f7-3be2-46de-8624-2eb35882fcaa")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -87,22 +89,29 @@ func (client Client) GetResourceArea(ctx context.Context, areaId *uuid.UUID, ent
     return &responseValue, err
 }
 
+// Arguments for the GetResourceArea function
+type GetResourceAreaArgs struct {
+    // (required)
+    AreaId *uuid.UUID
+    // (optional)
+    EnterpriseName *string
+    // (optional)
+    OrganizationName *string
+}
+
 // [Preview API]
-// ctx
-// areaId (required)
-// hostId (required)
-func (client Client) GetResourceAreaByHost(ctx context.Context, areaId *uuid.UUID, hostId *uuid.UUID) (*ResourceAreaInfo, error) {
+func (client Client) GetResourceAreaByHost(ctx context.Context, args GetResourceAreaByHostArgs) (*ResourceAreaInfo, error) {
     routeValues := make(map[string]string)
-    if areaId == nil {
+    if args.AreaId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "areaId"} 
     }
-    routeValues["areaId"] = (*areaId).String()
+    routeValues["areaId"] = (*args.AreaId).String()
 
     queryParams := url.Values{}
-    if hostId == nil {
+    if args.HostId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "hostId"}
     }
-    queryParams.Add("hostId", (*hostId).String())
+    queryParams.Add("hostId", (*args.HostId).String())
     locationId, _ := uuid.Parse("e81700f7-3be2-46de-8624-2eb35882fcaa")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -114,17 +123,22 @@ func (client Client) GetResourceAreaByHost(ctx context.Context, areaId *uuid.UUI
     return &responseValue, err
 }
 
+// Arguments for the GetResourceAreaByHost function
+type GetResourceAreaByHostArgs struct {
+    // (required)
+    AreaId *uuid.UUID
+    // (required)
+    HostId *uuid.UUID
+}
+
 // [Preview API]
-// ctx
-// enterpriseName (optional)
-// organizationName (optional)
-func (client Client) GetResourceAreas(ctx context.Context, enterpriseName *string, organizationName *string) (*[]ResourceAreaInfo, error) {
+func (client Client) GetResourceAreas(ctx context.Context, args GetResourceAreasArgs) (*[]ResourceAreaInfo, error) {
     queryParams := url.Values{}
-    if enterpriseName != nil {
-        queryParams.Add("enterpriseName", *enterpriseName)
+    if args.EnterpriseName != nil {
+        queryParams.Add("enterpriseName", *args.EnterpriseName)
     }
-    if organizationName != nil {
-        queryParams.Add("organizationName", *organizationName)
+    if args.OrganizationName != nil {
+        queryParams.Add("organizationName", *args.OrganizationName)
     }
     locationId, _ := uuid.Parse("e81700f7-3be2-46de-8624-2eb35882fcaa")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
@@ -137,15 +151,21 @@ func (client Client) GetResourceAreas(ctx context.Context, enterpriseName *strin
     return &responseValue, err
 }
 
+// Arguments for the GetResourceAreas function
+type GetResourceAreasArgs struct {
+    // (optional)
+    EnterpriseName *string
+    // (optional)
+    OrganizationName *string
+}
+
 // [Preview API]
-// ctx
-// hostId (required)
-func (client Client) GetResourceAreasByHost(ctx context.Context, hostId *uuid.UUID) (*[]ResourceAreaInfo, error) {
+func (client Client) GetResourceAreasByHost(ctx context.Context, args GetResourceAreasByHostArgs) (*[]ResourceAreaInfo, error) {
     queryParams := url.Values{}
-    if hostId == nil {
+    if args.HostId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "hostId"}
     }
-    queryParams.Add("hostId", (*hostId).String())
+    queryParams.Add("hostId", (*args.HostId).String())
     locationId, _ := uuid.Parse("e81700f7-3be2-46de-8624-2eb35882fcaa")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -157,20 +177,23 @@ func (client Client) GetResourceAreasByHost(ctx context.Context, hostId *uuid.UU
     return &responseValue, err
 }
 
+// Arguments for the GetResourceAreasByHost function
+type GetResourceAreasByHostArgs struct {
+    // (required)
+    HostId *uuid.UUID
+}
+
 // [Preview API]
-// ctx
-// serviceType (required)
-// identifier (required)
-func (client Client) DeleteServiceDefinition(ctx context.Context, serviceType *string, identifier *uuid.UUID) error {
+func (client Client) DeleteServiceDefinition(ctx context.Context, args DeleteServiceDefinitionArgs) error {
     routeValues := make(map[string]string)
-    if serviceType == nil || *serviceType == "" {
+    if args.ServiceType == nil || *args.ServiceType == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "serviceType"} 
     }
-    routeValues["serviceType"] = *serviceType
-    if identifier == nil {
+    routeValues["serviceType"] = *args.ServiceType
+    if args.Identifier == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "identifier"} 
     }
-    routeValues["identifier"] = (*identifier).String()
+    routeValues["identifier"] = (*args.Identifier).String()
 
     locationId, _ := uuid.Parse("d810a47d-f4f4-4a62-a03f-fa1860585c4c")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -181,29 +204,32 @@ func (client Client) DeleteServiceDefinition(ctx context.Context, serviceType *s
     return nil
 }
 
+// Arguments for the DeleteServiceDefinition function
+type DeleteServiceDefinitionArgs struct {
+    // (required)
+    ServiceType *string
+    // (required)
+    Identifier *uuid.UUID
+}
+
 // [Preview API] Finds a given service definition.
-// ctx
-// serviceType (required)
-// identifier (required)
-// allowFaultIn (optional): If true, we will attempt to fault in a host instance mapping if in SPS.
-// previewFaultIn (optional): If true, we will calculate and return a host instance mapping, but not persist it.
-func (client Client) GetServiceDefinition(ctx context.Context, serviceType *string, identifier *uuid.UUID, allowFaultIn *bool, previewFaultIn *bool) (*ServiceDefinition, error) {
+func (client Client) GetServiceDefinition(ctx context.Context, args GetServiceDefinitionArgs) (*ServiceDefinition, error) {
     routeValues := make(map[string]string)
-    if serviceType == nil || *serviceType == "" {
+    if args.ServiceType == nil || *args.ServiceType == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "serviceType"} 
     }
-    routeValues["serviceType"] = *serviceType
-    if identifier == nil {
+    routeValues["serviceType"] = *args.ServiceType
+    if args.Identifier == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "identifier"} 
     }
-    routeValues["identifier"] = (*identifier).String()
+    routeValues["identifier"] = (*args.Identifier).String()
 
     queryParams := url.Values{}
-    if allowFaultIn != nil {
-        queryParams.Add("allowFaultIn", strconv.FormatBool(*allowFaultIn))
+    if args.AllowFaultIn != nil {
+        queryParams.Add("allowFaultIn", strconv.FormatBool(*args.AllowFaultIn))
     }
-    if previewFaultIn != nil {
-        queryParams.Add("previewFaultIn", strconv.FormatBool(*previewFaultIn))
+    if args.PreviewFaultIn != nil {
+        queryParams.Add("previewFaultIn", strconv.FormatBool(*args.PreviewFaultIn))
     }
     locationId, _ := uuid.Parse("d810a47d-f4f4-4a62-a03f-fa1860585c4c")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -216,13 +242,23 @@ func (client Client) GetServiceDefinition(ctx context.Context, serviceType *stri
     return &responseValue, err
 }
 
+// Arguments for the GetServiceDefinition function
+type GetServiceDefinitionArgs struct {
+    // (required)
+    ServiceType *string
+    // (required)
+    Identifier *uuid.UUID
+    // (optional) If true, we will attempt to fault in a host instance mapping if in SPS.
+    AllowFaultIn *bool
+    // (optional) If true, we will calculate and return a host instance mapping, but not persist it.
+    PreviewFaultIn *bool
+}
+
 // [Preview API]
-// ctx
-// serviceType (optional)
-func (client Client) GetServiceDefinitions(ctx context.Context, serviceType *string) (*[]ServiceDefinition, error) {
+func (client Client) GetServiceDefinitions(ctx context.Context, args GetServiceDefinitionsArgs) (*[]ServiceDefinition, error) {
     routeValues := make(map[string]string)
-    if serviceType != nil && *serviceType != "" {
-        routeValues["serviceType"] = *serviceType
+    if args.ServiceType != nil && *args.ServiceType != "" {
+        routeValues["serviceType"] = *args.ServiceType
     }
 
     locationId, _ := uuid.Parse("d810a47d-f4f4-4a62-a03f-fa1860585c4c")
@@ -236,14 +272,18 @@ func (client Client) GetServiceDefinitions(ctx context.Context, serviceType *str
     return &responseValue, err
 }
 
+// Arguments for the GetServiceDefinitions function
+type GetServiceDefinitionsArgs struct {
+    // (optional)
+    ServiceType *string
+}
+
 // [Preview API]
-// ctx
-// serviceDefinitions (required)
-func (client Client) UpdateServiceDefinitions(ctx context.Context, serviceDefinitions *azureDevops.VssJsonCollectionWrapper) error {
-    if serviceDefinitions == nil {
+func (client Client) UpdateServiceDefinitions(ctx context.Context, args UpdateServiceDefinitionsArgs) error {
+    if args.ServiceDefinitions == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "serviceDefinitions"}
     }
-    body, marshalErr := json.Marshal(*serviceDefinitions)
+    body, marshalErr := json.Marshal(*args.ServiceDefinitions)
     if marshalErr != nil {
         return marshalErr
     }
@@ -254,5 +294,11 @@ func (client Client) UpdateServiceDefinitions(ctx context.Context, serviceDefini
     }
 
     return nil
+}
+
+// Arguments for the UpdateServiceDefinitions function
+type UpdateServiceDefinitionsArgs struct {
+    // (required)
+    ServiceDefinitions *azureDevops.VssJsonCollectionWrapper
 }
 

@@ -37,26 +37,22 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 }
 
 // [Preview API] Proxy for a GET request defined by a service endpoint.
-// ctx
-// serviceEndpointRequest (required): Service endpoint request.
-// project (required): Project ID or project name
-// endpointId (required): Id of the service endpoint.
-func (client Client) ExecuteServiceEndpointRequest(ctx context.Context, serviceEndpointRequest *ServiceEndpointRequest, project *string, endpointId *string) (*ServiceEndpointRequestResult, error) {
-    if serviceEndpointRequest == nil {
+func (client Client) ExecuteServiceEndpointRequest(ctx context.Context, args ExecuteServiceEndpointRequestArgs) (*ServiceEndpointRequestResult, error) {
+    if args.ServiceEndpointRequest == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "serviceEndpointRequest"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if endpointId == nil {
+    if args.EndpointId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "endpointId"}
     }
-    queryParams.Add("endpointId", *endpointId)
-    body, marshalErr := json.Marshal(*serviceEndpointRequest)
+    queryParams.Add("endpointId", *args.EndpointId)
+    body, marshalErr := json.Marshal(*args.ServiceEndpointRequest)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -71,21 +67,28 @@ func (client Client) ExecuteServiceEndpointRequest(ctx context.Context, serviceE
     return &responseValue, err
 }
 
+// Arguments for the ExecuteServiceEndpointRequest function
+type ExecuteServiceEndpointRequestArgs struct {
+    // (required) Service endpoint request.
+    ServiceEndpointRequest *ServiceEndpointRequest
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the service endpoint.
+    EndpointId *string
+}
+
 // [Preview API] Create a service endpoint.
-// ctx
-// endpoint (required): Service endpoint to create.
-// project (required): Project ID or project name
-func (client Client) CreateServiceEndpoint(ctx context.Context, endpoint *ServiceEndpoint, project *string) (*ServiceEndpoint, error) {
-    if endpoint == nil {
+func (client Client) CreateServiceEndpoint(ctx context.Context, args CreateServiceEndpointArgs) (*ServiceEndpoint, error) {
+    if args.Endpoint == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "endpoint"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
-    body, marshalErr := json.Marshal(*endpoint)
+    body, marshalErr := json.Marshal(*args.Endpoint)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -100,25 +103,29 @@ func (client Client) CreateServiceEndpoint(ctx context.Context, endpoint *Servic
     return &responseValue, err
 }
 
+// Arguments for the CreateServiceEndpoint function
+type CreateServiceEndpointArgs struct {
+    // (required) Service endpoint to create.
+    Endpoint *ServiceEndpoint
+    // (required) Project ID or project name
+    Project *string
+}
+
 // [Preview API] Delete a service endpoint.
-// ctx
-// project (required): Project ID or project name
-// endpointId (required): Id of the service endpoint to delete.
-// deep (optional): Specific to AzureRM endpoint created in Automatic flow. When set to true, this will also delete corresponding AAD application in Azure. Default value is true.
-func (client Client) DeleteServiceEndpoint(ctx context.Context, project *string, endpointId *uuid.UUID, deep *bool) error {
+func (client Client) DeleteServiceEndpoint(ctx context.Context, args DeleteServiceEndpointArgs) error {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if endpointId == nil {
+    routeValues["project"] = *args.Project
+    if args.EndpointId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "endpointId"} 
     }
-    routeValues["endpointId"] = (*endpointId).String()
+    routeValues["endpointId"] = (*args.EndpointId).String()
 
     queryParams := url.Values{}
-    if deep != nil {
-        queryParams.Add("deep", strconv.FormatBool(*deep))
+    if args.Deep != nil {
+        queryParams.Add("deep", strconv.FormatBool(*args.Deep))
     }
     locationId, _ := uuid.Parse("e85f1c62-adfc-4b74-b618-11a150fb195e")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -129,20 +136,27 @@ func (client Client) DeleteServiceEndpoint(ctx context.Context, project *string,
     return nil
 }
 
+// Arguments for the DeleteServiceEndpoint function
+type DeleteServiceEndpointArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the service endpoint to delete.
+    EndpointId *uuid.UUID
+    // (optional) Specific to AzureRM endpoint created in Automatic flow. When set to true, this will also delete corresponding AAD application in Azure. Default value is true.
+    Deep *bool
+}
+
 // [Preview API] Get the service endpoint details.
-// ctx
-// project (required): Project ID or project name
-// endpointId (required): Id of the service endpoint.
-func (client Client) GetServiceEndpointDetails(ctx context.Context, project *string, endpointId *uuid.UUID) (*ServiceEndpoint, error) {
+func (client Client) GetServiceEndpointDetails(ctx context.Context, args GetServiceEndpointDetailsArgs) (*ServiceEndpoint, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if endpointId == nil {
+    routeValues["project"] = *args.Project
+    if args.EndpointId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "endpointId"} 
     }
-    routeValues["endpointId"] = (*endpointId).String()
+    routeValues["endpointId"] = (*args.EndpointId).String()
 
     locationId, _ := uuid.Parse("e85f1c62-adfc-4b74-b618-11a150fb195e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/json", nil)
@@ -155,46 +169,46 @@ func (client Client) GetServiceEndpointDetails(ctx context.Context, project *str
     return &responseValue, err
 }
 
+// Arguments for the GetServiceEndpointDetails function
+type GetServiceEndpointDetailsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the service endpoint.
+    EndpointId *uuid.UUID
+}
+
 // [Preview API] Get the service endpoints.
-// ctx
-// project (required): Project ID or project name
-// type_ (optional): Type of the service endpoints.
-// authSchemes (optional): Authorization schemes used for service endpoints.
-// endpointIds (optional): Ids of the service endpoints.
-// owner (optional): Owner for service endpoints.
-// includeFailed (optional): Failed flag for service endpoints.
-// includeDetails (optional): Flag to include more details for service endpoints. This is for internal use only and the flag will be treated as false for all other requests
-func (client Client) GetServiceEndpoints(ctx context.Context, project *string, type_ *string, authSchemes *[]string, endpointIds *[]uuid.UUID, owner *string, includeFailed *bool, includeDetails *bool) (*[]ServiceEndpoint, error) {
+func (client Client) GetServiceEndpoints(ctx context.Context, args GetServiceEndpointsArgs) (*[]ServiceEndpoint, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if type_ != nil {
-        queryParams.Add("type_", *type_)
+    if args.Type_ != nil {
+        queryParams.Add("type_", *args.Type_)
     }
-    if authSchemes != nil {
-        listAsString := strings.Join((*authSchemes)[:], ",")
+    if args.AuthSchemes != nil {
+        listAsString := strings.Join((*args.AuthSchemes)[:], ",")
         queryParams.Add("authSchemes", listAsString)
     }
-    if endpointIds != nil {
+    if args.EndpointIds != nil {
         var stringList []string
-        for _, item := range *endpointIds {
+        for _, item := range *args.EndpointIds {
             stringList = append(stringList, item.String())
         }
         listAsString := strings.Join((stringList)[:], ",")
         queryParams.Add("definitions", listAsString)
     }
-    if owner != nil {
-        queryParams.Add("owner", *owner)
+    if args.Owner != nil {
+        queryParams.Add("owner", *args.Owner)
     }
-    if includeFailed != nil {
-        queryParams.Add("includeFailed", strconv.FormatBool(*includeFailed))
+    if args.IncludeFailed != nil {
+        queryParams.Add("includeFailed", strconv.FormatBool(*args.IncludeFailed))
     }
-    if includeDetails != nil {
-        queryParams.Add("includeDetails", strconv.FormatBool(*includeDetails))
+    if args.IncludeDetails != nil {
+        queryParams.Add("includeDetails", strconv.FormatBool(*args.IncludeDetails))
     }
     locationId, _ := uuid.Parse("e85f1c62-adfc-4b74-b618-11a150fb195e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -205,45 +219,55 @@ func (client Client) GetServiceEndpoints(ctx context.Context, project *string, t
     var responseValue []ServiceEndpoint
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the GetServiceEndpoints function
+type GetServiceEndpointsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (optional) Type of the service endpoints.
+    Type_ *string
+    // (optional) Authorization schemes used for service endpoints.
+    AuthSchemes *[]string
+    // (optional) Ids of the service endpoints.
+    EndpointIds *[]uuid.UUID
+    // (optional) Owner for service endpoints.
+    Owner *string
+    // (optional) Failed flag for service endpoints.
+    IncludeFailed *bool
+    // (optional) Flag to include more details for service endpoints. This is for internal use only and the flag will be treated as false for all other requests
+    IncludeDetails *bool
 }
 
 // [Preview API] Get the service endpoints by name.
-// ctx
-// project (required): Project ID or project name
-// endpointNames (required): Names of the service endpoints.
-// type_ (optional): Type of the service endpoints.
-// authSchemes (optional): Authorization schemes used for service endpoints.
-// owner (optional): Owner for service endpoints.
-// includeFailed (optional): Failed flag for service endpoints.
-// includeDetails (optional): Flag to include more details for service endpoints. This is for internal use only and the flag will be treated as false for all other requests
-func (client Client) GetServiceEndpointsByNames(ctx context.Context, project *string, endpointNames *[]string, type_ *string, authSchemes *[]string, owner *string, includeFailed *bool, includeDetails *bool) (*[]ServiceEndpoint, error) {
+func (client Client) GetServiceEndpointsByNames(ctx context.Context, args GetServiceEndpointsByNamesArgs) (*[]ServiceEndpoint, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if endpointNames == nil {
+    if args.EndpointNames == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "endpointNames"}
     }
-    listAsString := strings.Join((*endpointNames)[:], ",")
+    listAsString := strings.Join((*args.EndpointNames)[:], ",")
     queryParams.Add("endpointNames", listAsString)
-    if type_ != nil {
-        queryParams.Add("type_", *type_)
+    if args.Type_ != nil {
+        queryParams.Add("type_", *args.Type_)
     }
-    if authSchemes != nil {
-        listAsString := strings.Join((*authSchemes)[:], ",")
+    if args.AuthSchemes != nil {
+        listAsString := strings.Join((*args.AuthSchemes)[:], ",")
         queryParams.Add("authSchemes", listAsString)
     }
-    if owner != nil {
-        queryParams.Add("owner", *owner)
+    if args.Owner != nil {
+        queryParams.Add("owner", *args.Owner)
     }
-    if includeFailed != nil {
-        queryParams.Add("includeFailed", strconv.FormatBool(*includeFailed))
+    if args.IncludeFailed != nil {
+        queryParams.Add("includeFailed", strconv.FormatBool(*args.IncludeFailed))
     }
-    if includeDetails != nil {
-        queryParams.Add("includeDetails", strconv.FormatBool(*includeDetails))
+    if args.IncludeDetails != nil {
+        queryParams.Add("includeDetails", strconv.FormatBool(*args.IncludeDetails))
     }
     locationId, _ := uuid.Parse("e85f1c62-adfc-4b74-b618-11a150fb195e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -256,31 +280,44 @@ func (client Client) GetServiceEndpointsByNames(ctx context.Context, project *st
     return &responseValue, err
 }
 
+// Arguments for the GetServiceEndpointsByNames function
+type GetServiceEndpointsByNamesArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Names of the service endpoints.
+    EndpointNames *[]string
+    // (optional) Type of the service endpoints.
+    Type_ *string
+    // (optional) Authorization schemes used for service endpoints.
+    AuthSchemes *[]string
+    // (optional) Owner for service endpoints.
+    Owner *string
+    // (optional) Failed flag for service endpoints.
+    IncludeFailed *bool
+    // (optional) Flag to include more details for service endpoints. This is for internal use only and the flag will be treated as false for all other requests
+    IncludeDetails *bool
+}
+
 // [Preview API] Update a service endpoint.
-// ctx
-// endpoint (required): Service endpoint to update.
-// project (required): Project ID or project name
-// endpointId (required): Id of the service endpoint to update.
-// operation (optional): Operation for the service endpoint.
-func (client Client) UpdateServiceEndpoint(ctx context.Context, endpoint *ServiceEndpoint, project *string, endpointId *uuid.UUID, operation *string) (*ServiceEndpoint, error) {
-    if endpoint == nil {
+func (client Client) UpdateServiceEndpoint(ctx context.Context, args UpdateServiceEndpointArgs) (*ServiceEndpoint, error) {
+    if args.Endpoint == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "endpoint"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if endpointId == nil {
+    routeValues["project"] = *args.Project
+    if args.EndpointId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "endpointId"} 
     }
-    routeValues["endpointId"] = (*endpointId).String()
+    routeValues["endpointId"] = (*args.EndpointId).String()
 
     queryParams := url.Values{}
-    if operation != nil {
-        queryParams.Add("operation", *operation)
+    if args.Operation != nil {
+        queryParams.Add("operation", *args.Operation)
     }
-    body, marshalErr := json.Marshal(*endpoint)
+    body, marshalErr := json.Marshal(*args.Endpoint)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -295,21 +332,30 @@ func (client Client) UpdateServiceEndpoint(ctx context.Context, endpoint *Servic
     return &responseValue, err
 }
 
+// Arguments for the UpdateServiceEndpoint function
+type UpdateServiceEndpointArgs struct {
+    // (required) Service endpoint to update.
+    Endpoint *ServiceEndpoint
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the service endpoint to update.
+    EndpointId *uuid.UUID
+    // (optional) Operation for the service endpoint.
+    Operation *string
+}
+
 // [Preview API] Update the service endpoints.
-// ctx
-// endpoints (required): Names of the service endpoints to update.
-// project (required): Project ID or project name
-func (client Client) UpdateServiceEndpoints(ctx context.Context, endpoints *[]ServiceEndpoint, project *string) (*[]ServiceEndpoint, error) {
-    if endpoints == nil {
+func (client Client) UpdateServiceEndpoints(ctx context.Context, args UpdateServiceEndpointsArgs) (*[]ServiceEndpoint, error) {
+    if args.Endpoints == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "endpoints"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
-    body, marshalErr := json.Marshal(*endpoints)
+    body, marshalErr := json.Marshal(*args.Endpoints)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -324,29 +370,32 @@ func (client Client) UpdateServiceEndpoints(ctx context.Context, endpoints *[]Se
     return &responseValue, err
 }
 
+// Arguments for the UpdateServiceEndpoints function
+type UpdateServiceEndpointsArgs struct {
+    // (required) Names of the service endpoints to update.
+    Endpoints *[]ServiceEndpoint
+    // (required) Project ID or project name
+    Project *string
+}
+
 // [Preview API] Get service endpoint execution records.
-// ctx
-// project (required): Project ID or project name
-// endpointId (required): Id of the service endpoint.
-// top (optional): Number of service endpoint execution records to get.
-// continuationToken (optional): A continuation token, returned by a previous call to this method, that can be used to return the next set of records
-func (client Client) GetServiceEndpointExecutionRecords(ctx context.Context, project *string, endpointId *uuid.UUID, top *int, continuationToken *uint64) (*[]ServiceEndpointExecutionRecord, error) {
+func (client Client) GetServiceEndpointExecutionRecords(ctx context.Context, args GetServiceEndpointExecutionRecordsArgs) (*[]ServiceEndpointExecutionRecord, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if endpointId == nil {
+    routeValues["project"] = *args.Project
+    if args.EndpointId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "endpointId"} 
     }
-    routeValues["endpointId"] = (*endpointId).String()
+    routeValues["endpointId"] = (*args.EndpointId).String()
 
     queryParams := url.Values{}
-    if top != nil {
-        queryParams.Add("top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("top", strconv.Itoa(*args.Top))
     }
-    if continuationToken != nil {
-        queryParams.Add("continuationToken", strconv.FormatUint(*continuationToken, 10))
+    if args.ContinuationToken != nil {
+        queryParams.Add("continuationToken", strconv.FormatUint(*args.ContinuationToken, 10))
     }
     locationId, _ := uuid.Parse("10a16738-9299-4cd1-9a81-fd23ad6200d0")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -359,17 +408,26 @@ func (client Client) GetServiceEndpointExecutionRecords(ctx context.Context, pro
     return &responseValue, err
 }
 
+// Arguments for the GetServiceEndpointExecutionRecords function
+type GetServiceEndpointExecutionRecordsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the service endpoint.
+    EndpointId *uuid.UUID
+    // (optional) Number of service endpoint execution records to get.
+    Top *int
+    // (optional) A continuation token, returned by a previous call to this method, that can be used to return the next set of records
+    ContinuationToken *uint64
+}
+
 // [Preview API] Get service endpoint types.
-// ctx
-// type_ (optional): Type of service endpoint.
-// scheme (optional): Scheme of service endpoint.
-func (client Client) GetServiceEndpointTypes(ctx context.Context, type_ *string, scheme *string) (*[]ServiceEndpointType, error) {
+func (client Client) GetServiceEndpointTypes(ctx context.Context, args GetServiceEndpointTypesArgs) (*[]ServiceEndpointType, error) {
     queryParams := url.Values{}
-    if type_ != nil {
-        queryParams.Add("type_", *type_)
+    if args.Type_ != nil {
+        queryParams.Add("type_", *args.Type_)
     }
-    if scheme != nil {
-        queryParams.Add("scheme", *scheme)
+    if args.Scheme != nil {
+        queryParams.Add("scheme", *args.Scheme)
     }
     locationId, _ := uuid.Parse("5a7938a4-655e-486c-b562-b78c54a7e87b")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
@@ -380,5 +438,13 @@ func (client Client) GetServiceEndpointTypes(ctx context.Context, type_ *string,
     var responseValue []ServiceEndpointType
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the GetServiceEndpointTypes function
+type GetServiceEndpointTypesArgs struct {
+    // (optional) Type of service endpoint.
+    Type_ *string
+    // (optional) Scheme of service endpoint.
+    Scheme *string
 }
 

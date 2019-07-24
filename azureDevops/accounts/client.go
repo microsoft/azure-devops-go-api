@@ -33,20 +33,16 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 }
 
 // Get a list of accounts for a specific owner or a specific member.
-// ctx
-// ownerId (optional): ID for the owner of the accounts.
-// memberId (optional): ID for a member of the accounts.
-// properties (optional)
-func (client Client) GetAccounts(ctx context.Context, ownerId *uuid.UUID, memberId *uuid.UUID, properties *string) (*[]Account, error) {
+func (client Client) GetAccounts(ctx context.Context, args GetAccountsArgs) (*[]Account, error) {
     queryParams := url.Values{}
-    if ownerId != nil {
-        queryParams.Add("ownerId", (*ownerId).String())
+    if args.OwnerId != nil {
+        queryParams.Add("ownerId", (*args.OwnerId).String())
     }
-    if memberId != nil {
-        queryParams.Add("memberId", (*memberId).String())
+    if args.MemberId != nil {
+        queryParams.Add("memberId", (*args.MemberId).String())
     }
-    if properties != nil {
-        queryParams.Add("properties", *properties)
+    if args.Properties != nil {
+        queryParams.Add("properties", *args.Properties)
     }
     locationId, _ := uuid.Parse("229a6a53-b428-4ffb-a835-e8f36b5b4b1e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
@@ -57,5 +53,15 @@ func (client Client) GetAccounts(ctx context.Context, ownerId *uuid.UUID, member
     var responseValue []Account
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the GetAccounts function
+type GetAccountsArgs struct {
+    // (optional) ID for the owner of the accounts.
+    OwnerId *uuid.UUID
+    // (optional) ID for a member of the accounts.
+    MemberId *uuid.UUID
+    // (optional)
+    Properties *string
 }
 

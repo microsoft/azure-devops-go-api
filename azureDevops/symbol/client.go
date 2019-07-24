@@ -36,8 +36,7 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 }
 
 // [Preview API] Check the availability of symbol service. This includes checking for feature flag, and possibly license in future. Note this is NOT an anonymous endpoint, and the caller will be redirected to authentication before hitting it.
-// ctx
-func (client Client) CheckAvailability(ctx context.Context, ) error {
+func (client Client) CheckAvailability(ctx context.Context, args CheckAvailabilityArgs) error {
     locationId, _ := uuid.Parse("97c893cc-e861-4ef4-8c43-9bad4a963dee")
     _, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, nil, nil, "", "application/json", nil)
     if err != nil {
@@ -47,15 +46,17 @@ func (client Client) CheckAvailability(ctx context.Context, ) error {
     return nil
 }
 
+// Arguments for the CheckAvailability function
+type CheckAvailabilityArgs struct {
+}
+
 // [Preview API] Get the client package.
-// ctx
-// clientType (required): Either "EXE" for a zip file containing a Windows symbol client (a.k.a. symbol.exe) along with dependencies, or "TASK" for a VSTS task that can be run on a VSTS build agent. All the other values are invalid. The parameter is case-insensitive.
-func (client Client) GetClient(ctx context.Context, clientType *string) (interface{}, error) {
+func (client Client) GetClient(ctx context.Context, args GetClientArgs) (interface{}, error) {
     routeValues := make(map[string]string)
-    if clientType == nil || *clientType == "" {
+    if args.ClientType == nil || *args.ClientType == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "clientType"} 
     }
-    routeValues["clientType"] = *clientType
+    routeValues["clientType"] = *args.ClientType
 
     locationId, _ := uuid.Parse("79c83865-4de3-460c-8a16-01be238e0818")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -68,9 +69,14 @@ func (client Client) GetClient(ctx context.Context, clientType *string) (interfa
     return responseValue, err
 }
 
+// Arguments for the GetClient function
+type GetClientArgs struct {
+    // (required) Either "EXE" for a zip file containing a Windows symbol client (a.k.a. symbol.exe) along with dependencies, or "TASK" for a VSTS task that can be run on a VSTS build agent. All the other values are invalid. The parameter is case-insensitive.
+    ClientType *string
+}
+
 // [Preview API] Get client version information.
-// ctx
-func (client Client) HeadClient(ctx context.Context, ) error {
+func (client Client) HeadClient(ctx context.Context, args HeadClientArgs) error {
     locationId, _ := uuid.Parse("79c83865-4de3-460c-8a16-01be238e0818")
     _, err := client.Client.Send(ctx, http.MethodHead, locationId, "5.1-preview.1", nil, nil, nil, "", "application/json", nil)
     if err != nil {
@@ -80,14 +86,16 @@ func (client Client) HeadClient(ctx context.Context, ) error {
     return nil
 }
 
+// Arguments for the HeadClient function
+type HeadClientArgs struct {
+}
+
 // [Preview API] Create a new symbol request.
-// ctx
-// requestToCreate (required): The symbol request to create.
-func (client Client) CreateRequests(ctx context.Context, requestToCreate *Request) (*Request, error) {
-    if requestToCreate == nil {
+func (client Client) CreateRequests(ctx context.Context, args CreateRequestsArgs) (*Request, error) {
+    if args.RequestToCreate == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "requestToCreate"}
     }
-    body, marshalErr := json.Marshal(*requestToCreate)
+    body, marshalErr := json.Marshal(*args.RequestToCreate)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -102,27 +110,29 @@ func (client Client) CreateRequests(ctx context.Context, requestToCreate *Reques
     return &responseValue, err
 }
 
+// Arguments for the CreateRequests function
+type CreateRequestsArgs struct {
+    // (required) The symbol request to create.
+    RequestToCreate *Request
+}
+
 // [Preview API] Create debug entries for a symbol request as specified by its identifier.
-// ctx
-// batch (required): A batch that contains debug entries to create.
-// requestId (required): The symbol request identifier.
-// collection (required): A valid debug entry collection name. Must be "debugentries".
-func (client Client) CreateRequestsRequestIdDebugEntries(ctx context.Context, batch *DebugEntryCreateBatch, requestId *string, collection *string) (*[]DebugEntry, error) {
-    if batch == nil {
+func (client Client) CreateRequestsRequestIdDebugEntries(ctx context.Context, args CreateRequestsRequestIdDebugEntriesArgs) (*[]DebugEntry, error) {
+    if args.Batch == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "batch"}
     }
     routeValues := make(map[string]string)
-    if requestId == nil || *requestId == "" {
+    if args.RequestId == nil || *args.RequestId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "requestId"} 
     }
-    routeValues["requestId"] = *requestId
+    routeValues["requestId"] = *args.RequestId
 
     queryParams := url.Values{}
-    if collection == nil {
+    if args.Collection == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "collection"}
     }
-    queryParams.Add("collection", *collection)
-    body, marshalErr := json.Marshal(*batch)
+    queryParams.Add("collection", *args.Collection)
+    body, marshalErr := json.Marshal(*args.Batch)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -137,25 +147,31 @@ func (client Client) CreateRequestsRequestIdDebugEntries(ctx context.Context, ba
     return &responseValue, err
 }
 
+// Arguments for the CreateRequestsRequestIdDebugEntries function
+type CreateRequestsRequestIdDebugEntriesArgs struct {
+    // (required) A batch that contains debug entries to create.
+    Batch *DebugEntryCreateBatch
+    // (required) The symbol request identifier.
+    RequestId *string
+    // (required) A valid debug entry collection name. Must be "debugentries".
+    Collection *string
+}
+
 // [Preview API] Create debug entries for a symbol request as specified by its name.
-// ctx
-// batch (required): A batch that contains debug entries to create.
-// requestName (required): The symbol request name.
-// collection (required): A valid debug entry collection name. Must be "debugentries".
-func (client Client) CreateRequestsRequestNameDebugEntries(ctx context.Context, batch *DebugEntryCreateBatch, requestName *string, collection *string) (*[]DebugEntry, error) {
-    if batch == nil {
+func (client Client) CreateRequestsRequestNameDebugEntries(ctx context.Context, args CreateRequestsRequestNameDebugEntriesArgs) (*[]DebugEntry, error) {
+    if args.Batch == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "batch"}
     }
     queryParams := url.Values{}
-    if requestName == nil {
+    if args.RequestName == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "requestName"}
     }
-    queryParams.Add("requestName", *requestName)
-    if collection == nil {
+    queryParams.Add("requestName", *args.RequestName)
+    if args.Collection == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "collection"}
     }
-    queryParams.Add("collection", *collection)
-    body, marshalErr := json.Marshal(*batch)
+    queryParams.Add("collection", *args.Collection)
+    body, marshalErr := json.Marshal(*args.Batch)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -170,20 +186,27 @@ func (client Client) CreateRequestsRequestNameDebugEntries(ctx context.Context, 
     return &responseValue, err
 }
 
+// Arguments for the CreateRequestsRequestNameDebugEntries function
+type CreateRequestsRequestNameDebugEntriesArgs struct {
+    // (required) A batch that contains debug entries to create.
+    Batch *DebugEntryCreateBatch
+    // (required) The symbol request name.
+    RequestName *string
+    // (required) A valid debug entry collection name. Must be "debugentries".
+    Collection *string
+}
+
 // [Preview API] Delete a symbol request by request identifier.
-// ctx
-// requestId (required): The symbol request identifier.
-// synchronous (optional): If true, delete all the debug entries under this request synchronously in the current session. If false, the deletion will be postponed to a later point and be executed automatically by the system.
-func (client Client) DeleteRequestsRequestId(ctx context.Context, requestId *string, synchronous *bool) error {
+func (client Client) DeleteRequestsRequestId(ctx context.Context, args DeleteRequestsRequestIdArgs) error {
     routeValues := make(map[string]string)
-    if requestId == nil || *requestId == "" {
+    if args.RequestId == nil || *args.RequestId == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "requestId"} 
     }
-    routeValues["requestId"] = *requestId
+    routeValues["requestId"] = *args.RequestId
 
     queryParams := url.Values{}
-    if synchronous != nil {
-        queryParams.Add("synchronous", strconv.FormatBool(*synchronous))
+    if args.Synchronous != nil {
+        queryParams.Add("synchronous", strconv.FormatBool(*args.Synchronous))
     }
     locationId, _ := uuid.Parse("ebc09fe3-1b20-4667-abc5-f2b60fe8de52")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -194,18 +217,23 @@ func (client Client) DeleteRequestsRequestId(ctx context.Context, requestId *str
     return nil
 }
 
+// Arguments for the DeleteRequestsRequestId function
+type DeleteRequestsRequestIdArgs struct {
+    // (required) The symbol request identifier.
+    RequestId *string
+    // (optional) If true, delete all the debug entries under this request synchronously in the current session. If false, the deletion will be postponed to a later point and be executed automatically by the system.
+    Synchronous *bool
+}
+
 // [Preview API] Delete a symbol request by request name.
-// ctx
-// requestName (required): The symbol request name.
-// synchronous (optional): If true, delete all the debug entries under this request synchronously in the current session. If false, the deletion will be postponed to a later point and be executed automatically by the system.
-func (client Client) DeleteRequestsRequestName(ctx context.Context, requestName *string, synchronous *bool) error {
+func (client Client) DeleteRequestsRequestName(ctx context.Context, args DeleteRequestsRequestNameArgs) error {
     queryParams := url.Values{}
-    if requestName == nil {
+    if args.RequestName == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "requestName"}
     }
-    queryParams.Add("requestName", *requestName)
-    if synchronous != nil {
-        queryParams.Add("synchronous", strconv.FormatBool(*synchronous))
+    queryParams.Add("requestName", *args.RequestName)
+    if args.Synchronous != nil {
+        queryParams.Add("synchronous", strconv.FormatBool(*args.Synchronous))
     }
     locationId, _ := uuid.Parse("ebc09fe3-1b20-4667-abc5-f2b60fe8de52")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
@@ -216,15 +244,21 @@ func (client Client) DeleteRequestsRequestName(ctx context.Context, requestName 
     return nil
 }
 
+// Arguments for the DeleteRequestsRequestName function
+type DeleteRequestsRequestNameArgs struct {
+    // (required) The symbol request name.
+    RequestName *string
+    // (optional) If true, delete all the debug entries under this request synchronously in the current session. If false, the deletion will be postponed to a later point and be executed automatically by the system.
+    Synchronous *bool
+}
+
 // [Preview API] Get a symbol request by request identifier.
-// ctx
-// requestId (required): The symbol request identifier.
-func (client Client) GetRequestsRequestId(ctx context.Context, requestId *string) (*Request, error) {
+func (client Client) GetRequestsRequestId(ctx context.Context, args GetRequestsRequestIdArgs) (*Request, error) {
     routeValues := make(map[string]string)
-    if requestId == nil || *requestId == "" {
+    if args.RequestId == nil || *args.RequestId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "requestId"} 
     }
-    routeValues["requestId"] = *requestId
+    routeValues["requestId"] = *args.RequestId
 
     locationId, _ := uuid.Parse("ebc09fe3-1b20-4667-abc5-f2b60fe8de52")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -237,15 +271,19 @@ func (client Client) GetRequestsRequestId(ctx context.Context, requestId *string
     return &responseValue, err
 }
 
+// Arguments for the GetRequestsRequestId function
+type GetRequestsRequestIdArgs struct {
+    // (required) The symbol request identifier.
+    RequestId *string
+}
+
 // [Preview API] Get a symbol request by request name.
-// ctx
-// requestName (required): The symbol request name.
-func (client Client) GetRequestsRequestName(ctx context.Context, requestName *string) (*Request, error) {
+func (client Client) GetRequestsRequestName(ctx context.Context, args GetRequestsRequestNameArgs) (*Request, error) {
     queryParams := url.Values{}
-    if requestName == nil {
+    if args.RequestName == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "requestName"}
     }
-    queryParams.Add("requestName", *requestName)
+    queryParams.Add("requestName", *args.RequestName)
     locationId, _ := uuid.Parse("ebc09fe3-1b20-4667-abc5-f2b60fe8de52")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -257,21 +295,24 @@ func (client Client) GetRequestsRequestName(ctx context.Context, requestName *st
     return &responseValue, err
 }
 
+// Arguments for the GetRequestsRequestName function
+type GetRequestsRequestNameArgs struct {
+    // (required) The symbol request name.
+    RequestName *string
+}
+
 // [Preview API] Update a symbol request by request identifier.
-// ctx
-// updateRequest (required): The symbol request.
-// requestId (required): The symbol request identifier.
-func (client Client) UpdateRequestsRequestId(ctx context.Context, updateRequest *Request, requestId *string) (*Request, error) {
-    if updateRequest == nil {
+func (client Client) UpdateRequestsRequestId(ctx context.Context, args UpdateRequestsRequestIdArgs) (*Request, error) {
+    if args.UpdateRequest == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "updateRequest"}
     }
     routeValues := make(map[string]string)
-    if requestId == nil || *requestId == "" {
+    if args.RequestId == nil || *args.RequestId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "requestId"} 
     }
-    routeValues["requestId"] = *requestId
+    routeValues["requestId"] = *args.RequestId
 
-    body, marshalErr := json.Marshal(*updateRequest)
+    body, marshalErr := json.Marshal(*args.UpdateRequest)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -286,20 +327,25 @@ func (client Client) UpdateRequestsRequestId(ctx context.Context, updateRequest 
     return &responseValue, err
 }
 
+// Arguments for the UpdateRequestsRequestId function
+type UpdateRequestsRequestIdArgs struct {
+    // (required) The symbol request.
+    UpdateRequest *Request
+    // (required) The symbol request identifier.
+    RequestId *string
+}
+
 // [Preview API] Update a symbol request by request name.
-// ctx
-// updateRequest (required): The symbol request.
-// requestName (required): The symbol request name.
-func (client Client) UpdateRequestsRequestName(ctx context.Context, updateRequest *Request, requestName *string) (*Request, error) {
-    if updateRequest == nil {
+func (client Client) UpdateRequestsRequestName(ctx context.Context, args UpdateRequestsRequestNameArgs) (*Request, error) {
+    if args.UpdateRequest == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "updateRequest"}
     }
     queryParams := url.Values{}
-    if requestName == nil {
+    if args.RequestName == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "requestName"}
     }
-    queryParams.Add("requestName", *requestName)
-    body, marshalErr := json.Marshal(*updateRequest)
+    queryParams.Add("requestName", *args.RequestName)
+    body, marshalErr := json.Marshal(*args.UpdateRequest)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -314,15 +360,21 @@ func (client Client) UpdateRequestsRequestName(ctx context.Context, updateReques
     return &responseValue, err
 }
 
+// Arguments for the UpdateRequestsRequestName function
+type UpdateRequestsRequestNameArgs struct {
+    // (required) The symbol request.
+    UpdateRequest *Request
+    // (required) The symbol request name.
+    RequestName *string
+}
+
 // [Preview API] Given a client key, returns the best matched debug entry.
-// ctx
-// debugEntryClientKey (required): A "client key" used by both ends of Microsoft's symbol protocol to identify a debug entry. The semantics of client key is governed by symsrv and is beyond the scope of this documentation.
-func (client Client) GetSymSrvDebugEntryClientKey(ctx context.Context, debugEntryClientKey *string) error {
+func (client Client) GetSymSrvDebugEntryClientKey(ctx context.Context, args GetSymSrvDebugEntryClientKeyArgs) error {
     routeValues := make(map[string]string)
-    if debugEntryClientKey == nil || *debugEntryClientKey == "" {
+    if args.DebugEntryClientKey == nil || *args.DebugEntryClientKey == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "debugEntryClientKey"} 
     }
-    routeValues["debugEntryClientKey"] = *debugEntryClientKey
+    routeValues["debugEntryClientKey"] = *args.DebugEntryClientKey
 
     locationId, _ := uuid.Parse("9648e256-c9f9-4f16-8a27-630b06396942")
     _, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -331,5 +383,11 @@ func (client Client) GetSymSrvDebugEntryClientKey(ctx context.Context, debugEntr
     }
 
     return nil
+}
+
+// Arguments for the GetSymSrvDebugEntryClientKey function
+type GetSymSrvDebugEntryClientKeyArgs struct {
+    // (required) A "client key" used by both ends of Microsoft's symbol protocol to identify a debug entry. The semantics of client key is governed by symsrv and is beyond the scope of this documentation.
+    DebugEntryClientKey *string
 }
 

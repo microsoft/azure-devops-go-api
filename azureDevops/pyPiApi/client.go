@@ -36,33 +36,27 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 }
 
 // [Preview API] Download a python package file directly. This API is intended for manual UI download options, not for programmatic access and scripting.
-// ctx
-// feedId (required): Name or ID of the feed.
-// packageName (required): Name of the package.
-// packageVersion (required): Version of the package.
-// fileName (required): Name of the file in the package
-// project (optional): Project ID or project name
-func (client Client) DownloadPackage(ctx context.Context, feedId *string, packageName *string, packageVersion *string, fileName *string, project *string) (interface{}, error) {
+func (client Client) DownloadPackage(ctx context.Context, args DownloadPackageArgs) (interface{}, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
-    if feedId == nil || *feedId == "" {
+    if args.FeedId == nil || *args.FeedId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
-    routeValues["feedId"] = *feedId
-    if packageName == nil || *packageName == "" {
+    routeValues["feedId"] = *args.FeedId
+    if args.PackageName == nil || *args.PackageName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"} 
     }
-    routeValues["packageName"] = *packageName
-    if packageVersion == nil || *packageVersion == "" {
+    routeValues["packageName"] = *args.PackageName
+    if args.PackageVersion == nil || *args.PackageVersion == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageVersion"} 
     }
-    routeValues["packageVersion"] = *packageVersion
-    if fileName == nil || *fileName == "" {
+    routeValues["packageVersion"] = *args.PackageVersion
+    if args.FileName == nil || *args.FileName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "fileName"} 
     }
-    routeValues["fileName"] = *fileName
+    routeValues["fileName"] = *args.FileName
 
     locationId, _ := uuid.Parse("97218bae-a64d-4381-9257-b5b7951f0b98")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -75,29 +69,38 @@ func (client Client) DownloadPackage(ctx context.Context, feedId *string, packag
     return responseValue, err
 }
 
+// Arguments for the DownloadPackage function
+type DownloadPackageArgs struct {
+    // (required) Name or ID of the feed.
+    FeedId *string
+    // (required) Name of the package.
+    PackageName *string
+    // (required) Version of the package.
+    PackageVersion *string
+    // (required) Name of the file in the package
+    FileName *string
+    // (optional) Project ID or project name
+    Project *string
+}
+
 // [Preview API] Delete a package version from the feed, moving it to the recycle bin.
-// ctx
-// feedId (required): Name or ID of the feed.
-// packageName (required): Name of the package.
-// packageVersion (required): Version of the package.
-// project (optional): Project ID or project name
-func (client Client) DeletePackageVersionFromRecycleBin(ctx context.Context, feedId *string, packageName *string, packageVersion *string, project *string) error {
+func (client Client) DeletePackageVersionFromRecycleBin(ctx context.Context, args DeletePackageVersionFromRecycleBinArgs) error {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
-    if feedId == nil || *feedId == "" {
+    if args.FeedId == nil || *args.FeedId == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
-    routeValues["feedId"] = *feedId
-    if packageName == nil || *packageName == "" {
+    routeValues["feedId"] = *args.FeedId
+    if args.PackageName == nil || *args.PackageName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"} 
     }
-    routeValues["packageName"] = *packageName
-    if packageVersion == nil || *packageVersion == "" {
+    routeValues["packageName"] = *args.PackageName
+    if args.PackageVersion == nil || *args.PackageVersion == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageVersion"} 
     }
-    routeValues["packageVersion"] = *packageVersion
+    routeValues["packageVersion"] = *args.PackageVersion
 
     locationId, _ := uuid.Parse("07143752-3d94-45fd-86c2-0c77ed87847b")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -108,29 +111,36 @@ func (client Client) DeletePackageVersionFromRecycleBin(ctx context.Context, fee
     return nil
 }
 
+// Arguments for the DeletePackageVersionFromRecycleBin function
+type DeletePackageVersionFromRecycleBinArgs struct {
+    // (required) Name or ID of the feed.
+    FeedId *string
+    // (required) Name of the package.
+    PackageName *string
+    // (required) Version of the package.
+    PackageVersion *string
+    // (optional) Project ID or project name
+    Project *string
+}
+
 // [Preview API] Get information about a package version in the recycle bin.
-// ctx
-// feedId (required): Name or ID of the feed.
-// packageName (required): Name of the package.
-// packageVersion (required): Version of the package.
-// project (optional): Project ID or project name
-func (client Client) GetPackageVersionMetadataFromRecycleBin(ctx context.Context, feedId *string, packageName *string, packageVersion *string, project *string) (*PyPiPackageVersionDeletionState, error) {
+func (client Client) GetPackageVersionMetadataFromRecycleBin(ctx context.Context, args GetPackageVersionMetadataFromRecycleBinArgs) (*PyPiPackageVersionDeletionState, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
-    if feedId == nil || *feedId == "" {
+    if args.FeedId == nil || *args.FeedId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
-    routeValues["feedId"] = *feedId
-    if packageName == nil || *packageName == "" {
+    routeValues["feedId"] = *args.FeedId
+    if args.PackageName == nil || *args.PackageName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"} 
     }
-    routeValues["packageName"] = *packageName
-    if packageVersion == nil || *packageVersion == "" {
+    routeValues["packageName"] = *args.PackageName
+    if args.PackageVersion == nil || *args.PackageVersion == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageVersion"} 
     }
-    routeValues["packageVersion"] = *packageVersion
+    routeValues["packageVersion"] = *args.PackageVersion
 
     locationId, _ := uuid.Parse("07143752-3d94-45fd-86c2-0c77ed87847b")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -143,35 +153,41 @@ func (client Client) GetPackageVersionMetadataFromRecycleBin(ctx context.Context
     return &responseValue, err
 }
 
+// Arguments for the GetPackageVersionMetadataFromRecycleBin function
+type GetPackageVersionMetadataFromRecycleBinArgs struct {
+    // (required) Name or ID of the feed.
+    FeedId *string
+    // (required) Name of the package.
+    PackageName *string
+    // (required) Version of the package.
+    PackageVersion *string
+    // (optional) Project ID or project name
+    Project *string
+}
+
 // [Preview API] Restore a package version from the recycle bin to its associated feed.
-// ctx
-// packageVersionDetails (required): Set the 'Deleted' state to 'false' to restore the package to its feed.
-// feedId (required): Name or ID of the feed.
-// packageName (required): Name of the package.
-// packageVersion (required): Version of the package.
-// project (optional): Project ID or project name
-func (client Client) RestorePackageVersionFromRecycleBin(ctx context.Context, packageVersionDetails *PyPiRecycleBinPackageVersionDetails, feedId *string, packageName *string, packageVersion *string, project *string) error {
-    if packageVersionDetails == nil {
+func (client Client) RestorePackageVersionFromRecycleBin(ctx context.Context, args RestorePackageVersionFromRecycleBinArgs) error {
+    if args.PackageVersionDetails == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "packageVersionDetails"}
     }
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
-    if feedId == nil || *feedId == "" {
+    if args.FeedId == nil || *args.FeedId == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
-    routeValues["feedId"] = *feedId
-    if packageName == nil || *packageName == "" {
+    routeValues["feedId"] = *args.FeedId
+    if args.PackageName == nil || *args.PackageName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"} 
     }
-    routeValues["packageName"] = *packageName
-    if packageVersion == nil || *packageVersion == "" {
+    routeValues["packageName"] = *args.PackageName
+    if args.PackageVersion == nil || *args.PackageVersion == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageVersion"} 
     }
-    routeValues["packageVersion"] = *packageVersion
+    routeValues["packageVersion"] = *args.PackageVersion
 
-    body, marshalErr := json.Marshal(*packageVersionDetails)
+    body, marshalErr := json.Marshal(*args.PackageVersionDetails)
     if marshalErr != nil {
         return marshalErr
     }
@@ -184,29 +200,38 @@ func (client Client) RestorePackageVersionFromRecycleBin(ctx context.Context, pa
     return nil
 }
 
+// Arguments for the RestorePackageVersionFromRecycleBin function
+type RestorePackageVersionFromRecycleBinArgs struct {
+    // (required) Set the 'Deleted' state to 'false' to restore the package to its feed.
+    PackageVersionDetails *PyPiRecycleBinPackageVersionDetails
+    // (required) Name or ID of the feed.
+    FeedId *string
+    // (required) Name of the package.
+    PackageName *string
+    // (required) Version of the package.
+    PackageVersion *string
+    // (optional) Project ID or project name
+    Project *string
+}
+
 // [Preview API] Delete a package version, moving it to the recycle bin.
-// ctx
-// feedId (required): Name or ID of the feed.
-// packageName (required): Name of the package.
-// packageVersion (required): Version of the package.
-// project (optional): Project ID or project name
-func (client Client) DeletePackageVersion(ctx context.Context, feedId *string, packageName *string, packageVersion *string, project *string) (*Package, error) {
+func (client Client) DeletePackageVersion(ctx context.Context, args DeletePackageVersionArgs) (*Package, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
-    if feedId == nil || *feedId == "" {
+    if args.FeedId == nil || *args.FeedId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
-    routeValues["feedId"] = *feedId
-    if packageName == nil || *packageName == "" {
+    routeValues["feedId"] = *args.FeedId
+    if args.PackageName == nil || *args.PackageName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"} 
     }
-    routeValues["packageName"] = *packageName
-    if packageVersion == nil || *packageVersion == "" {
+    routeValues["packageName"] = *args.PackageName
+    if args.PackageVersion == nil || *args.PackageVersion == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageVersion"} 
     }
-    routeValues["packageVersion"] = *packageVersion
+    routeValues["packageVersion"] = *args.PackageVersion
 
     locationId, _ := uuid.Parse("d146ac7e-9e3f-4448-b956-f9bb3bdf9b2e")
     resp, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -219,34 +244,40 @@ func (client Client) DeletePackageVersion(ctx context.Context, feedId *string, p
     return &responseValue, err
 }
 
+// Arguments for the DeletePackageVersion function
+type DeletePackageVersionArgs struct {
+    // (required) Name or ID of the feed.
+    FeedId *string
+    // (required) Name of the package.
+    PackageName *string
+    // (required) Version of the package.
+    PackageVersion *string
+    // (optional) Project ID or project name
+    Project *string
+}
+
 // [Preview API] Get information about a package version.
-// ctx
-// feedId (required): Name or ID of the feed.
-// packageName (required): Name of the package.
-// packageVersion (required): Version of the package.
-// project (optional): Project ID or project name
-// showDeleted (optional): True to show information for deleted package versions.
-func (client Client) GetPackageVersion(ctx context.Context, feedId *string, packageName *string, packageVersion *string, project *string, showDeleted *bool) (*Package, error) {
+func (client Client) GetPackageVersion(ctx context.Context, args GetPackageVersionArgs) (*Package, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
-    if feedId == nil || *feedId == "" {
+    if args.FeedId == nil || *args.FeedId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
-    routeValues["feedId"] = *feedId
-    if packageName == nil || *packageName == "" {
+    routeValues["feedId"] = *args.FeedId
+    if args.PackageName == nil || *args.PackageName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"} 
     }
-    routeValues["packageName"] = *packageName
-    if packageVersion == nil || *packageVersion == "" {
+    routeValues["packageName"] = *args.PackageName
+    if args.PackageVersion == nil || *args.PackageVersion == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageVersion"} 
     }
-    routeValues["packageVersion"] = *packageVersion
+    routeValues["packageVersion"] = *args.PackageVersion
 
     queryParams := url.Values{}
-    if showDeleted != nil {
-        queryParams.Add("showDeleted", strconv.FormatBool(*showDeleted))
+    if args.ShowDeleted != nil {
+        queryParams.Add("showDeleted", strconv.FormatBool(*args.ShowDeleted))
     }
     locationId, _ := uuid.Parse("d146ac7e-9e3f-4448-b956-f9bb3bdf9b2e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -259,35 +290,43 @@ func (client Client) GetPackageVersion(ctx context.Context, feedId *string, pack
     return &responseValue, err
 }
 
+// Arguments for the GetPackageVersion function
+type GetPackageVersionArgs struct {
+    // (required) Name or ID of the feed.
+    FeedId *string
+    // (required) Name of the package.
+    PackageName *string
+    // (required) Version of the package.
+    PackageVersion *string
+    // (optional) Project ID or project name
+    Project *string
+    // (optional) True to show information for deleted package versions.
+    ShowDeleted *bool
+}
+
 // [Preview API] Update state for a package version.
-// ctx
-// packageVersionDetails (required): Details to be updated.
-// feedId (required): Name or ID of the feed.
-// packageName (required): Name of the package.
-// packageVersion (required): Version of the package.
-// project (optional): Project ID or project name
-func (client Client) UpdatePackageVersion(ctx context.Context, packageVersionDetails *PackageVersionDetails, feedId *string, packageName *string, packageVersion *string, project *string) error {
-    if packageVersionDetails == nil {
+func (client Client) UpdatePackageVersion(ctx context.Context, args UpdatePackageVersionArgs) error {
+    if args.PackageVersionDetails == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "packageVersionDetails"}
     }
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
-    if feedId == nil || *feedId == "" {
+    if args.FeedId == nil || *args.FeedId == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
-    routeValues["feedId"] = *feedId
-    if packageName == nil || *packageName == "" {
+    routeValues["feedId"] = *args.FeedId
+    if args.PackageName == nil || *args.PackageName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"} 
     }
-    routeValues["packageName"] = *packageName
-    if packageVersion == nil || *packageVersion == "" {
+    routeValues["packageName"] = *args.PackageName
+    if args.PackageVersion == nil || *args.PackageVersion == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageVersion"} 
     }
-    routeValues["packageVersion"] = *packageVersion
+    routeValues["packageVersion"] = *args.PackageVersion
 
-    body, marshalErr := json.Marshal(*packageVersionDetails)
+    body, marshalErr := json.Marshal(*args.PackageVersionDetails)
     if marshalErr != nil {
         return marshalErr
     }
@@ -298,5 +337,19 @@ func (client Client) UpdatePackageVersion(ctx context.Context, packageVersionDet
     }
 
     return nil
+}
+
+// Arguments for the UpdatePackageVersion function
+type UpdatePackageVersionArgs struct {
+    // (required) Details to be updated.
+    PackageVersionDetails *PackageVersionDetails
+    // (required) Name or ID of the feed.
+    FeedId *string
+    // (required) Name of the package.
+    PackageName *string
+    // (required) Version of the package.
+    PackageVersion *string
+    // (optional) Project ID or project name
+    Project *string
 }
 

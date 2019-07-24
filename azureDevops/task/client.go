@@ -32,29 +32,24 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
 }
 
 // [Preview API]
-// ctx
-// scopeIdentifier (required): The project GUID to scope the request
-// hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
-// planId (required)
-// type_ (required)
-func (client Client) GetPlanAttachments(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, type_ *string) (*[]TaskAttachment, error) {
+func (client Client) GetPlanAttachments(ctx context.Context, args GetPlanAttachmentsArgs) (*[]TaskAttachment, error) {
     routeValues := make(map[string]string)
-    if scopeIdentifier == nil {
+    if args.ScopeIdentifier == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
-    routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
-    if hubName == nil || *hubName == "" {
+    routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
+    if args.HubName == nil || *args.HubName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
-    routeValues["hubName"] = *hubName
-    if planId == nil {
+    routeValues["hubName"] = *args.HubName
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = (*planId).String()
-    if type_ == nil || *type_ == "" {
+    routeValues["planId"] = (*args.PlanId).String()
+    if args.Type_ == nil || *args.Type_ == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
-    routeValues["type_"] = *type_
+    routeValues["type_"] = *args.Type_
 
     locationId, _ := uuid.Parse("eb55e5d6-2f30-4295-b5ed-38da50b1fc52")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -67,52 +62,55 @@ func (client Client) GetPlanAttachments(ctx context.Context, scopeIdentifier *uu
     return &responseValue, err
 }
 
+// Arguments for the GetPlanAttachments function
+type GetPlanAttachmentsArgs struct {
+    // (required) The project GUID to scope the request
+    ScopeIdentifier *uuid.UUID
+    // (required) The name of the server hub: "build" for the Build server or "rm" for the Release Management server
+    HubName *string
+    // (required)
+    PlanId *uuid.UUID
+    // (required)
+    Type_ *string
+}
+
 // [Preview API]
-// ctx
-// uploadStream (required): Stream to upload
-// scopeIdentifier (required): The project GUID to scope the request
-// hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
-// planId (required)
-// timelineId (required)
-// recordId (required)
-// type_ (required)
-// name (required)
-func (client Client) CreateAttachment(ctx context.Context, uploadStream io.Reader, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (*TaskAttachment, error) {
-    if uploadStream == nil {
+func (client Client) CreateAttachment(ctx context.Context, args CreateAttachmentArgs) (*TaskAttachment, error) {
+    if args.UploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
     routeValues := make(map[string]string)
-    if scopeIdentifier == nil {
+    if args.ScopeIdentifier == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
-    routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
-    if hubName == nil || *hubName == "" {
+    routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
+    if args.HubName == nil || *args.HubName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
-    routeValues["hubName"] = *hubName
-    if planId == nil {
+    routeValues["hubName"] = *args.HubName
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = (*planId).String()
-    if timelineId == nil {
+    routeValues["planId"] = (*args.PlanId).String()
+    if args.TimelineId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
     }
-    routeValues["timelineId"] = (*timelineId).String()
-    if recordId == nil {
+    routeValues["timelineId"] = (*args.TimelineId).String()
+    if args.RecordId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "recordId"} 
     }
-    routeValues["recordId"] = (*recordId).String()
-    if type_ == nil || *type_ == "" {
+    routeValues["recordId"] = (*args.RecordId).String()
+    if args.Type_ == nil || *args.Type_ == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
-    routeValues["type_"] = *type_
-    if name == nil || *name == "" {
+    routeValues["type_"] = *args.Type_
+    if args.Name == nil || *args.Name == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
-    routeValues["name"] = *name
+    routeValues["name"] = *args.Name
 
     locationId, _ := uuid.Parse("7898f959-9cdf-4096-b29e-7f293031629e")
-    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, uploadStream, "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, args.UploadStream, "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -122,45 +120,57 @@ func (client Client) CreateAttachment(ctx context.Context, uploadStream io.Reade
     return &responseValue, err
 }
 
+// Arguments for the CreateAttachment function
+type CreateAttachmentArgs struct {
+    // (required) Stream to upload
+    UploadStream io.Reader
+    // (required) The project GUID to scope the request
+    ScopeIdentifier *uuid.UUID
+    // (required) The name of the server hub: "build" for the Build server or "rm" for the Release Management server
+    HubName *string
+    // (required)
+    PlanId *uuid.UUID
+    // (required)
+    TimelineId *uuid.UUID
+    // (required)
+    RecordId *uuid.UUID
+    // (required)
+    Type_ *string
+    // (required)
+    Name *string
+}
+
 // [Preview API]
-// ctx
-// scopeIdentifier (required): The project GUID to scope the request
-// hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
-// planId (required)
-// timelineId (required)
-// recordId (required)
-// type_ (required)
-// name (required)
-func (client Client) GetAttachment(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (*TaskAttachment, error) {
+func (client Client) GetAttachment(ctx context.Context, args GetAttachmentArgs) (*TaskAttachment, error) {
     routeValues := make(map[string]string)
-    if scopeIdentifier == nil {
+    if args.ScopeIdentifier == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
-    routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
-    if hubName == nil || *hubName == "" {
+    routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
+    if args.HubName == nil || *args.HubName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
-    routeValues["hubName"] = *hubName
-    if planId == nil {
+    routeValues["hubName"] = *args.HubName
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = (*planId).String()
-    if timelineId == nil {
+    routeValues["planId"] = (*args.PlanId).String()
+    if args.TimelineId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
     }
-    routeValues["timelineId"] = (*timelineId).String()
-    if recordId == nil {
+    routeValues["timelineId"] = (*args.TimelineId).String()
+    if args.RecordId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "recordId"} 
     }
-    routeValues["recordId"] = (*recordId).String()
-    if type_ == nil || *type_ == "" {
+    routeValues["recordId"] = (*args.RecordId).String()
+    if args.Type_ == nil || *args.Type_ == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
-    routeValues["type_"] = *type_
-    if name == nil || *name == "" {
+    routeValues["type_"] = *args.Type_
+    if args.Name == nil || *args.Name == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
-    routeValues["name"] = *name
+    routeValues["name"] = *args.Name
 
     locationId, _ := uuid.Parse("7898f959-9cdf-4096-b29e-7f293031629e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -173,45 +183,55 @@ func (client Client) GetAttachment(ctx context.Context, scopeIdentifier *uuid.UU
     return &responseValue, err
 }
 
+// Arguments for the GetAttachment function
+type GetAttachmentArgs struct {
+    // (required) The project GUID to scope the request
+    ScopeIdentifier *uuid.UUID
+    // (required) The name of the server hub: "build" for the Build server or "rm" for the Release Management server
+    HubName *string
+    // (required)
+    PlanId *uuid.UUID
+    // (required)
+    TimelineId *uuid.UUID
+    // (required)
+    RecordId *uuid.UUID
+    // (required)
+    Type_ *string
+    // (required)
+    Name *string
+}
+
 // [Preview API]
-// ctx
-// scopeIdentifier (required): The project GUID to scope the request
-// hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
-// planId (required)
-// timelineId (required)
-// recordId (required)
-// type_ (required)
-// name (required)
-func (client Client) GetAttachmentContent(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (io.ReadCloser, error) {
+func (client Client) GetAttachmentContent(ctx context.Context, args GetAttachmentContentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if scopeIdentifier == nil {
+    if args.ScopeIdentifier == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
-    routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
-    if hubName == nil || *hubName == "" {
+    routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
+    if args.HubName == nil || *args.HubName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
-    routeValues["hubName"] = *hubName
-    if planId == nil {
+    routeValues["hubName"] = *args.HubName
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = (*planId).String()
-    if timelineId == nil {
+    routeValues["planId"] = (*args.PlanId).String()
+    if args.TimelineId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
     }
-    routeValues["timelineId"] = (*timelineId).String()
-    if recordId == nil {
+    routeValues["timelineId"] = (*args.TimelineId).String()
+    if args.RecordId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "recordId"} 
     }
-    routeValues["recordId"] = (*recordId).String()
-    if type_ == nil || *type_ == "" {
+    routeValues["recordId"] = (*args.RecordId).String()
+    if args.Type_ == nil || *args.Type_ == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
-    routeValues["type_"] = *type_
-    if name == nil || *name == "" {
+    routeValues["type_"] = *args.Type_
+    if args.Name == nil || *args.Name == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
-    routeValues["name"] = *name
+    routeValues["name"] = *args.Name
 
     locationId, _ := uuid.Parse("7898f959-9cdf-4096-b29e-7f293031629e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/octet-stream", nil)
@@ -222,40 +242,51 @@ func (client Client) GetAttachmentContent(ctx context.Context, scopeIdentifier *
     return resp.Body, err
 }
 
+// Arguments for the GetAttachmentContent function
+type GetAttachmentContentArgs struct {
+    // (required) The project GUID to scope the request
+    ScopeIdentifier *uuid.UUID
+    // (required) The name of the server hub: "build" for the Build server or "rm" for the Release Management server
+    HubName *string
+    // (required)
+    PlanId *uuid.UUID
+    // (required)
+    TimelineId *uuid.UUID
+    // (required)
+    RecordId *uuid.UUID
+    // (required)
+    Type_ *string
+    // (required)
+    Name *string
+}
+
 // [Preview API]
-// ctx
-// scopeIdentifier (required): The project GUID to scope the request
-// hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
-// planId (required)
-// timelineId (required)
-// recordId (required)
-// type_ (required)
-func (client Client) GetAttachments(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string) (*[]TaskAttachment, error) {
+func (client Client) GetAttachments(ctx context.Context, args GetAttachmentsArgs) (*[]TaskAttachment, error) {
     routeValues := make(map[string]string)
-    if scopeIdentifier == nil {
+    if args.ScopeIdentifier == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
-    routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
-    if hubName == nil || *hubName == "" {
+    routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
+    if args.HubName == nil || *args.HubName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
-    routeValues["hubName"] = *hubName
-    if planId == nil {
+    routeValues["hubName"] = *args.HubName
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = (*planId).String()
-    if timelineId == nil {
+    routeValues["planId"] = (*args.PlanId).String()
+    if args.TimelineId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
     }
-    routeValues["timelineId"] = (*timelineId).String()
-    if recordId == nil {
+    routeValues["timelineId"] = (*args.TimelineId).String()
+    if args.RecordId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "recordId"} 
     }
-    routeValues["recordId"] = (*recordId).String()
-    if type_ == nil || *type_ == "" {
+    routeValues["recordId"] = (*args.RecordId).String()
+    if args.Type_ == nil || *args.Type_ == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
-    routeValues["type_"] = *type_
+    routeValues["type_"] = *args.Type_
 
     locationId, _ := uuid.Parse("7898f959-9cdf-4096-b29e-7f293031629e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -268,36 +299,46 @@ func (client Client) GetAttachments(ctx context.Context, scopeIdentifier *uuid.U
     return &responseValue, err
 }
 
-// ctx
-// uploadStream (required): Stream to upload
-// scopeIdentifier (required): The project GUID to scope the request
-// hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
-// planId (required)
-// logId (required)
-func (client Client) AppendLogContent(ctx context.Context, uploadStream io.Reader, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, logId *int) (*TaskLog, error) {
-    if uploadStream == nil {
+// Arguments for the GetAttachments function
+type GetAttachmentsArgs struct {
+    // (required) The project GUID to scope the request
+    ScopeIdentifier *uuid.UUID
+    // (required) The name of the server hub: "build" for the Build server or "rm" for the Release Management server
+    HubName *string
+    // (required)
+    PlanId *uuid.UUID
+    // (required)
+    TimelineId *uuid.UUID
+    // (required)
+    RecordId *uuid.UUID
+    // (required)
+    Type_ *string
+}
+
+func (client Client) AppendLogContent(ctx context.Context, args AppendLogContentArgs) (*TaskLog, error) {
+    if args.UploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
     routeValues := make(map[string]string)
-    if scopeIdentifier == nil {
+    if args.ScopeIdentifier == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
-    routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
-    if hubName == nil || *hubName == "" {
+    routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
+    if args.HubName == nil || *args.HubName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
-    routeValues["hubName"] = *hubName
-    if planId == nil {
+    routeValues["hubName"] = *args.HubName
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = (*planId).String()
-    if logId == nil {
+    routeValues["planId"] = (*args.PlanId).String()
+    if args.LogId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "logId"} 
     }
-    routeValues["logId"] = strconv.Itoa(*logId)
+    routeValues["logId"] = strconv.Itoa(*args.LogId)
 
     locationId, _ := uuid.Parse("46f5667d-263a-4684-91b1-dff7fdcf64e2")
-    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, uploadStream, "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, args.UploadStream, "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -307,30 +348,39 @@ func (client Client) AppendLogContent(ctx context.Context, uploadStream io.Reade
     return &responseValue, err
 }
 
-// ctx
-// log (required)
-// scopeIdentifier (required): The project GUID to scope the request
-// hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
-// planId (required)
-func (client Client) CreateLog(ctx context.Context, log *TaskLog, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID) (*TaskLog, error) {
-    if log == nil {
+// Arguments for the AppendLogContent function
+type AppendLogContentArgs struct {
+    // (required) Stream to upload
+    UploadStream io.Reader
+    // (required) The project GUID to scope the request
+    ScopeIdentifier *uuid.UUID
+    // (required) The name of the server hub: "build" for the Build server or "rm" for the Release Management server
+    HubName *string
+    // (required)
+    PlanId *uuid.UUID
+    // (required)
+    LogId *int
+}
+
+func (client Client) CreateLog(ctx context.Context, args CreateLogArgs) (*TaskLog, error) {
+    if args.Log == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "log"}
     }
     routeValues := make(map[string]string)
-    if scopeIdentifier == nil {
+    if args.ScopeIdentifier == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
-    routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
-    if hubName == nil || *hubName == "" {
+    routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
+    if args.HubName == nil || *args.HubName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
-    routeValues["hubName"] = *hubName
-    if planId == nil {
+    routeValues["hubName"] = *args.HubName
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = (*planId).String()
+    routeValues["planId"] = (*args.PlanId).String()
 
-    body, marshalErr := json.Marshal(*log)
+    body, marshalErr := json.Marshal(*args.Log)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -345,38 +395,43 @@ func (client Client) CreateLog(ctx context.Context, log *TaskLog, scopeIdentifie
     return &responseValue, err
 }
 
-// ctx
-// scopeIdentifier (required): The project GUID to scope the request
-// hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
-// planId (required)
-// logId (required)
-// startLine (optional)
-// endLine (optional)
-func (client Client) GetLog(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, logId *int, startLine *uint64, endLine *uint64) (*[]string, error) {
+// Arguments for the CreateLog function
+type CreateLogArgs struct {
+    // (required)
+    Log *TaskLog
+    // (required) The project GUID to scope the request
+    ScopeIdentifier *uuid.UUID
+    // (required) The name of the server hub: "build" for the Build server or "rm" for the Release Management server
+    HubName *string
+    // (required)
+    PlanId *uuid.UUID
+}
+
+func (client Client) GetLog(ctx context.Context, args GetLogArgs) (*[]string, error) {
     routeValues := make(map[string]string)
-    if scopeIdentifier == nil {
+    if args.ScopeIdentifier == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
-    routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
-    if hubName == nil || *hubName == "" {
+    routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
+    if args.HubName == nil || *args.HubName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
-    routeValues["hubName"] = *hubName
-    if planId == nil {
+    routeValues["hubName"] = *args.HubName
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = (*planId).String()
-    if logId == nil {
+    routeValues["planId"] = (*args.PlanId).String()
+    if args.LogId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "logId"} 
     }
-    routeValues["logId"] = strconv.Itoa(*logId)
+    routeValues["logId"] = strconv.Itoa(*args.LogId)
 
     queryParams := url.Values{}
-    if startLine != nil {
-        queryParams.Add("startLine", strconv.FormatUint(*startLine, 10))
+    if args.StartLine != nil {
+        queryParams.Add("startLine", strconv.FormatUint(*args.StartLine, 10))
     }
-    if endLine != nil {
-        queryParams.Add("endLine", strconv.FormatUint(*endLine, 10))
+    if args.EndLine != nil {
+        queryParams.Add("endLine", strconv.FormatUint(*args.EndLine, 10))
     }
     locationId, _ := uuid.Parse("46f5667d-263a-4684-91b1-dff7fdcf64e2")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -389,24 +444,36 @@ func (client Client) GetLog(ctx context.Context, scopeIdentifier *uuid.UUID, hub
     return &responseValue, err
 }
 
-// ctx
-// scopeIdentifier (required): The project GUID to scope the request
-// hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
-// planId (required)
-func (client Client) GetLogs(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID) (*[]TaskLog, error) {
+// Arguments for the GetLog function
+type GetLogArgs struct {
+    // (required) The project GUID to scope the request
+    ScopeIdentifier *uuid.UUID
+    // (required) The name of the server hub: "build" for the Build server or "rm" for the Release Management server
+    HubName *string
+    // (required)
+    PlanId *uuid.UUID
+    // (required)
+    LogId *int
+    // (optional)
+    StartLine *uint64
+    // (optional)
+    EndLine *uint64
+}
+
+func (client Client) GetLogs(ctx context.Context, args GetLogsArgs) (*[]TaskLog, error) {
     routeValues := make(map[string]string)
-    if scopeIdentifier == nil {
+    if args.ScopeIdentifier == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
-    routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
-    if hubName == nil || *hubName == "" {
+    routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
+    if args.HubName == nil || *args.HubName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
-    routeValues["hubName"] = *hubName
-    if planId == nil {
+    routeValues["hubName"] = *args.HubName
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = (*planId).String()
+    routeValues["planId"] = (*args.PlanId).String()
 
     locationId, _ := uuid.Parse("46f5667d-263a-4684-91b1-dff7fdcf64e2")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -419,34 +486,38 @@ func (client Client) GetLogs(ctx context.Context, scopeIdentifier *uuid.UUID, hu
     return &responseValue, err
 }
 
-// ctx
-// scopeIdentifier (required): The project GUID to scope the request
-// hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
-// planId (required)
-// timelineId (required)
-// changeId (optional)
-func (client Client) GetRecords(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, changeId *int) (*[]TimelineRecord, error) {
+// Arguments for the GetLogs function
+type GetLogsArgs struct {
+    // (required) The project GUID to scope the request
+    ScopeIdentifier *uuid.UUID
+    // (required) The name of the server hub: "build" for the Build server or "rm" for the Release Management server
+    HubName *string
+    // (required)
+    PlanId *uuid.UUID
+}
+
+func (client Client) GetRecords(ctx context.Context, args GetRecordsArgs) (*[]TimelineRecord, error) {
     routeValues := make(map[string]string)
-    if scopeIdentifier == nil {
+    if args.ScopeIdentifier == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
-    routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
-    if hubName == nil || *hubName == "" {
+    routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
+    if args.HubName == nil || *args.HubName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
-    routeValues["hubName"] = *hubName
-    if planId == nil {
+    routeValues["hubName"] = *args.HubName
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = (*planId).String()
-    if timelineId == nil {
+    routeValues["planId"] = (*args.PlanId).String()
+    if args.TimelineId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
     }
-    routeValues["timelineId"] = (*timelineId).String()
+    routeValues["timelineId"] = (*args.TimelineId).String()
 
     queryParams := url.Values{}
-    if changeId != nil {
-        queryParams.Add("changeId", strconv.Itoa(*changeId))
+    if args.ChangeId != nil {
+        queryParams.Add("changeId", strconv.Itoa(*args.ChangeId))
     }
     locationId, _ := uuid.Parse("8893bc5b-35b2-4be7-83cb-99e683551db4")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -459,35 +530,43 @@ func (client Client) GetRecords(ctx context.Context, scopeIdentifier *uuid.UUID,
     return &responseValue, err
 }
 
-// ctx
-// records (required)
-// scopeIdentifier (required): The project GUID to scope the request
-// hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
-// planId (required)
-// timelineId (required)
-func (client Client) UpdateRecords(ctx context.Context, records *azureDevops.VssJsonCollectionWrapper, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID) (*[]TimelineRecord, error) {
-    if records == nil {
+// Arguments for the GetRecords function
+type GetRecordsArgs struct {
+    // (required) The project GUID to scope the request
+    ScopeIdentifier *uuid.UUID
+    // (required) The name of the server hub: "build" for the Build server or "rm" for the Release Management server
+    HubName *string
+    // (required)
+    PlanId *uuid.UUID
+    // (required)
+    TimelineId *uuid.UUID
+    // (optional)
+    ChangeId *int
+}
+
+func (client Client) UpdateRecords(ctx context.Context, args UpdateRecordsArgs) (*[]TimelineRecord, error) {
+    if args.Records == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "records"}
     }
     routeValues := make(map[string]string)
-    if scopeIdentifier == nil {
+    if args.ScopeIdentifier == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
-    routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
-    if hubName == nil || *hubName == "" {
+    routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
+    if args.HubName == nil || *args.HubName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
-    routeValues["hubName"] = *hubName
-    if planId == nil {
+    routeValues["hubName"] = *args.HubName
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = (*planId).String()
-    if timelineId == nil {
+    routeValues["planId"] = (*args.PlanId).String()
+    if args.TimelineId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
     }
-    routeValues["timelineId"] = (*timelineId).String()
+    routeValues["timelineId"] = (*args.TimelineId).String()
 
-    body, marshalErr := json.Marshal(*records)
+    body, marshalErr := json.Marshal(*args.Records)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -502,30 +581,39 @@ func (client Client) UpdateRecords(ctx context.Context, records *azureDevops.Vss
     return &responseValue, err
 }
 
-// ctx
-// timeline (required)
-// scopeIdentifier (required): The project GUID to scope the request
-// hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
-// planId (required)
-func (client Client) CreateTimeline(ctx context.Context, timeline *Timeline, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID) (*Timeline, error) {
-    if timeline == nil {
+// Arguments for the UpdateRecords function
+type UpdateRecordsArgs struct {
+    // (required)
+    Records *azureDevops.VssJsonCollectionWrapper
+    // (required) The project GUID to scope the request
+    ScopeIdentifier *uuid.UUID
+    // (required) The name of the server hub: "build" for the Build server or "rm" for the Release Management server
+    HubName *string
+    // (required)
+    PlanId *uuid.UUID
+    // (required)
+    TimelineId *uuid.UUID
+}
+
+func (client Client) CreateTimeline(ctx context.Context, args CreateTimelineArgs) (*Timeline, error) {
+    if args.Timeline == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "timeline"}
     }
     routeValues := make(map[string]string)
-    if scopeIdentifier == nil {
+    if args.ScopeIdentifier == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
-    routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
-    if hubName == nil || *hubName == "" {
+    routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
+    if args.HubName == nil || *args.HubName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
-    routeValues["hubName"] = *hubName
-    if planId == nil {
+    routeValues["hubName"] = *args.HubName
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = (*planId).String()
+    routeValues["planId"] = (*args.PlanId).String()
 
-    body, marshalErr := json.Marshal(*timeline)
+    body, marshalErr := json.Marshal(*args.Timeline)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -540,29 +628,36 @@ func (client Client) CreateTimeline(ctx context.Context, timeline *Timeline, sco
     return &responseValue, err
 }
 
-// ctx
-// scopeIdentifier (required): The project GUID to scope the request
-// hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
-// planId (required)
-// timelineId (required)
-func (client Client) DeleteTimeline(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID) error {
+// Arguments for the CreateTimeline function
+type CreateTimelineArgs struct {
+    // (required)
+    Timeline *Timeline
+    // (required) The project GUID to scope the request
+    ScopeIdentifier *uuid.UUID
+    // (required) The name of the server hub: "build" for the Build server or "rm" for the Release Management server
+    HubName *string
+    // (required)
+    PlanId *uuid.UUID
+}
+
+func (client Client) DeleteTimeline(ctx context.Context, args DeleteTimelineArgs) error {
     routeValues := make(map[string]string)
-    if scopeIdentifier == nil {
+    if args.ScopeIdentifier == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
-    routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
-    if hubName == nil || *hubName == "" {
+    routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
+    if args.HubName == nil || *args.HubName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
-    routeValues["hubName"] = *hubName
-    if planId == nil {
+    routeValues["hubName"] = *args.HubName
+    if args.PlanId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = (*planId).String()
-    if timelineId == nil {
+    routeValues["planId"] = (*args.PlanId).String()
+    if args.TimelineId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
     }
-    routeValues["timelineId"] = (*timelineId).String()
+    routeValues["timelineId"] = (*args.TimelineId).String()
 
     locationId, _ := uuid.Parse("83597576-cc2c-453c-bea6-2882ae6a1653")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -573,38 +668,43 @@ func (client Client) DeleteTimeline(ctx context.Context, scopeIdentifier *uuid.U
     return nil
 }
 
-// ctx
-// scopeIdentifier (required): The project GUID to scope the request
-// hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
-// planId (required)
-// timelineId (required)
-// changeId (optional)
-// includeRecords (optional)
-func (client Client) GetTimeline(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID, timelineId *uuid.UUID, changeId *int, includeRecords *bool) (*Timeline, error) {
+// Arguments for the DeleteTimeline function
+type DeleteTimelineArgs struct {
+    // (required) The project GUID to scope the request
+    ScopeIdentifier *uuid.UUID
+    // (required) The name of the server hub: "build" for the Build server or "rm" for the Release Management server
+    HubName *string
+    // (required)
+    PlanId *uuid.UUID
+    // (required)
+    TimelineId *uuid.UUID
+}
+
+func (client Client) GetTimeline(ctx context.Context, args GetTimelineArgs) (*Timeline, error) {
     routeValues := make(map[string]string)
-    if scopeIdentifier == nil {
+    if args.ScopeIdentifier == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
-    routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
-    if hubName == nil || *hubName == "" {
+    routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
+    if args.HubName == nil || *args.HubName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
-    routeValues["hubName"] = *hubName
-    if planId == nil {
+    routeValues["hubName"] = *args.HubName
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = (*planId).String()
-    if timelineId == nil {
+    routeValues["planId"] = (*args.PlanId).String()
+    if args.TimelineId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
     }
-    routeValues["timelineId"] = (*timelineId).String()
+    routeValues["timelineId"] = (*args.TimelineId).String()
 
     queryParams := url.Values{}
-    if changeId != nil {
-        queryParams.Add("changeId", strconv.Itoa(*changeId))
+    if args.ChangeId != nil {
+        queryParams.Add("changeId", strconv.Itoa(*args.ChangeId))
     }
-    if includeRecords != nil {
-        queryParams.Add("includeRecords", strconv.FormatBool(*includeRecords))
+    if args.IncludeRecords != nil {
+        queryParams.Add("includeRecords", strconv.FormatBool(*args.IncludeRecords))
     }
     locationId, _ := uuid.Parse("83597576-cc2c-453c-bea6-2882ae6a1653")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -617,24 +717,36 @@ func (client Client) GetTimeline(ctx context.Context, scopeIdentifier *uuid.UUID
     return &responseValue, err
 }
 
-// ctx
-// scopeIdentifier (required): The project GUID to scope the request
-// hubName (required): The name of the server hub: "build" for the Build server or "rm" for the Release Management server
-// planId (required)
-func (client Client) GetTimelines(ctx context.Context, scopeIdentifier *uuid.UUID, hubName *string, planId *uuid.UUID) (*[]Timeline, error) {
+// Arguments for the GetTimeline function
+type GetTimelineArgs struct {
+    // (required) The project GUID to scope the request
+    ScopeIdentifier *uuid.UUID
+    // (required) The name of the server hub: "build" for the Build server or "rm" for the Release Management server
+    HubName *string
+    // (required)
+    PlanId *uuid.UUID
+    // (required)
+    TimelineId *uuid.UUID
+    // (optional)
+    ChangeId *int
+    // (optional)
+    IncludeRecords *bool
+}
+
+func (client Client) GetTimelines(ctx context.Context, args GetTimelinesArgs) (*[]Timeline, error) {
     routeValues := make(map[string]string)
-    if scopeIdentifier == nil {
+    if args.ScopeIdentifier == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
     }
-    routeValues["scopeIdentifier"] = (*scopeIdentifier).String()
-    if hubName == nil || *hubName == "" {
+    routeValues["scopeIdentifier"] = (*args.ScopeIdentifier).String()
+    if args.HubName == nil || *args.HubName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hubName"} 
     }
-    routeValues["hubName"] = *hubName
-    if planId == nil {
+    routeValues["hubName"] = *args.HubName
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = (*planId).String()
+    routeValues["planId"] = (*args.PlanId).String()
 
     locationId, _ := uuid.Parse("83597576-cc2c-453c-bea6-2882ae6a1653")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -645,5 +757,15 @@ func (client Client) GetTimelines(ctx context.Context, scopeIdentifier *uuid.UUI
     var responseValue []Timeline
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the GetTimelines function
+type GetTimelinesArgs struct {
+    // (required) The project GUID to scope the request
+    ScopeIdentifier *uuid.UUID
+    // (required) The name of the server hub: "build" for the Build server or "rm" for the Release Management server
+    HubName *string
+    // (required)
+    PlanId *uuid.UUID
 }
 

@@ -39,32 +39,26 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 }
 
 // Gets the action results for an iteration in a test result.
-// ctx
-// project (required): Project ID or project name
-// runId (required): ID of the test run that contains the result.
-// testCaseResultId (required): ID of the test result that contains the iterations.
-// iterationId (required): ID of the iteration that contains the actions.
-// actionPath (optional): Path of a specific action, used to get just that action.
-func (client Client) GetActionResults(ctx context.Context, project *string, runId *int, testCaseResultId *int, iterationId *int, actionPath *string) (*[]TestActionResultModel, error) {
+func (client Client) GetActionResults(ctx context.Context, args GetActionResultsArgs) (*[]TestActionResultModel, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
-    if testCaseResultId == nil {
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
+    if args.TestCaseResultId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
-    routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
-    if iterationId == nil {
+    routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
+    if args.IterationId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
     }
-    routeValues["iterationId"] = strconv.Itoa(*iterationId)
-    if actionPath != nil && *actionPath != "" {
-        routeValues["actionPath"] = *actionPath
+    routeValues["iterationId"] = strconv.Itoa(*args.IterationId)
+    if args.ActionPath != nil && *args.ActionPath != "" {
+        routeValues["actionPath"] = *args.ActionPath
     }
 
     locationId, _ := uuid.Parse("eaf40c31-ff84-4062-aafd-d5664be11a37")
@@ -78,31 +72,40 @@ func (client Client) GetActionResults(ctx context.Context, project *string, runI
     return &responseValue, err
 }
 
+// Arguments for the GetActionResults function
+type GetActionResultsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test run that contains the result.
+    RunId *int
+    // (required) ID of the test result that contains the iterations.
+    TestCaseResultId *int
+    // (required) ID of the iteration that contains the actions.
+    IterationId *int
+    // (optional) Path of a specific action, used to get just that action.
+    ActionPath *string
+}
+
 // [Preview API] Attach a file to a test result.
-// ctx
-// attachmentRequestModel (required): Attachment details TestAttachmentRequestModel
-// project (required): Project ID or project name
-// runId (required): ID of the test run that contains the result.
-// testCaseResultId (required): ID of the test result against which attachment has to be uploaded.
-func (client Client) CreateTestResultAttachment(ctx context.Context, attachmentRequestModel *TestAttachmentRequestModel, project *string, runId *int, testCaseResultId *int) (*TestAttachmentReference, error) {
-    if attachmentRequestModel == nil {
+func (client Client) CreateTestResultAttachment(ctx context.Context, args CreateTestResultAttachmentArgs) (*TestAttachmentReference, error) {
+    if args.AttachmentRequestModel == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "attachmentRequestModel"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
-    if testCaseResultId == nil {
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
+    if args.TestCaseResultId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
-    routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
+    routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
 
-    body, marshalErr := json.Marshal(*attachmentRequestModel)
+    body, marshalErr := json.Marshal(*args.AttachmentRequestModel)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -117,37 +120,43 @@ func (client Client) CreateTestResultAttachment(ctx context.Context, attachmentR
     return &responseValue, err
 }
 
+// Arguments for the CreateTestResultAttachment function
+type CreateTestResultAttachmentArgs struct {
+    // (required) Attachment details TestAttachmentRequestModel
+    AttachmentRequestModel *TestAttachmentRequestModel
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test run that contains the result.
+    RunId *int
+    // (required) ID of the test result against which attachment has to be uploaded.
+    TestCaseResultId *int
+}
+
 // [Preview API] Attach a file to a test result
-// ctx
-// attachmentRequestModel (required): Attachment Request Model.
-// project (required): Project ID or project name
-// runId (required): ID of the test run that contains the result.
-// testCaseResultId (required): ID of the test results that contains sub result.
-// testSubResultId (required): ID of the test sub results against which attachment has to be uploaded.
-func (client Client) CreateTestSubResultAttachment(ctx context.Context, attachmentRequestModel *TestAttachmentRequestModel, project *string, runId *int, testCaseResultId *int, testSubResultId *int) (*TestAttachmentReference, error) {
-    if attachmentRequestModel == nil {
+func (client Client) CreateTestSubResultAttachment(ctx context.Context, args CreateTestSubResultAttachmentArgs) (*TestAttachmentReference, error) {
+    if args.AttachmentRequestModel == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "attachmentRequestModel"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
-    if testCaseResultId == nil {
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
+    if args.TestCaseResultId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
-    routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
+    routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
 
     queryParams := url.Values{}
-    if testSubResultId == nil {
+    if args.TestSubResultId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testSubResultId"}
     }
-    queryParams.Add("testSubResultId", strconv.Itoa(*testSubResultId))
-    body, marshalErr := json.Marshal(*attachmentRequestModel)
+    queryParams.Add("testSubResultId", strconv.Itoa(*args.TestSubResultId))
+    body, marshalErr := json.Marshal(*args.AttachmentRequestModel)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -162,30 +171,39 @@ func (client Client) CreateTestSubResultAttachment(ctx context.Context, attachme
     return &responseValue, err
 }
 
+// Arguments for the CreateTestSubResultAttachment function
+type CreateTestSubResultAttachmentArgs struct {
+    // (required) Attachment Request Model.
+    AttachmentRequestModel *TestAttachmentRequestModel
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test run that contains the result.
+    RunId *int
+    // (required) ID of the test results that contains sub result.
+    TestCaseResultId *int
+    // (required) ID of the test sub results against which attachment has to be uploaded.
+    TestSubResultId *int
+}
+
 // [Preview API] Download a test result attachment by its ID.
-// ctx
-// project (required): Project ID or project name
-// runId (required): ID of the test run that contains the testCaseResultId.
-// testCaseResultId (required): ID of the test result whose attachment has to be downloaded.
-// attachmentId (required): ID of the test result attachment to be downloaded.
-func (client Client) GetTestResultAttachmentContent(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int) (io.ReadCloser, error) {
+func (client Client) GetTestResultAttachmentContent(ctx context.Context, args GetTestResultAttachmentContentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
-    if testCaseResultId == nil {
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
+    if args.TestCaseResultId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
-    routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
-    if attachmentId == nil {
+    routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
+    if args.AttachmentId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "attachmentId"} 
     }
-    routeValues["attachmentId"] = strconv.Itoa(*attachmentId)
+    routeValues["attachmentId"] = strconv.Itoa(*args.AttachmentId)
 
     locationId, _ := uuid.Parse("2bffebe9-2f0f-4639-9af8-56129e9fed2d")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/octet-stream", nil)
@@ -196,25 +214,33 @@ func (client Client) GetTestResultAttachmentContent(ctx context.Context, project
     return resp.Body, err
 }
 
+// Arguments for the GetTestResultAttachmentContent function
+type GetTestResultAttachmentContentArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test run that contains the testCaseResultId.
+    RunId *int
+    // (required) ID of the test result whose attachment has to be downloaded.
+    TestCaseResultId *int
+    // (required) ID of the test result attachment to be downloaded.
+    AttachmentId *int
+}
+
 // [Preview API] Get list of test result attachments reference.
-// ctx
-// project (required): Project ID or project name
-// runId (required): ID of the test run that contains the result.
-// testCaseResultId (required): ID of the test result.
-func (client Client) GetTestResultAttachments(ctx context.Context, project *string, runId *int, testCaseResultId *int) (*[]TestAttachment, error) {
+func (client Client) GetTestResultAttachments(ctx context.Context, args GetTestResultAttachmentsArgs) (*[]TestAttachment, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
-    if testCaseResultId == nil {
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
+    if args.TestCaseResultId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
-    routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
+    routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
 
     locationId, _ := uuid.Parse("2bffebe9-2f0f-4639-9af8-56129e9fed2d")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -227,30 +253,35 @@ func (client Client) GetTestResultAttachments(ctx context.Context, project *stri
     return &responseValue, err
 }
 
+// Arguments for the GetTestResultAttachments function
+type GetTestResultAttachmentsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test run that contains the result.
+    RunId *int
+    // (required) ID of the test result.
+    TestCaseResultId *int
+}
+
 // [Preview API] Download a test result attachment by its ID.
-// ctx
-// project (required): Project ID or project name
-// runId (required): ID of the test run that contains the testCaseResultId.
-// testCaseResultId (required): ID of the test result whose attachment has to be downloaded.
-// attachmentId (required): ID of the test result attachment to be downloaded.
-func (client Client) GetTestResultAttachmentZip(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int) (io.ReadCloser, error) {
+func (client Client) GetTestResultAttachmentZip(ctx context.Context, args GetTestResultAttachmentZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
-    if testCaseResultId == nil {
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
+    if args.TestCaseResultId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
-    routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
-    if attachmentId == nil {
+    routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
+    if args.AttachmentId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "attachmentId"} 
     }
-    routeValues["attachmentId"] = strconv.Itoa(*attachmentId)
+    routeValues["attachmentId"] = strconv.Itoa(*args.AttachmentId)
 
     locationId, _ := uuid.Parse("2bffebe9-2f0f-4639-9af8-56129e9fed2d")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/zip", nil)
@@ -261,37 +292,43 @@ func (client Client) GetTestResultAttachmentZip(ctx context.Context, project *st
     return resp.Body, err
 }
 
+// Arguments for the GetTestResultAttachmentZip function
+type GetTestResultAttachmentZipArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test run that contains the testCaseResultId.
+    RunId *int
+    // (required) ID of the test result whose attachment has to be downloaded.
+    TestCaseResultId *int
+    // (required) ID of the test result attachment to be downloaded.
+    AttachmentId *int
+}
+
 // [Preview API] Download a test sub result attachment
-// ctx
-// project (required): Project ID or project name
-// runId (required): ID of the test run that contains the result.
-// testCaseResultId (required): ID of the test results that contains sub result.
-// attachmentId (required): ID of the test result attachment to be downloaded
-// testSubResultId (required): ID of the test sub result whose attachment has to be downloaded
-func (client Client) GetTestSubResultAttachmentContent(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int, testSubResultId *int) (io.ReadCloser, error) {
+func (client Client) GetTestSubResultAttachmentContent(ctx context.Context, args GetTestSubResultAttachmentContentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
-    if testCaseResultId == nil {
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
+    if args.TestCaseResultId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
-    routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
-    if attachmentId == nil {
+    routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
+    if args.AttachmentId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "attachmentId"} 
     }
-    routeValues["attachmentId"] = strconv.Itoa(*attachmentId)
+    routeValues["attachmentId"] = strconv.Itoa(*args.AttachmentId)
 
     queryParams := url.Values{}
-    if testSubResultId == nil {
+    if args.TestSubResultId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testSubResultId"}
     }
-    queryParams.Add("testSubResultId", strconv.Itoa(*testSubResultId))
+    queryParams.Add("testSubResultId", strconv.Itoa(*args.TestSubResultId))
     locationId, _ := uuid.Parse("2bffebe9-2f0f-4639-9af8-56129e9fed2d")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/octet-stream", nil)
     if err != nil {
@@ -301,32 +338,41 @@ func (client Client) GetTestSubResultAttachmentContent(ctx context.Context, proj
     return resp.Body, err
 }
 
+// Arguments for the GetTestSubResultAttachmentContent function
+type GetTestSubResultAttachmentContentArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test run that contains the result.
+    RunId *int
+    // (required) ID of the test results that contains sub result.
+    TestCaseResultId *int
+    // (required) ID of the test result attachment to be downloaded
+    AttachmentId *int
+    // (required) ID of the test sub result whose attachment has to be downloaded
+    TestSubResultId *int
+}
+
 // [Preview API] Get list of test sub result attachments
-// ctx
-// project (required): Project ID or project name
-// runId (required): ID of the test run that contains the result.
-// testCaseResultId (required): ID of the test results that contains sub result.
-// testSubResultId (required): ID of the test sub result whose attachment has to be downloaded
-func (client Client) GetTestSubResultAttachments(ctx context.Context, project *string, runId *int, testCaseResultId *int, testSubResultId *int) (*[]TestAttachment, error) {
+func (client Client) GetTestSubResultAttachments(ctx context.Context, args GetTestSubResultAttachmentsArgs) (*[]TestAttachment, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
-    if testCaseResultId == nil {
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
+    if args.TestCaseResultId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
-    routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
+    routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
 
     queryParams := url.Values{}
-    if testSubResultId == nil {
+    if args.TestSubResultId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testSubResultId"}
     }
-    queryParams.Add("testSubResultId", strconv.Itoa(*testSubResultId))
+    queryParams.Add("testSubResultId", strconv.Itoa(*args.TestSubResultId))
     locationId, _ := uuid.Parse("2bffebe9-2f0f-4639-9af8-56129e9fed2d")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -338,37 +384,43 @@ func (client Client) GetTestSubResultAttachments(ctx context.Context, project *s
     return &responseValue, err
 }
 
+// Arguments for the GetTestSubResultAttachments function
+type GetTestSubResultAttachmentsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test run that contains the result.
+    RunId *int
+    // (required) ID of the test results that contains sub result.
+    TestCaseResultId *int
+    // (required) ID of the test sub result whose attachment has to be downloaded
+    TestSubResultId *int
+}
+
 // [Preview API] Download a test sub result attachment
-// ctx
-// project (required): Project ID or project name
-// runId (required): ID of the test run that contains the result.
-// testCaseResultId (required): ID of the test results that contains sub result.
-// attachmentId (required): ID of the test result attachment to be downloaded
-// testSubResultId (required): ID of the test sub result whose attachment has to be downloaded
-func (client Client) GetTestSubResultAttachmentZip(ctx context.Context, project *string, runId *int, testCaseResultId *int, attachmentId *int, testSubResultId *int) (io.ReadCloser, error) {
+func (client Client) GetTestSubResultAttachmentZip(ctx context.Context, args GetTestSubResultAttachmentZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
-    if testCaseResultId == nil {
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
+    if args.TestCaseResultId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
-    routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
-    if attachmentId == nil {
+    routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
+    if args.AttachmentId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "attachmentId"} 
     }
-    routeValues["attachmentId"] = strconv.Itoa(*attachmentId)
+    routeValues["attachmentId"] = strconv.Itoa(*args.AttachmentId)
 
     queryParams := url.Values{}
-    if testSubResultId == nil {
+    if args.TestSubResultId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testSubResultId"}
     }
-    queryParams.Add("testSubResultId", strconv.Itoa(*testSubResultId))
+    queryParams.Add("testSubResultId", strconv.Itoa(*args.TestSubResultId))
     locationId, _ := uuid.Parse("2bffebe9-2f0f-4639-9af8-56129e9fed2d")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/zip", nil)
     if err != nil {
@@ -378,26 +430,36 @@ func (client Client) GetTestSubResultAttachmentZip(ctx context.Context, project 
     return resp.Body, err
 }
 
+// Arguments for the GetTestSubResultAttachmentZip function
+type GetTestSubResultAttachmentZipArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test run that contains the result.
+    RunId *int
+    // (required) ID of the test results that contains sub result.
+    TestCaseResultId *int
+    // (required) ID of the test result attachment to be downloaded
+    AttachmentId *int
+    // (required) ID of the test sub result whose attachment has to be downloaded
+    TestSubResultId *int
+}
+
 // [Preview API] Attach a file to a test run.
-// ctx
-// attachmentRequestModel (required): Attachment details TestAttachmentRequestModel
-// project (required): Project ID or project name
-// runId (required): ID of the test run against which attachment has to be uploaded.
-func (client Client) CreateTestRunAttachment(ctx context.Context, attachmentRequestModel *TestAttachmentRequestModel, project *string, runId *int) (*TestAttachmentReference, error) {
-    if attachmentRequestModel == nil {
+func (client Client) CreateTestRunAttachment(ctx context.Context, args CreateTestRunAttachmentArgs) (*TestAttachmentReference, error) {
+    if args.AttachmentRequestModel == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "attachmentRequestModel"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
 
-    body, marshalErr := json.Marshal(*attachmentRequestModel)
+    body, marshalErr := json.Marshal(*args.AttachmentRequestModel)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -412,25 +474,31 @@ func (client Client) CreateTestRunAttachment(ctx context.Context, attachmentRequ
     return &responseValue, err
 }
 
+// Arguments for the CreateTestRunAttachment function
+type CreateTestRunAttachmentArgs struct {
+    // (required) Attachment details TestAttachmentRequestModel
+    AttachmentRequestModel *TestAttachmentRequestModel
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test run against which attachment has to be uploaded.
+    RunId *int
+}
+
 // [Preview API] Download a test run attachment by its ID.
-// ctx
-// project (required): Project ID or project name
-// runId (required): ID of the test run whose attachment has to be downloaded.
-// attachmentId (required): ID of the test run attachment to be downloaded.
-func (client Client) GetTestRunAttachmentContent(ctx context.Context, project *string, runId *int, attachmentId *int) (io.ReadCloser, error) {
+func (client Client) GetTestRunAttachmentContent(ctx context.Context, args GetTestRunAttachmentContentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
-    if attachmentId == nil {
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
+    if args.AttachmentId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "attachmentId"} 
     }
-    routeValues["attachmentId"] = strconv.Itoa(*attachmentId)
+    routeValues["attachmentId"] = strconv.Itoa(*args.AttachmentId)
 
     locationId, _ := uuid.Parse("4f004af4-a507-489c-9b13-cb62060beb11")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/octet-stream", nil)
@@ -441,20 +509,27 @@ func (client Client) GetTestRunAttachmentContent(ctx context.Context, project *s
     return resp.Body, err
 }
 
+// Arguments for the GetTestRunAttachmentContent function
+type GetTestRunAttachmentContentArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test run whose attachment has to be downloaded.
+    RunId *int
+    // (required) ID of the test run attachment to be downloaded.
+    AttachmentId *int
+}
+
 // [Preview API] Get list of test run attachments reference.
-// ctx
-// project (required): Project ID or project name
-// runId (required): ID of the test run.
-func (client Client) GetTestRunAttachments(ctx context.Context, project *string, runId *int) (*[]TestAttachment, error) {
+func (client Client) GetTestRunAttachments(ctx context.Context, args GetTestRunAttachmentsArgs) (*[]TestAttachment, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
 
     locationId, _ := uuid.Parse("4f004af4-a507-489c-9b13-cb62060beb11")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -467,25 +542,29 @@ func (client Client) GetTestRunAttachments(ctx context.Context, project *string,
     return &responseValue, err
 }
 
+// Arguments for the GetTestRunAttachments function
+type GetTestRunAttachmentsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test run.
+    RunId *int
+}
+
 // [Preview API] Download a test run attachment by its ID.
-// ctx
-// project (required): Project ID or project name
-// runId (required): ID of the test run whose attachment has to be downloaded.
-// attachmentId (required): ID of the test run attachment to be downloaded.
-func (client Client) GetTestRunAttachmentZip(ctx context.Context, project *string, runId *int, attachmentId *int) (io.ReadCloser, error) {
+func (client Client) GetTestRunAttachmentZip(ctx context.Context, args GetTestRunAttachmentZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
-    if attachmentId == nil {
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
+    if args.AttachmentId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "attachmentId"} 
     }
-    routeValues["attachmentId"] = strconv.Itoa(*attachmentId)
+    routeValues["attachmentId"] = strconv.Itoa(*args.AttachmentId)
 
     locationId, _ := uuid.Parse("4f004af4-a507-489c-9b13-cb62060beb11")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/zip", nil)
@@ -496,27 +575,33 @@ func (client Client) GetTestRunAttachmentZip(ctx context.Context, project *strin
     return resp.Body, err
 }
 
+// Arguments for the GetTestRunAttachmentZip function
+type GetTestRunAttachmentZipArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test run whose attachment has to be downloaded.
+    RunId *int
+    // (required) ID of the test run attachment to be downloaded.
+    AttachmentId *int
+}
+
 // [Preview API] Get code coverage data for a build.
-// ctx
-// project (required): Project ID or project name
-// buildId (required): ID of the build for which code coverage data needs to be fetched.
-// flags (required): Value of flags determine the level of code coverage details to be fetched. Flags are additive. Expected Values are 1 for Modules, 2 for Functions, 4 for BlockData.
-func (client Client) GetBuildCodeCoverage(ctx context.Context, project *string, buildId *int, flags *int) (*[]BuildCoverage, error) {
+func (client Client) GetBuildCodeCoverage(ctx context.Context, args GetBuildCodeCoverageArgs) (*[]BuildCoverage, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if buildId == nil {
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"}
     }
-    queryParams.Add("buildId", strconv.Itoa(*buildId))
-    if flags == nil {
+    queryParams.Add("buildId", strconv.Itoa(*args.BuildId))
+    if args.Flags == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "flags"}
     }
-    queryParams.Add("flags", strconv.Itoa(*flags))
+    queryParams.Add("flags", strconv.Itoa(*args.Flags))
     locationId, _ := uuid.Parse("77560e8a-4e8c-4d59-894e-a5f264c24444")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -528,27 +613,33 @@ func (client Client) GetBuildCodeCoverage(ctx context.Context, project *string, 
     return &responseValue, err
 }
 
+// Arguments for the GetBuildCodeCoverage function
+type GetBuildCodeCoverageArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the build for which code coverage data needs to be fetched.
+    BuildId *int
+    // (required) Value of flags determine the level of code coverage details to be fetched. Flags are additive. Expected Values are 1 for Modules, 2 for Functions, 4 for BlockData.
+    Flags *int
+}
+
 // [Preview API] Get code coverage data for a test run
-// ctx
-// project (required): Project ID or project name
-// runId (required): ID of the test run for which code coverage data needs to be fetched.
-// flags (required): Value of flags determine the level of code coverage details to be fetched. Flags are additive. Expected Values are 1 for Modules, 2 for Functions, 4 for BlockData.
-func (client Client) GetTestRunCodeCoverage(ctx context.Context, project *string, runId *int, flags *int) (*[]TestRunCoverage, error) {
+func (client Client) GetTestRunCodeCoverage(ctx context.Context, args GetTestRunCodeCoverageArgs) (*[]TestRunCoverage, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
 
     queryParams := url.Values{}
-    if flags == nil {
+    if args.Flags == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "flags"}
     }
-    queryParams.Add("flags", strconv.Itoa(*flags))
+    queryParams.Add("flags", strconv.Itoa(*args.Flags))
     locationId, _ := uuid.Parse("9629116f-3b89-4ed8-b358-d4694efda160")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -560,35 +651,39 @@ func (client Client) GetTestRunCodeCoverage(ctx context.Context, project *string
     return &responseValue, err
 }
 
+// Arguments for the GetTestRunCodeCoverage function
+type GetTestRunCodeCoverageArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test run for which code coverage data needs to be fetched.
+    RunId *int
+    // (required) Value of flags determine the level of code coverage details to be fetched. Flags are additive. Expected Values are 1 for Modules, 2 for Functions, 4 for BlockData.
+    Flags *int
+}
+
 // Get iteration for a result
-// ctx
-// project (required): Project ID or project name
-// runId (required): ID of the test run that contains the result.
-// testCaseResultId (required): ID of the test result that contains the iterations.
-// iterationId (required): Id of the test results Iteration.
-// includeActionResults (optional): Include result details for each action performed in the test iteration. ActionResults refer to outcome (pass/fail) of test steps that are executed as part of a running a manual test. Including the ActionResults flag gets the outcome of test steps in the actionResults section and test parameters in the parameters section for each test iteration.
-func (client Client) GetTestIteration(ctx context.Context, project *string, runId *int, testCaseResultId *int, iterationId *int, includeActionResults *bool) (*TestIterationDetailsModel, error) {
+func (client Client) GetTestIteration(ctx context.Context, args GetTestIterationArgs) (*TestIterationDetailsModel, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
-    if testCaseResultId == nil {
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
+    if args.TestCaseResultId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
-    routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
-    if iterationId == nil {
+    routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
+    if args.IterationId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
     }
-    routeValues["iterationId"] = strconv.Itoa(*iterationId)
+    routeValues["iterationId"] = strconv.Itoa(*args.IterationId)
 
     queryParams := url.Values{}
-    if includeActionResults != nil {
-        queryParams.Add("includeActionResults", strconv.FormatBool(*includeActionResults))
+    if args.IncludeActionResults != nil {
+        queryParams.Add("includeActionResults", strconv.FormatBool(*args.IncludeActionResults))
     }
     locationId, _ := uuid.Parse("73eb9074-3446-4c44-8296-2f811950ff8d")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -601,30 +696,39 @@ func (client Client) GetTestIteration(ctx context.Context, project *string, runI
     return &responseValue, err
 }
 
+// Arguments for the GetTestIteration function
+type GetTestIterationArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test run that contains the result.
+    RunId *int
+    // (required) ID of the test result that contains the iterations.
+    TestCaseResultId *int
+    // (required) Id of the test results Iteration.
+    IterationId *int
+    // (optional) Include result details for each action performed in the test iteration. ActionResults refer to outcome (pass/fail) of test steps that are executed as part of a running a manual test. Including the ActionResults flag gets the outcome of test steps in the actionResults section and test parameters in the parameters section for each test iteration.
+    IncludeActionResults *bool
+}
+
 // Get iterations for a result
-// ctx
-// project (required): Project ID or project name
-// runId (required): ID of the test run that contains the result.
-// testCaseResultId (required): ID of the test result that contains the iterations.
-// includeActionResults (optional): Include result details for each action performed in the test iteration. ActionResults refer to outcome (pass/fail) of test steps that are executed as part of a running a manual test. Including the ActionResults flag gets the outcome of test steps in the actionResults section and test parameters in the parameters section for each test iteration.
-func (client Client) GetTestIterations(ctx context.Context, project *string, runId *int, testCaseResultId *int, includeActionResults *bool) (*[]TestIterationDetailsModel, error) {
+func (client Client) GetTestIterations(ctx context.Context, args GetTestIterationsArgs) (*[]TestIterationDetailsModel, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
-    if testCaseResultId == nil {
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
+    if args.TestCaseResultId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
-    routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
+    routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
 
     queryParams := url.Values{}
-    if includeActionResults != nil {
-        queryParams.Add("includeActionResults", strconv.FormatBool(*includeActionResults))
+    if args.IncludeActionResults != nil {
+        queryParams.Add("includeActionResults", strconv.FormatBool(*args.IncludeActionResults))
     }
     locationId, _ := uuid.Parse("73eb9074-3446-4c44-8296-2f811950ff8d")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -637,35 +741,41 @@ func (client Client) GetTestIterations(ctx context.Context, project *string, run
     return &responseValue, err
 }
 
+// Arguments for the GetTestIterations function
+type GetTestIterationsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test run that contains the result.
+    RunId *int
+    // (required) ID of the test result that contains the iterations.
+    TestCaseResultId *int
+    // (optional) Include result details for each action performed in the test iteration. ActionResults refer to outcome (pass/fail) of test steps that are executed as part of a running a manual test. Including the ActionResults flag gets the outcome of test steps in the actionResults section and test parameters in the parameters section for each test iteration.
+    IncludeActionResults *bool
+}
+
 // Get a list of parameterized results
-// ctx
-// project (required): Project ID or project name
-// runId (required): ID of the test run that contains the result.
-// testCaseResultId (required): ID of the test result that contains the iterations.
-// iterationId (required): ID of the iteration that contains the parameterized results.
-// paramName (optional): Name of the parameter.
-func (client Client) GetResultParameters(ctx context.Context, project *string, runId *int, testCaseResultId *int, iterationId *int, paramName *string) (*[]TestResultParameterModel, error) {
+func (client Client) GetResultParameters(ctx context.Context, args GetResultParametersArgs) (*[]TestResultParameterModel, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
-    if testCaseResultId == nil {
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
+    if args.TestCaseResultId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
-    routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
-    if iterationId == nil {
+    routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
+    if args.IterationId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "iterationId"} 
     }
-    routeValues["iterationId"] = strconv.Itoa(*iterationId)
+    routeValues["iterationId"] = strconv.Itoa(*args.IterationId)
 
     queryParams := url.Values{}
-    if paramName != nil {
-        queryParams.Add("paramName", *paramName)
+    if args.ParamName != nil {
+        queryParams.Add("paramName", *args.ParamName)
     }
     locationId, _ := uuid.Parse("7c69810d-3354-4af3-844a-180bd25db08a")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -678,35 +788,43 @@ func (client Client) GetResultParameters(ctx context.Context, project *string, r
     return &responseValue, err
 }
 
+// Arguments for the GetResultParameters function
+type GetResultParametersArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test run that contains the result.
+    RunId *int
+    // (required) ID of the test result that contains the iterations.
+    TestCaseResultId *int
+    // (required) ID of the iteration that contains the parameterized results.
+    IterationId *int
+    // (optional) Name of the parameter.
+    ParamName *string
+}
+
 // Get a test point.
-// ctx
-// project (required): Project ID or project name
-// planId (required): ID of the test plan.
-// suiteId (required): ID of the suite that contains the point.
-// pointIds (required): ID of the test point to get.
-// witFields (optional): Comma-separated list of work item field names.
-func (client Client) GetPoint(ctx context.Context, project *string, planId *int, suiteId *int, pointIds *int, witFields *string) (*TestPoint, error) {
+func (client Client) GetPoint(ctx context.Context, args GetPointArgs) (*TestPoint, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if planId == nil {
+    routeValues["project"] = *args.Project
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = strconv.Itoa(*planId)
-    if suiteId == nil {
+    routeValues["planId"] = strconv.Itoa(*args.PlanId)
+    if args.SuiteId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "suiteId"} 
     }
-    routeValues["suiteId"] = strconv.Itoa(*suiteId)
-    if pointIds == nil {
+    routeValues["suiteId"] = strconv.Itoa(*args.SuiteId)
+    if args.PointIds == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "pointIds"} 
     }
-    routeValues["pointIds"] = strconv.Itoa(*pointIds)
+    routeValues["pointIds"] = strconv.Itoa(*args.PointIds)
 
     queryParams := url.Values{}
-    if witFields != nil {
-        queryParams.Add("witFields", *witFields)
+    if args.WitFields != nil {
+        queryParams.Add("witFields", *args.WitFields)
     }
     locationId, _ := uuid.Parse("3bcfd5c8-be62-488e-b1da-b8289ce9299c")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -719,54 +837,57 @@ func (client Client) GetPoint(ctx context.Context, project *string, planId *int,
     return &responseValue, err
 }
 
+// Arguments for the GetPoint function
+type GetPointArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test plan.
+    PlanId *int
+    // (required) ID of the suite that contains the point.
+    SuiteId *int
+    // (required) ID of the test point to get.
+    PointIds *int
+    // (optional) Comma-separated list of work item field names.
+    WitFields *string
+}
+
 // Get a list of test points.
-// ctx
-// project (required): Project ID or project name
-// planId (required): ID of the test plan.
-// suiteId (required): ID of the suite that contains the points.
-// witFields (optional): Comma-separated list of work item field names.
-// configurationId (optional): Get test points for specific configuration.
-// testCaseId (optional): Get test points for a specific test case, valid when configurationId is not set.
-// testPointIds (optional): Get test points for comma-separated list of test point IDs, valid only when configurationId and testCaseId are not set.
-// includePointDetails (optional): Include all properties for the test point.
-// skip (optional): Number of test points to skip..
-// top (optional): Number of test points to return.
-func (client Client) GetPoints(ctx context.Context, project *string, planId *int, suiteId *int, witFields *string, configurationId *string, testCaseId *string, testPointIds *string, includePointDetails *bool, skip *int, top *int) (*[]TestPoint, error) {
+func (client Client) GetPoints(ctx context.Context, args GetPointsArgs) (*[]TestPoint, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if planId == nil {
+    routeValues["project"] = *args.Project
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = strconv.Itoa(*planId)
-    if suiteId == nil {
+    routeValues["planId"] = strconv.Itoa(*args.PlanId)
+    if args.SuiteId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "suiteId"} 
     }
-    routeValues["suiteId"] = strconv.Itoa(*suiteId)
+    routeValues["suiteId"] = strconv.Itoa(*args.SuiteId)
 
     queryParams := url.Values{}
-    if witFields != nil {
-        queryParams.Add("witFields", *witFields)
+    if args.WitFields != nil {
+        queryParams.Add("witFields", *args.WitFields)
     }
-    if configurationId != nil {
-        queryParams.Add("configurationId", *configurationId)
+    if args.ConfigurationId != nil {
+        queryParams.Add("configurationId", *args.ConfigurationId)
     }
-    if testCaseId != nil {
-        queryParams.Add("testCaseId", *testCaseId)
+    if args.TestCaseId != nil {
+        queryParams.Add("testCaseId", *args.TestCaseId)
     }
-    if testPointIds != nil {
-        queryParams.Add("testPointIds", *testPointIds)
+    if args.TestPointIds != nil {
+        queryParams.Add("testPointIds", *args.TestPointIds)
     }
-    if includePointDetails != nil {
-        queryParams.Add("includePointDetails", strconv.FormatBool(*includePointDetails))
+    if args.IncludePointDetails != nil {
+        queryParams.Add("includePointDetails", strconv.FormatBool(*args.IncludePointDetails))
     }
-    if skip != nil {
-        queryParams.Add("$skip", strconv.Itoa(*skip))
+    if args.Skip != nil {
+        queryParams.Add("$skip", strconv.Itoa(*args.Skip))
     }
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
     locationId, _ := uuid.Parse("3bcfd5c8-be62-488e-b1da-b8289ce9299c")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -779,36 +900,54 @@ func (client Client) GetPoints(ctx context.Context, project *string, planId *int
     return &responseValue, err
 }
 
+// Arguments for the GetPoints function
+type GetPointsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test plan.
+    PlanId *int
+    // (required) ID of the suite that contains the points.
+    SuiteId *int
+    // (optional) Comma-separated list of work item field names.
+    WitFields *string
+    // (optional) Get test points for specific configuration.
+    ConfigurationId *string
+    // (optional) Get test points for a specific test case, valid when configurationId is not set.
+    TestCaseId *string
+    // (optional) Get test points for comma-separated list of test point IDs, valid only when configurationId and testCaseId are not set.
+    TestPointIds *string
+    // (optional) Include all properties for the test point.
+    IncludePointDetails *bool
+    // (optional) Number of test points to skip..
+    Skip *int
+    // (optional) Number of test points to return.
+    Top *int
+}
+
 // Update test points.
-// ctx
-// pointUpdateModel (required): Data to update.
-// project (required): Project ID or project name
-// planId (required): ID of the test plan.
-// suiteId (required): ID of the suite that contains the points.
-// pointIds (required): ID of the test point to get. Use a comma-separated list of IDs to update multiple test points.
-func (client Client) UpdateTestPoints(ctx context.Context, pointUpdateModel *PointUpdateModel, project *string, planId *int, suiteId *int, pointIds *string) (*[]TestPoint, error) {
-    if pointUpdateModel == nil {
+func (client Client) UpdateTestPoints(ctx context.Context, args UpdateTestPointsArgs) (*[]TestPoint, error) {
+    if args.PointUpdateModel == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "pointUpdateModel"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if planId == nil {
+    routeValues["project"] = *args.Project
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = strconv.Itoa(*planId)
-    if suiteId == nil {
+    routeValues["planId"] = strconv.Itoa(*args.PlanId)
+    if args.SuiteId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "suiteId"} 
     }
-    routeValues["suiteId"] = strconv.Itoa(*suiteId)
-    if pointIds == nil || *pointIds == "" {
+    routeValues["suiteId"] = strconv.Itoa(*args.SuiteId)
+    if args.PointIds == nil || *args.PointIds == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "pointIds"} 
     }
-    routeValues["pointIds"] = *pointIds
+    routeValues["pointIds"] = *args.PointIds
 
-    body, marshalErr := json.Marshal(*pointUpdateModel)
+    body, marshalErr := json.Marshal(*args.PointUpdateModel)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -823,30 +962,39 @@ func (client Client) UpdateTestPoints(ctx context.Context, pointUpdateModel *Poi
     return &responseValue, err
 }
 
+// Arguments for the UpdateTestPoints function
+type UpdateTestPointsArgs struct {
+    // (required) Data to update.
+    PointUpdateModel *PointUpdateModel
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test plan.
+    PlanId *int
+    // (required) ID of the suite that contains the points.
+    SuiteId *int
+    // (required) ID of the test point to get. Use a comma-separated list of IDs to update multiple test points.
+    PointIds *string
+}
+
 // [Preview API] Get test points using query.
-// ctx
-// query (required): TestPointsQuery to get test points.
-// project (required): Project ID or project name
-// skip (optional): Number of test points to skip..
-// top (optional): Number of test points to return.
-func (client Client) GetPointsByQuery(ctx context.Context, query *TestPointsQuery, project *string, skip *int, top *int) (*TestPointsQuery, error) {
-    if query == nil {
+func (client Client) GetPointsByQuery(ctx context.Context, args GetPointsByQueryArgs) (*TestPointsQuery, error) {
+    if args.Query == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "query"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if skip != nil {
-        queryParams.Add("$skip", strconv.Itoa(*skip))
+    if args.Skip != nil {
+        queryParams.Add("$skip", strconv.Itoa(*args.Skip))
     }
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    body, marshalErr := json.Marshal(*query)
+    body, marshalErr := json.Marshal(*args.Query)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -861,15 +1009,25 @@ func (client Client) GetPointsByQuery(ctx context.Context, query *TestPointsQuer
     return &responseValue, err
 }
 
+// Arguments for the GetPointsByQuery function
+type GetPointsByQueryArgs struct {
+    // (required) TestPointsQuery to get test points.
+    Query *TestPointsQuery
+    // (required) Project ID or project name
+    Project *string
+    // (optional) Number of test points to skip..
+    Skip *int
+    // (optional) Number of test points to return.
+    Top *int
+}
+
 // [Preview API] Get test result retention settings
-// ctx
-// project (required): Project ID or project name
-func (client Client) GetResultRetentionSettings(ctx context.Context, project *string) (*ResultRetentionSettings, error) {
+func (client Client) GetResultRetentionSettings(ctx context.Context, args GetResultRetentionSettingsArgs) (*ResultRetentionSettings, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     locationId, _ := uuid.Parse("a3206d9e-fa8d-42d3-88cb-f75c51e69cde")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -882,21 +1040,24 @@ func (client Client) GetResultRetentionSettings(ctx context.Context, project *st
     return &responseValue, err
 }
 
+// Arguments for the GetResultRetentionSettings function
+type GetResultRetentionSettingsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+}
+
 // [Preview API] Update test result retention settings
-// ctx
-// retentionSettings (required): Test result retention settings details to be updated
-// project (required): Project ID or project name
-func (client Client) UpdateResultRetentionSettings(ctx context.Context, retentionSettings *ResultRetentionSettings, project *string) (*ResultRetentionSettings, error) {
-    if retentionSettings == nil {
+func (client Client) UpdateResultRetentionSettings(ctx context.Context, args UpdateResultRetentionSettingsArgs) (*ResultRetentionSettings, error) {
+    if args.RetentionSettings == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "retentionSettings"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
-    body, marshalErr := json.Marshal(*retentionSettings)
+    body, marshalErr := json.Marshal(*args.RetentionSettings)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -911,26 +1072,30 @@ func (client Client) UpdateResultRetentionSettings(ctx context.Context, retentio
     return &responseValue, err
 }
 
+// Arguments for the UpdateResultRetentionSettings function
+type UpdateResultRetentionSettingsArgs struct {
+    // (required) Test result retention settings details to be updated
+    RetentionSettings *ResultRetentionSettings
+    // (required) Project ID or project name
+    Project *string
+}
+
 // Add test results to a test run.
-// ctx
-// results (required): List of test results to add.
-// project (required): Project ID or project name
-// runId (required): Test run ID into which test results to add.
-func (client Client) AddTestResultsToTestRun(ctx context.Context, results *[]TestCaseResult, project *string, runId *int) (*[]TestCaseResult, error) {
-    if results == nil {
+func (client Client) AddTestResultsToTestRun(ctx context.Context, args AddTestResultsToTestRunArgs) (*[]TestCaseResult, error) {
+    if args.Results == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "results"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
 
-    body, marshalErr := json.Marshal(*results)
+    body, marshalErr := json.Marshal(*args.Results)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -945,30 +1110,35 @@ func (client Client) AddTestResultsToTestRun(ctx context.Context, results *[]Tes
     return &responseValue, err
 }
 
+// Arguments for the AddTestResultsToTestRun function
+type AddTestResultsToTestRunArgs struct {
+    // (required) List of test results to add.
+    Results *[]TestCaseResult
+    // (required) Project ID or project name
+    Project *string
+    // (required) Test run ID into which test results to add.
+    RunId *int
+}
+
 // Get a test result for a test run.
-// ctx
-// project (required): Project ID or project name
-// runId (required): Test run ID of a test result to fetch.
-// testCaseResultId (required): Test result ID.
-// detailsToInclude (optional): Details to include with test results. Default is None. Other values are Iterations, WorkItems and SubResults.
-func (client Client) GetTestResultById(ctx context.Context, project *string, runId *int, testCaseResultId *int, detailsToInclude *ResultDetails) (*TestCaseResult, error) {
+func (client Client) GetTestResultById(ctx context.Context, args GetTestResultByIdArgs) (*TestCaseResult, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
-    if testCaseResultId == nil {
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
+    if args.TestCaseResultId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseResultId"} 
     }
-    routeValues["testCaseResultId"] = strconv.Itoa(*testCaseResultId)
+    routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
 
     queryParams := url.Values{}
-    if detailsToInclude != nil {
-        queryParams.Add("detailsToInclude", string(*detailsToInclude))
+    if args.DetailsToInclude != nil {
+        queryParams.Add("detailsToInclude", string(*args.DetailsToInclude))
     }
     locationId, _ := uuid.Parse("4637d869-3a76-4468-8057-0bb02aa385cf")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -981,38 +1151,43 @@ func (client Client) GetTestResultById(ctx context.Context, project *string, run
     return &responseValue, err
 }
 
+// Arguments for the GetTestResultById function
+type GetTestResultByIdArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Test run ID of a test result to fetch.
+    RunId *int
+    // (required) Test result ID.
+    TestCaseResultId *int
+    // (optional) Details to include with test results. Default is None. Other values are Iterations, WorkItems and SubResults.
+    DetailsToInclude *ResultDetails
+}
+
 // Get test results for a test run.
-// ctx
-// project (required): Project ID or project name
-// runId (required): Test run ID of test results to fetch.
-// detailsToInclude (optional): Details to include with test results. Default is None. Other values are Iterations and WorkItems.
-// skip (optional): Number of test results to skip from beginning.
-// top (optional): Number of test results to return. Maximum is 1000 when detailsToInclude is None and 200 otherwise.
-// outcomes (optional): Comma separated list of test outcomes to filter test results.
-func (client Client) GetTestResults(ctx context.Context, project *string, runId *int, detailsToInclude *ResultDetails, skip *int, top *int, outcomes *[]TestOutcome) (*[]TestCaseResult, error) {
+func (client Client) GetTestResults(ctx context.Context, args GetTestResultsArgs) (*[]TestCaseResult, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
 
     queryParams := url.Values{}
-    if detailsToInclude != nil {
-        queryParams.Add("detailsToInclude", string(*detailsToInclude))
+    if args.DetailsToInclude != nil {
+        queryParams.Add("detailsToInclude", string(*args.DetailsToInclude))
     }
-    if skip != nil {
-        queryParams.Add("$skip", strconv.Itoa(*skip))
+    if args.Skip != nil {
+        queryParams.Add("$skip", strconv.Itoa(*args.Skip))
     }
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    if outcomes != nil {
+    if args.Outcomes != nil {
         var stringList []string
-        for _, item := range *outcomes {
+        for _, item := range *args.Outcomes {
             stringList = append(stringList, string(item))
         }
         listAsString := strings.Join((stringList)[:], ",")
@@ -1029,26 +1204,38 @@ func (client Client) GetTestResults(ctx context.Context, project *string, runId 
     return &responseValue, err
 }
 
+// Arguments for the GetTestResults function
+type GetTestResultsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Test run ID of test results to fetch.
+    RunId *int
+    // (optional) Details to include with test results. Default is None. Other values are Iterations and WorkItems.
+    DetailsToInclude *ResultDetails
+    // (optional) Number of test results to skip from beginning.
+    Skip *int
+    // (optional) Number of test results to return. Maximum is 1000 when detailsToInclude is None and 200 otherwise.
+    Top *int
+    // (optional) Comma separated list of test outcomes to filter test results.
+    Outcomes *[]TestOutcome
+}
+
 // Update test results in a test run.
-// ctx
-// results (required): List of test results to update.
-// project (required): Project ID or project name
-// runId (required): Test run ID whose test results to update.
-func (client Client) UpdateTestResults(ctx context.Context, results *[]TestCaseResult, project *string, runId *int) (*[]TestCaseResult, error) {
-    if results == nil {
+func (client Client) UpdateTestResults(ctx context.Context, args UpdateTestResultsArgs) (*[]TestCaseResult, error) {
+    if args.Results == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "results"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
 
-    body, marshalErr := json.Marshal(*results)
+    body, marshalErr := json.Marshal(*args.Results)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1063,20 +1250,27 @@ func (client Client) UpdateTestResults(ctx context.Context, results *[]TestCaseR
     return &responseValue, err
 }
 
+// Arguments for the UpdateTestResults function
+type UpdateTestResultsArgs struct {
+    // (required) List of test results to update.
+    Results *[]TestCaseResult
+    // (required) Project ID or project name
+    Project *string
+    // (required) Test run ID whose test results to update.
+    RunId *int
+}
+
 // Get test run statistics , used when we want to get summary of a run by outcome.
-// ctx
-// project (required): Project ID or project name
-// runId (required): ID of the run to get.
-func (client Client) GetTestRunStatistics(ctx context.Context, project *string, runId *int) (*TestRunStatistic, error) {
+func (client Client) GetTestRunStatistics(ctx context.Context, args GetTestRunStatisticsArgs) (*TestRunStatistic, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
 
     locationId, _ := uuid.Parse("0a42c424-d764-4a16-a2d5-5c85f87d0ae8")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -1089,21 +1283,26 @@ func (client Client) GetTestRunStatistics(ctx context.Context, project *string, 
     return &responseValue, err
 }
 
+// Arguments for the GetTestRunStatistics function
+type GetTestRunStatisticsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the run to get.
+    RunId *int
+}
+
 // Create new test run.
-// ctx
-// testRun (required): Run details RunCreateModel
-// project (required): Project ID or project name
-func (client Client) CreateTestRun(ctx context.Context, testRun *RunCreateModel, project *string) (*TestRun, error) {
-    if testRun == nil {
+func (client Client) CreateTestRun(ctx context.Context, args CreateTestRunArgs) (*TestRun, error) {
+    if args.TestRun == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testRun"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
-    body, marshalErr := json.Marshal(*testRun)
+    body, marshalErr := json.Marshal(*args.TestRun)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1118,20 +1317,25 @@ func (client Client) CreateTestRun(ctx context.Context, testRun *RunCreateModel,
     return &responseValue, err
 }
 
+// Arguments for the CreateTestRun function
+type CreateTestRunArgs struct {
+    // (required) Run details RunCreateModel
+    TestRun *RunCreateModel
+    // (required) Project ID or project name
+    Project *string
+}
+
 // Delete a test run by its ID.
-// ctx
-// project (required): Project ID or project name
-// runId (required): ID of the run to delete.
-func (client Client) DeleteTestRun(ctx context.Context, project *string, runId *int) error {
+func (client Client) DeleteTestRun(ctx context.Context, args DeleteTestRunArgs) error {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
 
     locationId, _ := uuid.Parse("cadb3810-d47d-4a3c-a234-fe5f3be50138")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -1142,25 +1346,29 @@ func (client Client) DeleteTestRun(ctx context.Context, project *string, runId *
     return nil
 }
 
+// Arguments for the DeleteTestRun function
+type DeleteTestRunArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the run to delete.
+    RunId *int
+}
+
 // Get a test run by its ID.
-// ctx
-// project (required): Project ID or project name
-// runId (required): ID of the run to get.
-// includeDetails (optional): Defualt value is true. It includes details like run statistics,release,build,Test enviornment,Post process state and more
-func (client Client) GetTestRunById(ctx context.Context, project *string, runId *int, includeDetails *bool) (*TestRun, error) {
+func (client Client) GetTestRunById(ctx context.Context, args GetTestRunByIdArgs) (*TestRun, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
 
     queryParams := url.Values{}
-    if includeDetails != nil {
-        queryParams.Add("includeDetails", strconv.FormatBool(*includeDetails))
+    if args.IncludeDetails != nil {
+        queryParams.Add("includeDetails", strconv.FormatBool(*args.IncludeDetails))
     }
     locationId, _ := uuid.Parse("cadb3810-d47d-4a3c-a234-fe5f3be50138")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1173,48 +1381,48 @@ func (client Client) GetTestRunById(ctx context.Context, project *string, runId 
     return &responseValue, err
 }
 
+// Arguments for the GetTestRunById function
+type GetTestRunByIdArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the run to get.
+    RunId *int
+    // (optional) Defualt value is true. It includes details like run statistics,release,build,Test enviornment,Post process state and more
+    IncludeDetails *bool
+}
+
 // Get a list of test runs.
-// ctx
-// project (required): Project ID or project name
-// buildUri (optional): URI of the build that the runs used.
-// owner (optional): Team foundation ID of the owner of the runs.
-// tmiRunId (optional)
-// planId (optional): ID of the test plan that the runs are a part of.
-// includeRunDetails (optional): If true, include all the properties of the runs.
-// automated (optional): If true, only returns automated runs.
-// skip (optional): Number of test runs to skip.
-// top (optional): Number of test runs to return.
-func (client Client) GetTestRuns(ctx context.Context, project *string, buildUri *string, owner *string, tmiRunId *string, planId *int, includeRunDetails *bool, automated *bool, skip *int, top *int) (*[]TestRun, error) {
+func (client Client) GetTestRuns(ctx context.Context, args GetTestRunsArgs) (*[]TestRun, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if buildUri != nil {
-        queryParams.Add("buildUri", *buildUri)
+    if args.BuildUri != nil {
+        queryParams.Add("buildUri", *args.BuildUri)
     }
-    if owner != nil {
-        queryParams.Add("owner", *owner)
+    if args.Owner != nil {
+        queryParams.Add("owner", *args.Owner)
     }
-    if tmiRunId != nil {
-        queryParams.Add("tmiRunId", *tmiRunId)
+    if args.TmiRunId != nil {
+        queryParams.Add("tmiRunId", *args.TmiRunId)
     }
-    if planId != nil {
-        queryParams.Add("planId", strconv.Itoa(*planId))
+    if args.PlanId != nil {
+        queryParams.Add("planId", strconv.Itoa(*args.PlanId))
     }
-    if includeRunDetails != nil {
-        queryParams.Add("includeRunDetails", strconv.FormatBool(*includeRunDetails))
+    if args.IncludeRunDetails != nil {
+        queryParams.Add("includeRunDetails", strconv.FormatBool(*args.IncludeRunDetails))
     }
-    if automated != nil {
-        queryParams.Add("automated", strconv.FormatBool(*automated))
+    if args.Automated != nil {
+        queryParams.Add("automated", strconv.FormatBool(*args.Automated))
     }
-    if skip != nil {
-        queryParams.Add("$skip", strconv.Itoa(*skip))
+    if args.Skip != nil {
+        queryParams.Add("$skip", strconv.Itoa(*args.Skip))
     }
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
     locationId, _ := uuid.Parse("cadb3810-d47d-4a3c-a234-fe5f3be50138")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1225,119 +1433,123 @@ func (client Client) GetTestRuns(ctx context.Context, project *string, buildUri 
     var responseValue []TestRun
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the GetTestRuns function
+type GetTestRunsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (optional) URI of the build that the runs used.
+    BuildUri *string
+    // (optional) Team foundation ID of the owner of the runs.
+    Owner *string
+    // (optional)
+    TmiRunId *string
+    // (optional) ID of the test plan that the runs are a part of.
+    PlanId *int
+    // (optional) If true, include all the properties of the runs.
+    IncludeRunDetails *bool
+    // (optional) If true, only returns automated runs.
+    Automated *bool
+    // (optional) Number of test runs to skip.
+    Skip *int
+    // (optional) Number of test runs to return.
+    Top *int
 }
 
 // Query Test Runs based on filters. Mandatory fields are minLastUpdatedDate and maxLastUpdatedDate.
-// ctx
-// project (required): Project ID or project name
-// minLastUpdatedDate (required): Minimum Last Modified Date of run to be queried (Mandatory).
-// maxLastUpdatedDate (required): Maximum Last Modified Date of run to be queried (Mandatory, difference between min and max date can be atmost 7 days).
-// state (optional): Current state of the Runs to be queried.
-// planIds (optional): Plan Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).
-// isAutomated (optional): Automation type of the Runs to be queried.
-// publishContext (optional): PublishContext of the Runs to be queried.
-// buildIds (optional): Build Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).
-// buildDefIds (optional): Build Definition Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).
-// branchName (optional): Source Branch name of the Runs to be queried.
-// releaseIds (optional): Release Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).
-// releaseDefIds (optional): Release Definition Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).
-// releaseEnvIds (optional): Release Environment Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).
-// releaseEnvDefIds (optional): Release Environment Definition Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).
-// runTitle (optional): Run Title of the Runs to be queried.
-// top (optional): Number of runs to be queried. Limit is 100
-// continuationToken (optional): continuationToken received from previous batch or null for first batch. It is not supposed to be created (or altered, if received from last batch) by user.
-func (client Client) QueryTestRuns(ctx context.Context, project *string, minLastUpdatedDate *time.Time, maxLastUpdatedDate *time.Time, state *TestRunState, planIds *[]int, isAutomated *bool, publishContext *TestRunPublishContext, buildIds *[]int, buildDefIds *[]int, branchName *string, releaseIds *[]int, releaseDefIds *[]int, releaseEnvIds *[]int, releaseEnvDefIds *[]int, runTitle *string, top *int, continuationToken *string) (*[]TestRun, error) {
+func (client Client) QueryTestRuns(ctx context.Context, args QueryTestRunsArgs) (*[]TestRun, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if minLastUpdatedDate == nil {
+    if args.MinLastUpdatedDate == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "minLastUpdatedDate"}
     }
-    queryParams.Add("minLastUpdatedDate", (*minLastUpdatedDate).String())
-    if maxLastUpdatedDate == nil {
+    queryParams.Add("minLastUpdatedDate", (*args.MinLastUpdatedDate).String())
+    if args.MaxLastUpdatedDate == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "maxLastUpdatedDate"}
     }
-    queryParams.Add("maxLastUpdatedDate", (*maxLastUpdatedDate).String())
-    if state != nil {
-        queryParams.Add("state", string(*state))
+    queryParams.Add("maxLastUpdatedDate", (*args.MaxLastUpdatedDate).String())
+    if args.State != nil {
+        queryParams.Add("state", string(*args.State))
     }
-    if planIds != nil {
+    if args.PlanIds != nil {
         var stringList []string
-        for _, item := range *planIds {
+        for _, item := range *args.PlanIds {
             stringList = append(stringList, strconv.Itoa(item))
         }
         listAsString := strings.Join((stringList)[:], ",")
         queryParams.Add("definitions", listAsString)
     }
-    if isAutomated != nil {
-        queryParams.Add("isAutomated", strconv.FormatBool(*isAutomated))
+    if args.IsAutomated != nil {
+        queryParams.Add("isAutomated", strconv.FormatBool(*args.IsAutomated))
     }
-    if publishContext != nil {
-        queryParams.Add("publishContext", string(*publishContext))
+    if args.PublishContext != nil {
+        queryParams.Add("publishContext", string(*args.PublishContext))
     }
-    if buildIds != nil {
+    if args.BuildIds != nil {
         var stringList []string
-        for _, item := range *buildIds {
+        for _, item := range *args.BuildIds {
             stringList = append(stringList, strconv.Itoa(item))
         }
         listAsString := strings.Join((stringList)[:], ",")
         queryParams.Add("definitions", listAsString)
     }
-    if buildDefIds != nil {
+    if args.BuildDefIds != nil {
         var stringList []string
-        for _, item := range *buildDefIds {
+        for _, item := range *args.BuildDefIds {
             stringList = append(stringList, strconv.Itoa(item))
         }
         listAsString := strings.Join((stringList)[:], ",")
         queryParams.Add("definitions", listAsString)
     }
-    if branchName != nil {
-        queryParams.Add("branchName", *branchName)
+    if args.BranchName != nil {
+        queryParams.Add("branchName", *args.BranchName)
     }
-    if releaseIds != nil {
+    if args.ReleaseIds != nil {
         var stringList []string
-        for _, item := range *releaseIds {
+        for _, item := range *args.ReleaseIds {
             stringList = append(stringList, strconv.Itoa(item))
         }
         listAsString := strings.Join((stringList)[:], ",")
         queryParams.Add("definitions", listAsString)
     }
-    if releaseDefIds != nil {
+    if args.ReleaseDefIds != nil {
         var stringList []string
-        for _, item := range *releaseDefIds {
+        for _, item := range *args.ReleaseDefIds {
             stringList = append(stringList, strconv.Itoa(item))
         }
         listAsString := strings.Join((stringList)[:], ",")
         queryParams.Add("definitions", listAsString)
     }
-    if releaseEnvIds != nil {
+    if args.ReleaseEnvIds != nil {
         var stringList []string
-        for _, item := range *releaseEnvIds {
+        for _, item := range *args.ReleaseEnvIds {
             stringList = append(stringList, strconv.Itoa(item))
         }
         listAsString := strings.Join((stringList)[:], ",")
         queryParams.Add("definitions", listAsString)
     }
-    if releaseEnvDefIds != nil {
+    if args.ReleaseEnvDefIds != nil {
         var stringList []string
-        for _, item := range *releaseEnvDefIds {
+        for _, item := range *args.ReleaseEnvDefIds {
             stringList = append(stringList, strconv.Itoa(item))
         }
         listAsString := strings.Join((stringList)[:], ",")
         queryParams.Add("definitions", listAsString)
     }
-    if runTitle != nil {
-        queryParams.Add("runTitle", *runTitle)
+    if args.RunTitle != nil {
+        queryParams.Add("runTitle", *args.RunTitle)
     }
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    if continuationToken != nil {
-        queryParams.Add("continuationToken", *continuationToken)
+    if args.ContinuationToken != nil {
+        queryParams.Add("continuationToken", *args.ContinuationToken)
     }
     locationId, _ := uuid.Parse("cadb3810-d47d-4a3c-a234-fe5f3be50138")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1350,26 +1562,60 @@ func (client Client) QueryTestRuns(ctx context.Context, project *string, minLast
     return &responseValue, err
 }
 
+// Arguments for the QueryTestRuns function
+type QueryTestRunsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Minimum Last Modified Date of run to be queried (Mandatory).
+    MinLastUpdatedDate *time.Time
+    // (required) Maximum Last Modified Date of run to be queried (Mandatory, difference between min and max date can be atmost 7 days).
+    MaxLastUpdatedDate *time.Time
+    // (optional) Current state of the Runs to be queried.
+    State *TestRunState
+    // (optional) Plan Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).
+    PlanIds *[]int
+    // (optional) Automation type of the Runs to be queried.
+    IsAutomated *bool
+    // (optional) PublishContext of the Runs to be queried.
+    PublishContext *TestRunPublishContext
+    // (optional) Build Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).
+    BuildIds *[]int
+    // (optional) Build Definition Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).
+    BuildDefIds *[]int
+    // (optional) Source Branch name of the Runs to be queried.
+    BranchName *string
+    // (optional) Release Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).
+    ReleaseIds *[]int
+    // (optional) Release Definition Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).
+    ReleaseDefIds *[]int
+    // (optional) Release Environment Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).
+    ReleaseEnvIds *[]int
+    // (optional) Release Environment Definition Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).
+    ReleaseEnvDefIds *[]int
+    // (optional) Run Title of the Runs to be queried.
+    RunTitle *string
+    // (optional) Number of runs to be queried. Limit is 100
+    Top *int
+    // (optional) continuationToken received from previous batch or null for first batch. It is not supposed to be created (or altered, if received from last batch) by user.
+    ContinuationToken *string
+}
+
 // Update test run by its ID.
-// ctx
-// runUpdateModel (required): Run details RunUpdateModel
-// project (required): Project ID or project name
-// runId (required): ID of the run to update.
-func (client Client) UpdateTestRun(ctx context.Context, runUpdateModel *RunUpdateModel, project *string, runId *int) (*TestRun, error) {
-    if runUpdateModel == nil {
+func (client Client) UpdateTestRun(ctx context.Context, args UpdateTestRunArgs) (*TestRun, error) {
+    if args.RunUpdateModel == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runUpdateModel"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if runId == nil {
+    routeValues["project"] = *args.Project
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
 
-    body, marshalErr := json.Marshal(*runUpdateModel)
+    body, marshalErr := json.Marshal(*args.RunUpdateModel)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1384,25 +1630,31 @@ func (client Client) UpdateTestRun(ctx context.Context, runUpdateModel *RunUpdat
     return &responseValue, err
 }
 
+// Arguments for the UpdateTestRun function
+type UpdateTestRunArgs struct {
+    // (required) Run details RunUpdateModel
+    RunUpdateModel *RunUpdateModel
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the run to update.
+    RunId *int
+}
+
 // [Preview API] Create a test session
-// ctx
-// testSession (required): Test session details for creation
-// project (required): Project ID or project name
-// team (optional): Team ID or team name
-func (client Client) CreateTestSession(ctx context.Context, testSession *TestSession, project *string, team *string) (*TestSession, error) {
-    if testSession == nil {
+func (client Client) CreateTestSession(ctx context.Context, args CreateTestSessionArgs) (*TestSession, error) {
+    if args.TestSession == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testSession"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if team != nil && *team != "" {
-        routeValues["team"] = *team
+    routeValues["project"] = *args.Project
+    if args.Team != nil && *args.Team != "" {
+        routeValues["team"] = *args.Team
     }
 
-    body, marshalErr := json.Marshal(*testSession)
+    body, marshalErr := json.Marshal(*args.TestSession)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1417,40 +1669,42 @@ func (client Client) CreateTestSession(ctx context.Context, testSession *TestSes
     return &responseValue, err
 }
 
+// Arguments for the CreateTestSession function
+type CreateTestSessionArgs struct {
+    // (required) Test session details for creation
+    TestSession *TestSession
+    // (required) Project ID or project name
+    Project *string
+    // (optional) Team ID or team name
+    Team *string
+}
+
 // [Preview API] Get a list of test sessions
-// ctx
-// project (required): Project ID or project name
-// team (optional): Team ID or team name
-// period (optional): Period in days from now, for which test sessions are fetched.
-// allSessions (optional): If false, returns test sessions for current user. Otherwise, it returns test sessions for all users
-// includeAllProperties (optional): If true, it returns all properties of the test sessions. Otherwise, it returns the skinny version.
-// source (optional): Source of the test session.
-// includeOnlyCompletedSessions (optional): If true, it returns test sessions in completed state. Otherwise, it returns test sessions for all states
-func (client Client) GetTestSessions(ctx context.Context, project *string, team *string, period *int, allSessions *bool, includeAllProperties *bool, source *TestSessionSource, includeOnlyCompletedSessions *bool) (*[]TestSession, error) {
+func (client Client) GetTestSessions(ctx context.Context, args GetTestSessionsArgs) (*[]TestSession, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if team != nil && *team != "" {
-        routeValues["team"] = *team
+    routeValues["project"] = *args.Project
+    if args.Team != nil && *args.Team != "" {
+        routeValues["team"] = *args.Team
     }
 
     queryParams := url.Values{}
-    if period != nil {
-        queryParams.Add("period", strconv.Itoa(*period))
+    if args.Period != nil {
+        queryParams.Add("period", strconv.Itoa(*args.Period))
     }
-    if allSessions != nil {
-        queryParams.Add("allSessions", strconv.FormatBool(*allSessions))
+    if args.AllSessions != nil {
+        queryParams.Add("allSessions", strconv.FormatBool(*args.AllSessions))
     }
-    if includeAllProperties != nil {
-        queryParams.Add("includeAllProperties", strconv.FormatBool(*includeAllProperties))
+    if args.IncludeAllProperties != nil {
+        queryParams.Add("includeAllProperties", strconv.FormatBool(*args.IncludeAllProperties))
     }
-    if source != nil {
-        queryParams.Add("source", string(*source))
+    if args.Source != nil {
+        queryParams.Add("source", string(*args.Source))
     }
-    if includeOnlyCompletedSessions != nil {
-        queryParams.Add("includeOnlyCompletedSessions", strconv.FormatBool(*includeOnlyCompletedSessions))
+    if args.IncludeOnlyCompletedSessions != nil {
+        queryParams.Add("includeOnlyCompletedSessions", strconv.FormatBool(*args.IncludeOnlyCompletedSessions))
     }
     locationId, _ := uuid.Parse("1500b4b4-6c69-4ca6-9b18-35e9e97fe2ac")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1463,25 +1717,39 @@ func (client Client) GetTestSessions(ctx context.Context, project *string, team 
     return &responseValue, err
 }
 
+// Arguments for the GetTestSessions function
+type GetTestSessionsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (optional) Team ID or team name
+    Team *string
+    // (optional) Period in days from now, for which test sessions are fetched.
+    Period *int
+    // (optional) If false, returns test sessions for current user. Otherwise, it returns test sessions for all users
+    AllSessions *bool
+    // (optional) If true, it returns all properties of the test sessions. Otherwise, it returns the skinny version.
+    IncludeAllProperties *bool
+    // (optional) Source of the test session.
+    Source *TestSessionSource
+    // (optional) If true, it returns test sessions in completed state. Otherwise, it returns test sessions for all states
+    IncludeOnlyCompletedSessions *bool
+}
+
 // [Preview API] Update a test session
-// ctx
-// testSession (required): Test session details for update
-// project (required): Project ID or project name
-// team (optional): Team ID or team name
-func (client Client) UpdateTestSession(ctx context.Context, testSession *TestSession, project *string, team *string) (*TestSession, error) {
-    if testSession == nil {
+func (client Client) UpdateTestSession(ctx context.Context, args UpdateTestSessionArgs) (*TestSession, error) {
+    if args.TestSession == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testSession"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if team != nil && *team != "" {
-        routeValues["team"] = *team
+    routeValues["project"] = *args.Project
+    if args.Team != nil && *args.Team != "" {
+        routeValues["team"] = *args.Team
     }
 
-    body, marshalErr := json.Marshal(*testSession)
+    body, marshalErr := json.Marshal(*args.TestSession)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1496,30 +1764,35 @@ func (client Client) UpdateTestSession(ctx context.Context, testSession *TestSes
     return &responseValue, err
 }
 
+// Arguments for the UpdateTestSession function
+type UpdateTestSessionArgs struct {
+    // (required) Test session details for update
+    TestSession *TestSession
+    // (required) Project ID or project name
+    Project *string
+    // (optional) Team ID or team name
+    Team *string
+}
+
 // Add test cases to suite.
-// ctx
-// project (required): Project ID or project name
-// planId (required): ID of the test plan that contains the suite.
-// suiteId (required): ID of the test suite to which the test cases must be added.
-// testCaseIds (required): IDs of the test cases to add to the suite. Ids are specified in comma separated format.
-func (client Client) AddTestCasesToSuite(ctx context.Context, project *string, planId *int, suiteId *int, testCaseIds *string) (*[]SuiteTestCase, error) {
+func (client Client) AddTestCasesToSuite(ctx context.Context, args AddTestCasesToSuiteArgs) (*[]SuiteTestCase, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if planId == nil {
+    routeValues["project"] = *args.Project
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = strconv.Itoa(*planId)
-    if suiteId == nil {
+    routeValues["planId"] = strconv.Itoa(*args.PlanId)
+    if args.SuiteId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "suiteId"} 
     }
-    routeValues["suiteId"] = strconv.Itoa(*suiteId)
-    if testCaseIds == nil || *testCaseIds == "" {
+    routeValues["suiteId"] = strconv.Itoa(*args.SuiteId)
+    if args.TestCaseIds == nil || *args.TestCaseIds == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "testCaseIds"} 
     }
-    routeValues["testCaseIds"] = *testCaseIds
+    routeValues["testCaseIds"] = *args.TestCaseIds
     routeValues["action"] = "TestCases"
 
     locationId, _ := uuid.Parse("a4a1ec1c-b03f-41ca-8857-704594ecf58e")
@@ -1533,30 +1806,37 @@ func (client Client) AddTestCasesToSuite(ctx context.Context, project *string, p
     return &responseValue, err
 }
 
+// Arguments for the AddTestCasesToSuite function
+type AddTestCasesToSuiteArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test plan that contains the suite.
+    PlanId *int
+    // (required) ID of the test suite to which the test cases must be added.
+    SuiteId *int
+    // (required) IDs of the test cases to add to the suite. Ids are specified in comma separated format.
+    TestCaseIds *string
+}
+
 // Get a specific test case in a test suite with test case id.
-// ctx
-// project (required): Project ID or project name
-// planId (required): ID of the test plan that contains the suites.
-// suiteId (required): ID of the suite that contains the test case.
-// testCaseIds (required): ID of the test case to get.
-func (client Client) GetTestCaseById(ctx context.Context, project *string, planId *int, suiteId *int, testCaseIds *int) (*SuiteTestCase, error) {
+func (client Client) GetTestCaseById(ctx context.Context, args GetTestCaseByIdArgs) (*SuiteTestCase, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if planId == nil {
+    routeValues["project"] = *args.Project
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = strconv.Itoa(*planId)
-    if suiteId == nil {
+    routeValues["planId"] = strconv.Itoa(*args.PlanId)
+    if args.SuiteId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "suiteId"} 
     }
-    routeValues["suiteId"] = strconv.Itoa(*suiteId)
-    if testCaseIds == nil {
+    routeValues["suiteId"] = strconv.Itoa(*args.SuiteId)
+    if args.TestCaseIds == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "testCaseIds"} 
     }
-    routeValues["testCaseIds"] = strconv.Itoa(*testCaseIds)
+    routeValues["testCaseIds"] = strconv.Itoa(*args.TestCaseIds)
     routeValues["action"] = "TestCases"
 
     locationId, _ := uuid.Parse("a4a1ec1c-b03f-41ca-8857-704594ecf58e")
@@ -1570,25 +1850,33 @@ func (client Client) GetTestCaseById(ctx context.Context, project *string, planI
     return &responseValue, err
 }
 
+// Arguments for the GetTestCaseById function
+type GetTestCaseByIdArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test plan that contains the suites.
+    PlanId *int
+    // (required) ID of the suite that contains the test case.
+    SuiteId *int
+    // (required) ID of the test case to get.
+    TestCaseIds *int
+}
+
 // Get all test cases in a suite.
-// ctx
-// project (required): Project ID or project name
-// planId (required): ID of the test plan that contains the suites.
-// suiteId (required): ID of the suite to get.
-func (client Client) GetTestCases(ctx context.Context, project *string, planId *int, suiteId *int) (*[]SuiteTestCase, error) {
+func (client Client) GetTestCases(ctx context.Context, args GetTestCasesArgs) (*[]SuiteTestCase, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if planId == nil {
+    routeValues["project"] = *args.Project
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = strconv.Itoa(*planId)
-    if suiteId == nil {
+    routeValues["planId"] = strconv.Itoa(*args.PlanId)
+    if args.SuiteId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "suiteId"} 
     }
-    routeValues["suiteId"] = strconv.Itoa(*suiteId)
+    routeValues["suiteId"] = strconv.Itoa(*args.SuiteId)
     routeValues["action"] = "TestCases"
 
     locationId, _ := uuid.Parse("a4a1ec1c-b03f-41ca-8857-704594ecf58e")
@@ -1602,30 +1890,35 @@ func (client Client) GetTestCases(ctx context.Context, project *string, planId *
     return &responseValue, err
 }
 
+// Arguments for the GetTestCases function
+type GetTestCasesArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test plan that contains the suites.
+    PlanId *int
+    // (required) ID of the suite to get.
+    SuiteId *int
+}
+
 // The test points associated with the test cases are removed from the test suite. The test case work item is not deleted from the system. See test cases resource to delete a test case permanently.
-// ctx
-// project (required): Project ID or project name
-// planId (required): ID of the test plan that contains the suite.
-// suiteId (required): ID of the suite to get.
-// testCaseIds (required): IDs of the test cases to remove from the suite.
-func (client Client) RemoveTestCasesFromSuiteUrl(ctx context.Context, project *string, planId *int, suiteId *int, testCaseIds *string) error {
+func (client Client) RemoveTestCasesFromSuiteUrl(ctx context.Context, args RemoveTestCasesFromSuiteUrlArgs) error {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if planId == nil {
+    routeValues["project"] = *args.Project
+    if args.PlanId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = strconv.Itoa(*planId)
-    if suiteId == nil {
+    routeValues["planId"] = strconv.Itoa(*args.PlanId)
+    if args.SuiteId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "suiteId"} 
     }
-    routeValues["suiteId"] = strconv.Itoa(*suiteId)
-    if testCaseIds == nil || *testCaseIds == "" {
+    routeValues["suiteId"] = strconv.Itoa(*args.SuiteId)
+    if args.TestCaseIds == nil || *args.TestCaseIds == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "testCaseIds"} 
     }
-    routeValues["testCaseIds"] = *testCaseIds
+    routeValues["testCaseIds"] = *args.TestCaseIds
     routeValues["action"] = "TestCases"
 
     locationId, _ := uuid.Parse("a4a1ec1c-b03f-41ca-8857-704594ecf58e")
@@ -1637,37 +1930,43 @@ func (client Client) RemoveTestCasesFromSuiteUrl(ctx context.Context, project *s
     return nil
 }
 
+// Arguments for the RemoveTestCasesFromSuiteUrl function
+type RemoveTestCasesFromSuiteUrlArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test plan that contains the suite.
+    PlanId *int
+    // (required) ID of the suite to get.
+    SuiteId *int
+    // (required) IDs of the test cases to remove from the suite.
+    TestCaseIds *string
+}
+
 // Updates the properties of the test case association in a suite.
-// ctx
-// suiteTestCaseUpdateModel (required): Model for updation of the properties of test case suite association.
-// project (required): Project ID or project name
-// planId (required): ID of the test plan that contains the suite.
-// suiteId (required): ID of the test suite to which the test cases must be added.
-// testCaseIds (required): IDs of the test cases to add to the suite. Ids are specified in comma separated format.
-func (client Client) UpdateSuiteTestCases(ctx context.Context, suiteTestCaseUpdateModel *SuiteTestCaseUpdateModel, project *string, planId *int, suiteId *int, testCaseIds *string) (*[]SuiteTestCase, error) {
-    if suiteTestCaseUpdateModel == nil {
+func (client Client) UpdateSuiteTestCases(ctx context.Context, args UpdateSuiteTestCasesArgs) (*[]SuiteTestCase, error) {
+    if args.SuiteTestCaseUpdateModel == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "suiteTestCaseUpdateModel"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if planId == nil {
+    routeValues["project"] = *args.Project
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = strconv.Itoa(*planId)
-    if suiteId == nil {
+    routeValues["planId"] = strconv.Itoa(*args.PlanId)
+    if args.SuiteId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "suiteId"} 
     }
-    routeValues["suiteId"] = strconv.Itoa(*suiteId)
-    if testCaseIds == nil || *testCaseIds == "" {
+    routeValues["suiteId"] = strconv.Itoa(*args.SuiteId)
+    if args.TestCaseIds == nil || *args.TestCaseIds == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "testCaseIds"} 
     }
-    routeValues["testCaseIds"] = *testCaseIds
+    routeValues["testCaseIds"] = *args.TestCaseIds
     routeValues["action"] = "TestCases"
 
-    body, marshalErr := json.Marshal(*suiteTestCaseUpdateModel)
+    body, marshalErr := json.Marshal(*args.SuiteTestCaseUpdateModel)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1682,20 +1981,31 @@ func (client Client) UpdateSuiteTestCases(ctx context.Context, suiteTestCaseUpda
     return &responseValue, err
 }
 
+// Arguments for the UpdateSuiteTestCases function
+type UpdateSuiteTestCasesArgs struct {
+    // (required) Model for updation of the properties of test case suite association.
+    SuiteTestCaseUpdateModel *SuiteTestCaseUpdateModel
+    // (required) Project ID or project name
+    Project *string
+    // (required) ID of the test plan that contains the suite.
+    PlanId *int
+    // (required) ID of the test suite to which the test cases must be added.
+    SuiteId *int
+    // (required) IDs of the test cases to add to the suite. Ids are specified in comma separated format.
+    TestCaseIds *string
+}
+
 // [Preview API] Delete a test case.
-// ctx
-// project (required): Project ID or project name
-// testCaseId (required): Id of test case to delete.
-func (client Client) DeleteTestCase(ctx context.Context, project *string, testCaseId *int) error {
+func (client Client) DeleteTestCase(ctx context.Context, args DeleteTestCaseArgs) error {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if testCaseId == nil {
+    routeValues["project"] = *args.Project
+    if args.TestCaseId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "testCaseId"} 
     }
-    routeValues["testCaseId"] = strconv.Itoa(*testCaseId)
+    routeValues["testCaseId"] = strconv.Itoa(*args.TestCaseId)
 
     locationId, _ := uuid.Parse("4d472e0f-e32c-4ef8-adf4-a4078772889c")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -1706,21 +2016,26 @@ func (client Client) DeleteTestCase(ctx context.Context, project *string, testCa
     return nil
 }
 
+// Arguments for the DeleteTestCase function
+type DeleteTestCaseArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of test case to delete.
+    TestCaseId *int
+}
+
 // [Preview API] Get history of a test method using TestHistoryQuery
-// ctx
-// filter (required): TestHistoryQuery to get history
-// project (required): Project ID or project name
-func (client Client) QueryTestHistory(ctx context.Context, filter *TestHistoryQuery, project *string) (*TestHistoryQuery, error) {
-    if filter == nil {
+func (client Client) QueryTestHistory(ctx context.Context, args QueryTestHistoryArgs) (*TestHistoryQuery, error) {
+    if args.Filter == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "filter"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
-    body, marshalErr := json.Marshal(*filter)
+    body, marshalErr := json.Marshal(*args.Filter)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1733,5 +2048,13 @@ func (client Client) QueryTestHistory(ctx context.Context, filter *TestHistoryQu
     var responseValue TestHistoryQuery
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the QueryTestHistory function
+type QueryTestHistoryArgs struct {
+    // (required) TestHistoryQuery to get history
+    Filter *TestHistoryQuery
+    // (required) Project ID or project name
+    Project *string
 }
 

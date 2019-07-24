@@ -35,21 +35,18 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 }
 
 // [Preview API] Returns a behavior for the process.
-// ctx
-// processId (required): The ID of the process
-// behaviorRefName (required): The reference name of the behavior
-func (client Client) GetBehavior(ctx context.Context, processId *uuid.UUID, behaviorRefName *string) (*AdminBehavior, error) {
+func (client Client) GetBehavior(ctx context.Context, args GetBehaviorArgs) (*AdminBehavior, error) {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
+    routeValues["processId"] = (*args.ProcessId).String()
 
     queryParams := url.Values{}
-    if behaviorRefName == nil {
+    if args.BehaviorRefName == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "behaviorRefName"}
     }
-    queryParams.Add("behaviorRefName", *behaviorRefName)
+    queryParams.Add("behaviorRefName", *args.BehaviorRefName)
     locationId, _ := uuid.Parse("90bf9317-3571-487b-bc8c-a523ba0e05d7")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -61,15 +58,21 @@ func (client Client) GetBehavior(ctx context.Context, processId *uuid.UUID, beha
     return &responseValue, err
 }
 
+// Arguments for the GetBehavior function
+type GetBehaviorArgs struct {
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) The reference name of the behavior
+    BehaviorRefName *string
+}
+
 // [Preview API] Returns a list of behaviors for the process.
-// ctx
-// processId (required): The ID of the process
-func (client Client) GetBehaviors(ctx context.Context, processId *uuid.UUID) (*[]AdminBehavior, error) {
+func (client Client) GetBehaviors(ctx context.Context, args GetBehaviorsArgs) (*[]AdminBehavior, error) {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
+    routeValues["processId"] = (*args.ProcessId).String()
 
     locationId, _ := uuid.Parse("90bf9317-3571-487b-bc8c-a523ba0e05d7")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -82,15 +85,19 @@ func (client Client) GetBehaviors(ctx context.Context, processId *uuid.UUID) (*[
     return &responseValue, err
 }
 
+// Arguments for the GetBehaviors function
+type GetBehaviorsArgs struct {
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+}
+
 // [Preview API] Returns requested process template.
-// ctx
-// id (required): The ID of the process
-func (client Client) ExportProcessTemplate(ctx context.Context, id *uuid.UUID) (io.ReadCloser, error) {
+func (client Client) ExportProcessTemplate(ctx context.Context, args ExportProcessTemplateArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if id == nil {
+    if args.Id == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
-    routeValues["id"] = (*id).String()
+    routeValues["id"] = (*args.Id).String()
     routeValues["action"] = "Export"
 
     locationId, _ := uuid.Parse("29e1f38d-9e9c-4358-86a5-cdf9896a5759")
@@ -102,27 +109,29 @@ func (client Client) ExportProcessTemplate(ctx context.Context, id *uuid.UUID) (
     return resp.Body, err
 }
 
+// Arguments for the ExportProcessTemplate function
+type ExportProcessTemplateArgs struct {
+    // (required) The ID of the process
+    Id *uuid.UUID
+}
+
 // [Preview API] Imports a process from zip file.
-// ctx
-// uploadStream (required): Stream to upload
-// ignoreWarnings (optional): Ignores validation warnings. Default value is false.
-// replaceExistingTemplate (optional): Replaces the existing template. Default value is true.
-func (client Client) ImportProcessTemplate(ctx context.Context, uploadStream io.Reader, ignoreWarnings *bool, replaceExistingTemplate *bool) (*ProcessImportResult, error) {
-    if uploadStream == nil {
+func (client Client) ImportProcessTemplate(ctx context.Context, args ImportProcessTemplateArgs) (*ProcessImportResult, error) {
+    if args.UploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
     routeValues := make(map[string]string)
     routeValues["action"] = "Import"
 
     queryParams := url.Values{}
-    if ignoreWarnings != nil {
-        queryParams.Add("ignoreWarnings", strconv.FormatBool(*ignoreWarnings))
+    if args.IgnoreWarnings != nil {
+        queryParams.Add("ignoreWarnings", strconv.FormatBool(*args.IgnoreWarnings))
     }
-    if replaceExistingTemplate != nil {
-        queryParams.Add("replaceExistingTemplate", strconv.FormatBool(*replaceExistingTemplate))
+    if args.ReplaceExistingTemplate != nil {
+        queryParams.Add("replaceExistingTemplate", strconv.FormatBool(*args.ReplaceExistingTemplate))
     }
     locationId, _ := uuid.Parse("29e1f38d-9e9c-4358-86a5-cdf9896a5759")
-    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, uploadStream, "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, args.UploadStream, "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -132,15 +141,23 @@ func (client Client) ImportProcessTemplate(ctx context.Context, uploadStream io.
     return &responseValue, err
 }
 
+// Arguments for the ImportProcessTemplate function
+type ImportProcessTemplateArgs struct {
+    // (required) Stream to upload
+    UploadStream io.Reader
+    // (optional) Ignores validation warnings. Default value is false.
+    IgnoreWarnings *bool
+    // (optional) Replaces the existing template. Default value is true.
+    ReplaceExistingTemplate *bool
+}
+
 // [Preview API] Tells whether promote has completed for the specified promote job ID.
-// ctx
-// id (required): The ID of the promote job operation
-func (client Client) ImportProcessTemplateStatus(ctx context.Context, id *uuid.UUID) (*ProcessPromoteStatus, error) {
+func (client Client) ImportProcessTemplateStatus(ctx context.Context, args ImportProcessTemplateStatusArgs) (*ProcessPromoteStatus, error) {
     routeValues := make(map[string]string)
-    if id == nil {
+    if args.Id == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
-    routeValues["id"] = (*id).String()
+    routeValues["id"] = (*args.Id).String()
     routeValues["action"] = "Status"
 
     locationId, _ := uuid.Parse("29e1f38d-9e9c-4358-86a5-cdf9896a5759")
@@ -152,5 +169,11 @@ func (client Client) ImportProcessTemplateStatus(ctx context.Context, id *uuid.U
     var responseValue ProcessPromoteStatus
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the ImportProcessTemplateStatus function
+type ImportProcessTemplateStatusArgs struct {
+    // (required) The ID of the promote job operation
+    Id *uuid.UUID
 }
 

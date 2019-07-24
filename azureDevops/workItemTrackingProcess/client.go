@@ -35,20 +35,17 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 }
 
 // [Preview API] Creates a single behavior in the given process.
-// ctx
-// behavior (required)
-// processId (required): The ID of the process
-func (client Client) CreateProcessBehavior(ctx context.Context, behavior *ProcessBehaviorCreateRequest, processId *uuid.UUID) (*ProcessBehavior, error) {
-    if behavior == nil {
+func (client Client) CreateProcessBehavior(ctx context.Context, args CreateProcessBehaviorArgs) (*ProcessBehavior, error) {
+    if args.Behavior == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "behavior"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
+    routeValues["processId"] = (*args.ProcessId).String()
 
-    body, marshalErr := json.Marshal(*behavior)
+    body, marshalErr := json.Marshal(*args.Behavior)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -63,20 +60,25 @@ func (client Client) CreateProcessBehavior(ctx context.Context, behavior *Proces
     return &responseValue, err
 }
 
+// Arguments for the CreateProcessBehavior function
+type CreateProcessBehaviorArgs struct {
+    // (required)
+    Behavior *ProcessBehaviorCreateRequest
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+}
+
 // [Preview API] Removes a behavior in the process.
-// ctx
-// processId (required): The ID of the process
-// behaviorRefName (required): The reference name of the behavior
-func (client Client) DeleteProcessBehavior(ctx context.Context, processId *uuid.UUID, behaviorRefName *string) error {
+func (client Client) DeleteProcessBehavior(ctx context.Context, args DeleteProcessBehaviorArgs) error {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if behaviorRefName == nil || *behaviorRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.BehaviorRefName == nil || *args.BehaviorRefName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "behaviorRefName"} 
     }
-    routeValues["behaviorRefName"] = *behaviorRefName
+    routeValues["behaviorRefName"] = *args.BehaviorRefName
 
     locationId, _ := uuid.Parse("d1800200-f184-4e75-a5f2-ad0b04b4373e")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/json", nil)
@@ -87,25 +89,29 @@ func (client Client) DeleteProcessBehavior(ctx context.Context, processId *uuid.
     return nil
 }
 
+// Arguments for the DeleteProcessBehavior function
+type DeleteProcessBehaviorArgs struct {
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) The reference name of the behavior
+    BehaviorRefName *string
+}
+
 // [Preview API] Returns a behavior of the process.
-// ctx
-// processId (required): The ID of the process
-// behaviorRefName (required): The reference name of the behavior
-// expand (optional)
-func (client Client) GetProcessBehavior(ctx context.Context, processId *uuid.UUID, behaviorRefName *string, expand *GetBehaviorsExpand) (*ProcessBehavior, error) {
+func (client Client) GetProcessBehavior(ctx context.Context, args GetProcessBehaviorArgs) (*ProcessBehavior, error) {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if behaviorRefName == nil || *behaviorRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.BehaviorRefName == nil || *args.BehaviorRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "behaviorRefName"} 
     }
-    routeValues["behaviorRefName"] = *behaviorRefName
+    routeValues["behaviorRefName"] = *args.BehaviorRefName
 
     queryParams := url.Values{}
-    if expand != nil {
-        queryParams.Add("$expand", string(*expand))
+    if args.Expand != nil {
+        queryParams.Add("$expand", string(*args.Expand))
     }
     locationId, _ := uuid.Parse("d1800200-f184-4e75-a5f2-ad0b04b4373e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -118,20 +124,27 @@ func (client Client) GetProcessBehavior(ctx context.Context, processId *uuid.UUI
     return &responseValue, err
 }
 
+// Arguments for the GetProcessBehavior function
+type GetProcessBehaviorArgs struct {
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) The reference name of the behavior
+    BehaviorRefName *string
+    // (optional)
+    Expand *GetBehaviorsExpand
+}
+
 // [Preview API] Returns a list of all behaviors in the process.
-// ctx
-// processId (required): The ID of the process
-// expand (optional)
-func (client Client) GetProcessBehaviors(ctx context.Context, processId *uuid.UUID, expand *GetBehaviorsExpand) (*[]ProcessBehavior, error) {
+func (client Client) GetProcessBehaviors(ctx context.Context, args GetProcessBehaviorsArgs) (*[]ProcessBehavior, error) {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
+    routeValues["processId"] = (*args.ProcessId).String()
 
     queryParams := url.Values{}
-    if expand != nil {
-        queryParams.Add("$expand", string(*expand))
+    if args.Expand != nil {
+        queryParams.Add("$expand", string(*args.Expand))
     }
     locationId, _ := uuid.Parse("d1800200-f184-4e75-a5f2-ad0b04b4373e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -144,26 +157,30 @@ func (client Client) GetProcessBehaviors(ctx context.Context, processId *uuid.UU
     return &responseValue, err
 }
 
+// Arguments for the GetProcessBehaviors function
+type GetProcessBehaviorsArgs struct {
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (optional)
+    Expand *GetBehaviorsExpand
+}
+
 // [Preview API] Replaces a behavior in the process.
-// ctx
-// behaviorData (required)
-// processId (required): The ID of the process
-// behaviorRefName (required): The reference name of the behavior
-func (client Client) UpdateProcessBehavior(ctx context.Context, behaviorData *ProcessBehaviorUpdateRequest, processId *uuid.UUID, behaviorRefName *string) (*ProcessBehavior, error) {
-    if behaviorData == nil {
+func (client Client) UpdateProcessBehavior(ctx context.Context, args UpdateProcessBehaviorArgs) (*ProcessBehavior, error) {
+    if args.BehaviorData == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "behaviorData"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if behaviorRefName == nil || *behaviorRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.BehaviorRefName == nil || *args.BehaviorRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "behaviorRefName"} 
     }
-    routeValues["behaviorRefName"] = *behaviorRefName
+    routeValues["behaviorRefName"] = *args.BehaviorRefName
 
-    body, marshalErr := json.Marshal(*behaviorData)
+    body, marshalErr := json.Marshal(*args.BehaviorData)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -178,31 +195,36 @@ func (client Client) UpdateProcessBehavior(ctx context.Context, behaviorData *Pr
     return &responseValue, err
 }
 
+// Arguments for the UpdateProcessBehavior function
+type UpdateProcessBehaviorArgs struct {
+    // (required)
+    BehaviorData *ProcessBehaviorUpdateRequest
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) The reference name of the behavior
+    BehaviorRefName *string
+}
+
 // [Preview API] Creates a control in a group.
-// ctx
-// control (required): The control.
-// processId (required): The ID of the process.
-// witRefName (required): The reference name of the work item type.
-// groupId (required): The ID of the group to add the control to.
-func (client Client) CreateControlInGroup(ctx context.Context, control *Control, processId *uuid.UUID, witRefName *string, groupId *string) (*Control, error) {
-    if control == nil {
+func (client Client) CreateControlInGroup(ctx context.Context, args CreateControlInGroupArgs) (*Control, error) {
+    if args.Control == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "control"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
-    if groupId == nil || *groupId == "" {
+    routeValues["witRefName"] = *args.WitRefName
+    if args.GroupId == nil || *args.GroupId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
     }
-    routeValues["groupId"] = *groupId
+    routeValues["groupId"] = *args.GroupId
 
-    body, marshalErr := json.Marshal(*control)
+    body, marshalErr := json.Marshal(*args.Control)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -217,41 +239,46 @@ func (client Client) CreateControlInGroup(ctx context.Context, control *Control,
     return &responseValue, err
 }
 
+// Arguments for the CreateControlInGroup function
+type CreateControlInGroupArgs struct {
+    // (required) The control.
+    Control *Control
+    // (required) The ID of the process.
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type.
+    WitRefName *string
+    // (required) The ID of the group to add the control to.
+    GroupId *string
+}
+
 // [Preview API] Moves a control to a specified group.
-// ctx
-// control (required): The control.
-// processId (required): The ID of the process.
-// witRefName (required): The reference name of the work item type.
-// groupId (required): The ID of the group to move the control to.
-// controlId (required): The ID of the control.
-// removeFromGroupId (optional): The group ID to remove the control from.
-func (client Client) MoveControlToGroup(ctx context.Context, control *Control, processId *uuid.UUID, witRefName *string, groupId *string, controlId *string, removeFromGroupId *string) (*Control, error) {
-    if control == nil {
+func (client Client) MoveControlToGroup(ctx context.Context, args MoveControlToGroupArgs) (*Control, error) {
+    if args.Control == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "control"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
-    if groupId == nil || *groupId == "" {
+    routeValues["witRefName"] = *args.WitRefName
+    if args.GroupId == nil || *args.GroupId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
     }
-    routeValues["groupId"] = *groupId
-    if controlId == nil || *controlId == "" {
+    routeValues["groupId"] = *args.GroupId
+    if args.ControlId == nil || *args.ControlId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "controlId"} 
     }
-    routeValues["controlId"] = *controlId
+    routeValues["controlId"] = *args.ControlId
 
     queryParams := url.Values{}
-    if removeFromGroupId != nil {
-        queryParams.Add("removeFromGroupId", *removeFromGroupId)
+    if args.RemoveFromGroupId != nil {
+        queryParams.Add("removeFromGroupId", *args.RemoveFromGroupId)
     }
-    body, marshalErr := json.Marshal(*control)
+    body, marshalErr := json.Marshal(*args.Control)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -266,30 +293,41 @@ func (client Client) MoveControlToGroup(ctx context.Context, control *Control, p
     return &responseValue, err
 }
 
+// Arguments for the MoveControlToGroup function
+type MoveControlToGroupArgs struct {
+    // (required) The control.
+    Control *Control
+    // (required) The ID of the process.
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type.
+    WitRefName *string
+    // (required) The ID of the group to move the control to.
+    GroupId *string
+    // (required) The ID of the control.
+    ControlId *string
+    // (optional) The group ID to remove the control from.
+    RemoveFromGroupId *string
+}
+
 // [Preview API] Removes a control from the work item form.
-// ctx
-// processId (required): The ID of the process.
-// witRefName (required): The reference name of the work item type.
-// groupId (required): The ID of the group.
-// controlId (required): The ID of the control to remove.
-func (client Client) RemoveControlFromGroup(ctx context.Context, processId *uuid.UUID, witRefName *string, groupId *string, controlId *string) error {
+func (client Client) RemoveControlFromGroup(ctx context.Context, args RemoveControlFromGroupArgs) error {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
-    if groupId == nil || *groupId == "" {
+    routeValues["witRefName"] = *args.WitRefName
+    if args.GroupId == nil || *args.GroupId == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
     }
-    routeValues["groupId"] = *groupId
-    if controlId == nil || *controlId == "" {
+    routeValues["groupId"] = *args.GroupId
+    if args.ControlId == nil || *args.ControlId == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "controlId"} 
     }
-    routeValues["controlId"] = *controlId
+    routeValues["controlId"] = *args.ControlId
 
     locationId, _ := uuid.Parse("1f59b363-a2d0-4b7e-9bc6-eb9f5f3f0e58")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -300,36 +338,42 @@ func (client Client) RemoveControlFromGroup(ctx context.Context, processId *uuid
     return nil
 }
 
+// Arguments for the RemoveControlFromGroup function
+type RemoveControlFromGroupArgs struct {
+    // (required) The ID of the process.
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type.
+    WitRefName *string
+    // (required) The ID of the group.
+    GroupId *string
+    // (required) The ID of the control to remove.
+    ControlId *string
+}
+
 // [Preview API] Updates a control on the work item form.
-// ctx
-// control (required): The updated control.
-// processId (required): The ID of the process.
-// witRefName (required): The reference name of the work item type.
-// groupId (required): The ID of the group.
-// controlId (required): The ID of the control.
-func (client Client) UpdateControl(ctx context.Context, control *Control, processId *uuid.UUID, witRefName *string, groupId *string, controlId *string) (*Control, error) {
-    if control == nil {
+func (client Client) UpdateControl(ctx context.Context, args UpdateControlArgs) (*Control, error) {
+    if args.Control == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "control"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
-    if groupId == nil || *groupId == "" {
+    routeValues["witRefName"] = *args.WitRefName
+    if args.GroupId == nil || *args.GroupId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
     }
-    routeValues["groupId"] = *groupId
-    if controlId == nil || *controlId == "" {
+    routeValues["groupId"] = *args.GroupId
+    if args.ControlId == nil || *args.ControlId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "controlId"} 
     }
-    routeValues["controlId"] = *controlId
+    routeValues["controlId"] = *args.ControlId
 
-    body, marshalErr := json.Marshal(*control)
+    body, marshalErr := json.Marshal(*args.Control)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -344,26 +388,36 @@ func (client Client) UpdateControl(ctx context.Context, control *Control, proces
     return &responseValue, err
 }
 
+// Arguments for the UpdateControl function
+type UpdateControlArgs struct {
+    // (required) The updated control.
+    Control *Control
+    // (required) The ID of the process.
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type.
+    WitRefName *string
+    // (required) The ID of the group.
+    GroupId *string
+    // (required) The ID of the control.
+    ControlId *string
+}
+
 // [Preview API] Adds a field to a work item type.
-// ctx
-// field (required)
-// processId (required): The ID of the process.
-// witRefName (required): The reference name of the work item type.
-func (client Client) AddFieldToWorkItemType(ctx context.Context, field *AddProcessWorkItemTypeFieldRequest, processId *uuid.UUID, witRefName *string) (*ProcessWorkItemTypeField, error) {
-    if field == nil {
+func (client Client) AddFieldToWorkItemType(ctx context.Context, args AddFieldToWorkItemTypeArgs) (*ProcessWorkItemTypeField, error) {
+    if args.Field == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "field"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
+    routeValues["witRefName"] = *args.WitRefName
 
-    body, marshalErr := json.Marshal(*field)
+    body, marshalErr := json.Marshal(*args.Field)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -378,20 +432,27 @@ func (client Client) AddFieldToWorkItemType(ctx context.Context, field *AddProce
     return &responseValue, err
 }
 
+// Arguments for the AddFieldToWorkItemType function
+type AddFieldToWorkItemTypeArgs struct {
+    // (required)
+    Field *AddProcessWorkItemTypeFieldRequest
+    // (required) The ID of the process.
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type.
+    WitRefName *string
+}
+
 // [Preview API] Returns a list of all fields in a work item type.
-// ctx
-// processId (required): The ID of the process.
-// witRefName (required): The reference name of the work item type.
-func (client Client) GetAllWorkItemTypeFields(ctx context.Context, processId *uuid.UUID, witRefName *string) (*[]ProcessWorkItemTypeField, error) {
+func (client Client) GetAllWorkItemTypeFields(ctx context.Context, args GetAllWorkItemTypeFieldsArgs) (*[]ProcessWorkItemTypeField, error) {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
+    routeValues["witRefName"] = *args.WitRefName
 
     locationId, _ := uuid.Parse("bc0ad8dc-e3f3-46b0-b06c-5bf861793196")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/json", nil)
@@ -404,25 +465,29 @@ func (client Client) GetAllWorkItemTypeFields(ctx context.Context, processId *uu
     return &responseValue, err
 }
 
+// Arguments for the GetAllWorkItemTypeFields function
+type GetAllWorkItemTypeFieldsArgs struct {
+    // (required) The ID of the process.
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type.
+    WitRefName *string
+}
+
 // [Preview API] Returns a field in a work item type.
-// ctx
-// processId (required): The ID of the process.
-// witRefName (required): The reference name of the work item type.
-// fieldRefName (required): The reference name of the field.
-func (client Client) GetWorkItemTypeField(ctx context.Context, processId *uuid.UUID, witRefName *string, fieldRefName *string) (*ProcessWorkItemTypeField, error) {
+func (client Client) GetWorkItemTypeField(ctx context.Context, args GetWorkItemTypeFieldArgs) (*ProcessWorkItemTypeField, error) {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
-    if fieldRefName == nil || *fieldRefName == "" {
+    routeValues["witRefName"] = *args.WitRefName
+    if args.FieldRefName == nil || *args.FieldRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "fieldRefName"} 
     }
-    routeValues["fieldRefName"] = *fieldRefName
+    routeValues["fieldRefName"] = *args.FieldRefName
 
     locationId, _ := uuid.Parse("bc0ad8dc-e3f3-46b0-b06c-5bf861793196")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/json", nil)
@@ -435,25 +500,31 @@ func (client Client) GetWorkItemTypeField(ctx context.Context, processId *uuid.U
     return &responseValue, err
 }
 
+// Arguments for the GetWorkItemTypeField function
+type GetWorkItemTypeFieldArgs struct {
+    // (required) The ID of the process.
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type.
+    WitRefName *string
+    // (required) The reference name of the field.
+    FieldRefName *string
+}
+
 // [Preview API] Removes a field from a work item type. Does not permanently delete the field.
-// ctx
-// processId (required): The ID of the process.
-// witRefName (required): The reference name of the work item type.
-// fieldRefName (required): The reference name of the field.
-func (client Client) RemoveWorkItemTypeField(ctx context.Context, processId *uuid.UUID, witRefName *string, fieldRefName *string) error {
+func (client Client) RemoveWorkItemTypeField(ctx context.Context, args RemoveWorkItemTypeFieldArgs) error {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
-    if fieldRefName == nil || *fieldRefName == "" {
+    routeValues["witRefName"] = *args.WitRefName
+    if args.FieldRefName == nil || *args.FieldRefName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "fieldRefName"} 
     }
-    routeValues["fieldRefName"] = *fieldRefName
+    routeValues["fieldRefName"] = *args.FieldRefName
 
     locationId, _ := uuid.Parse("bc0ad8dc-e3f3-46b0-b06c-5bf861793196")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/json", nil)
@@ -464,31 +535,36 @@ func (client Client) RemoveWorkItemTypeField(ctx context.Context, processId *uui
     return nil
 }
 
+// Arguments for the RemoveWorkItemTypeField function
+type RemoveWorkItemTypeFieldArgs struct {
+    // (required) The ID of the process.
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type.
+    WitRefName *string
+    // (required) The reference name of the field.
+    FieldRefName *string
+}
+
 // [Preview API] Updates a field in a work item type.
-// ctx
-// field (required)
-// processId (required): The ID of the process.
-// witRefName (required): The reference name of the work item type.
-// fieldRefName (required): The reference name of the field.
-func (client Client) UpdateWorkItemTypeField(ctx context.Context, field *UpdateProcessWorkItemTypeFieldRequest, processId *uuid.UUID, witRefName *string, fieldRefName *string) (*ProcessWorkItemTypeField, error) {
-    if field == nil {
+func (client Client) UpdateWorkItemTypeField(ctx context.Context, args UpdateWorkItemTypeFieldArgs) (*ProcessWorkItemTypeField, error) {
+    if args.Field == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "field"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
-    if fieldRefName == nil || *fieldRefName == "" {
+    routeValues["witRefName"] = *args.WitRefName
+    if args.FieldRefName == nil || *args.FieldRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "fieldRefName"} 
     }
-    routeValues["fieldRefName"] = *fieldRefName
+    routeValues["fieldRefName"] = *args.FieldRefName
 
-    body, marshalErr := json.Marshal(*field)
+    body, marshalErr := json.Marshal(*args.Field)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -503,36 +579,42 @@ func (client Client) UpdateWorkItemTypeField(ctx context.Context, field *UpdateP
     return &responseValue, err
 }
 
+// Arguments for the UpdateWorkItemTypeField function
+type UpdateWorkItemTypeFieldArgs struct {
+    // (required)
+    Field *UpdateProcessWorkItemTypeFieldRequest
+    // (required) The ID of the process.
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type.
+    WitRefName *string
+    // (required) The reference name of the field.
+    FieldRefName *string
+}
+
 // [Preview API] Adds a group to the work item form.
-// ctx
-// group (required): The group.
-// processId (required): The ID of the process.
-// witRefName (required): The reference name of the work item type.
-// pageId (required): The ID of the page to add the group to.
-// sectionId (required): The ID of the section to add the group to.
-func (client Client) AddGroup(ctx context.Context, group *Group, processId *uuid.UUID, witRefName *string, pageId *string, sectionId *string) (*Group, error) {
-    if group == nil {
+func (client Client) AddGroup(ctx context.Context, args AddGroupArgs) (*Group, error) {
+    if args.Group == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "group"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
-    if pageId == nil || *pageId == "" {
+    routeValues["witRefName"] = *args.WitRefName
+    if args.PageId == nil || *args.PageId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "pageId"} 
     }
-    routeValues["pageId"] = *pageId
-    if sectionId == nil || *sectionId == "" {
+    routeValues["pageId"] = *args.PageId
+    if args.SectionId == nil || *args.SectionId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "sectionId"} 
     }
-    routeValues["sectionId"] = *sectionId
+    routeValues["sectionId"] = *args.SectionId
 
-    body, marshalErr := json.Marshal(*group)
+    body, marshalErr := json.Marshal(*args.Group)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -547,52 +629,57 @@ func (client Client) AddGroup(ctx context.Context, group *Group, processId *uuid
     return &responseValue, err
 }
 
+// Arguments for the AddGroup function
+type AddGroupArgs struct {
+    // (required) The group.
+    Group *Group
+    // (required) The ID of the process.
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type.
+    WitRefName *string
+    // (required) The ID of the page to add the group to.
+    PageId *string
+    // (required) The ID of the section to add the group to.
+    SectionId *string
+}
+
 // [Preview API] Moves a group to a different page and section.
-// ctx
-// group (required): The updated group.
-// processId (required): The ID of the process.
-// witRefName (required): The reference name of the work item type.
-// pageId (required): The ID of the page the group is in.
-// sectionId (required): The ID of the section the group is i.n
-// groupId (required): The ID of the group.
-// removeFromPageId (required): ID of the page to remove the group from.
-// removeFromSectionId (required): ID of the section to remove the group from.
-func (client Client) MoveGroupToPage(ctx context.Context, group *Group, processId *uuid.UUID, witRefName *string, pageId *string, sectionId *string, groupId *string, removeFromPageId *string, removeFromSectionId *string) (*Group, error) {
-    if group == nil {
+func (client Client) MoveGroupToPage(ctx context.Context, args MoveGroupToPageArgs) (*Group, error) {
+    if args.Group == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "group"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
-    if pageId == nil || *pageId == "" {
+    routeValues["witRefName"] = *args.WitRefName
+    if args.PageId == nil || *args.PageId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "pageId"} 
     }
-    routeValues["pageId"] = *pageId
-    if sectionId == nil || *sectionId == "" {
+    routeValues["pageId"] = *args.PageId
+    if args.SectionId == nil || *args.SectionId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "sectionId"} 
     }
-    routeValues["sectionId"] = *sectionId
-    if groupId == nil || *groupId == "" {
+    routeValues["sectionId"] = *args.SectionId
+    if args.GroupId == nil || *args.GroupId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
     }
-    routeValues["groupId"] = *groupId
+    routeValues["groupId"] = *args.GroupId
 
     queryParams := url.Values{}
-    if removeFromPageId == nil {
+    if args.RemoveFromPageId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "removeFromPageId"}
     }
-    queryParams.Add("removeFromPageId", *removeFromPageId)
-    if removeFromSectionId == nil {
+    queryParams.Add("removeFromPageId", *args.RemoveFromPageId)
+    if args.RemoveFromSectionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "removeFromSectionId"}
     }
-    queryParams.Add("removeFromSectionId", *removeFromSectionId)
-    body, marshalErr := json.Marshal(*group)
+    queryParams.Add("removeFromSectionId", *args.RemoveFromSectionId)
+    body, marshalErr := json.Marshal(*args.Group)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -605,49 +692,61 @@ func (client Client) MoveGroupToPage(ctx context.Context, group *Group, processI
     var responseValue Group
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the MoveGroupToPage function
+type MoveGroupToPageArgs struct {
+    // (required) The updated group.
+    Group *Group
+    // (required) The ID of the process.
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type.
+    WitRefName *string
+    // (required) The ID of the page the group is in.
+    PageId *string
+    // (required) The ID of the section the group is i.n
+    SectionId *string
+    // (required) The ID of the group.
+    GroupId *string
+    // (required) ID of the page to remove the group from.
+    RemoveFromPageId *string
+    // (required) ID of the section to remove the group from.
+    RemoveFromSectionId *string
 }
 
 // [Preview API] Moves a group to a different section.
-// ctx
-// group (required): The updated group.
-// processId (required): The ID of the process.
-// witRefName (required): The reference name of the work item type.
-// pageId (required): The ID of the page the group is in.
-// sectionId (required): The ID of the section the group is in.
-// groupId (required): The ID of the group.
-// removeFromSectionId (required): ID of the section to remove the group from.
-func (client Client) MoveGroupToSection(ctx context.Context, group *Group, processId *uuid.UUID, witRefName *string, pageId *string, sectionId *string, groupId *string, removeFromSectionId *string) (*Group, error) {
-    if group == nil {
+func (client Client) MoveGroupToSection(ctx context.Context, args MoveGroupToSectionArgs) (*Group, error) {
+    if args.Group == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "group"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
-    if pageId == nil || *pageId == "" {
+    routeValues["witRefName"] = *args.WitRefName
+    if args.PageId == nil || *args.PageId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "pageId"} 
     }
-    routeValues["pageId"] = *pageId
-    if sectionId == nil || *sectionId == "" {
+    routeValues["pageId"] = *args.PageId
+    if args.SectionId == nil || *args.SectionId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "sectionId"} 
     }
-    routeValues["sectionId"] = *sectionId
-    if groupId == nil || *groupId == "" {
+    routeValues["sectionId"] = *args.SectionId
+    if args.GroupId == nil || *args.GroupId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
     }
-    routeValues["groupId"] = *groupId
+    routeValues["groupId"] = *args.GroupId
 
     queryParams := url.Values{}
-    if removeFromSectionId == nil {
+    if args.RemoveFromSectionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "removeFromSectionId"}
     }
-    queryParams.Add("removeFromSectionId", *removeFromSectionId)
-    body, marshalErr := json.Marshal(*group)
+    queryParams.Add("removeFromSectionId", *args.RemoveFromSectionId)
+    body, marshalErr := json.Marshal(*args.Group)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -662,35 +761,47 @@ func (client Client) MoveGroupToSection(ctx context.Context, group *Group, proce
     return &responseValue, err
 }
 
+// Arguments for the MoveGroupToSection function
+type MoveGroupToSectionArgs struct {
+    // (required) The updated group.
+    Group *Group
+    // (required) The ID of the process.
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type.
+    WitRefName *string
+    // (required) The ID of the page the group is in.
+    PageId *string
+    // (required) The ID of the section the group is in.
+    SectionId *string
+    // (required) The ID of the group.
+    GroupId *string
+    // (required) ID of the section to remove the group from.
+    RemoveFromSectionId *string
+}
+
 // [Preview API] Removes a group from the work item form.
-// ctx
-// processId (required): The ID of the process
-// witRefName (required): The reference name of the work item type
-// pageId (required): The ID of the page the group is in
-// sectionId (required): The ID of the section to the group is in
-// groupId (required): The ID of the group
-func (client Client) RemoveGroup(ctx context.Context, processId *uuid.UUID, witRefName *string, pageId *string, sectionId *string, groupId *string) error {
+func (client Client) RemoveGroup(ctx context.Context, args RemoveGroupArgs) error {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
-    if pageId == nil || *pageId == "" {
+    routeValues["witRefName"] = *args.WitRefName
+    if args.PageId == nil || *args.PageId == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "pageId"} 
     }
-    routeValues["pageId"] = *pageId
-    if sectionId == nil || *sectionId == "" {
+    routeValues["pageId"] = *args.PageId
+    if args.SectionId == nil || *args.SectionId == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "sectionId"} 
     }
-    routeValues["sectionId"] = *sectionId
-    if groupId == nil || *groupId == "" {
+    routeValues["sectionId"] = *args.SectionId
+    if args.GroupId == nil || *args.GroupId == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
     }
-    routeValues["groupId"] = *groupId
+    routeValues["groupId"] = *args.GroupId
 
     locationId, _ := uuid.Parse("766e44e1-36a8-41d7-9050-c343ff02f7a5")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -701,41 +812,48 @@ func (client Client) RemoveGroup(ctx context.Context, processId *uuid.UUID, witR
     return nil
 }
 
+// Arguments for the RemoveGroup function
+type RemoveGroupArgs struct {
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type
+    WitRefName *string
+    // (required) The ID of the page the group is in
+    PageId *string
+    // (required) The ID of the section to the group is in
+    SectionId *string
+    // (required) The ID of the group
+    GroupId *string
+}
+
 // [Preview API] Updates a group in the work item form.
-// ctx
-// group (required): The updated group.
-// processId (required): The ID of the process.
-// witRefName (required): The reference name of the work item type.
-// pageId (required): The ID of the page the group is in.
-// sectionId (required): The ID of the section the group is in.
-// groupId (required): The ID of the group.
-func (client Client) UpdateGroup(ctx context.Context, group *Group, processId *uuid.UUID, witRefName *string, pageId *string, sectionId *string, groupId *string) (*Group, error) {
-    if group == nil {
+func (client Client) UpdateGroup(ctx context.Context, args UpdateGroupArgs) (*Group, error) {
+    if args.Group == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "group"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
-    if pageId == nil || *pageId == "" {
+    routeValues["witRefName"] = *args.WitRefName
+    if args.PageId == nil || *args.PageId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "pageId"} 
     }
-    routeValues["pageId"] = *pageId
-    if sectionId == nil || *sectionId == "" {
+    routeValues["pageId"] = *args.PageId
+    if args.SectionId == nil || *args.SectionId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "sectionId"} 
     }
-    routeValues["sectionId"] = *sectionId
-    if groupId == nil || *groupId == "" {
+    routeValues["sectionId"] = *args.SectionId
+    if args.GroupId == nil || *args.GroupId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"} 
     }
-    routeValues["groupId"] = *groupId
+    routeValues["groupId"] = *args.GroupId
 
-    body, marshalErr := json.Marshal(*group)
+    body, marshalErr := json.Marshal(*args.Group)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -750,20 +868,33 @@ func (client Client) UpdateGroup(ctx context.Context, group *Group, processId *u
     return &responseValue, err
 }
 
+// Arguments for the UpdateGroup function
+type UpdateGroupArgs struct {
+    // (required) The updated group.
+    Group *Group
+    // (required) The ID of the process.
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type.
+    WitRefName *string
+    // (required) The ID of the page the group is in.
+    PageId *string
+    // (required) The ID of the section the group is in.
+    SectionId *string
+    // (required) The ID of the group.
+    GroupId *string
+}
+
 // [Preview API] Gets the form layout.
-// ctx
-// processId (required): The ID of the process.
-// witRefName (required): The reference name of the work item type.
-func (client Client) GetFormLayout(ctx context.Context, processId *uuid.UUID, witRefName *string) (*FormLayout, error) {
+func (client Client) GetFormLayout(ctx context.Context, args GetFormLayoutArgs) (*FormLayout, error) {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
+    routeValues["witRefName"] = *args.WitRefName
 
     locationId, _ := uuid.Parse("fa8646eb-43cd-4b71-9564-40106fd63e40")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -776,14 +907,20 @@ func (client Client) GetFormLayout(ctx context.Context, processId *uuid.UUID, wi
     return &responseValue, err
 }
 
+// Arguments for the GetFormLayout function
+type GetFormLayoutArgs struct {
+    // (required) The ID of the process.
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type.
+    WitRefName *string
+}
+
 // [Preview API] Creates a picklist.
-// ctx
-// picklist (required): Picklist
-func (client Client) CreateList(ctx context.Context, picklist *PickList) (*PickList, error) {
-    if picklist == nil {
+func (client Client) CreateList(ctx context.Context, args CreateListArgs) (*PickList, error) {
+    if args.Picklist == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "picklist"}
     }
-    body, marshalErr := json.Marshal(*picklist)
+    body, marshalErr := json.Marshal(*args.Picklist)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -798,15 +935,19 @@ func (client Client) CreateList(ctx context.Context, picklist *PickList) (*PickL
     return &responseValue, err
 }
 
+// Arguments for the CreateList function
+type CreateListArgs struct {
+    // (required) Picklist
+    Picklist *PickList
+}
+
 // [Preview API] Removes a picklist.
-// ctx
-// listId (required): The ID of the list
-func (client Client) DeleteList(ctx context.Context, listId *uuid.UUID) error {
+func (client Client) DeleteList(ctx context.Context, args DeleteListArgs) error {
     routeValues := make(map[string]string)
-    if listId == nil {
+    if args.ListId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "listId"} 
     }
-    routeValues["listId"] = (*listId).String()
+    routeValues["listId"] = (*args.ListId).String()
 
     locationId, _ := uuid.Parse("01e15468-e27c-4e20-a974-bd957dcccebc")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -817,15 +958,19 @@ func (client Client) DeleteList(ctx context.Context, listId *uuid.UUID) error {
     return nil
 }
 
+// Arguments for the DeleteList function
+type DeleteListArgs struct {
+    // (required) The ID of the list
+    ListId *uuid.UUID
+}
+
 // [Preview API] Returns a picklist.
-// ctx
-// listId (required): The ID of the list
-func (client Client) GetList(ctx context.Context, listId *uuid.UUID) (*PickList, error) {
+func (client Client) GetList(ctx context.Context, args GetListArgs) (*PickList, error) {
     routeValues := make(map[string]string)
-    if listId == nil {
+    if args.ListId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "listId"} 
     }
-    routeValues["listId"] = (*listId).String()
+    routeValues["listId"] = (*args.ListId).String()
 
     locationId, _ := uuid.Parse("01e15468-e27c-4e20-a974-bd957dcccebc")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -838,9 +983,14 @@ func (client Client) GetList(ctx context.Context, listId *uuid.UUID) (*PickList,
     return &responseValue, err
 }
 
+// Arguments for the GetList function
+type GetListArgs struct {
+    // (required) The ID of the list
+    ListId *uuid.UUID
+}
+
 // [Preview API] Returns meta data of the picklist.
-// ctx
-func (client Client) GetListsMetadata(ctx context.Context, ) (*[]PickListMetadata, error) {
+func (client Client) GetListsMetadata(ctx context.Context, args GetListsMetadataArgs) (*[]PickListMetadata, error) {
     locationId, _ := uuid.Parse("01e15468-e27c-4e20-a974-bd957dcccebc")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, nil, nil, "", "application/json", nil)
     if err != nil {
@@ -852,21 +1002,22 @@ func (client Client) GetListsMetadata(ctx context.Context, ) (*[]PickListMetadat
     return &responseValue, err
 }
 
+// Arguments for the GetListsMetadata function
+type GetListsMetadataArgs struct {
+}
+
 // [Preview API] Updates a list.
-// ctx
-// picklist (required)
-// listId (required): The ID of the list
-func (client Client) UpdateList(ctx context.Context, picklist *PickList, listId *uuid.UUID) (*PickList, error) {
-    if picklist == nil {
+func (client Client) UpdateList(ctx context.Context, args UpdateListArgs) (*PickList, error) {
+    if args.Picklist == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "picklist"}
     }
     routeValues := make(map[string]string)
-    if listId == nil {
+    if args.ListId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "listId"} 
     }
-    routeValues["listId"] = (*listId).String()
+    routeValues["listId"] = (*args.ListId).String()
 
-    body, marshalErr := json.Marshal(*picklist)
+    body, marshalErr := json.Marshal(*args.Picklist)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -881,26 +1032,30 @@ func (client Client) UpdateList(ctx context.Context, picklist *PickList, listId 
     return &responseValue, err
 }
 
+// Arguments for the UpdateList function
+type UpdateListArgs struct {
+    // (required)
+    Picklist *PickList
+    // (required) The ID of the list
+    ListId *uuid.UUID
+}
+
 // [Preview API] Adds a page to the work item form.
-// ctx
-// page (required): The page.
-// processId (required): The ID of the process.
-// witRefName (required): The reference name of the work item type.
-func (client Client) AddPage(ctx context.Context, page *Page, processId *uuid.UUID, witRefName *string) (*Page, error) {
-    if page == nil {
+func (client Client) AddPage(ctx context.Context, args AddPageArgs) (*Page, error) {
+    if args.Page == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "page"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
+    routeValues["witRefName"] = *args.WitRefName
 
-    body, marshalErr := json.Marshal(*page)
+    body, marshalErr := json.Marshal(*args.Page)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -915,25 +1070,31 @@ func (client Client) AddPage(ctx context.Context, page *Page, processId *uuid.UU
     return &responseValue, err
 }
 
+// Arguments for the AddPage function
+type AddPageArgs struct {
+    // (required) The page.
+    Page *Page
+    // (required) The ID of the process.
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type.
+    WitRefName *string
+}
+
 // [Preview API] Removes a page from the work item form
-// ctx
-// processId (required): The ID of the process
-// witRefName (required): The reference name of the work item type
-// pageId (required): The ID of the page
-func (client Client) RemovePage(ctx context.Context, processId *uuid.UUID, witRefName *string, pageId *string) error {
+func (client Client) RemovePage(ctx context.Context, args RemovePageArgs) error {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
-    if pageId == nil || *pageId == "" {
+    routeValues["witRefName"] = *args.WitRefName
+    if args.PageId == nil || *args.PageId == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "pageId"} 
     }
-    routeValues["pageId"] = *pageId
+    routeValues["pageId"] = *args.PageId
 
     locationId, _ := uuid.Parse("1cc7b29f-6697-4d9d-b0a1-2650d3e1d584")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -944,26 +1105,32 @@ func (client Client) RemovePage(ctx context.Context, processId *uuid.UUID, witRe
     return nil
 }
 
+// Arguments for the RemovePage function
+type RemovePageArgs struct {
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type
+    WitRefName *string
+    // (required) The ID of the page
+    PageId *string
+}
+
 // [Preview API] Updates a page on the work item form
-// ctx
-// page (required): The page
-// processId (required): The ID of the process
-// witRefName (required): The reference name of the work item type
-func (client Client) UpdatePage(ctx context.Context, page *Page, processId *uuid.UUID, witRefName *string) (*Page, error) {
-    if page == nil {
+func (client Client) UpdatePage(ctx context.Context, args UpdatePageArgs) (*Page, error) {
+    if args.Page == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "page"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
+    routeValues["witRefName"] = *args.WitRefName
 
-    body, marshalErr := json.Marshal(*page)
+    body, marshalErr := json.Marshal(*args.Page)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -978,14 +1145,22 @@ func (client Client) UpdatePage(ctx context.Context, page *Page, processId *uuid
     return &responseValue, err
 }
 
+// Arguments for the UpdatePage function
+type UpdatePageArgs struct {
+    // (required) The page
+    Page *Page
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type
+    WitRefName *string
+}
+
 // [Preview API] Creates a process.
-// ctx
-// createRequest (required): CreateProcessModel.
-func (client Client) CreateNewProcess(ctx context.Context, createRequest *CreateProcessModel) (*ProcessInfo, error) {
-    if createRequest == nil {
+func (client Client) CreateNewProcess(ctx context.Context, args CreateNewProcessArgs) (*ProcessInfo, error) {
+    if args.CreateRequest == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "createRequest"}
     }
-    body, marshalErr := json.Marshal(*createRequest)
+    body, marshalErr := json.Marshal(*args.CreateRequest)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1000,15 +1175,19 @@ func (client Client) CreateNewProcess(ctx context.Context, createRequest *Create
     return &responseValue, err
 }
 
+// Arguments for the CreateNewProcess function
+type CreateNewProcessArgs struct {
+    // (required) CreateProcessModel.
+    CreateRequest *CreateProcessModel
+}
+
 // [Preview API] Removes a process of a specific ID.
-// ctx
-// processTypeId (required)
-func (client Client) DeleteProcessById(ctx context.Context, processTypeId *uuid.UUID) error {
+func (client Client) DeleteProcessById(ctx context.Context, args DeleteProcessByIdArgs) error {
     routeValues := make(map[string]string)
-    if processTypeId == nil {
+    if args.ProcessTypeId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "processTypeId"} 
     }
-    routeValues["processTypeId"] = (*processTypeId).String()
+    routeValues["processTypeId"] = (*args.ProcessTypeId).String()
 
     locationId, _ := uuid.Parse("02cc6a73-5cfb-427d-8c8e-b49fb086e8af")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/json", nil)
@@ -1019,21 +1198,24 @@ func (client Client) DeleteProcessById(ctx context.Context, processTypeId *uuid.
     return nil
 }
 
+// Arguments for the DeleteProcessById function
+type DeleteProcessByIdArgs struct {
+    // (required)
+    ProcessTypeId *uuid.UUID
+}
+
 // [Preview API] Edit a process of a specific ID.
-// ctx
-// updateRequest (required)
-// processTypeId (required)
-func (client Client) EditProcess(ctx context.Context, updateRequest *UpdateProcessModel, processTypeId *uuid.UUID) (*ProcessInfo, error) {
-    if updateRequest == nil {
+func (client Client) EditProcess(ctx context.Context, args EditProcessArgs) (*ProcessInfo, error) {
+    if args.UpdateRequest == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "updateRequest"}
     }
     routeValues := make(map[string]string)
-    if processTypeId == nil {
+    if args.ProcessTypeId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processTypeId"} 
     }
-    routeValues["processTypeId"] = (*processTypeId).String()
+    routeValues["processTypeId"] = (*args.ProcessTypeId).String()
 
-    body, marshalErr := json.Marshal(*updateRequest)
+    body, marshalErr := json.Marshal(*args.UpdateRequest)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1048,13 +1230,19 @@ func (client Client) EditProcess(ctx context.Context, updateRequest *UpdateProce
     return &responseValue, err
 }
 
+// Arguments for the EditProcess function
+type EditProcessArgs struct {
+    // (required)
+    UpdateRequest *UpdateProcessModel
+    // (required)
+    ProcessTypeId *uuid.UUID
+}
+
 // [Preview API] Get list of all processes including system and inherited.
-// ctx
-// expand (optional)
-func (client Client) GetListOfProcesses(ctx context.Context, expand *GetProcessExpandLevel) (*[]ProcessInfo, error) {
+func (client Client) GetListOfProcesses(ctx context.Context, args GetListOfProcessesArgs) (*[]ProcessInfo, error) {
     queryParams := url.Values{}
-    if expand != nil {
-        queryParams.Add("$expand", string(*expand))
+    if args.Expand != nil {
+        queryParams.Add("$expand", string(*args.Expand))
     }
     locationId, _ := uuid.Parse("02cc6a73-5cfb-427d-8c8e-b49fb086e8af")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", nil, queryParams, nil, "", "application/json", nil)
@@ -1067,20 +1255,23 @@ func (client Client) GetListOfProcesses(ctx context.Context, expand *GetProcessE
     return &responseValue, err
 }
 
+// Arguments for the GetListOfProcesses function
+type GetListOfProcessesArgs struct {
+    // (optional)
+    Expand *GetProcessExpandLevel
+}
+
 // [Preview API] Get a single process of a specified ID.
-// ctx
-// processTypeId (required)
-// expand (optional)
-func (client Client) GetProcessByItsId(ctx context.Context, processTypeId *uuid.UUID, expand *GetProcessExpandLevel) (*ProcessInfo, error) {
+func (client Client) GetProcessByItsId(ctx context.Context, args GetProcessByItsIdArgs) (*ProcessInfo, error) {
     routeValues := make(map[string]string)
-    if processTypeId == nil {
+    if args.ProcessTypeId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processTypeId"} 
     }
-    routeValues["processTypeId"] = (*processTypeId).String()
+    routeValues["processTypeId"] = (*args.ProcessTypeId).String()
 
     queryParams := url.Values{}
-    if expand != nil {
-        queryParams.Add("$expand", string(*expand))
+    if args.Expand != nil {
+        queryParams.Add("$expand", string(*args.Expand))
     }
     locationId, _ := uuid.Parse("02cc6a73-5cfb-427d-8c8e-b49fb086e8af")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1093,26 +1284,30 @@ func (client Client) GetProcessByItsId(ctx context.Context, processTypeId *uuid.
     return &responseValue, err
 }
 
+// Arguments for the GetProcessByItsId function
+type GetProcessByItsIdArgs struct {
+    // (required)
+    ProcessTypeId *uuid.UUID
+    // (optional)
+    Expand *GetProcessExpandLevel
+}
+
 // [Preview API] Adds a rule to work item type in the process.
-// ctx
-// processRuleCreate (required)
-// processId (required): The ID of the process
-// witRefName (required): The reference name of the work item type
-func (client Client) AddProcessWorkItemTypeRule(ctx context.Context, processRuleCreate *CreateProcessRuleRequest, processId *uuid.UUID, witRefName *string) (*ProcessRule, error) {
-    if processRuleCreate == nil {
+func (client Client) AddProcessWorkItemTypeRule(ctx context.Context, args AddProcessWorkItemTypeRuleArgs) (*ProcessRule, error) {
+    if args.ProcessRuleCreate == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processRuleCreate"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
+    routeValues["witRefName"] = *args.WitRefName
 
-    body, marshalErr := json.Marshal(*processRuleCreate)
+    body, marshalErr := json.Marshal(*args.ProcessRuleCreate)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1127,25 +1322,31 @@ func (client Client) AddProcessWorkItemTypeRule(ctx context.Context, processRule
     return &responseValue, err
 }
 
+// Arguments for the AddProcessWorkItemTypeRule function
+type AddProcessWorkItemTypeRuleArgs struct {
+    // (required)
+    ProcessRuleCreate *CreateProcessRuleRequest
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type
+    WitRefName *string
+}
+
 // [Preview API] Removes a rule from the work item type in the process.
-// ctx
-// processId (required): The ID of the process
-// witRefName (required): The reference name of the work item type
-// ruleId (required): The ID of the rule
-func (client Client) DeleteProcessWorkItemTypeRule(ctx context.Context, processId *uuid.UUID, witRefName *string, ruleId *uuid.UUID) error {
+func (client Client) DeleteProcessWorkItemTypeRule(ctx context.Context, args DeleteProcessWorkItemTypeRuleArgs) error {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
-    if ruleId == nil {
+    routeValues["witRefName"] = *args.WitRefName
+    if args.RuleId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "ruleId"} 
     }
-    routeValues["ruleId"] = (*ruleId).String()
+    routeValues["ruleId"] = (*args.RuleId).String()
 
     locationId, _ := uuid.Parse("76fe3432-d825-479d-a5f6-983bbb78b4f3")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/json", nil)
@@ -1156,25 +1357,31 @@ func (client Client) DeleteProcessWorkItemTypeRule(ctx context.Context, processI
     return nil
 }
 
+// Arguments for the DeleteProcessWorkItemTypeRule function
+type DeleteProcessWorkItemTypeRuleArgs struct {
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type
+    WitRefName *string
+    // (required) The ID of the rule
+    RuleId *uuid.UUID
+}
+
 // [Preview API] Returns a single rule in the work item type of the process.
-// ctx
-// processId (required): The ID of the process
-// witRefName (required): The reference name of the work item type
-// ruleId (required): The ID of the rule
-func (client Client) GetProcessWorkItemTypeRule(ctx context.Context, processId *uuid.UUID, witRefName *string, ruleId *uuid.UUID) (*ProcessRule, error) {
+func (client Client) GetProcessWorkItemTypeRule(ctx context.Context, args GetProcessWorkItemTypeRuleArgs) (*ProcessRule, error) {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
-    if ruleId == nil {
+    routeValues["witRefName"] = *args.WitRefName
+    if args.RuleId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "ruleId"} 
     }
-    routeValues["ruleId"] = (*ruleId).String()
+    routeValues["ruleId"] = (*args.RuleId).String()
 
     locationId, _ := uuid.Parse("76fe3432-d825-479d-a5f6-983bbb78b4f3")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/json", nil)
@@ -1187,20 +1394,27 @@ func (client Client) GetProcessWorkItemTypeRule(ctx context.Context, processId *
     return &responseValue, err
 }
 
+// Arguments for the GetProcessWorkItemTypeRule function
+type GetProcessWorkItemTypeRuleArgs struct {
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type
+    WitRefName *string
+    // (required) The ID of the rule
+    RuleId *uuid.UUID
+}
+
 // [Preview API] Returns a list of all rules in the work item type of the process.
-// ctx
-// processId (required): The ID of the process
-// witRefName (required): The reference name of the work item type
-func (client Client) GetProcessWorkItemTypeRules(ctx context.Context, processId *uuid.UUID, witRefName *string) (*[]ProcessRule, error) {
+func (client Client) GetProcessWorkItemTypeRules(ctx context.Context, args GetProcessWorkItemTypeRulesArgs) (*[]ProcessRule, error) {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
+    routeValues["witRefName"] = *args.WitRefName
 
     locationId, _ := uuid.Parse("76fe3432-d825-479d-a5f6-983bbb78b4f3")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/json", nil)
@@ -1213,31 +1427,34 @@ func (client Client) GetProcessWorkItemTypeRules(ctx context.Context, processId 
     return &responseValue, err
 }
 
+// Arguments for the GetProcessWorkItemTypeRules function
+type GetProcessWorkItemTypeRulesArgs struct {
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type
+    WitRefName *string
+}
+
 // [Preview API] Updates a rule in the work item type of the process.
-// ctx
-// processRule (required)
-// processId (required): The ID of the process
-// witRefName (required): The reference name of the work item type
-// ruleId (required): The ID of the rule
-func (client Client) UpdateProcessWorkItemTypeRule(ctx context.Context, processRule *UpdateProcessRuleRequest, processId *uuid.UUID, witRefName *string, ruleId *uuid.UUID) (*ProcessRule, error) {
-    if processRule == nil {
+func (client Client) UpdateProcessWorkItemTypeRule(ctx context.Context, args UpdateProcessWorkItemTypeRuleArgs) (*ProcessRule, error) {
+    if args.ProcessRule == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processRule"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
-    if ruleId == nil {
+    routeValues["witRefName"] = *args.WitRefName
+    if args.RuleId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "ruleId"} 
     }
-    routeValues["ruleId"] = (*ruleId).String()
+    routeValues["ruleId"] = (*args.RuleId).String()
 
-    body, marshalErr := json.Marshal(*processRule)
+    body, marshalErr := json.Marshal(*args.ProcessRule)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1252,26 +1469,34 @@ func (client Client) UpdateProcessWorkItemTypeRule(ctx context.Context, processR
     return &responseValue, err
 }
 
+// Arguments for the UpdateProcessWorkItemTypeRule function
+type UpdateProcessWorkItemTypeRuleArgs struct {
+    // (required)
+    ProcessRule *UpdateProcessRuleRequest
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type
+    WitRefName *string
+    // (required) The ID of the rule
+    RuleId *uuid.UUID
+}
+
 // [Preview API] Creates a state definition in the work item type of the process.
-// ctx
-// stateModel (required)
-// processId (required): The ID of the process
-// witRefName (required): The reference name of the work item type
-func (client Client) CreateStateDefinition(ctx context.Context, stateModel *WorkItemStateInputModel, processId *uuid.UUID, witRefName *string) (*WorkItemStateResultModel, error) {
-    if stateModel == nil {
+func (client Client) CreateStateDefinition(ctx context.Context, args CreateStateDefinitionArgs) (*WorkItemStateResultModel, error) {
+    if args.StateModel == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "stateModel"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
+    routeValues["witRefName"] = *args.WitRefName
 
-    body, marshalErr := json.Marshal(*stateModel)
+    body, marshalErr := json.Marshal(*args.StateModel)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1286,25 +1511,31 @@ func (client Client) CreateStateDefinition(ctx context.Context, stateModel *Work
     return &responseValue, err
 }
 
+// Arguments for the CreateStateDefinition function
+type CreateStateDefinitionArgs struct {
+    // (required)
+    StateModel *WorkItemStateInputModel
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type
+    WitRefName *string
+}
+
 // [Preview API] Removes a state definition in the work item type of the process.
-// ctx
-// processId (required): ID of the process
-// witRefName (required): The reference name of the work item type
-// stateId (required): ID of the state
-func (client Client) DeleteStateDefinition(ctx context.Context, processId *uuid.UUID, witRefName *string, stateId *uuid.UUID) error {
+func (client Client) DeleteStateDefinition(ctx context.Context, args DeleteStateDefinitionArgs) error {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
-    if stateId == nil {
+    routeValues["witRefName"] = *args.WitRefName
+    if args.StateId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "stateId"} 
     }
-    routeValues["stateId"] = (*stateId).String()
+    routeValues["stateId"] = (*args.StateId).String()
 
     locationId, _ := uuid.Parse("31015d57-2dff-4a46-adb3-2fb4ee3dcec9")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -1315,25 +1546,31 @@ func (client Client) DeleteStateDefinition(ctx context.Context, processId *uuid.
     return nil
 }
 
+// Arguments for the DeleteStateDefinition function
+type DeleteStateDefinitionArgs struct {
+    // (required) ID of the process
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type
+    WitRefName *string
+    // (required) ID of the state
+    StateId *uuid.UUID
+}
+
 // [Preview API] Returns a single state definition in a work item type of the process.
-// ctx
-// processId (required): The ID of the process
-// witRefName (required): The reference name of the work item type
-// stateId (required): The ID of the state
-func (client Client) GetStateDefinition(ctx context.Context, processId *uuid.UUID, witRefName *string, stateId *uuid.UUID) (*WorkItemStateResultModel, error) {
+func (client Client) GetStateDefinition(ctx context.Context, args GetStateDefinitionArgs) (*WorkItemStateResultModel, error) {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
-    if stateId == nil {
+    routeValues["witRefName"] = *args.WitRefName
+    if args.StateId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "stateId"} 
     }
-    routeValues["stateId"] = (*stateId).String()
+    routeValues["stateId"] = (*args.StateId).String()
 
     locationId, _ := uuid.Parse("31015d57-2dff-4a46-adb3-2fb4ee3dcec9")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -1346,20 +1583,27 @@ func (client Client) GetStateDefinition(ctx context.Context, processId *uuid.UUI
     return &responseValue, err
 }
 
+// Arguments for the GetStateDefinition function
+type GetStateDefinitionArgs struct {
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type
+    WitRefName *string
+    // (required) The ID of the state
+    StateId *uuid.UUID
+}
+
 // [Preview API] Returns a list of all state definitions in a work item type of the process.
-// ctx
-// processId (required): The ID of the process
-// witRefName (required): The reference name of the work item type
-func (client Client) GetStateDefinitions(ctx context.Context, processId *uuid.UUID, witRefName *string) (*[]WorkItemStateResultModel, error) {
+func (client Client) GetStateDefinitions(ctx context.Context, args GetStateDefinitionsArgs) (*[]WorkItemStateResultModel, error) {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
+    routeValues["witRefName"] = *args.WitRefName
 
     locationId, _ := uuid.Parse("31015d57-2dff-4a46-adb3-2fb4ee3dcec9")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -1372,31 +1616,34 @@ func (client Client) GetStateDefinitions(ctx context.Context, processId *uuid.UU
     return &responseValue, err
 }
 
+// Arguments for the GetStateDefinitions function
+type GetStateDefinitionsArgs struct {
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type
+    WitRefName *string
+}
+
 // [Preview API] Hides a state definition in the work item type of the process.Only states with customizationType:System can be hidden.
-// ctx
-// hideStateModel (required)
-// processId (required): The ID of the process
-// witRefName (required): The reference name of the work item type
-// stateId (required): The ID of the state
-func (client Client) HideStateDefinition(ctx context.Context, hideStateModel *HideStateModel, processId *uuid.UUID, witRefName *string, stateId *uuid.UUID) (*WorkItemStateResultModel, error) {
-    if hideStateModel == nil {
+func (client Client) HideStateDefinition(ctx context.Context, args HideStateDefinitionArgs) (*WorkItemStateResultModel, error) {
+    if args.HideStateModel == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "hideStateModel"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
-    if stateId == nil {
+    routeValues["witRefName"] = *args.WitRefName
+    if args.StateId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "stateId"} 
     }
-    routeValues["stateId"] = (*stateId).String()
+    routeValues["stateId"] = (*args.StateId).String()
 
-    body, marshalErr := json.Marshal(*hideStateModel)
+    body, marshalErr := json.Marshal(*args.HideStateModel)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1411,31 +1658,38 @@ func (client Client) HideStateDefinition(ctx context.Context, hideStateModel *Hi
     return &responseValue, err
 }
 
+// Arguments for the HideStateDefinition function
+type HideStateDefinitionArgs struct {
+    // (required)
+    HideStateModel *HideStateModel
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type
+    WitRefName *string
+    // (required) The ID of the state
+    StateId *uuid.UUID
+}
+
 // [Preview API] Updates a given state definition in the work item type of the process.
-// ctx
-// stateModel (required)
-// processId (required): ID of the process
-// witRefName (required): The reference name of the work item type
-// stateId (required): ID of the state
-func (client Client) UpdateStateDefinition(ctx context.Context, stateModel *WorkItemStateInputModel, processId *uuid.UUID, witRefName *string, stateId *uuid.UUID) (*WorkItemStateResultModel, error) {
-    if stateModel == nil {
+func (client Client) UpdateStateDefinition(ctx context.Context, args UpdateStateDefinitionArgs) (*WorkItemStateResultModel, error) {
+    if args.StateModel == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "stateModel"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
-    if stateId == nil {
+    routeValues["witRefName"] = *args.WitRefName
+    if args.StateId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "stateId"} 
     }
-    routeValues["stateId"] = (*stateId).String()
+    routeValues["stateId"] = (*args.StateId).String()
 
-    body, marshalErr := json.Marshal(*stateModel)
+    body, marshalErr := json.Marshal(*args.StateModel)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1450,21 +1704,30 @@ func (client Client) UpdateStateDefinition(ctx context.Context, stateModel *Work
     return &responseValue, err
 }
 
+// Arguments for the UpdateStateDefinition function
+type UpdateStateDefinitionArgs struct {
+    // (required)
+    StateModel *WorkItemStateInputModel
+    // (required) ID of the process
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type
+    WitRefName *string
+    // (required) ID of the state
+    StateId *uuid.UUID
+}
+
 // [Preview API] Creates a work item type in the process.
-// ctx
-// workItemType (required)
-// processId (required): The ID of the process on which to create work item type.
-func (client Client) CreateProcessWorkItemType(ctx context.Context, workItemType *CreateProcessWorkItemTypeRequest, processId *uuid.UUID) (*ProcessWorkItemType, error) {
-    if workItemType == nil {
+func (client Client) CreateProcessWorkItemType(ctx context.Context, args CreateProcessWorkItemTypeArgs) (*ProcessWorkItemType, error) {
+    if args.WorkItemType == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "workItemType"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
+    routeValues["processId"] = (*args.ProcessId).String()
 
-    body, marshalErr := json.Marshal(*workItemType)
+    body, marshalErr := json.Marshal(*args.WorkItemType)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1479,20 +1742,25 @@ func (client Client) CreateProcessWorkItemType(ctx context.Context, workItemType
     return &responseValue, err
 }
 
+// Arguments for the CreateProcessWorkItemType function
+type CreateProcessWorkItemTypeArgs struct {
+    // (required)
+    WorkItemType *CreateProcessWorkItemTypeRequest
+    // (required) The ID of the process on which to create work item type.
+    ProcessId *uuid.UUID
+}
+
 // [Preview API] Removes a work itewm type in the process.
-// ctx
-// processId (required): The ID of the process.
-// witRefName (required): The reference name of the work item type.
-func (client Client) DeleteProcessWorkItemType(ctx context.Context, processId *uuid.UUID, witRefName *string) error {
+func (client Client) DeleteProcessWorkItemType(ctx context.Context, args DeleteProcessWorkItemTypeArgs) error {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
+    routeValues["witRefName"] = *args.WitRefName
 
     locationId, _ := uuid.Parse("e2e9d1a6-432d-4062-8870-bfcb8c324ad7")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/json", nil)
@@ -1503,25 +1771,29 @@ func (client Client) DeleteProcessWorkItemType(ctx context.Context, processId *u
     return nil
 }
 
+// Arguments for the DeleteProcessWorkItemType function
+type DeleteProcessWorkItemTypeArgs struct {
+    // (required) The ID of the process.
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type.
+    WitRefName *string
+}
+
 // [Preview API] Returns a single work item type in a process.
-// ctx
-// processId (required): The ID of the process
-// witRefName (required): The reference name of the work item type
-// expand (optional): Flag to determine what properties of work item type to return
-func (client Client) GetProcessWorkItemType(ctx context.Context, processId *uuid.UUID, witRefName *string, expand *GetWorkItemTypeExpand) (*ProcessWorkItemType, error) {
+func (client Client) GetProcessWorkItemType(ctx context.Context, args GetProcessWorkItemTypeArgs) (*ProcessWorkItemType, error) {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
+    routeValues["witRefName"] = *args.WitRefName
 
     queryParams := url.Values{}
-    if expand != nil {
-        queryParams.Add("$expand", string(*expand))
+    if args.Expand != nil {
+        queryParams.Add("$expand", string(*args.Expand))
     }
     locationId, _ := uuid.Parse("e2e9d1a6-432d-4062-8870-bfcb8c324ad7")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1534,20 +1806,27 @@ func (client Client) GetProcessWorkItemType(ctx context.Context, processId *uuid
     return &responseValue, err
 }
 
+// Arguments for the GetProcessWorkItemType function
+type GetProcessWorkItemTypeArgs struct {
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type
+    WitRefName *string
+    // (optional) Flag to determine what properties of work item type to return
+    Expand *GetWorkItemTypeExpand
+}
+
 // [Preview API] Returns a list of all work item types in a process.
-// ctx
-// processId (required): The ID of the process
-// expand (optional): Flag to determine what properties of work item type to return
-func (client Client) GetProcessWorkItemTypes(ctx context.Context, processId *uuid.UUID, expand *GetWorkItemTypeExpand) (*[]ProcessWorkItemType, error) {
+func (client Client) GetProcessWorkItemTypes(ctx context.Context, args GetProcessWorkItemTypesArgs) (*[]ProcessWorkItemType, error) {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
+    routeValues["processId"] = (*args.ProcessId).String()
 
     queryParams := url.Values{}
-    if expand != nil {
-        queryParams.Add("$expand", string(*expand))
+    if args.Expand != nil {
+        queryParams.Add("$expand", string(*args.Expand))
     }
     locationId, _ := uuid.Parse("e2e9d1a6-432d-4062-8870-bfcb8c324ad7")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1560,26 +1839,30 @@ func (client Client) GetProcessWorkItemTypes(ctx context.Context, processId *uui
     return &responseValue, err
 }
 
+// Arguments for the GetProcessWorkItemTypes function
+type GetProcessWorkItemTypesArgs struct {
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (optional) Flag to determine what properties of work item type to return
+    Expand *GetWorkItemTypeExpand
+}
+
 // [Preview API] Updates a work item type of the process.
-// ctx
-// workItemTypeUpdate (required)
-// processId (required): The ID of the process
-// witRefName (required): The reference name of the work item type
-func (client Client) UpdateProcessWorkItemType(ctx context.Context, workItemTypeUpdate *UpdateProcessWorkItemTypeRequest, processId *uuid.UUID, witRefName *string) (*ProcessWorkItemType, error) {
-    if workItemTypeUpdate == nil {
+func (client Client) UpdateProcessWorkItemType(ctx context.Context, args UpdateProcessWorkItemTypeArgs) (*ProcessWorkItemType, error) {
+    if args.WorkItemTypeUpdate == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "workItemTypeUpdate"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefName == nil || *witRefName == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefName == nil || *args.WitRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"} 
     }
-    routeValues["witRefName"] = *witRefName
+    routeValues["witRefName"] = *args.WitRefName
 
-    body, marshalErr := json.Marshal(*workItemTypeUpdate)
+    body, marshalErr := json.Marshal(*args.WorkItemTypeUpdate)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1594,26 +1877,32 @@ func (client Client) UpdateProcessWorkItemType(ctx context.Context, workItemType
     return &responseValue, err
 }
 
+// Arguments for the UpdateProcessWorkItemType function
+type UpdateProcessWorkItemTypeArgs struct {
+    // (required)
+    WorkItemTypeUpdate *UpdateProcessWorkItemTypeRequest
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) The reference name of the work item type
+    WitRefName *string
+}
+
 // [Preview API] Adds a behavior to the work item type of the process.
-// ctx
-// behavior (required)
-// processId (required): The ID of the process
-// witRefNameForBehaviors (required): Work item type reference name for the behavior
-func (client Client) AddBehaviorToWorkItemType(ctx context.Context, behavior *WorkItemTypeBehavior, processId *uuid.UUID, witRefNameForBehaviors *string) (*WorkItemTypeBehavior, error) {
-    if behavior == nil {
+func (client Client) AddBehaviorToWorkItemType(ctx context.Context, args AddBehaviorToWorkItemTypeArgs) (*WorkItemTypeBehavior, error) {
+    if args.Behavior == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "behavior"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefNameForBehaviors == nil || *witRefNameForBehaviors == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefNameForBehaviors == nil || *args.WitRefNameForBehaviors == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefNameForBehaviors"} 
     }
-    routeValues["witRefNameForBehaviors"] = *witRefNameForBehaviors
+    routeValues["witRefNameForBehaviors"] = *args.WitRefNameForBehaviors
 
-    body, marshalErr := json.Marshal(*behavior)
+    body, marshalErr := json.Marshal(*args.Behavior)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1628,25 +1917,31 @@ func (client Client) AddBehaviorToWorkItemType(ctx context.Context, behavior *Wo
     return &responseValue, err
 }
 
+// Arguments for the AddBehaviorToWorkItemType function
+type AddBehaviorToWorkItemTypeArgs struct {
+    // (required)
+    Behavior *WorkItemTypeBehavior
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) Work item type reference name for the behavior
+    WitRefNameForBehaviors *string
+}
+
 // [Preview API] Returns a behavior for the work item type of the process.
-// ctx
-// processId (required): The ID of the process
-// witRefNameForBehaviors (required): Work item type reference name for the behavior
-// behaviorRefName (required): The reference name of the behavior
-func (client Client) GetBehaviorForWorkItemType(ctx context.Context, processId *uuid.UUID, witRefNameForBehaviors *string, behaviorRefName *string) (*WorkItemTypeBehavior, error) {
+func (client Client) GetBehaviorForWorkItemType(ctx context.Context, args GetBehaviorForWorkItemTypeArgs) (*WorkItemTypeBehavior, error) {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefNameForBehaviors == nil || *witRefNameForBehaviors == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefNameForBehaviors == nil || *args.WitRefNameForBehaviors == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefNameForBehaviors"} 
     }
-    routeValues["witRefNameForBehaviors"] = *witRefNameForBehaviors
-    if behaviorRefName == nil || *behaviorRefName == "" {
+    routeValues["witRefNameForBehaviors"] = *args.WitRefNameForBehaviors
+    if args.BehaviorRefName == nil || *args.BehaviorRefName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "behaviorRefName"} 
     }
-    routeValues["behaviorRefName"] = *behaviorRefName
+    routeValues["behaviorRefName"] = *args.BehaviorRefName
 
     locationId, _ := uuid.Parse("6d765a2e-4e1b-4b11-be93-f953be676024")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -1659,20 +1954,27 @@ func (client Client) GetBehaviorForWorkItemType(ctx context.Context, processId *
     return &responseValue, err
 }
 
+// Arguments for the GetBehaviorForWorkItemType function
+type GetBehaviorForWorkItemTypeArgs struct {
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) Work item type reference name for the behavior
+    WitRefNameForBehaviors *string
+    // (required) The reference name of the behavior
+    BehaviorRefName *string
+}
+
 // [Preview API] Returns a list of all behaviors for the work item type of the process.
-// ctx
-// processId (required): The ID of the process
-// witRefNameForBehaviors (required): Work item type reference name for the behavior
-func (client Client) GetBehaviorsForWorkItemType(ctx context.Context, processId *uuid.UUID, witRefNameForBehaviors *string) (*[]WorkItemTypeBehavior, error) {
+func (client Client) GetBehaviorsForWorkItemType(ctx context.Context, args GetBehaviorsForWorkItemTypeArgs) (*[]WorkItemTypeBehavior, error) {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefNameForBehaviors == nil || *witRefNameForBehaviors == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefNameForBehaviors == nil || *args.WitRefNameForBehaviors == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefNameForBehaviors"} 
     }
-    routeValues["witRefNameForBehaviors"] = *witRefNameForBehaviors
+    routeValues["witRefNameForBehaviors"] = *args.WitRefNameForBehaviors
 
     locationId, _ := uuid.Parse("6d765a2e-4e1b-4b11-be93-f953be676024")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -1685,25 +1987,29 @@ func (client Client) GetBehaviorsForWorkItemType(ctx context.Context, processId 
     return &responseValue, err
 }
 
+// Arguments for the GetBehaviorsForWorkItemType function
+type GetBehaviorsForWorkItemTypeArgs struct {
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) Work item type reference name for the behavior
+    WitRefNameForBehaviors *string
+}
+
 // [Preview API] Removes a behavior for the work item type of the process.
-// ctx
-// processId (required): The ID of the process
-// witRefNameForBehaviors (required): Work item type reference name for the behavior
-// behaviorRefName (required): The reference name of the behavior
-func (client Client) RemoveBehaviorFromWorkItemType(ctx context.Context, processId *uuid.UUID, witRefNameForBehaviors *string, behaviorRefName *string) error {
+func (client Client) RemoveBehaviorFromWorkItemType(ctx context.Context, args RemoveBehaviorFromWorkItemTypeArgs) error {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefNameForBehaviors == nil || *witRefNameForBehaviors == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefNameForBehaviors == nil || *args.WitRefNameForBehaviors == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefNameForBehaviors"} 
     }
-    routeValues["witRefNameForBehaviors"] = *witRefNameForBehaviors
-    if behaviorRefName == nil || *behaviorRefName == "" {
+    routeValues["witRefNameForBehaviors"] = *args.WitRefNameForBehaviors
+    if args.BehaviorRefName == nil || *args.BehaviorRefName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "behaviorRefName"} 
     }
-    routeValues["behaviorRefName"] = *behaviorRefName
+    routeValues["behaviorRefName"] = *args.BehaviorRefName
 
     locationId, _ := uuid.Parse("6d765a2e-4e1b-4b11-be93-f953be676024")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -1714,26 +2020,32 @@ func (client Client) RemoveBehaviorFromWorkItemType(ctx context.Context, process
     return nil
 }
 
+// Arguments for the RemoveBehaviorFromWorkItemType function
+type RemoveBehaviorFromWorkItemTypeArgs struct {
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) Work item type reference name for the behavior
+    WitRefNameForBehaviors *string
+    // (required) The reference name of the behavior
+    BehaviorRefName *string
+}
+
 // [Preview API] Updates a behavior for the work item type of the process.
-// ctx
-// behavior (required)
-// processId (required): The ID of the process
-// witRefNameForBehaviors (required): Work item type reference name for the behavior
-func (client Client) UpdateBehaviorToWorkItemType(ctx context.Context, behavior *WorkItemTypeBehavior, processId *uuid.UUID, witRefNameForBehaviors *string) (*WorkItemTypeBehavior, error) {
-    if behavior == nil {
+func (client Client) UpdateBehaviorToWorkItemType(ctx context.Context, args UpdateBehaviorToWorkItemTypeArgs) (*WorkItemTypeBehavior, error) {
+    if args.Behavior == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "behavior"}
     }
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
-    if witRefNameForBehaviors == nil || *witRefNameForBehaviors == "" {
+    routeValues["processId"] = (*args.ProcessId).String()
+    if args.WitRefNameForBehaviors == nil || *args.WitRefNameForBehaviors == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "witRefNameForBehaviors"} 
     }
-    routeValues["witRefNameForBehaviors"] = *witRefNameForBehaviors
+    routeValues["witRefNameForBehaviors"] = *args.WitRefNameForBehaviors
 
-    body, marshalErr := json.Marshal(*behavior)
+    body, marshalErr := json.Marshal(*args.Behavior)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1746,5 +2058,15 @@ func (client Client) UpdateBehaviorToWorkItemType(ctx context.Context, behavior 
     var responseValue WorkItemTypeBehavior
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the UpdateBehaviorToWorkItemType function
+type UpdateBehaviorToWorkItemTypeArgs struct {
+    // (required)
+    Behavior *WorkItemTypeBehavior
+    // (required) The ID of the process
+    ProcessId *uuid.UUID
+    // (required) Work item type reference name for the behavior
+    WitRefNameForBehaviors *string
 }
 

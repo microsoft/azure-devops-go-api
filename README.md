@@ -28,13 +28,13 @@ func main() {
     if err != nil {
         log.Fatal(err)
     }
-    
+
     // Get a list of all team projects
-    teamProjectReferences, err := coreClient.GetProjects(ctx, nil, nil, nil, nil, nil)
+    teamProjectReferences, err := coreClient.GetProjects(ctx, core.GetProjectsArgs{})
     if err != nil {
         log.Fatal(err)
     }
-    
+
     // Print the list of team project names for your organization
     for index, teamProjectReference := range *teamProjectReferences {
         log.Printf("Name[%v] = %v", index, *teamProjectReference.Name)

@@ -28,19 +28,16 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
 }
 
 // Gets an operation from the the operationId using the given pluginId.
-// ctx
-// operationId (required): The ID for the operation.
-// pluginId (optional): The ID for the plugin.
-func (client Client) GetOperation(ctx context.Context, operationId *uuid.UUID, pluginId *uuid.UUID) (*Operation, error) {
+func (client Client) GetOperation(ctx context.Context, args GetOperationArgs) (*Operation, error) {
     routeValues := make(map[string]string)
-    if operationId == nil {
+    if args.OperationId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "operationId"} 
     }
-    routeValues["operationId"] = (*operationId).String()
+    routeValues["operationId"] = (*args.OperationId).String()
 
     queryParams := url.Values{}
-    if pluginId != nil {
-        queryParams.Add("pluginId", (*pluginId).String())
+    if args.PluginId != nil {
+        queryParams.Add("pluginId", (*args.PluginId).String())
     }
     locationId, _ := uuid.Parse("9a1b74b4-2ca8-4a9f-8470-c2f2e6fdc949")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -51,5 +48,13 @@ func (client Client) GetOperation(ctx context.Context, operationId *uuid.UUID, p
     var responseValue Operation
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the GetOperation function
+type GetOperationArgs struct {
+    // (required) The ID for the operation.
+    OperationId *uuid.UUID
+    // (optional) The ID for the plugin.
+    PluginId *uuid.UUID
 }
 

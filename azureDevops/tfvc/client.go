@@ -37,27 +37,22 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 }
 
 // Get a single branch hierarchy at the given path with parents or children as specified.
-// ctx
-// path (required): Full path to the branch.  Default: $/ Examples: $/, $/MyProject, $/MyProject/SomeFolder.
-// project (optional): Project ID or project name
-// includeParent (optional): Return the parent branch, if there is one. Default: False
-// includeChildren (optional): Return child branches, if there are any. Default: False
-func (client Client) GetBranch(ctx context.Context, path *string, project *string, includeParent *bool, includeChildren *bool) (*TfvcBranch, error) {
+func (client Client) GetBranch(ctx context.Context, args GetBranchArgs) (*TfvcBranch, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
 
     queryParams := url.Values{}
-    if path == nil {
+    if args.Path == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "path"}
     }
-    queryParams.Add("path", *path)
-    if includeParent != nil {
-        queryParams.Add("includeParent", strconv.FormatBool(*includeParent))
+    queryParams.Add("path", *args.Path)
+    if args.IncludeParent != nil {
+        queryParams.Add("includeParent", strconv.FormatBool(*args.IncludeParent))
     }
-    if includeChildren != nil {
-        queryParams.Add("includeChildren", strconv.FormatBool(*includeChildren))
+    if args.IncludeChildren != nil {
+        queryParams.Add("includeChildren", strconv.FormatBool(*args.IncludeChildren))
     }
     locationId, _ := uuid.Parse("bc1f417e-239d-42e7-85e1-76e80cb2d6eb")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -70,31 +65,37 @@ func (client Client) GetBranch(ctx context.Context, path *string, project *strin
     return &responseValue, err
 }
 
+// Arguments for the GetBranch function
+type GetBranchArgs struct {
+    // (required) Full path to the branch.  Default: $/ Examples: $/, $/MyProject, $/MyProject/SomeFolder.
+    Path *string
+    // (optional) Project ID or project name
+    Project *string
+    // (optional) Return the parent branch, if there is one. Default: False
+    IncludeParent *bool
+    // (optional) Return child branches, if there are any. Default: False
+    IncludeChildren *bool
+}
+
 // Get a collection of branch roots -- first-level children, branches with no parents.
-// ctx
-// project (optional): Project ID or project name
-// includeParent (optional): Return the parent branch, if there is one. Default: False
-// includeChildren (optional): Return the child branches for each root branch. Default: False
-// includeDeleted (optional): Return deleted branches. Default: False
-// includeLinks (optional): Return links. Default: False
-func (client Client) GetBranches(ctx context.Context, project *string, includeParent *bool, includeChildren *bool, includeDeleted *bool, includeLinks *bool) (*[]TfvcBranch, error) {
+func (client Client) GetBranches(ctx context.Context, args GetBranchesArgs) (*[]TfvcBranch, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
 
     queryParams := url.Values{}
-    if includeParent != nil {
-        queryParams.Add("includeParent", strconv.FormatBool(*includeParent))
+    if args.IncludeParent != nil {
+        queryParams.Add("includeParent", strconv.FormatBool(*args.IncludeParent))
     }
-    if includeChildren != nil {
-        queryParams.Add("includeChildren", strconv.FormatBool(*includeChildren))
+    if args.IncludeChildren != nil {
+        queryParams.Add("includeChildren", strconv.FormatBool(*args.IncludeChildren))
     }
-    if includeDeleted != nil {
-        queryParams.Add("includeDeleted", strconv.FormatBool(*includeDeleted))
+    if args.IncludeDeleted != nil {
+        queryParams.Add("includeDeleted", strconv.FormatBool(*args.IncludeDeleted))
     }
-    if includeLinks != nil {
-        queryParams.Add("includeLinks", strconv.FormatBool(*includeLinks))
+    if args.IncludeLinks != nil {
+        queryParams.Add("includeLinks", strconv.FormatBool(*args.IncludeLinks))
     }
     locationId, _ := uuid.Parse("bc1f417e-239d-42e7-85e1-76e80cb2d6eb")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -107,28 +108,37 @@ func (client Client) GetBranches(ctx context.Context, project *string, includePa
     return &responseValue, err
 }
 
+// Arguments for the GetBranches function
+type GetBranchesArgs struct {
+    // (optional) Project ID or project name
+    Project *string
+    // (optional) Return the parent branch, if there is one. Default: False
+    IncludeParent *bool
+    // (optional) Return the child branches for each root branch. Default: False
+    IncludeChildren *bool
+    // (optional) Return deleted branches. Default: False
+    IncludeDeleted *bool
+    // (optional) Return links. Default: False
+    IncludeLinks *bool
+}
+
 // Get branch hierarchies below the specified scopePath
-// ctx
-// scopePath (required): Full path to the branch.  Default: $/ Examples: $/, $/MyProject, $/MyProject/SomeFolder.
-// project (optional): Project ID or project name
-// includeDeleted (optional): Return deleted branches. Default: False
-// includeLinks (optional): Return links. Default: False
-func (client Client) GetBranchRefs(ctx context.Context, scopePath *string, project *string, includeDeleted *bool, includeLinks *bool) (*[]TfvcBranchRef, error) {
+func (client Client) GetBranchRefs(ctx context.Context, args GetBranchRefsArgs) (*[]TfvcBranchRef, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
 
     queryParams := url.Values{}
-    if scopePath == nil {
+    if args.ScopePath == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "scopePath"}
     }
-    queryParams.Add("scopePath", *scopePath)
-    if includeDeleted != nil {
-        queryParams.Add("includeDeleted", strconv.FormatBool(*includeDeleted))
+    queryParams.Add("scopePath", *args.ScopePath)
+    if args.IncludeDeleted != nil {
+        queryParams.Add("includeDeleted", strconv.FormatBool(*args.IncludeDeleted))
     }
-    if includeLinks != nil {
-        queryParams.Add("includeLinks", strconv.FormatBool(*includeLinks))
+    if args.IncludeLinks != nil {
+        queryParams.Add("includeLinks", strconv.FormatBool(*args.IncludeLinks))
     }
     locationId, _ := uuid.Parse("bc1f417e-239d-42e7-85e1-76e80cb2d6eb")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -141,23 +151,31 @@ func (client Client) GetBranchRefs(ctx context.Context, scopePath *string, proje
     return &responseValue, err
 }
 
+// Arguments for the GetBranchRefs function
+type GetBranchRefsArgs struct {
+    // (required) Full path to the branch.  Default: $/ Examples: $/, $/MyProject, $/MyProject/SomeFolder.
+    ScopePath *string
+    // (optional) Project ID or project name
+    Project *string
+    // (optional) Return deleted branches. Default: False
+    IncludeDeleted *bool
+    // (optional) Return links. Default: False
+    IncludeLinks *bool
+}
+
 // Retrieve Tfvc changes for a given changeset.
-// ctx
-// id (optional): ID of the changeset. Default: null
-// skip (optional): Number of results to skip. Default: null
-// top (optional): The maximum number of results to return. Default: null
-func (client Client) GetChangesetChanges(ctx context.Context, id *int, skip *int, top *int) (*[]TfvcChange, error) {
+func (client Client) GetChangesetChanges(ctx context.Context, args GetChangesetChangesArgs) (*[]TfvcChange, error) {
     routeValues := make(map[string]string)
-    if id != nil {
-        routeValues["id"] = strconv.Itoa(*id)
+    if args.Id != nil {
+        routeValues["id"] = strconv.Itoa(*args.Id)
     }
 
     queryParams := url.Values{}
-    if skip != nil {
-        queryParams.Add("$skip", strconv.Itoa(*skip))
+    if args.Skip != nil {
+        queryParams.Add("$skip", strconv.Itoa(*args.Skip))
     }
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
     locationId, _ := uuid.Parse("f32b86f2-15b9-4fe6-81b1-6f8938617ee5")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -170,20 +188,27 @@ func (client Client) GetChangesetChanges(ctx context.Context, id *int, skip *int
     return &responseValue, err
 }
 
+// Arguments for the GetChangesetChanges function
+type GetChangesetChangesArgs struct {
+    // (optional) ID of the changeset. Default: null
+    Id *int
+    // (optional) Number of results to skip. Default: null
+    Skip *int
+    // (optional) The maximum number of results to return. Default: null
+    Top *int
+}
+
 // Create a new changeset.
-// ctx
-// changeset (required)
-// project (optional): Project ID or project name
-func (client Client) CreateChangeset(ctx context.Context, changeset *TfvcChangeset, project *string) (*TfvcChangesetRef, error) {
-    if changeset == nil {
+func (client Client) CreateChangeset(ctx context.Context, args CreateChangesetArgs) (*TfvcChangesetRef, error) {
+    if args.Changeset == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "changeset"}
     }
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
 
-    body, marshalErr := json.Marshal(*changeset)
+    body, marshalErr := json.Marshal(*args.Changeset)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -198,78 +223,74 @@ func (client Client) CreateChangeset(ctx context.Context, changeset *TfvcChanges
     return &responseValue, err
 }
 
+// Arguments for the CreateChangeset function
+type CreateChangesetArgs struct {
+    // (required)
+    Changeset *TfvcChangeset
+    // (optional) Project ID or project name
+    Project *string
+}
+
 // Retrieve a Tfvc Changeset
-// ctx
-// id (required): Changeset Id to retrieve.
-// project (optional): Project ID or project name
-// maxChangeCount (optional): Number of changes to return (maximum 100 changes) Default: 0
-// includeDetails (optional): Include policy details and check-in notes in the response. Default: false
-// includeWorkItems (optional): Include workitems. Default: false
-// maxCommentLength (optional): Include details about associated work items in the response. Default: null
-// includeSourceRename (optional): Include renames.  Default: false
-// skip (optional): Number of results to skip. Default: null
-// top (optional): The maximum number of results to return. Default: null
-// orderby (optional): Results are sorted by ID in descending order by default. Use id asc to sort by ID in ascending order.
-// searchCriteria (optional): Following criteria available (.itemPath, .version, .versionType, .versionOption, .author, .fromId, .toId, .fromDate, .toDate) Default: null
-func (client Client) GetChangeset(ctx context.Context, id *int, project *string, maxChangeCount *int, includeDetails *bool, includeWorkItems *bool, maxCommentLength *int, includeSourceRename *bool, skip *int, top *int, orderby *string, searchCriteria *TfvcChangesetSearchCriteria) (*TfvcChangeset, error) {
+func (client Client) GetChangeset(ctx context.Context, args GetChangesetArgs) (*TfvcChangeset, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
-    if id == nil {
+    if args.Id == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
-    routeValues["id"] = strconv.Itoa(*id)
+    routeValues["id"] = strconv.Itoa(*args.Id)
 
     queryParams := url.Values{}
-    if maxChangeCount != nil {
-        queryParams.Add("maxChangeCount", strconv.Itoa(*maxChangeCount))
+    if args.MaxChangeCount != nil {
+        queryParams.Add("maxChangeCount", strconv.Itoa(*args.MaxChangeCount))
     }
-    if includeDetails != nil {
-        queryParams.Add("includeDetails", strconv.FormatBool(*includeDetails))
+    if args.IncludeDetails != nil {
+        queryParams.Add("includeDetails", strconv.FormatBool(*args.IncludeDetails))
     }
-    if includeWorkItems != nil {
-        queryParams.Add("includeWorkItems", strconv.FormatBool(*includeWorkItems))
+    if args.IncludeWorkItems != nil {
+        queryParams.Add("includeWorkItems", strconv.FormatBool(*args.IncludeWorkItems))
     }
-    if maxCommentLength != nil {
-        queryParams.Add("maxCommentLength", strconv.Itoa(*maxCommentLength))
+    if args.MaxCommentLength != nil {
+        queryParams.Add("maxCommentLength", strconv.Itoa(*args.MaxCommentLength))
     }
-    if includeSourceRename != nil {
-        queryParams.Add("includeSourceRename", strconv.FormatBool(*includeSourceRename))
+    if args.IncludeSourceRename != nil {
+        queryParams.Add("includeSourceRename", strconv.FormatBool(*args.IncludeSourceRename))
     }
-    if skip != nil {
-        queryParams.Add("$skip", strconv.Itoa(*skip))
+    if args.Skip != nil {
+        queryParams.Add("$skip", strconv.Itoa(*args.Skip))
     }
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    if orderby != nil {
-        queryParams.Add("$orderby", *orderby)
+    if args.Orderby != nil {
+        queryParams.Add("$orderby", *args.Orderby)
     }
-    if searchCriteria != nil {
-        if searchCriteria.ItemPath != nil {
-            queryParams.Add("searchCriteria.itemPath", *searchCriteria.ItemPath)
+    if args.SearchCriteria != nil {
+        if args.SearchCriteria.ItemPath != nil {
+            queryParams.Add("searchCriteria.itemPath", *args.SearchCriteria.ItemPath)
         }
-        if searchCriteria.Author != nil {
-            queryParams.Add("searchCriteria.author", *searchCriteria.Author)
+        if args.SearchCriteria.Author != nil {
+            queryParams.Add("searchCriteria.author", *args.SearchCriteria.Author)
         }
-        if searchCriteria.FromDate != nil {
-            queryParams.Add("searchCriteria.fromDate", *searchCriteria.FromDate)
+        if args.SearchCriteria.FromDate != nil {
+            queryParams.Add("searchCriteria.fromDate", *args.SearchCriteria.FromDate)
         }
-        if searchCriteria.ToDate != nil {
-            queryParams.Add("searchCriteria.toDate", *searchCriteria.ToDate)
+        if args.SearchCriteria.ToDate != nil {
+            queryParams.Add("searchCriteria.toDate", *args.SearchCriteria.ToDate)
         }
-        if searchCriteria.FromId != nil {
-            queryParams.Add("searchCriteria.fromId", strconv.Itoa(*searchCriteria.FromId))
+        if args.SearchCriteria.FromId != nil {
+            queryParams.Add("searchCriteria.fromId", strconv.Itoa(*args.SearchCriteria.FromId))
         }
-        if searchCriteria.ToId != nil {
-            queryParams.Add("searchCriteria.toId", strconv.Itoa(*searchCriteria.ToId))
+        if args.SearchCriteria.ToId != nil {
+            queryParams.Add("searchCriteria.toId", strconv.Itoa(*args.SearchCriteria.ToId))
         }
-        if searchCriteria.FollowRenames != nil {
-            queryParams.Add("searchCriteria.followRenames", strconv.FormatBool(*searchCriteria.FollowRenames))
+        if args.SearchCriteria.FollowRenames != nil {
+            queryParams.Add("searchCriteria.followRenames", strconv.FormatBool(*args.SearchCriteria.FollowRenames))
         }
-        if searchCriteria.IncludeLinks != nil {
-            queryParams.Add("searchCriteria.includeLinks", strconv.FormatBool(*searchCriteria.IncludeLinks))
+        if args.SearchCriteria.IncludeLinks != nil {
+            queryParams.Add("searchCriteria.includeLinks", strconv.FormatBool(*args.SearchCriteria.IncludeLinks))
         }
     }
     locationId, _ := uuid.Parse("0bc8f0a4-6bfb-42a9-ba84-139da7b99c49")
@@ -283,57 +304,76 @@ func (client Client) GetChangeset(ctx context.Context, id *int, project *string,
     return &responseValue, err
 }
 
+// Arguments for the GetChangeset function
+type GetChangesetArgs struct {
+    // (required) Changeset Id to retrieve.
+    Id *int
+    // (optional) Project ID or project name
+    Project *string
+    // (optional) Number of changes to return (maximum 100 changes) Default: 0
+    MaxChangeCount *int
+    // (optional) Include policy details and check-in notes in the response. Default: false
+    IncludeDetails *bool
+    // (optional) Include workitems. Default: false
+    IncludeWorkItems *bool
+    // (optional) Include details about associated work items in the response. Default: null
+    MaxCommentLength *int
+    // (optional) Include renames.  Default: false
+    IncludeSourceRename *bool
+    // (optional) Number of results to skip. Default: null
+    Skip *int
+    // (optional) The maximum number of results to return. Default: null
+    Top *int
+    // (optional) Results are sorted by ID in descending order by default. Use id asc to sort by ID in ascending order.
+    Orderby *string
+    // (optional) Following criteria available (.itemPath, .version, .versionType, .versionOption, .author, .fromId, .toId, .fromDate, .toDate) Default: null
+    SearchCriteria *TfvcChangesetSearchCriteria
+}
+
 // Retrieve Tfvc Changesets
-// ctx
-// project (optional): Project ID or project name
-// maxCommentLength (optional): Include details about associated work items in the response. Default: null
-// skip (optional): Number of results to skip. Default: null
-// top (optional): The maximum number of results to return. Default: null
-// orderby (optional): Results are sorted by ID in descending order by default. Use id asc to sort by ID in ascending order.
-// searchCriteria (optional): Following criteria available (.itemPath, .version, .versionType, .versionOption, .author, .fromId, .toId, .fromDate, .toDate) Default: null
-func (client Client) GetChangesets(ctx context.Context, project *string, maxCommentLength *int, skip *int, top *int, orderby *string, searchCriteria *TfvcChangesetSearchCriteria) (*[]TfvcChangesetRef, error) {
+func (client Client) GetChangesets(ctx context.Context, args GetChangesetsArgs) (*[]TfvcChangesetRef, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
 
     queryParams := url.Values{}
-    if maxCommentLength != nil {
-        queryParams.Add("maxCommentLength", strconv.Itoa(*maxCommentLength))
+    if args.MaxCommentLength != nil {
+        queryParams.Add("maxCommentLength", strconv.Itoa(*args.MaxCommentLength))
     }
-    if skip != nil {
-        queryParams.Add("$skip", strconv.Itoa(*skip))
+    if args.Skip != nil {
+        queryParams.Add("$skip", strconv.Itoa(*args.Skip))
     }
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    if orderby != nil {
-        queryParams.Add("$orderby", *orderby)
+    if args.Orderby != nil {
+        queryParams.Add("$orderby", *args.Orderby)
     }
-    if searchCriteria != nil {
-        if searchCriteria.ItemPath != nil {
-            queryParams.Add("searchCriteria.itemPath", *searchCriteria.ItemPath)
+    if args.SearchCriteria != nil {
+        if args.SearchCriteria.ItemPath != nil {
+            queryParams.Add("searchCriteria.itemPath", *args.SearchCriteria.ItemPath)
         }
-        if searchCriteria.Author != nil {
-            queryParams.Add("searchCriteria.author", *searchCriteria.Author)
+        if args.SearchCriteria.Author != nil {
+            queryParams.Add("searchCriteria.author", *args.SearchCriteria.Author)
         }
-        if searchCriteria.FromDate != nil {
-            queryParams.Add("searchCriteria.fromDate", *searchCriteria.FromDate)
+        if args.SearchCriteria.FromDate != nil {
+            queryParams.Add("searchCriteria.fromDate", *args.SearchCriteria.FromDate)
         }
-        if searchCriteria.ToDate != nil {
-            queryParams.Add("searchCriteria.toDate", *searchCriteria.ToDate)
+        if args.SearchCriteria.ToDate != nil {
+            queryParams.Add("searchCriteria.toDate", *args.SearchCriteria.ToDate)
         }
-        if searchCriteria.FromId != nil {
-            queryParams.Add("searchCriteria.fromId", strconv.Itoa(*searchCriteria.FromId))
+        if args.SearchCriteria.FromId != nil {
+            queryParams.Add("searchCriteria.fromId", strconv.Itoa(*args.SearchCriteria.FromId))
         }
-        if searchCriteria.ToId != nil {
-            queryParams.Add("searchCriteria.toId", strconv.Itoa(*searchCriteria.ToId))
+        if args.SearchCriteria.ToId != nil {
+            queryParams.Add("searchCriteria.toId", strconv.Itoa(*args.SearchCriteria.ToId))
         }
-        if searchCriteria.FollowRenames != nil {
-            queryParams.Add("searchCriteria.followRenames", strconv.FormatBool(*searchCriteria.FollowRenames))
+        if args.SearchCriteria.FollowRenames != nil {
+            queryParams.Add("searchCriteria.followRenames", strconv.FormatBool(*args.SearchCriteria.FollowRenames))
         }
-        if searchCriteria.IncludeLinks != nil {
-            queryParams.Add("searchCriteria.includeLinks", strconv.FormatBool(*searchCriteria.IncludeLinks))
+        if args.SearchCriteria.IncludeLinks != nil {
+            queryParams.Add("searchCriteria.includeLinks", strconv.FormatBool(*args.SearchCriteria.IncludeLinks))
         }
     }
     locationId, _ := uuid.Parse("0bc8f0a4-6bfb-42a9-ba84-139da7b99c49")
@@ -347,14 +387,28 @@ func (client Client) GetChangesets(ctx context.Context, project *string, maxComm
     return &responseValue, err
 }
 
+// Arguments for the GetChangesets function
+type GetChangesetsArgs struct {
+    // (optional) Project ID or project name
+    Project *string
+    // (optional) Include details about associated work items in the response. Default: null
+    MaxCommentLength *int
+    // (optional) Number of results to skip. Default: null
+    Skip *int
+    // (optional) The maximum number of results to return. Default: null
+    Top *int
+    // (optional) Results are sorted by ID in descending order by default. Use id asc to sort by ID in ascending order.
+    Orderby *string
+    // (optional) Following criteria available (.itemPath, .version, .versionType, .versionOption, .author, .fromId, .toId, .fromDate, .toDate) Default: null
+    SearchCriteria *TfvcChangesetSearchCriteria
+}
+
 // Returns changesets for a given list of changeset Ids.
-// ctx
-// changesetsRequestData (required): List of changeset IDs.
-func (client Client) GetBatchedChangesets(ctx context.Context, changesetsRequestData *TfvcChangesetsRequestData) (*[]TfvcChangesetRef, error) {
-    if changesetsRequestData == nil {
+func (client Client) GetBatchedChangesets(ctx context.Context, args GetBatchedChangesetsArgs) (*[]TfvcChangesetRef, error) {
+    if args.ChangesetsRequestData == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "changesetsRequestData"}
     }
-    body, marshalErr := json.Marshal(*changesetsRequestData)
+    body, marshalErr := json.Marshal(*args.ChangesetsRequestData)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -369,13 +423,17 @@ func (client Client) GetBatchedChangesets(ctx context.Context, changesetsRequest
     return &responseValue, err
 }
 
+// Arguments for the GetBatchedChangesets function
+type GetBatchedChangesetsArgs struct {
+    // (required) List of changeset IDs.
+    ChangesetsRequestData *TfvcChangesetsRequestData
+}
+
 // Retrieves the work items associated with a particular changeset.
-// ctx
-// id (optional): ID of the changeset. Default: null
-func (client Client) GetChangesetWorkItems(ctx context.Context, id *int) (*[]AssociatedWorkItem, error) {
+func (client Client) GetChangesetWorkItems(ctx context.Context, args GetChangesetWorkItemsArgs) (*[]AssociatedWorkItem, error) {
     routeValues := make(map[string]string)
-    if id != nil {
-        routeValues["id"] = strconv.Itoa(*id)
+    if args.Id != nil {
+        routeValues["id"] = strconv.Itoa(*args.Id)
     }
 
     locationId, _ := uuid.Parse("64ae0bea-1d71-47c9-a9e5-fe73f5ea0ff4")
@@ -389,20 +447,23 @@ func (client Client) GetChangesetWorkItems(ctx context.Context, id *int) (*[]Ass
     return &responseValue, err
 }
 
+// Arguments for the GetChangesetWorkItems function
+type GetChangesetWorkItemsArgs struct {
+    // (optional) ID of the changeset. Default: null
+    Id *int
+}
+
 // Post for retrieving a set of items given a list of paths or a long path. Allows for specifying the recursionLevel and version descriptors for each path.
-// ctx
-// itemRequestData (required)
-// project (optional): Project ID or project name
-func (client Client) GetItemsBatch(ctx context.Context, itemRequestData *TfvcItemRequestData, project *string) (*[][]TfvcItem, error) {
-    if itemRequestData == nil {
+func (client Client) GetItemsBatch(ctx context.Context, args GetItemsBatchArgs) (*[][]TfvcItem, error) {
+    if args.ItemRequestData == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "itemRequestData"}
     }
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
 
-    body, marshalErr := json.Marshal(*itemRequestData)
+    body, marshalErr := json.Marshal(*args.ItemRequestData)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -417,20 +478,25 @@ func (client Client) GetItemsBatch(ctx context.Context, itemRequestData *TfvcIte
     return &responseValue, err
 }
 
+// Arguments for the GetItemsBatch function
+type GetItemsBatchArgs struct {
+    // (required)
+    ItemRequestData *TfvcItemRequestData
+    // (optional) Project ID or project name
+    Project *string
+}
+
 // Post for retrieving a set of items given a list of paths or a long path. Allows for specifying the recursionLevel and version descriptors for each path.
-// ctx
-// itemRequestData (required)
-// project (optional): Project ID or project name
-func (client Client) GetItemsBatchZip(ctx context.Context, itemRequestData *TfvcItemRequestData, project *string) (io.ReadCloser, error) {
-    if itemRequestData == nil {
+func (client Client) GetItemsBatchZip(ctx context.Context, args GetItemsBatchZipArgs) (io.ReadCloser, error) {
+    if args.ItemRequestData == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "itemRequestData"}
     }
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
 
-    body, marshalErr := json.Marshal(*itemRequestData)
+    body, marshalErr := json.Marshal(*args.ItemRequestData)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -443,52 +509,51 @@ func (client Client) GetItemsBatchZip(ctx context.Context, itemRequestData *Tfvc
     return resp.Body, err
 }
 
+// Arguments for the GetItemsBatchZip function
+type GetItemsBatchZipArgs struct {
+    // (required)
+    ItemRequestData *TfvcItemRequestData
+    // (optional) Project ID or project name
+    Project *string
+}
+
 // Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content which is always returned as a download.
-// ctx
-// path (required): Version control path of an individual item to return.
-// project (optional): Project ID or project name
-// fileName (optional): file name of item returned.
-// download (optional): If true, create a downloadable attachment.
-// scopePath (optional): Version control path of a folder to return multiple items.
-// recursionLevel (optional): None (just the item), or OneLevel (contents of a folder).
-// versionDescriptor (optional): Version descriptor.  Default is null.
-// includeContent (optional): Set to true to include item content when requesting json.  Default is false.
-func (client Client) GetItem(ctx context.Context, path *string, project *string, fileName *string, download *bool, scopePath *string, recursionLevel *VersionControlRecursionType, versionDescriptor *TfvcVersionDescriptor, includeContent *bool) (*TfvcItem, error) {
+func (client Client) GetItem(ctx context.Context, args GetItemArgs) (*TfvcItem, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
 
     queryParams := url.Values{}
-    if path == nil {
+    if args.Path == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "path"}
     }
-    queryParams.Add("path", *path)
-    if fileName != nil {
-        queryParams.Add("fileName", *fileName)
+    queryParams.Add("path", *args.Path)
+    if args.FileName != nil {
+        queryParams.Add("fileName", *args.FileName)
     }
-    if download != nil {
-        queryParams.Add("download", strconv.FormatBool(*download))
+    if args.Download != nil {
+        queryParams.Add("download", strconv.FormatBool(*args.Download))
     }
-    if scopePath != nil {
-        queryParams.Add("scopePath", *scopePath)
+    if args.ScopePath != nil {
+        queryParams.Add("scopePath", *args.ScopePath)
     }
-    if recursionLevel != nil {
-        queryParams.Add("recursionLevel", string(*recursionLevel))
+    if args.RecursionLevel != nil {
+        queryParams.Add("recursionLevel", string(*args.RecursionLevel))
     }
-    if versionDescriptor != nil {
-        if versionDescriptor.VersionOption != nil {
-            queryParams.Add("versionDescriptor.versionOption", string(*versionDescriptor.VersionOption))
+    if args.VersionDescriptor != nil {
+        if args.VersionDescriptor.VersionOption != nil {
+            queryParams.Add("versionDescriptor.versionOption", string(*args.VersionDescriptor.VersionOption))
         }
-        if versionDescriptor.VersionType != nil {
-            queryParams.Add("versionDescriptor.versionType", string(*versionDescriptor.VersionType))
+        if args.VersionDescriptor.VersionType != nil {
+            queryParams.Add("versionDescriptor.versionType", string(*args.VersionDescriptor.VersionType))
         }
-        if versionDescriptor.Version != nil {
-            queryParams.Add("versionDescriptor.version", *versionDescriptor.Version)
+        if args.VersionDescriptor.Version != nil {
+            queryParams.Add("versionDescriptor.version", *args.VersionDescriptor.Version)
         }
     }
-    if includeContent != nil {
-        queryParams.Add("includeContent", strconv.FormatBool(*includeContent))
+    if args.IncludeContent != nil {
+        queryParams.Add("includeContent", strconv.FormatBool(*args.IncludeContent))
     }
     locationId, _ := uuid.Parse("ba9fc436-9a38-4578-89d6-e4f3241f5040")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -501,52 +566,63 @@ func (client Client) GetItem(ctx context.Context, path *string, project *string,
     return &responseValue, err
 }
 
+// Arguments for the GetItem function
+type GetItemArgs struct {
+    // (required) Version control path of an individual item to return.
+    Path *string
+    // (optional) Project ID or project name
+    Project *string
+    // (optional) file name of item returned.
+    FileName *string
+    // (optional) If true, create a downloadable attachment.
+    Download *bool
+    // (optional) Version control path of a folder to return multiple items.
+    ScopePath *string
+    // (optional) None (just the item), or OneLevel (contents of a folder).
+    RecursionLevel *VersionControlRecursionType
+    // (optional) Version descriptor.  Default is null.
+    VersionDescriptor *TfvcVersionDescriptor
+    // (optional) Set to true to include item content when requesting json.  Default is false.
+    IncludeContent *bool
+}
+
 // Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content which is always returned as a download.
-// ctx
-// path (required): Version control path of an individual item to return.
-// project (optional): Project ID or project name
-// fileName (optional): file name of item returned.
-// download (optional): If true, create a downloadable attachment.
-// scopePath (optional): Version control path of a folder to return multiple items.
-// recursionLevel (optional): None (just the item), or OneLevel (contents of a folder).
-// versionDescriptor (optional): Version descriptor.  Default is null.
-// includeContent (optional): Set to true to include item content when requesting json.  Default is false.
-func (client Client) GetItemContent(ctx context.Context, path *string, project *string, fileName *string, download *bool, scopePath *string, recursionLevel *VersionControlRecursionType, versionDescriptor *TfvcVersionDescriptor, includeContent *bool) (io.ReadCloser, error) {
+func (client Client) GetItemContent(ctx context.Context, args GetItemContentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
 
     queryParams := url.Values{}
-    if path == nil {
+    if args.Path == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "path"}
     }
-    queryParams.Add("path", *path)
-    if fileName != nil {
-        queryParams.Add("fileName", *fileName)
+    queryParams.Add("path", *args.Path)
+    if args.FileName != nil {
+        queryParams.Add("fileName", *args.FileName)
     }
-    if download != nil {
-        queryParams.Add("download", strconv.FormatBool(*download))
+    if args.Download != nil {
+        queryParams.Add("download", strconv.FormatBool(*args.Download))
     }
-    if scopePath != nil {
-        queryParams.Add("scopePath", *scopePath)
+    if args.ScopePath != nil {
+        queryParams.Add("scopePath", *args.ScopePath)
     }
-    if recursionLevel != nil {
-        queryParams.Add("recursionLevel", string(*recursionLevel))
+    if args.RecursionLevel != nil {
+        queryParams.Add("recursionLevel", string(*args.RecursionLevel))
     }
-    if versionDescriptor != nil {
-        if versionDescriptor.VersionOption != nil {
-            queryParams.Add("versionDescriptor.versionOption", string(*versionDescriptor.VersionOption))
+    if args.VersionDescriptor != nil {
+        if args.VersionDescriptor.VersionOption != nil {
+            queryParams.Add("versionDescriptor.versionOption", string(*args.VersionDescriptor.VersionOption))
         }
-        if versionDescriptor.VersionType != nil {
-            queryParams.Add("versionDescriptor.versionType", string(*versionDescriptor.VersionType))
+        if args.VersionDescriptor.VersionType != nil {
+            queryParams.Add("versionDescriptor.versionType", string(*args.VersionDescriptor.VersionType))
         }
-        if versionDescriptor.Version != nil {
-            queryParams.Add("versionDescriptor.version", *versionDescriptor.Version)
+        if args.VersionDescriptor.Version != nil {
+            queryParams.Add("versionDescriptor.version", *args.VersionDescriptor.Version)
         }
     }
-    if includeContent != nil {
-        queryParams.Add("includeContent", strconv.FormatBool(*includeContent))
+    if args.IncludeContent != nil {
+        queryParams.Add("includeContent", strconv.FormatBool(*args.IncludeContent))
     }
     locationId, _ := uuid.Parse("ba9fc436-9a38-4578-89d6-e4f3241f5040")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/octet-stream", nil)
@@ -557,38 +633,52 @@ func (client Client) GetItemContent(ctx context.Context, path *string, project *
     return resp.Body, err
 }
 
+// Arguments for the GetItemContent function
+type GetItemContentArgs struct {
+    // (required) Version control path of an individual item to return.
+    Path *string
+    // (optional) Project ID or project name
+    Project *string
+    // (optional) file name of item returned.
+    FileName *string
+    // (optional) If true, create a downloadable attachment.
+    Download *bool
+    // (optional) Version control path of a folder to return multiple items.
+    ScopePath *string
+    // (optional) None (just the item), or OneLevel (contents of a folder).
+    RecursionLevel *VersionControlRecursionType
+    // (optional) Version descriptor.  Default is null.
+    VersionDescriptor *TfvcVersionDescriptor
+    // (optional) Set to true to include item content when requesting json.  Default is false.
+    IncludeContent *bool
+}
+
 // Get a list of Tfvc items
-// ctx
-// project (optional): Project ID or project name
-// scopePath (optional): Version control path of a folder to return multiple items.
-// recursionLevel (optional): None (just the item), or OneLevel (contents of a folder).
-// includeLinks (optional): True to include links.
-// versionDescriptor (optional)
-func (client Client) GetItems(ctx context.Context, project *string, scopePath *string, recursionLevel *VersionControlRecursionType, includeLinks *bool, versionDescriptor *TfvcVersionDescriptor) (*[]TfvcItem, error) {
+func (client Client) GetItems(ctx context.Context, args GetItemsArgs) (*[]TfvcItem, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
 
     queryParams := url.Values{}
-    if scopePath != nil {
-        queryParams.Add("scopePath", *scopePath)
+    if args.ScopePath != nil {
+        queryParams.Add("scopePath", *args.ScopePath)
     }
-    if recursionLevel != nil {
-        queryParams.Add("recursionLevel", string(*recursionLevel))
+    if args.RecursionLevel != nil {
+        queryParams.Add("recursionLevel", string(*args.RecursionLevel))
     }
-    if includeLinks != nil {
-        queryParams.Add("includeLinks", strconv.FormatBool(*includeLinks))
+    if args.IncludeLinks != nil {
+        queryParams.Add("includeLinks", strconv.FormatBool(*args.IncludeLinks))
     }
-    if versionDescriptor != nil {
-        if versionDescriptor.VersionOption != nil {
-            queryParams.Add("versionDescriptor.versionOption", string(*versionDescriptor.VersionOption))
+    if args.VersionDescriptor != nil {
+        if args.VersionDescriptor.VersionOption != nil {
+            queryParams.Add("versionDescriptor.versionOption", string(*args.VersionDescriptor.VersionOption))
         }
-        if versionDescriptor.VersionType != nil {
-            queryParams.Add("versionDescriptor.versionType", string(*versionDescriptor.VersionType))
+        if args.VersionDescriptor.VersionType != nil {
+            queryParams.Add("versionDescriptor.versionType", string(*args.VersionDescriptor.VersionType))
         }
-        if versionDescriptor.Version != nil {
-            queryParams.Add("versionDescriptor.version", *versionDescriptor.Version)
+        if args.VersionDescriptor.Version != nil {
+            queryParams.Add("versionDescriptor.version", *args.VersionDescriptor.Version)
         }
     }
     locationId, _ := uuid.Parse("ba9fc436-9a38-4578-89d6-e4f3241f5040")
@@ -602,52 +692,57 @@ func (client Client) GetItems(ctx context.Context, project *string, scopePath *s
     return &responseValue, err
 }
 
+// Arguments for the GetItems function
+type GetItemsArgs struct {
+    // (optional) Project ID or project name
+    Project *string
+    // (optional) Version control path of a folder to return multiple items.
+    ScopePath *string
+    // (optional) None (just the item), or OneLevel (contents of a folder).
+    RecursionLevel *VersionControlRecursionType
+    // (optional) True to include links.
+    IncludeLinks *bool
+    // (optional)
+    VersionDescriptor *TfvcVersionDescriptor
+}
+
 // Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content which is always returned as a download.
-// ctx
-// path (required): Version control path of an individual item to return.
-// project (optional): Project ID or project name
-// fileName (optional): file name of item returned.
-// download (optional): If true, create a downloadable attachment.
-// scopePath (optional): Version control path of a folder to return multiple items.
-// recursionLevel (optional): None (just the item), or OneLevel (contents of a folder).
-// versionDescriptor (optional): Version descriptor.  Default is null.
-// includeContent (optional): Set to true to include item content when requesting json.  Default is false.
-func (client Client) GetItemText(ctx context.Context, path *string, project *string, fileName *string, download *bool, scopePath *string, recursionLevel *VersionControlRecursionType, versionDescriptor *TfvcVersionDescriptor, includeContent *bool) (io.ReadCloser, error) {
+func (client Client) GetItemText(ctx context.Context, args GetItemTextArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
 
     queryParams := url.Values{}
-    if path == nil {
+    if args.Path == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "path"}
     }
-    queryParams.Add("path", *path)
-    if fileName != nil {
-        queryParams.Add("fileName", *fileName)
+    queryParams.Add("path", *args.Path)
+    if args.FileName != nil {
+        queryParams.Add("fileName", *args.FileName)
     }
-    if download != nil {
-        queryParams.Add("download", strconv.FormatBool(*download))
+    if args.Download != nil {
+        queryParams.Add("download", strconv.FormatBool(*args.Download))
     }
-    if scopePath != nil {
-        queryParams.Add("scopePath", *scopePath)
+    if args.ScopePath != nil {
+        queryParams.Add("scopePath", *args.ScopePath)
     }
-    if recursionLevel != nil {
-        queryParams.Add("recursionLevel", string(*recursionLevel))
+    if args.RecursionLevel != nil {
+        queryParams.Add("recursionLevel", string(*args.RecursionLevel))
     }
-    if versionDescriptor != nil {
-        if versionDescriptor.VersionOption != nil {
-            queryParams.Add("versionDescriptor.versionOption", string(*versionDescriptor.VersionOption))
+    if args.VersionDescriptor != nil {
+        if args.VersionDescriptor.VersionOption != nil {
+            queryParams.Add("versionDescriptor.versionOption", string(*args.VersionDescriptor.VersionOption))
         }
-        if versionDescriptor.VersionType != nil {
-            queryParams.Add("versionDescriptor.versionType", string(*versionDescriptor.VersionType))
+        if args.VersionDescriptor.VersionType != nil {
+            queryParams.Add("versionDescriptor.versionType", string(*args.VersionDescriptor.VersionType))
         }
-        if versionDescriptor.Version != nil {
-            queryParams.Add("versionDescriptor.version", *versionDescriptor.Version)
+        if args.VersionDescriptor.Version != nil {
+            queryParams.Add("versionDescriptor.version", *args.VersionDescriptor.Version)
         }
     }
-    if includeContent != nil {
-        queryParams.Add("includeContent", strconv.FormatBool(*includeContent))
+    if args.IncludeContent != nil {
+        queryParams.Add("includeContent", strconv.FormatBool(*args.IncludeContent))
     }
     locationId, _ := uuid.Parse("ba9fc436-9a38-4578-89d6-e4f3241f5040")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "text/plain", nil)
@@ -658,52 +753,63 @@ func (client Client) GetItemText(ctx context.Context, path *string, project *str
     return resp.Body, err
 }
 
+// Arguments for the GetItemText function
+type GetItemTextArgs struct {
+    // (required) Version control path of an individual item to return.
+    Path *string
+    // (optional) Project ID or project name
+    Project *string
+    // (optional) file name of item returned.
+    FileName *string
+    // (optional) If true, create a downloadable attachment.
+    Download *bool
+    // (optional) Version control path of a folder to return multiple items.
+    ScopePath *string
+    // (optional) None (just the item), or OneLevel (contents of a folder).
+    RecursionLevel *VersionControlRecursionType
+    // (optional) Version descriptor.  Default is null.
+    VersionDescriptor *TfvcVersionDescriptor
+    // (optional) Set to true to include item content when requesting json.  Default is false.
+    IncludeContent *bool
+}
+
 // Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content which is always returned as a download.
-// ctx
-// path (required): Version control path of an individual item to return.
-// project (optional): Project ID or project name
-// fileName (optional): file name of item returned.
-// download (optional): If true, create a downloadable attachment.
-// scopePath (optional): Version control path of a folder to return multiple items.
-// recursionLevel (optional): None (just the item), or OneLevel (contents of a folder).
-// versionDescriptor (optional): Version descriptor.  Default is null.
-// includeContent (optional): Set to true to include item content when requesting json.  Default is false.
-func (client Client) GetItemZip(ctx context.Context, path *string, project *string, fileName *string, download *bool, scopePath *string, recursionLevel *VersionControlRecursionType, versionDescriptor *TfvcVersionDescriptor, includeContent *bool) (io.ReadCloser, error) {
+func (client Client) GetItemZip(ctx context.Context, args GetItemZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
 
     queryParams := url.Values{}
-    if path == nil {
+    if args.Path == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "path"}
     }
-    queryParams.Add("path", *path)
-    if fileName != nil {
-        queryParams.Add("fileName", *fileName)
+    queryParams.Add("path", *args.Path)
+    if args.FileName != nil {
+        queryParams.Add("fileName", *args.FileName)
     }
-    if download != nil {
-        queryParams.Add("download", strconv.FormatBool(*download))
+    if args.Download != nil {
+        queryParams.Add("download", strconv.FormatBool(*args.Download))
     }
-    if scopePath != nil {
-        queryParams.Add("scopePath", *scopePath)
+    if args.ScopePath != nil {
+        queryParams.Add("scopePath", *args.ScopePath)
     }
-    if recursionLevel != nil {
-        queryParams.Add("recursionLevel", string(*recursionLevel))
+    if args.RecursionLevel != nil {
+        queryParams.Add("recursionLevel", string(*args.RecursionLevel))
     }
-    if versionDescriptor != nil {
-        if versionDescriptor.VersionOption != nil {
-            queryParams.Add("versionDescriptor.versionOption", string(*versionDescriptor.VersionOption))
+    if args.VersionDescriptor != nil {
+        if args.VersionDescriptor.VersionOption != nil {
+            queryParams.Add("versionDescriptor.versionOption", string(*args.VersionDescriptor.VersionOption))
         }
-        if versionDescriptor.VersionType != nil {
-            queryParams.Add("versionDescriptor.versionType", string(*versionDescriptor.VersionType))
+        if args.VersionDescriptor.VersionType != nil {
+            queryParams.Add("versionDescriptor.versionType", string(*args.VersionDescriptor.VersionType))
         }
-        if versionDescriptor.Version != nil {
-            queryParams.Add("versionDescriptor.version", *versionDescriptor.Version)
+        if args.VersionDescriptor.Version != nil {
+            queryParams.Add("versionDescriptor.version", *args.VersionDescriptor.Version)
         }
     }
-    if includeContent != nil {
-        queryParams.Add("includeContent", strconv.FormatBool(*includeContent))
+    if args.IncludeContent != nil {
+        queryParams.Add("includeContent", strconv.FormatBool(*args.IncludeContent))
     }
     locationId, _ := uuid.Parse("ba9fc436-9a38-4578-89d6-e4f3241f5040")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/zip", nil)
@@ -714,24 +820,40 @@ func (client Client) GetItemZip(ctx context.Context, path *string, project *stri
     return resp.Body, err
 }
 
+// Arguments for the GetItemZip function
+type GetItemZipArgs struct {
+    // (required) Version control path of an individual item to return.
+    Path *string
+    // (optional) Project ID or project name
+    Project *string
+    // (optional) file name of item returned.
+    FileName *string
+    // (optional) If true, create a downloadable attachment.
+    Download *bool
+    // (optional) Version control path of a folder to return multiple items.
+    ScopePath *string
+    // (optional) None (just the item), or OneLevel (contents of a folder).
+    RecursionLevel *VersionControlRecursionType
+    // (optional) Version descriptor.  Default is null.
+    VersionDescriptor *TfvcVersionDescriptor
+    // (optional) Set to true to include item content when requesting json.  Default is false.
+    IncludeContent *bool
+}
+
 // Get items under a label.
-// ctx
-// labelId (required): Unique identifier of label
-// top (optional): Max number of items to return
-// skip (optional): Number of items to skip
-func (client Client) GetLabelItems(ctx context.Context, labelId *string, top *int, skip *int) (*[]TfvcItem, error) {
+func (client Client) GetLabelItems(ctx context.Context, args GetLabelItemsArgs) (*[]TfvcItem, error) {
     routeValues := make(map[string]string)
-    if labelId == nil || *labelId == "" {
+    if args.LabelId == nil || *args.LabelId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "labelId"} 
     }
-    routeValues["labelId"] = *labelId
+    routeValues["labelId"] = *args.LabelId
 
     queryParams := url.Values{}
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    if skip != nil {
-        queryParams.Add("$skip", strconv.Itoa(*skip))
+    if args.Skip != nil {
+        queryParams.Add("$skip", strconv.Itoa(*args.Skip))
     }
     locationId, _ := uuid.Parse("06166e34-de17-4b60-8cd1-23182a346fda")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -744,42 +866,48 @@ func (client Client) GetLabelItems(ctx context.Context, labelId *string, top *in
     return &responseValue, err
 }
 
+// Arguments for the GetLabelItems function
+type GetLabelItemsArgs struct {
+    // (required) Unique identifier of label
+    LabelId *string
+    // (optional) Max number of items to return
+    Top *int
+    // (optional) Number of items to skip
+    Skip *int
+}
+
 // Get a single deep label.
-// ctx
-// labelId (required): Unique identifier of label
-// requestData (required): maxItemCount
-// project (optional): Project ID or project name
-func (client Client) GetLabel(ctx context.Context, labelId *string, requestData *TfvcLabelRequestData, project *string) (*TfvcLabel, error) {
+func (client Client) GetLabel(ctx context.Context, args GetLabelArgs) (*TfvcLabel, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
-    if labelId == nil || *labelId == "" {
+    if args.LabelId == nil || *args.LabelId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "labelId"} 
     }
-    routeValues["labelId"] = *labelId
+    routeValues["labelId"] = *args.LabelId
 
     queryParams := url.Values{}
-    if requestData == nil {
+    if args.RequestData == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "requestData"}
     }
-    if requestData.LabelScope != nil {
-        queryParams.Add("requestData.labelScope", *requestData.LabelScope)
+    if args.RequestData.LabelScope != nil {
+        queryParams.Add("requestData.labelScope", *args.RequestData.LabelScope)
     }
-    if requestData.Name != nil {
-        queryParams.Add("requestData.name", *requestData.Name)
+    if args.RequestData.Name != nil {
+        queryParams.Add("requestData.name", *args.RequestData.Name)
     }
-    if requestData.Owner != nil {
-        queryParams.Add("requestData.owner", *requestData.Owner)
+    if args.RequestData.Owner != nil {
+        queryParams.Add("requestData.owner", *args.RequestData.Owner)
     }
-    if requestData.ItemLabelFilter != nil {
-        queryParams.Add("requestData.itemLabelFilter", *requestData.ItemLabelFilter)
+    if args.RequestData.ItemLabelFilter != nil {
+        queryParams.Add("requestData.itemLabelFilter", *args.RequestData.ItemLabelFilter)
     }
-    if requestData.MaxItemCount != nil {
-        queryParams.Add("requestData.maxItemCount", strconv.Itoa(*requestData.MaxItemCount))
+    if args.RequestData.MaxItemCount != nil {
+        queryParams.Add("requestData.maxItemCount", strconv.Itoa(*args.RequestData.MaxItemCount))
     }
-    if requestData.IncludeLinks != nil {
-        queryParams.Add("requestData.includeLinks", strconv.FormatBool(*requestData.IncludeLinks))
+    if args.RequestData.IncludeLinks != nil {
+        queryParams.Add("requestData.includeLinks", strconv.FormatBool(*args.RequestData.IncludeLinks))
     }
     locationId, _ := uuid.Parse("a5d9bd7f-b661-4d0e-b9be-d9c16affae54")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -792,45 +920,50 @@ func (client Client) GetLabel(ctx context.Context, labelId *string, requestData 
     return &responseValue, err
 }
 
+// Arguments for the GetLabel function
+type GetLabelArgs struct {
+    // (required) Unique identifier of label
+    LabelId *string
+    // (required) maxItemCount
+    RequestData *TfvcLabelRequestData
+    // (optional) Project ID or project name
+    Project *string
+}
+
 // Get a collection of shallow label references.
-// ctx
-// requestData (required): labelScope, name, owner, and itemLabelFilter
-// project (optional): Project ID or project name
-// top (optional): Max number of labels to return
-// skip (optional): Number of labels to skip
-func (client Client) GetLabels(ctx context.Context, requestData *TfvcLabelRequestData, project *string, top *int, skip *int) (*[]TfvcLabelRef, error) {
+func (client Client) GetLabels(ctx context.Context, args GetLabelsArgs) (*[]TfvcLabelRef, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
 
     queryParams := url.Values{}
-    if requestData == nil {
+    if args.RequestData == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "requestData"}
     }
-    if requestData.LabelScope != nil {
-        queryParams.Add("requestData.labelScope", *requestData.LabelScope)
+    if args.RequestData.LabelScope != nil {
+        queryParams.Add("requestData.labelScope", *args.RequestData.LabelScope)
     }
-    if requestData.Name != nil {
-        queryParams.Add("requestData.name", *requestData.Name)
+    if args.RequestData.Name != nil {
+        queryParams.Add("requestData.name", *args.RequestData.Name)
     }
-    if requestData.Owner != nil {
-        queryParams.Add("requestData.owner", *requestData.Owner)
+    if args.RequestData.Owner != nil {
+        queryParams.Add("requestData.owner", *args.RequestData.Owner)
     }
-    if requestData.ItemLabelFilter != nil {
-        queryParams.Add("requestData.itemLabelFilter", *requestData.ItemLabelFilter)
+    if args.RequestData.ItemLabelFilter != nil {
+        queryParams.Add("requestData.itemLabelFilter", *args.RequestData.ItemLabelFilter)
     }
-    if requestData.MaxItemCount != nil {
-        queryParams.Add("requestData.maxItemCount", strconv.Itoa(*requestData.MaxItemCount))
+    if args.RequestData.MaxItemCount != nil {
+        queryParams.Add("requestData.maxItemCount", strconv.Itoa(*args.RequestData.MaxItemCount))
     }
-    if requestData.IncludeLinks != nil {
-        queryParams.Add("requestData.includeLinks", strconv.FormatBool(*requestData.IncludeLinks))
+    if args.RequestData.IncludeLinks != nil {
+        queryParams.Add("requestData.includeLinks", strconv.FormatBool(*args.RequestData.IncludeLinks))
     }
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    if skip != nil {
-        queryParams.Add("$skip", strconv.Itoa(*skip))
+    if args.Skip != nil {
+        queryParams.Add("$skip", strconv.Itoa(*args.Skip))
     }
     locationId, _ := uuid.Parse("a5d9bd7f-b661-4d0e-b9be-d9c16affae54")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -843,22 +976,30 @@ func (client Client) GetLabels(ctx context.Context, requestData *TfvcLabelReques
     return &responseValue, err
 }
 
+// Arguments for the GetLabels function
+type GetLabelsArgs struct {
+    // (required) labelScope, name, owner, and itemLabelFilter
+    RequestData *TfvcLabelRequestData
+    // (optional) Project ID or project name
+    Project *string
+    // (optional) Max number of labels to return
+    Top *int
+    // (optional) Number of labels to skip
+    Skip *int
+}
+
 // Get changes included in a shelveset.
-// ctx
-// shelvesetId (required): Shelveset's unique ID
-// top (optional): Max number of changes to return
-// skip (optional): Number of changes to skip
-func (client Client) GetShelvesetChanges(ctx context.Context, shelvesetId *string, top *int, skip *int) (*[]TfvcChange, error) {
+func (client Client) GetShelvesetChanges(ctx context.Context, args GetShelvesetChangesArgs) (*[]TfvcChange, error) {
     queryParams := url.Values{}
-    if shelvesetId == nil {
+    if args.ShelvesetId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "shelvesetId"}
     }
-    queryParams.Add("shelvesetId", *shelvesetId)
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    queryParams.Add("shelvesetId", *args.ShelvesetId)
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    if skip != nil {
-        queryParams.Add("$skip", strconv.Itoa(*skip))
+    if args.Skip != nil {
+        queryParams.Add("$skip", strconv.Itoa(*args.Skip))
     }
     locationId, _ := uuid.Parse("dbaf075b-0445-4c34-9e5b-82292f856522")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
@@ -871,37 +1012,44 @@ func (client Client) GetShelvesetChanges(ctx context.Context, shelvesetId *strin
     return &responseValue, err
 }
 
+// Arguments for the GetShelvesetChanges function
+type GetShelvesetChangesArgs struct {
+    // (required) Shelveset's unique ID
+    ShelvesetId *string
+    // (optional) Max number of changes to return
+    Top *int
+    // (optional) Number of changes to skip
+    Skip *int
+}
+
 // Get a single deep shelveset.
-// ctx
-// shelvesetId (required): Shelveset's unique ID
-// requestData (optional): includeDetails, includeWorkItems, maxChangeCount, and maxCommentLength
-func (client Client) GetShelveset(ctx context.Context, shelvesetId *string, requestData *TfvcShelvesetRequestData) (*TfvcShelveset, error) {
+func (client Client) GetShelveset(ctx context.Context, args GetShelvesetArgs) (*TfvcShelveset, error) {
     queryParams := url.Values{}
-    if shelvesetId == nil {
+    if args.ShelvesetId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "shelvesetId"}
     }
-    queryParams.Add("shelvesetId", *shelvesetId)
-    if requestData != nil {
-        if requestData.Name != nil {
-            queryParams.Add("requestData.name", *requestData.Name)
+    queryParams.Add("shelvesetId", *args.ShelvesetId)
+    if args.RequestData != nil {
+        if args.RequestData.Name != nil {
+            queryParams.Add("requestData.name", *args.RequestData.Name)
         }
-        if requestData.Owner != nil {
-            queryParams.Add("requestData.owner", *requestData.Owner)
+        if args.RequestData.Owner != nil {
+            queryParams.Add("requestData.owner", *args.RequestData.Owner)
         }
-        if requestData.MaxCommentLength != nil {
-            queryParams.Add("requestData.maxCommentLength", strconv.Itoa(*requestData.MaxCommentLength))
+        if args.RequestData.MaxCommentLength != nil {
+            queryParams.Add("requestData.maxCommentLength", strconv.Itoa(*args.RequestData.MaxCommentLength))
         }
-        if requestData.MaxChangeCount != nil {
-            queryParams.Add("requestData.maxChangeCount", strconv.Itoa(*requestData.MaxChangeCount))
+        if args.RequestData.MaxChangeCount != nil {
+            queryParams.Add("requestData.maxChangeCount", strconv.Itoa(*args.RequestData.MaxChangeCount))
         }
-        if requestData.IncludeDetails != nil {
-            queryParams.Add("requestData.includeDetails", strconv.FormatBool(*requestData.IncludeDetails))
+        if args.RequestData.IncludeDetails != nil {
+            queryParams.Add("requestData.includeDetails", strconv.FormatBool(*args.RequestData.IncludeDetails))
         }
-        if requestData.IncludeWorkItems != nil {
-            queryParams.Add("requestData.includeWorkItems", strconv.FormatBool(*requestData.IncludeWorkItems))
+        if args.RequestData.IncludeWorkItems != nil {
+            queryParams.Add("requestData.includeWorkItems", strconv.FormatBool(*args.RequestData.IncludeWorkItems))
         }
-        if requestData.IncludeLinks != nil {
-            queryParams.Add("requestData.includeLinks", strconv.FormatBool(*requestData.IncludeLinks))
+        if args.RequestData.IncludeLinks != nil {
+            queryParams.Add("requestData.includeLinks", strconv.FormatBool(*args.RequestData.IncludeLinks))
         }
     }
     locationId, _ := uuid.Parse("e36d44fb-e907-4b0a-b194-f83f1ed32ad3")
@@ -915,41 +1063,45 @@ func (client Client) GetShelveset(ctx context.Context, shelvesetId *string, requ
     return &responseValue, err
 }
 
+// Arguments for the GetShelveset function
+type GetShelvesetArgs struct {
+    // (required) Shelveset's unique ID
+    ShelvesetId *string
+    // (optional) includeDetails, includeWorkItems, maxChangeCount, and maxCommentLength
+    RequestData *TfvcShelvesetRequestData
+}
+
 // Return a collection of shallow shelveset references.
-// ctx
-// requestData (optional): name, owner, and maxCommentLength
-// top (optional): Max number of shelvesets to return
-// skip (optional): Number of shelvesets to skip
-func (client Client) GetShelvesets(ctx context.Context, requestData *TfvcShelvesetRequestData, top *int, skip *int) (*[]TfvcShelvesetRef, error) {
+func (client Client) GetShelvesets(ctx context.Context, args GetShelvesetsArgs) (*[]TfvcShelvesetRef, error) {
     queryParams := url.Values{}
-    if requestData != nil {
-        if requestData.Name != nil {
-            queryParams.Add("requestData.name", *requestData.Name)
+    if args.RequestData != nil {
+        if args.RequestData.Name != nil {
+            queryParams.Add("requestData.name", *args.RequestData.Name)
         }
-        if requestData.Owner != nil {
-            queryParams.Add("requestData.owner", *requestData.Owner)
+        if args.RequestData.Owner != nil {
+            queryParams.Add("requestData.owner", *args.RequestData.Owner)
         }
-        if requestData.MaxCommentLength != nil {
-            queryParams.Add("requestData.maxCommentLength", strconv.Itoa(*requestData.MaxCommentLength))
+        if args.RequestData.MaxCommentLength != nil {
+            queryParams.Add("requestData.maxCommentLength", strconv.Itoa(*args.RequestData.MaxCommentLength))
         }
-        if requestData.MaxChangeCount != nil {
-            queryParams.Add("requestData.maxChangeCount", strconv.Itoa(*requestData.MaxChangeCount))
+        if args.RequestData.MaxChangeCount != nil {
+            queryParams.Add("requestData.maxChangeCount", strconv.Itoa(*args.RequestData.MaxChangeCount))
         }
-        if requestData.IncludeDetails != nil {
-            queryParams.Add("requestData.includeDetails", strconv.FormatBool(*requestData.IncludeDetails))
+        if args.RequestData.IncludeDetails != nil {
+            queryParams.Add("requestData.includeDetails", strconv.FormatBool(*args.RequestData.IncludeDetails))
         }
-        if requestData.IncludeWorkItems != nil {
-            queryParams.Add("requestData.includeWorkItems", strconv.FormatBool(*requestData.IncludeWorkItems))
+        if args.RequestData.IncludeWorkItems != nil {
+            queryParams.Add("requestData.includeWorkItems", strconv.FormatBool(*args.RequestData.IncludeWorkItems))
         }
-        if requestData.IncludeLinks != nil {
-            queryParams.Add("requestData.includeLinks", strconv.FormatBool(*requestData.IncludeLinks))
+        if args.RequestData.IncludeLinks != nil {
+            queryParams.Add("requestData.includeLinks", strconv.FormatBool(*args.RequestData.IncludeLinks))
         }
     }
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    if skip != nil {
-        queryParams.Add("$skip", strconv.Itoa(*skip))
+    if args.Skip != nil {
+        queryParams.Add("$skip", strconv.Itoa(*args.Skip))
     }
     locationId, _ := uuid.Parse("e36d44fb-e907-4b0a-b194-f83f1ed32ad3")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
@@ -962,15 +1114,23 @@ func (client Client) GetShelvesets(ctx context.Context, requestData *TfvcShelves
     return &responseValue, err
 }
 
+// Arguments for the GetShelvesets function
+type GetShelvesetsArgs struct {
+    // (optional) name, owner, and maxCommentLength
+    RequestData *TfvcShelvesetRequestData
+    // (optional) Max number of shelvesets to return
+    Top *int
+    // (optional) Number of shelvesets to skip
+    Skip *int
+}
+
 // Get work items associated with a shelveset.
-// ctx
-// shelvesetId (required): Shelveset's unique ID
-func (client Client) GetShelvesetWorkItems(ctx context.Context, shelvesetId *string) (*[]AssociatedWorkItem, error) {
+func (client Client) GetShelvesetWorkItems(ctx context.Context, args GetShelvesetWorkItemsArgs) (*[]AssociatedWorkItem, error) {
     queryParams := url.Values{}
-    if shelvesetId == nil {
+    if args.ShelvesetId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "shelvesetId"}
     }
-    queryParams.Add("shelvesetId", *shelvesetId)
+    queryParams.Add("shelvesetId", *args.ShelvesetId)
     locationId, _ := uuid.Parse("a7a0c1c1-373e-425a-b031-a519474d743d")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -980,5 +1140,11 @@ func (client Client) GetShelvesetWorkItems(ctx context.Context, shelvesetId *str
     var responseValue []AssociatedWorkItem
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the GetShelvesetWorkItems function
+type GetShelvesetWorkItemsArgs struct {
+    // (required) Shelveset's unique ID
+    ShelvesetId *string
 }
 

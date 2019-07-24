@@ -37,25 +37,20 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 }
 
 // [Preview API] List the installed extensions in the account / project collection.
-// ctx
-// includeDisabledExtensions (optional): If true (the default), include disabled extensions in the results.
-// includeErrors (optional): If true, include installed extensions with errors.
-// assetTypes (optional)
-// includeInstallationIssues (optional)
-func (client Client) GetInstalledExtensions(ctx context.Context, includeDisabledExtensions *bool, includeErrors *bool, assetTypes *[]string, includeInstallationIssues *bool) (*[]InstalledExtension, error) {
+func (client Client) GetInstalledExtensions(ctx context.Context, args GetInstalledExtensionsArgs) (*[]InstalledExtension, error) {
     queryParams := url.Values{}
-    if includeDisabledExtensions != nil {
-        queryParams.Add("includeDisabledExtensions", strconv.FormatBool(*includeDisabledExtensions))
+    if args.IncludeDisabledExtensions != nil {
+        queryParams.Add("includeDisabledExtensions", strconv.FormatBool(*args.IncludeDisabledExtensions))
     }
-    if includeErrors != nil {
-        queryParams.Add("includeErrors", strconv.FormatBool(*includeErrors))
+    if args.IncludeErrors != nil {
+        queryParams.Add("includeErrors", strconv.FormatBool(*args.IncludeErrors))
     }
-    if assetTypes != nil {
-        listAsString := strings.Join((*assetTypes)[:], ":")
+    if args.AssetTypes != nil {
+        listAsString := strings.Join((*args.AssetTypes)[:], ":")
         queryParams.Add("assetTypes", listAsString)
     }
-    if includeInstallationIssues != nil {
-        queryParams.Add("includeInstallationIssues", strconv.FormatBool(*includeInstallationIssues))
+    if args.IncludeInstallationIssues != nil {
+        queryParams.Add("includeInstallationIssues", strconv.FormatBool(*args.IncludeInstallationIssues))
     }
     locationId, _ := uuid.Parse("275424d0-c844-4fe2-bda6-04933a1357d8")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
@@ -68,14 +63,24 @@ func (client Client) GetInstalledExtensions(ctx context.Context, includeDisabled
     return &responseValue, err
 }
 
+// Arguments for the GetInstalledExtensions function
+type GetInstalledExtensionsArgs struct {
+    // (optional) If true (the default), include disabled extensions in the results.
+    IncludeDisabledExtensions *bool
+    // (optional) If true, include installed extensions with errors.
+    IncludeErrors *bool
+    // (optional)
+    AssetTypes *[]string
+    // (optional)
+    IncludeInstallationIssues *bool
+}
+
 // [Preview API] Update an installed extension. Typically this API is used to enable or disable an extension.
-// ctx
-// extension (required)
-func (client Client) UpdateInstalledExtension(ctx context.Context, extension *InstalledExtension) (*InstalledExtension, error) {
-    if extension == nil {
+func (client Client) UpdateInstalledExtension(ctx context.Context, args UpdateInstalledExtensionArgs) (*InstalledExtension, error) {
+    if args.Extension == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "extension"}
     }
-    body, marshalErr := json.Marshal(*extension)
+    body, marshalErr := json.Marshal(*args.Extension)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -90,25 +95,27 @@ func (client Client) UpdateInstalledExtension(ctx context.Context, extension *In
     return &responseValue, err
 }
 
+// Arguments for the UpdateInstalledExtension function
+type UpdateInstalledExtensionArgs struct {
+    // (required)
+    Extension *InstalledExtension
+}
+
 // [Preview API] Get an installed extension by its publisher and extension name.
-// ctx
-// publisherName (required): Name of the publisher. Example: "fabrikam".
-// extensionName (required): Name of the extension. Example: "ops-tools".
-// assetTypes (optional)
-func (client Client) GetInstalledExtensionByName(ctx context.Context, publisherName *string, extensionName *string, assetTypes *[]string) (*InstalledExtension, error) {
+func (client Client) GetInstalledExtensionByName(ctx context.Context, args GetInstalledExtensionByNameArgs) (*InstalledExtension, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
+    routeValues["extensionName"] = *args.ExtensionName
 
     queryParams := url.Values{}
-    if assetTypes != nil {
-        listAsString := strings.Join((*assetTypes)[:], ":")
+    if args.AssetTypes != nil {
+        listAsString := strings.Join((*args.AssetTypes)[:], ":")
         queryParams.Add("assetTypes", listAsString)
     }
     locationId, _ := uuid.Parse("fb0da285-f23e-4b56-8b53-3ef5f9f6de66")
@@ -122,23 +129,29 @@ func (client Client) GetInstalledExtensionByName(ctx context.Context, publisherN
     return &responseValue, err
 }
 
+// Arguments for the GetInstalledExtensionByName function
+type GetInstalledExtensionByNameArgs struct {
+    // (required) Name of the publisher. Example: "fabrikam".
+    PublisherName *string
+    // (required) Name of the extension. Example: "ops-tools".
+    ExtensionName *string
+    // (optional)
+    AssetTypes *[]string
+}
+
 // [Preview API] Install the specified extension into the account / project collection.
-// ctx
-// publisherName (required): Name of the publisher. Example: "fabrikam".
-// extensionName (required): Name of the extension. Example: "ops-tools".
-// version (optional)
-func (client Client) InstallExtensionByName(ctx context.Context, publisherName *string, extensionName *string, version *string) (*InstalledExtension, error) {
+func (client Client) InstallExtensionByName(ctx context.Context, args InstallExtensionByNameArgs) (*InstalledExtension, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
-    if version != nil && *version != "" {
-        routeValues["version"] = *version
+    routeValues["extensionName"] = *args.ExtensionName
+    if args.Version != nil && *args.Version != "" {
+        routeValues["version"] = *args.Version
     }
 
     locationId, _ := uuid.Parse("fb0da285-f23e-4b56-8b53-3ef5f9f6de66")
@@ -152,29 +165,34 @@ func (client Client) InstallExtensionByName(ctx context.Context, publisherName *
     return &responseValue, err
 }
 
+// Arguments for the InstallExtensionByName function
+type InstallExtensionByNameArgs struct {
+    // (required) Name of the publisher. Example: "fabrikam".
+    PublisherName *string
+    // (required) Name of the extension. Example: "ops-tools".
+    ExtensionName *string
+    // (optional)
+    Version *string
+}
+
 // [Preview API] Uninstall the specified extension from the account / project collection.
-// ctx
-// publisherName (required): Name of the publisher. Example: "fabrikam".
-// extensionName (required): Name of the extension. Example: "ops-tools".
-// reason (optional)
-// reasonCode (optional)
-func (client Client) UninstallExtensionByName(ctx context.Context, publisherName *string, extensionName *string, reason *string, reasonCode *string) error {
+func (client Client) UninstallExtensionByName(ctx context.Context, args UninstallExtensionByNameArgs) error {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
+    routeValues["extensionName"] = *args.ExtensionName
 
     queryParams := url.Values{}
-    if reason != nil {
-        queryParams.Add("reason", *reason)
+    if args.Reason != nil {
+        queryParams.Add("reason", *args.Reason)
     }
-    if reasonCode != nil {
-        queryParams.Add("reasonCode", *reasonCode)
+    if args.ReasonCode != nil {
+        queryParams.Add("reasonCode", *args.ReasonCode)
     }
     locationId, _ := uuid.Parse("fb0da285-f23e-4b56-8b53-3ef5f9f6de66")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -183,5 +201,17 @@ func (client Client) UninstallExtensionByName(ctx context.Context, publisherName
     }
 
     return nil
+}
+
+// Arguments for the UninstallExtensionByName function
+type UninstallExtensionByNameArgs struct {
+    // (required) Name of the publisher. Example: "fabrikam".
+    PublisherName *string
+    // (required) Name of the extension. Example: "ops-tools".
+    ExtensionName *string
+    // (optional)
+    Reason *string
+    // (optional)
+    ReasonCode *string
 }
 

@@ -37,14 +37,12 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 }
 
 // [Preview API] Removes the avatar for the project.
-// ctx
-// projectId (required): The ID or name of the project.
-func (client Client) RemoveProjectAvatar(ctx context.Context, projectId *string) error {
+func (client Client) RemoveProjectAvatar(ctx context.Context, args RemoveProjectAvatarArgs) error {
     routeValues := make(map[string]string)
-    if projectId == nil || *projectId == "" {
+    if args.ProjectId == nil || *args.ProjectId == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
-    routeValues["projectId"] = *projectId
+    routeValues["projectId"] = *args.ProjectId
 
     locationId, _ := uuid.Parse("54b2a2a0-859b-4d05-827c-ec4c862f641a")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -55,21 +53,24 @@ func (client Client) RemoveProjectAvatar(ctx context.Context, projectId *string)
     return nil
 }
 
+// Arguments for the RemoveProjectAvatar function
+type RemoveProjectAvatarArgs struct {
+    // (required) The ID or name of the project.
+    ProjectId *string
+}
+
 // [Preview API] Sets the avatar for the project.
-// ctx
-// avatarBlob (required): The avatar blob data object to upload.
-// projectId (required): The ID or name of the project.
-func (client Client) SetProjectAvatar(ctx context.Context, avatarBlob *ProjectAvatar, projectId *string) error {
-    if avatarBlob == nil {
+func (client Client) SetProjectAvatar(ctx context.Context, args SetProjectAvatarArgs) error {
+    if args.AvatarBlob == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "avatarBlob"}
     }
     routeValues := make(map[string]string)
-    if projectId == nil || *projectId == "" {
+    if args.ProjectId == nil || *args.ProjectId == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
-    routeValues["projectId"] = *projectId
+    routeValues["projectId"] = *args.ProjectId
 
-    body, marshalErr := json.Marshal(*avatarBlob)
+    body, marshalErr := json.Marshal(*args.AvatarBlob)
     if marshalErr != nil {
         return marshalErr
     }
@@ -82,21 +83,26 @@ func (client Client) SetProjectAvatar(ctx context.Context, avatarBlob *ProjectAv
     return nil
 }
 
+// Arguments for the SetProjectAvatar function
+type SetProjectAvatarArgs struct {
+    // (required) The avatar blob data object to upload.
+    AvatarBlob *ProjectAvatar
+    // (required) The ID or name of the project.
+    ProjectId *string
+}
+
 // [Preview API]
-// ctx
-// connectedServiceCreationData (required)
-// projectId (required)
-func (client Client) CreateConnectedService(ctx context.Context, connectedServiceCreationData *WebApiConnectedServiceDetails, projectId *string) (*WebApiConnectedService, error) {
-    if connectedServiceCreationData == nil {
+func (client Client) CreateConnectedService(ctx context.Context, args CreateConnectedServiceArgs) (*WebApiConnectedService, error) {
+    if args.ConnectedServiceCreationData == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "connectedServiceCreationData"}
     }
     routeValues := make(map[string]string)
-    if projectId == nil || *projectId == "" {
+    if args.ProjectId == nil || *args.ProjectId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
-    routeValues["projectId"] = *projectId
+    routeValues["projectId"] = *args.ProjectId
 
-    body, marshalErr := json.Marshal(*connectedServiceCreationData)
+    body, marshalErr := json.Marshal(*args.ConnectedServiceCreationData)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -111,20 +117,25 @@ func (client Client) CreateConnectedService(ctx context.Context, connectedServic
     return &responseValue, err
 }
 
+// Arguments for the CreateConnectedService function
+type CreateConnectedServiceArgs struct {
+    // (required)
+    ConnectedServiceCreationData *WebApiConnectedServiceDetails
+    // (required)
+    ProjectId *string
+}
+
 // [Preview API]
-// ctx
-// projectId (required)
-// name (required)
-func (client Client) GetConnectedServiceDetails(ctx context.Context, projectId *string, name *string) (*WebApiConnectedServiceDetails, error) {
+func (client Client) GetConnectedServiceDetails(ctx context.Context, args GetConnectedServiceDetailsArgs) (*WebApiConnectedServiceDetails, error) {
     routeValues := make(map[string]string)
-    if projectId == nil || *projectId == "" {
+    if args.ProjectId == nil || *args.ProjectId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
-    routeValues["projectId"] = *projectId
-    if name == nil || *name == "" {
+    routeValues["projectId"] = *args.ProjectId
+    if args.Name == nil || *args.Name == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
-    routeValues["name"] = *name
+    routeValues["name"] = *args.Name
 
     locationId, _ := uuid.Parse("b4f70219-e18b-42c5-abe3-98b07d35525e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -137,20 +148,25 @@ func (client Client) GetConnectedServiceDetails(ctx context.Context, projectId *
     return &responseValue, err
 }
 
+// Arguments for the GetConnectedServiceDetails function
+type GetConnectedServiceDetailsArgs struct {
+    // (required)
+    ProjectId *string
+    // (required)
+    Name *string
+}
+
 // [Preview API]
-// ctx
-// projectId (required)
-// kind (optional)
-func (client Client) GetConnectedServices(ctx context.Context, projectId *string, kind *ConnectedServiceKind) (*[]WebApiConnectedService, error) {
+func (client Client) GetConnectedServices(ctx context.Context, args GetConnectedServicesArgs) (*[]WebApiConnectedService, error) {
     routeValues := make(map[string]string)
-    if projectId == nil || *projectId == "" {
+    if args.ProjectId == nil || *args.ProjectId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
-    routeValues["projectId"] = *projectId
+    routeValues["projectId"] = *args.ProjectId
 
     queryParams := url.Values{}
-    if kind != nil {
-        queryParams.Add("kind", string(*kind))
+    if args.Kind != nil {
+        queryParams.Add("kind", string(*args.Kind))
     }
     locationId, _ := uuid.Parse("b4f70219-e18b-42c5-abe3-98b07d35525e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -163,29 +179,32 @@ func (client Client) GetConnectedServices(ctx context.Context, projectId *string
     return &responseValue, err
 }
 
+// Arguments for the GetConnectedServices function
+type GetConnectedServicesArgs struct {
+    // (required)
+    ProjectId *string
+    // (optional)
+    Kind *ConnectedServiceKind
+}
+
 // Get a list of members for a specific team.
-// ctx
-// projectId (required): The name or ID (GUID) of the team project the team belongs to.
-// teamId (required): The name or ID (GUID) of the team .
-// top (optional)
-// skip (optional)
-func (client Client) GetTeamMembersWithExtendedProperties(ctx context.Context, projectId *string, teamId *string, top *int, skip *int) (*[]TeamMember, error) {
+func (client Client) GetTeamMembersWithExtendedProperties(ctx context.Context, args GetTeamMembersWithExtendedPropertiesArgs) (*[]TeamMember, error) {
     routeValues := make(map[string]string)
-    if projectId == nil || *projectId == "" {
+    if args.ProjectId == nil || *args.ProjectId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
-    routeValues["projectId"] = *projectId
-    if teamId == nil || *teamId == "" {
+    routeValues["projectId"] = *args.ProjectId
+    if args.TeamId == nil || *args.TeamId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "teamId"} 
     }
-    routeValues["teamId"] = *teamId
+    routeValues["teamId"] = *args.TeamId
 
     queryParams := url.Values{}
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    if skip != nil {
-        queryParams.Add("$skip", strconv.Itoa(*skip))
+    if args.Skip != nil {
+        queryParams.Add("$skip", strconv.Itoa(*args.Skip))
     }
     locationId, _ := uuid.Parse("294c494c-2600-4d7e-b76c-3dd50c3c95be")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -198,15 +217,25 @@ func (client Client) GetTeamMembersWithExtendedProperties(ctx context.Context, p
     return &responseValue, err
 }
 
+// Arguments for the GetTeamMembersWithExtendedProperties function
+type GetTeamMembersWithExtendedPropertiesArgs struct {
+    // (required) The name or ID (GUID) of the team project the team belongs to.
+    ProjectId *string
+    // (required) The name or ID (GUID) of the team .
+    TeamId *string
+    // (optional)
+    Top *int
+    // (optional)
+    Skip *int
+}
+
 // Get a process by ID.
-// ctx
-// processId (required): ID for a process.
-func (client Client) GetProcessById(ctx context.Context, processId *uuid.UUID) (*Process, error) {
+func (client Client) GetProcessById(ctx context.Context, args GetProcessByIdArgs) (*Process, error) {
     routeValues := make(map[string]string)
-    if processId == nil {
+    if args.ProcessId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "processId"} 
     }
-    routeValues["processId"] = (*processId).String()
+    routeValues["processId"] = (*args.ProcessId).String()
 
     locationId, _ := uuid.Parse("93878975-88c5-4e6a-8abb-7ddd77a8a7d8")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -219,9 +248,14 @@ func (client Client) GetProcessById(ctx context.Context, processId *uuid.UUID) (
     return &responseValue, err
 }
 
+// Arguments for the GetProcessById function
+type GetProcessByIdArgs struct {
+    // (required) ID for a process.
+    ProcessId *uuid.UUID
+}
+
 // Get a list of processes.
-// ctx
-func (client Client) GetProcesses(ctx context.Context, ) (*[]Process, error) {
+func (client Client) GetProcesses(ctx context.Context, args GetProcessesArgs) (*[]Process, error) {
     locationId, _ := uuid.Parse("93878975-88c5-4e6a-8abb-7ddd77a8a7d8")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, nil, nil, "", "application/json", nil)
     if err != nil {
@@ -233,15 +267,17 @@ func (client Client) GetProcesses(ctx context.Context, ) (*[]Process, error) {
     return &responseValue, err
 }
 
+// Arguments for the GetProcesses function
+type GetProcessesArgs struct {
+}
+
 // Get project collection with the specified id or name.
-// ctx
-// collectionId (required)
-func (client Client) GetProjectCollection(ctx context.Context, collectionId *string) (*TeamProjectCollection, error) {
+func (client Client) GetProjectCollection(ctx context.Context, args GetProjectCollectionArgs) (*TeamProjectCollection, error) {
     routeValues := make(map[string]string)
-    if collectionId == nil || *collectionId == "" {
+    if args.CollectionId == nil || *args.CollectionId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "collectionId"} 
     }
-    routeValues["collectionId"] = *collectionId
+    routeValues["collectionId"] = *args.CollectionId
 
     locationId, _ := uuid.Parse("8031090f-ef1d-4af6-85fc-698cd75d42bf")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -254,17 +290,20 @@ func (client Client) GetProjectCollection(ctx context.Context, collectionId *str
     return &responseValue, err
 }
 
+// Arguments for the GetProjectCollection function
+type GetProjectCollectionArgs struct {
+    // (required)
+    CollectionId *string
+}
+
 // Get project collection references for this application.
-// ctx
-// top (optional)
-// skip (optional)
-func (client Client) GetProjectCollections(ctx context.Context, top *int, skip *int) (*[]TeamProjectCollectionReference, error) {
+func (client Client) GetProjectCollections(ctx context.Context, args GetProjectCollectionsArgs) (*[]TeamProjectCollectionReference, error) {
     queryParams := url.Values{}
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    if skip != nil {
-        queryParams.Add("$skip", strconv.Itoa(*skip))
+    if args.Skip != nil {
+        queryParams.Add("$skip", strconv.Itoa(*args.Skip))
     }
     locationId, _ := uuid.Parse("8031090f-ef1d-4af6-85fc-698cd75d42bf")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
@@ -277,24 +316,28 @@ func (client Client) GetProjectCollections(ctx context.Context, top *int, skip *
     return &responseValue, err
 }
 
+// Arguments for the GetProjectCollections function
+type GetProjectCollectionsArgs struct {
+    // (optional)
+    Top *int
+    // (optional)
+    Skip *int
+}
+
 // Get project with the specified id or name, optionally including capabilities.
-// ctx
-// projectId (required)
-// includeCapabilities (optional): Include capabilities (such as source control) in the team project result (default: false).
-// includeHistory (optional): Search within renamed projects (that had such name in the past).
-func (client Client) GetProject(ctx context.Context, projectId *string, includeCapabilities *bool, includeHistory *bool) (*TeamProject, error) {
+func (client Client) GetProject(ctx context.Context, args GetProjectArgs) (*TeamProject, error) {
     routeValues := make(map[string]string)
-    if projectId == nil || *projectId == "" {
+    if args.ProjectId == nil || *args.ProjectId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
-    routeValues["projectId"] = *projectId
+    routeValues["projectId"] = *args.ProjectId
 
     queryParams := url.Values{}
-    if includeCapabilities != nil {
-        queryParams.Add("includeCapabilities", strconv.FormatBool(*includeCapabilities))
+    if args.IncludeCapabilities != nil {
+        queryParams.Add("includeCapabilities", strconv.FormatBool(*args.IncludeCapabilities))
     }
-    if includeHistory != nil {
-        queryParams.Add("includeHistory", strconv.FormatBool(*includeHistory))
+    if args.IncludeHistory != nil {
+        queryParams.Add("includeHistory", strconv.FormatBool(*args.IncludeHistory))
     }
     locationId, _ := uuid.Parse("603fe2ac-9723-48b9-88ad-09305aa6c6e1")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -307,29 +350,33 @@ func (client Client) GetProject(ctx context.Context, projectId *string, includeC
     return &responseValue, err
 }
 
+// Arguments for the GetProject function
+type GetProjectArgs struct {
+    // (required)
+    ProjectId *string
+    // (optional) Include capabilities (such as source control) in the team project result (default: false).
+    IncludeCapabilities *bool
+    // (optional) Search within renamed projects (that had such name in the past).
+    IncludeHistory *bool
+}
+
 // Get all projects in the organization that the authenticated user has access to.
-// ctx
-// stateFilter (optional): Filter on team projects in a specific team project state (default: WellFormed).
-// top (optional)
-// skip (optional)
-// continuationToken (optional)
-// getDefaultTeamImageUrl (optional)
-func (client Client) GetProjects(ctx context.Context, stateFilter *ProjectState, top *int, skip *int, continuationToken *string, getDefaultTeamImageUrl *bool) (*[]TeamProjectReference, error) {
+func (client Client) GetProjects(ctx context.Context, args GetProjectsArgs) (*[]TeamProjectReference, error) {
     queryParams := url.Values{}
-    if stateFilter != nil {
-        queryParams.Add("stateFilter", string(*stateFilter))
+    if args.StateFilter != nil {
+        queryParams.Add("stateFilter", string(*args.StateFilter))
     }
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    if skip != nil {
-        queryParams.Add("$skip", strconv.Itoa(*skip))
+    if args.Skip != nil {
+        queryParams.Add("$skip", strconv.Itoa(*args.Skip))
     }
-    if continuationToken != nil {
-        queryParams.Add("continuationToken", *continuationToken)
+    if args.ContinuationToken != nil {
+        queryParams.Add("continuationToken", *args.ContinuationToken)
     }
-    if getDefaultTeamImageUrl != nil {
-        queryParams.Add("getDefaultTeamImageUrl", strconv.FormatBool(*getDefaultTeamImageUrl))
+    if args.GetDefaultTeamImageUrl != nil {
+        queryParams.Add("getDefaultTeamImageUrl", strconv.FormatBool(*args.GetDefaultTeamImageUrl))
     }
     locationId, _ := uuid.Parse("603fe2ac-9723-48b9-88ad-09305aa6c6e1")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
@@ -342,14 +389,26 @@ func (client Client) GetProjects(ctx context.Context, stateFilter *ProjectState,
     return &responseValue, err
 }
 
+// Arguments for the GetProjects function
+type GetProjectsArgs struct {
+    // (optional) Filter on team projects in a specific team project state (default: WellFormed).
+    StateFilter *ProjectState
+    // (optional)
+    Top *int
+    // (optional)
+    Skip *int
+    // (optional)
+    ContinuationToken *string
+    // (optional)
+    GetDefaultTeamImageUrl *bool
+}
+
 // Queues a project to be created. Use the [GetOperation](../../operations/operations/get) to periodically check for create project status.
-// ctx
-// projectToCreate (required): The project to create.
-func (client Client) QueueCreateProject(ctx context.Context, projectToCreate *TeamProject) (*OperationReference, error) {
-    if projectToCreate == nil {
+func (client Client) QueueCreateProject(ctx context.Context, args QueueCreateProjectArgs) (*OperationReference, error) {
+    if args.ProjectToCreate == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "projectToCreate"}
     }
-    body, marshalErr := json.Marshal(*projectToCreate)
+    body, marshalErr := json.Marshal(*args.ProjectToCreate)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -364,15 +423,19 @@ func (client Client) QueueCreateProject(ctx context.Context, projectToCreate *Te
     return &responseValue, err
 }
 
+// Arguments for the QueueCreateProject function
+type QueueCreateProjectArgs struct {
+    // (required) The project to create.
+    ProjectToCreate *TeamProject
+}
+
 // Queues a project to be deleted. Use the [GetOperation](../../operations/operations/get) to periodically check for delete project status.
-// ctx
-// projectId (required): The project id of the project to delete.
-func (client Client) QueueDeleteProject(ctx context.Context, projectId *uuid.UUID) (*OperationReference, error) {
+func (client Client) QueueDeleteProject(ctx context.Context, args QueueDeleteProjectArgs) (*OperationReference, error) {
     routeValues := make(map[string]string)
-    if projectId == nil {
+    if args.ProjectId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "projectId"} 
     }
-    routeValues["projectId"] = (*projectId).String()
+    routeValues["projectId"] = (*args.ProjectId).String()
 
     locationId, _ := uuid.Parse("603fe2ac-9723-48b9-88ad-09305aa6c6e1")
     resp, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -385,21 +448,24 @@ func (client Client) QueueDeleteProject(ctx context.Context, projectId *uuid.UUI
     return &responseValue, err
 }
 
+// Arguments for the QueueDeleteProject function
+type QueueDeleteProjectArgs struct {
+    // (required) The project id of the project to delete.
+    ProjectId *uuid.UUID
+}
+
 // Update an existing project's name, abbreviation, description, or restore a project.
-// ctx
-// projectUpdate (required): The updates for the project. The state must be set to wellFormed to restore the project.
-// projectId (required): The project id of the project to update.
-func (client Client) UpdateProject(ctx context.Context, projectUpdate *TeamProject, projectId *uuid.UUID) (*OperationReference, error) {
-    if projectUpdate == nil {
+func (client Client) UpdateProject(ctx context.Context, args UpdateProjectArgs) (*OperationReference, error) {
+    if args.ProjectUpdate == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "projectUpdate"}
     }
     routeValues := make(map[string]string)
-    if projectId == nil {
+    if args.ProjectId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "projectId"} 
     }
-    routeValues["projectId"] = (*projectId).String()
+    routeValues["projectId"] = (*args.ProjectId).String()
 
-    body, marshalErr := json.Marshal(*projectUpdate)
+    body, marshalErr := json.Marshal(*args.ProjectUpdate)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -414,20 +480,25 @@ func (client Client) UpdateProject(ctx context.Context, projectUpdate *TeamProje
     return &responseValue, err
 }
 
+// Arguments for the UpdateProject function
+type UpdateProjectArgs struct {
+    // (required) The updates for the project. The state must be set to wellFormed to restore the project.
+    ProjectUpdate *TeamProject
+    // (required) The project id of the project to update.
+    ProjectId *uuid.UUID
+}
+
 // [Preview API] Get a collection of team project properties.
-// ctx
-// projectId (required): The team project ID.
-// keys (optional): A comma-delimited string of team project property names. Wildcard characters ("?" and "*") are supported. If no key is specified, all properties will be returned.
-func (client Client) GetProjectProperties(ctx context.Context, projectId *uuid.UUID, keys *[]string) (*[]ProjectProperty, error) {
+func (client Client) GetProjectProperties(ctx context.Context, args GetProjectPropertiesArgs) (*[]ProjectProperty, error) {
     routeValues := make(map[string]string)
-    if projectId == nil {
+    if args.ProjectId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "projectId"} 
     }
-    routeValues["projectId"] = (*projectId).String()
+    routeValues["projectId"] = (*args.ProjectId).String()
 
     queryParams := url.Values{}
-    if keys != nil {
-        listAsString := strings.Join((*keys)[:], ",")
+    if args.Keys != nil {
+        listAsString := strings.Join((*args.Keys)[:], ",")
         queryParams.Add("keys", listAsString)
     }
     locationId, _ := uuid.Parse("4976a71a-4487-49aa-8aab-a1eda469037a")
@@ -441,21 +512,26 @@ func (client Client) GetProjectProperties(ctx context.Context, projectId *uuid.U
     return &responseValue, err
 }
 
+// Arguments for the GetProjectProperties function
+type GetProjectPropertiesArgs struct {
+    // (required) The team project ID.
+    ProjectId *uuid.UUID
+    // (optional) A comma-delimited string of team project property names. Wildcard characters ("?" and "*") are supported. If no key is specified, all properties will be returned.
+    Keys *[]string
+}
+
 // [Preview API] Create, update, and delete team project properties.
-// ctx
-// projectId (required): The team project ID.
-// patchDocument (required): A JSON Patch document that represents an array of property operations. See RFC 6902 for more details on JSON Patch. The accepted operation verbs are Add and Remove, where Add is used for both creating and updating properties. The path consists of a forward slash and a property name.
-func (client Client) SetProjectProperties(ctx context.Context, projectId *uuid.UUID, patchDocument *[]JsonPatchOperation) error {
-    if patchDocument == nil {
+func (client Client) SetProjectProperties(ctx context.Context, args SetProjectPropertiesArgs) error {
+    if args.PatchDocument == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "patchDocument"}
     }
     routeValues := make(map[string]string)
-    if projectId == nil {
+    if args.ProjectId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "projectId"} 
     }
-    routeValues["projectId"] = (*projectId).String()
+    routeValues["projectId"] = (*args.ProjectId).String()
 
-    body, marshalErr := json.Marshal(*patchDocument)
+    body, marshalErr := json.Marshal(*args.PatchDocument)
     if marshalErr != nil {
         return marshalErr
     }
@@ -468,14 +544,20 @@ func (client Client) SetProjectProperties(ctx context.Context, projectId *uuid.U
     return nil
 }
 
+// Arguments for the SetProjectProperties function
+type SetProjectPropertiesArgs struct {
+    // (required) The team project ID.
+    ProjectId *uuid.UUID
+    // (required) A JSON Patch document that represents an array of property operations. See RFC 6902 for more details on JSON Patch. The accepted operation verbs are Add and Remove, where Add is used for both creating and updating properties. The path consists of a forward slash and a property name.
+    PatchDocument *[]JsonPatchOperation
+}
+
 // [Preview API]
-// ctx
-// proxy (required)
-func (client Client) CreateOrUpdateProxy(ctx context.Context, proxy *Proxy) (*Proxy, error) {
-    if proxy == nil {
+func (client Client) CreateOrUpdateProxy(ctx context.Context, args CreateOrUpdateProxyArgs) (*Proxy, error) {
+    if args.Proxy == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "proxy"}
     }
-    body, marshalErr := json.Marshal(*proxy)
+    body, marshalErr := json.Marshal(*args.Proxy)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -490,18 +572,21 @@ func (client Client) CreateOrUpdateProxy(ctx context.Context, proxy *Proxy) (*Pr
     return &responseValue, err
 }
 
+// Arguments for the CreateOrUpdateProxy function
+type CreateOrUpdateProxyArgs struct {
+    // (required)
+    Proxy *Proxy
+}
+
 // [Preview API]
-// ctx
-// proxyUrl (required)
-// site (optional)
-func (client Client) DeleteProxy(ctx context.Context, proxyUrl *string, site *string) error {
+func (client Client) DeleteProxy(ctx context.Context, args DeleteProxyArgs) error {
     queryParams := url.Values{}
-    if proxyUrl == nil {
+    if args.ProxyUrl == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "proxyUrl"}
     }
-    queryParams.Add("proxyUrl", *proxyUrl)
-    if site != nil {
-        queryParams.Add("site", *site)
+    queryParams.Add("proxyUrl", *args.ProxyUrl)
+    if args.Site != nil {
+        queryParams.Add("site", *args.Site)
     }
     locationId, _ := uuid.Parse("ec1f4311-f2b4-4c15-b2b8-8990b80d2908")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.2", nil, queryParams, nil, "", "application/json", nil)
@@ -512,13 +597,19 @@ func (client Client) DeleteProxy(ctx context.Context, proxyUrl *string, site *st
     return nil
 }
 
+// Arguments for the DeleteProxy function
+type DeleteProxyArgs struct {
+    // (required)
+    ProxyUrl *string
+    // (optional)
+    Site *string
+}
+
 // [Preview API]
-// ctx
-// proxyUrl (optional)
-func (client Client) GetProxies(ctx context.Context, proxyUrl *string) (*[]Proxy, error) {
+func (client Client) GetProxies(ctx context.Context, args GetProxiesArgs) (*[]Proxy, error) {
     queryParams := url.Values{}
-    if proxyUrl != nil {
-        queryParams.Add("proxyUrl", *proxyUrl)
+    if args.ProxyUrl != nil {
+        queryParams.Add("proxyUrl", *args.ProxyUrl)
     }
     locationId, _ := uuid.Parse("ec1f4311-f2b4-4c15-b2b8-8990b80d2908")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", nil, queryParams, nil, "", "application/json", nil)
@@ -531,21 +622,24 @@ func (client Client) GetProxies(ctx context.Context, proxyUrl *string) (*[]Proxy
     return &responseValue, err
 }
 
+// Arguments for the GetProxies function
+type GetProxiesArgs struct {
+    // (optional)
+    ProxyUrl *string
+}
+
 // Create a team in a team project.
-// ctx
-// team (required): The team data used to create the team.
-// projectId (required): The name or ID (GUID) of the team project in which to create the team.
-func (client Client) CreateTeam(ctx context.Context, team *WebApiTeam, projectId *string) (*WebApiTeam, error) {
-    if team == nil {
+func (client Client) CreateTeam(ctx context.Context, args CreateTeamArgs) (*WebApiTeam, error) {
+    if args.Team == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "team"}
     }
     routeValues := make(map[string]string)
-    if projectId == nil || *projectId == "" {
+    if args.ProjectId == nil || *args.ProjectId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
-    routeValues["projectId"] = *projectId
+    routeValues["projectId"] = *args.ProjectId
 
-    body, marshalErr := json.Marshal(*team)
+    body, marshalErr := json.Marshal(*args.Team)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -560,20 +654,25 @@ func (client Client) CreateTeam(ctx context.Context, team *WebApiTeam, projectId
     return &responseValue, err
 }
 
+// Arguments for the CreateTeam function
+type CreateTeamArgs struct {
+    // (required) The team data used to create the team.
+    Team *WebApiTeam
+    // (required) The name or ID (GUID) of the team project in which to create the team.
+    ProjectId *string
+}
+
 // Delete a team.
-// ctx
-// projectId (required): The name or ID (GUID) of the team project containing the team to delete.
-// teamId (required): The name or ID of the team to delete.
-func (client Client) DeleteTeam(ctx context.Context, projectId *string, teamId *string) error {
+func (client Client) DeleteTeam(ctx context.Context, args DeleteTeamArgs) error {
     routeValues := make(map[string]string)
-    if projectId == nil || *projectId == "" {
+    if args.ProjectId == nil || *args.ProjectId == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
-    routeValues["projectId"] = *projectId
-    if teamId == nil || *teamId == "" {
+    routeValues["projectId"] = *args.ProjectId
+    if args.TeamId == nil || *args.TeamId == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "teamId"} 
     }
-    routeValues["teamId"] = *teamId
+    routeValues["teamId"] = *args.TeamId
 
     locationId, _ := uuid.Parse("d30a3dd1-f8ba-442a-b86a-bd0c0c383e59")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -584,25 +683,29 @@ func (client Client) DeleteTeam(ctx context.Context, projectId *string, teamId *
     return nil
 }
 
+// Arguments for the DeleteTeam function
+type DeleteTeamArgs struct {
+    // (required) The name or ID (GUID) of the team project containing the team to delete.
+    ProjectId *string
+    // (required) The name or ID of the team to delete.
+    TeamId *string
+}
+
 // Get a specific team.
-// ctx
-// projectId (required): The name or ID (GUID) of the team project containing the team.
-// teamId (required): The name or ID (GUID) of the team.
-// expandIdentity (optional): A value indicating whether or not to expand Identity information in the result WebApiTeam object.
-func (client Client) GetTeam(ctx context.Context, projectId *string, teamId *string, expandIdentity *bool) (*WebApiTeam, error) {
+func (client Client) GetTeam(ctx context.Context, args GetTeamArgs) (*WebApiTeam, error) {
     routeValues := make(map[string]string)
-    if projectId == nil || *projectId == "" {
+    if args.ProjectId == nil || *args.ProjectId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
-    routeValues["projectId"] = *projectId
-    if teamId == nil || *teamId == "" {
+    routeValues["projectId"] = *args.ProjectId
+    if args.TeamId == nil || *args.TeamId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "teamId"} 
     }
-    routeValues["teamId"] = *teamId
+    routeValues["teamId"] = *args.TeamId
 
     queryParams := url.Values{}
-    if expandIdentity != nil {
-        queryParams.Add("$expandIdentity", strconv.FormatBool(*expandIdentity))
+    if args.ExpandIdentity != nil {
+        queryParams.Add("$expandIdentity", strconv.FormatBool(*args.ExpandIdentity))
     }
     locationId, _ := uuid.Parse("d30a3dd1-f8ba-442a-b86a-bd0c0c383e59")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -615,32 +718,36 @@ func (client Client) GetTeam(ctx context.Context, projectId *string, teamId *str
     return &responseValue, err
 }
 
+// Arguments for the GetTeam function
+type GetTeamArgs struct {
+    // (required) The name or ID (GUID) of the team project containing the team.
+    ProjectId *string
+    // (required) The name or ID (GUID) of the team.
+    TeamId *string
+    // (optional) A value indicating whether or not to expand Identity information in the result WebApiTeam object.
+    ExpandIdentity *bool
+}
+
 // Get a list of teams.
-// ctx
-// projectId (required)
-// mine (optional): If true return all the teams requesting user is member, otherwise return all the teams user has read access.
-// top (optional): Maximum number of teams to return.
-// skip (optional): Number of teams to skip.
-// expandIdentity (optional): A value indicating whether or not to expand Identity information in the result WebApiTeam object.
-func (client Client) GetTeams(ctx context.Context, projectId *string, mine *bool, top *int, skip *int, expandIdentity *bool) (*[]WebApiTeam, error) {
+func (client Client) GetTeams(ctx context.Context, args GetTeamsArgs) (*[]WebApiTeam, error) {
     routeValues := make(map[string]string)
-    if projectId == nil || *projectId == "" {
+    if args.ProjectId == nil || *args.ProjectId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
-    routeValues["projectId"] = *projectId
+    routeValues["projectId"] = *args.ProjectId
 
     queryParams := url.Values{}
-    if mine != nil {
-        queryParams.Add("$mine", strconv.FormatBool(*mine))
+    if args.Mine != nil {
+        queryParams.Add("$mine", strconv.FormatBool(*args.Mine))
     }
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    if skip != nil {
-        queryParams.Add("$skip", strconv.Itoa(*skip))
+    if args.Skip != nil {
+        queryParams.Add("$skip", strconv.Itoa(*args.Skip))
     }
-    if expandIdentity != nil {
-        queryParams.Add("$expandIdentity", strconv.FormatBool(*expandIdentity))
+    if args.ExpandIdentity != nil {
+        queryParams.Add("$expandIdentity", strconv.FormatBool(*args.ExpandIdentity))
     }
     locationId, _ := uuid.Parse("d30a3dd1-f8ba-442a-b86a-bd0c0c383e59")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -653,26 +760,36 @@ func (client Client) GetTeams(ctx context.Context, projectId *string, mine *bool
     return &responseValue, err
 }
 
+// Arguments for the GetTeams function
+type GetTeamsArgs struct {
+    // (required)
+    ProjectId *string
+    // (optional) If true return all the teams requesting user is member, otherwise return all the teams user has read access.
+    Mine *bool
+    // (optional) Maximum number of teams to return.
+    Top *int
+    // (optional) Number of teams to skip.
+    Skip *int
+    // (optional) A value indicating whether or not to expand Identity information in the result WebApiTeam object.
+    ExpandIdentity *bool
+}
+
 // Update a team's name and/or description.
-// ctx
-// teamData (required)
-// projectId (required): The name or ID (GUID) of the team project containing the team to update.
-// teamId (required): The name of ID of the team to update.
-func (client Client) UpdateTeam(ctx context.Context, teamData *WebApiTeam, projectId *string, teamId *string) (*WebApiTeam, error) {
-    if teamData == nil {
+func (client Client) UpdateTeam(ctx context.Context, args UpdateTeamArgs) (*WebApiTeam, error) {
+    if args.TeamData == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "teamData"}
     }
     routeValues := make(map[string]string)
-    if projectId == nil || *projectId == "" {
+    if args.ProjectId == nil || *args.ProjectId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
     }
-    routeValues["projectId"] = *projectId
-    if teamId == nil || *teamId == "" {
+    routeValues["projectId"] = *args.ProjectId
+    if args.TeamId == nil || *args.TeamId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "teamId"} 
     }
-    routeValues["teamId"] = *teamId
+    routeValues["teamId"] = *args.TeamId
 
-    body, marshalErr := json.Marshal(*teamData)
+    body, marshalErr := json.Marshal(*args.TeamData)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -687,25 +804,30 @@ func (client Client) UpdateTeam(ctx context.Context, teamData *WebApiTeam, proje
     return &responseValue, err
 }
 
+// Arguments for the UpdateTeam function
+type UpdateTeamArgs struct {
+    // (required)
+    TeamData *WebApiTeam
+    // (required) The name or ID (GUID) of the team project containing the team to update.
+    ProjectId *string
+    // (required) The name of ID of the team to update.
+    TeamId *string
+}
+
 // [Preview API] Get a list of all teams.
-// ctx
-// mine (optional): If true, then return all teams requesting user is member. Otherwise return all teams user has read access.
-// top (optional): Maximum number of teams to return.
-// skip (optional): Number of teams to skip.
-// expandIdentity (optional): A value indicating whether or not to expand Identity information in the result WebApiTeam object.
-func (client Client) GetAllTeams(ctx context.Context, mine *bool, top *int, skip *int, expandIdentity *bool) (*[]WebApiTeam, error) {
+func (client Client) GetAllTeams(ctx context.Context, args GetAllTeamsArgs) (*[]WebApiTeam, error) {
     queryParams := url.Values{}
-    if mine != nil {
-        queryParams.Add("$mine", strconv.FormatBool(*mine))
+    if args.Mine != nil {
+        queryParams.Add("$mine", strconv.FormatBool(*args.Mine))
     }
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    if skip != nil {
-        queryParams.Add("$skip", strconv.Itoa(*skip))
+    if args.Skip != nil {
+        queryParams.Add("$skip", strconv.Itoa(*args.Skip))
     }
-    if expandIdentity != nil {
-        queryParams.Add("$expandIdentity", strconv.FormatBool(*expandIdentity))
+    if args.ExpandIdentity != nil {
+        queryParams.Add("$expandIdentity", strconv.FormatBool(*args.ExpandIdentity))
     }
     locationId, _ := uuid.Parse("7a4d9ee9-3433-4347-b47a-7a80f1cf307e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.3", nil, queryParams, nil, "", "application/json", nil)
@@ -716,5 +838,17 @@ func (client Client) GetAllTeams(ctx context.Context, mine *bool, top *int, skip
     var responseValue []WebApiTeam
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the GetAllTeams function
+type GetAllTeamsArgs struct {
+    // (optional) If true, then return all teams requesting user is member. Otherwise return all teams user has read access.
+    Mine *bool
+    // (optional) Maximum number of teams to return.
+    Top *int
+    // (optional) Number of teams to skip.
+    Skip *int
+    // (optional) A value indicating whether or not to expand Identity information in the result WebApiTeam object.
+    ExpandIdentity *bool
 }
 

@@ -34,24 +34,20 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 }
 
 // [Preview API] Creates a session, a wrapper around a feed that can store additional metadata on the packages published to it.
-// ctx
-// sessionRequest (required): The feed and metadata for the session
-// protocol (required): The protocol that the session will target
-// project (optional): Project ID or project name
-func (client Client) CreateSession(ctx context.Context, sessionRequest *SessionRequest, protocol *string, project *string) (*SessionResponse, error) {
-    if sessionRequest == nil {
+func (client Client) CreateSession(ctx context.Context, args CreateSessionArgs) (*SessionResponse, error) {
+    if args.SessionRequest == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "sessionRequest"}
     }
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
-    if protocol == nil || *protocol == "" {
+    if args.Protocol == nil || *args.Protocol == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "protocol"} 
     }
-    routeValues["protocol"] = *protocol
+    routeValues["protocol"] = *args.Protocol
 
-    body, marshalErr := json.Marshal(*sessionRequest)
+    body, marshalErr := json.Marshal(*args.SessionRequest)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -64,5 +60,15 @@ func (client Client) CreateSession(ctx context.Context, sessionRequest *SessionR
     var responseValue SessionResponse
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the CreateSession function
+type CreateSessionArgs struct {
+    // (required) The feed and metadata for the session
+    SessionRequest *SessionRequest
+    // (required) The protocol that the session will target
+    Protocol *string
+    // (optional) Project ID or project name
+    Project *string
 }
 

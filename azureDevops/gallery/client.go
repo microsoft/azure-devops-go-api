@@ -38,19 +38,16 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 }
 
 // [Preview API]
-// ctx
-// extensionId (required)
-// accountName (required)
-func (client Client) ShareExtensionById(ctx context.Context, extensionId *uuid.UUID, accountName *string) error {
+func (client Client) ShareExtensionById(ctx context.Context, args ShareExtensionByIdArgs) error {
     routeValues := make(map[string]string)
-    if extensionId == nil {
+    if args.ExtensionId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "extensionId"} 
     }
-    routeValues["extensionId"] = (*extensionId).String()
-    if accountName == nil || *accountName == "" {
+    routeValues["extensionId"] = (*args.ExtensionId).String()
+    if args.AccountName == nil || *args.AccountName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "accountName"} 
     }
-    routeValues["accountName"] = *accountName
+    routeValues["accountName"] = *args.AccountName
 
     locationId, _ := uuid.Parse("1f19631b-a0b4-4a03-89c2-d79785d24360")
     _, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -61,20 +58,25 @@ func (client Client) ShareExtensionById(ctx context.Context, extensionId *uuid.U
     return nil
 }
 
+// Arguments for the ShareExtensionById function
+type ShareExtensionByIdArgs struct {
+    // (required)
+    ExtensionId *uuid.UUID
+    // (required)
+    AccountName *string
+}
+
 // [Preview API]
-// ctx
-// extensionId (required)
-// accountName (required)
-func (client Client) UnshareExtensionById(ctx context.Context, extensionId *uuid.UUID, accountName *string) error {
+func (client Client) UnshareExtensionById(ctx context.Context, args UnshareExtensionByIdArgs) error {
     routeValues := make(map[string]string)
-    if extensionId == nil {
+    if args.ExtensionId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "extensionId"} 
     }
-    routeValues["extensionId"] = (*extensionId).String()
-    if accountName == nil || *accountName == "" {
+    routeValues["extensionId"] = (*args.ExtensionId).String()
+    if args.AccountName == nil || *args.AccountName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "accountName"} 
     }
-    routeValues["accountName"] = *accountName
+    routeValues["accountName"] = *args.AccountName
 
     locationId, _ := uuid.Parse("1f19631b-a0b4-4a03-89c2-d79785d24360")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -85,25 +87,29 @@ func (client Client) UnshareExtensionById(ctx context.Context, extensionId *uuid
     return nil
 }
 
+// Arguments for the UnshareExtensionById function
+type UnshareExtensionByIdArgs struct {
+    // (required)
+    ExtensionId *uuid.UUID
+    // (required)
+    AccountName *string
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-// extensionName (required)
-// accountName (required)
-func (client Client) ShareExtension(ctx context.Context, publisherName *string, extensionName *string, accountName *string) error {
+func (client Client) ShareExtension(ctx context.Context, args ShareExtensionArgs) error {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
-    if accountName == nil || *accountName == "" {
+    routeValues["extensionName"] = *args.ExtensionName
+    if args.AccountName == nil || *args.AccountName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "accountName"} 
     }
-    routeValues["accountName"] = *accountName
+    routeValues["accountName"] = *args.AccountName
 
     locationId, _ := uuid.Parse("a1e66d8f-f5de-4d16-8309-91a4e015ee46")
     _, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -114,25 +120,31 @@ func (client Client) ShareExtension(ctx context.Context, publisherName *string, 
     return nil
 }
 
+// Arguments for the ShareExtension function
+type ShareExtensionArgs struct {
+    // (required)
+    PublisherName *string
+    // (required)
+    ExtensionName *string
+    // (required)
+    AccountName *string
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-// extensionName (required)
-// accountName (required)
-func (client Client) UnshareExtension(ctx context.Context, publisherName *string, extensionName *string, accountName *string) error {
+func (client Client) UnshareExtension(ctx context.Context, args UnshareExtensionArgs) error {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
-    if accountName == nil || *accountName == "" {
+    routeValues["extensionName"] = *args.ExtensionName
+    if args.AccountName == nil || *args.AccountName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "accountName"} 
     }
-    routeValues["accountName"] = *accountName
+    routeValues["accountName"] = *args.AccountName
 
     locationId, _ := uuid.Parse("a1e66d8f-f5de-4d16-8309-91a4e015ee46")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -143,29 +155,34 @@ func (client Client) UnshareExtension(ctx context.Context, publisherName *string
     return nil
 }
 
+// Arguments for the UnshareExtension function
+type UnshareExtensionArgs struct {
+    // (required)
+    PublisherName *string
+    // (required)
+    ExtensionName *string
+    // (required)
+    AccountName *string
+}
+
 // [Preview API]
-// ctx
-// itemId (required)
-// installationTarget (required)
-// testCommerce (optional)
-// isFreeOrTrialInstall (optional)
-func (client Client) GetAcquisitionOptions(ctx context.Context, itemId *string, installationTarget *string, testCommerce *bool, isFreeOrTrialInstall *bool) (*AcquisitionOptions, error) {
+func (client Client) GetAcquisitionOptions(ctx context.Context, args GetAcquisitionOptionsArgs) (*AcquisitionOptions, error) {
     routeValues := make(map[string]string)
-    if itemId == nil || *itemId == "" {
+    if args.ItemId == nil || *args.ItemId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "itemId"} 
     }
-    routeValues["itemId"] = *itemId
+    routeValues["itemId"] = *args.ItemId
 
     queryParams := url.Values{}
-    if installationTarget == nil {
+    if args.InstallationTarget == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "installationTarget"}
     }
-    queryParams.Add("installationTarget", *installationTarget)
-    if testCommerce != nil {
-        queryParams.Add("testCommerce", strconv.FormatBool(*testCommerce))
+    queryParams.Add("installationTarget", *args.InstallationTarget)
+    if args.TestCommerce != nil {
+        queryParams.Add("testCommerce", strconv.FormatBool(*args.TestCommerce))
     }
-    if isFreeOrTrialInstall != nil {
-        queryParams.Add("isFreeOrTrialInstall", strconv.FormatBool(*isFreeOrTrialInstall))
+    if args.IsFreeOrTrialInstall != nil {
+        queryParams.Add("isFreeOrTrialInstall", strconv.FormatBool(*args.IsFreeOrTrialInstall))
     }
     locationId, _ := uuid.Parse("9d0a0105-075e-4760-aa15-8bcf54d1bd7d")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -178,14 +195,24 @@ func (client Client) GetAcquisitionOptions(ctx context.Context, itemId *string, 
     return &responseValue, err
 }
 
+// Arguments for the GetAcquisitionOptions function
+type GetAcquisitionOptionsArgs struct {
+    // (required)
+    ItemId *string
+    // (required)
+    InstallationTarget *string
+    // (optional)
+    TestCommerce *bool
+    // (optional)
+    IsFreeOrTrialInstall *bool
+}
+
 // [Preview API]
-// ctx
-// acquisitionRequest (required)
-func (client Client) RequestAcquisition(ctx context.Context, acquisitionRequest *ExtensionAcquisitionRequest) (*ExtensionAcquisitionRequest, error) {
-    if acquisitionRequest == nil {
+func (client Client) RequestAcquisition(ctx context.Context, args RequestAcquisitionArgs) (*ExtensionAcquisitionRequest, error) {
+    if args.AcquisitionRequest == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "acquisitionRequest"}
     }
-    body, marshalErr := json.Marshal(*acquisitionRequest)
+    body, marshalErr := json.Marshal(*args.AcquisitionRequest)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -200,44 +227,42 @@ func (client Client) RequestAcquisition(ctx context.Context, acquisitionRequest 
     return &responseValue, err
 }
 
+// Arguments for the RequestAcquisition function
+type RequestAcquisitionArgs struct {
+    // (required)
+    AcquisitionRequest *ExtensionAcquisitionRequest
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-// extensionName (required)
-// version (required)
-// assetType (required)
-// accountToken (optional)
-// acceptDefault (optional)
-// accountTokenHeader (optional): Header to pass the account token
-func (client Client) GetAssetByName(ctx context.Context, publisherName *string, extensionName *string, version *string, assetType *string, accountToken *string, acceptDefault *bool, accountTokenHeader *string) (io.ReadCloser, error) {
+func (client Client) GetAssetByName(ctx context.Context, args GetAssetByNameArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
-    if version == nil || *version == "" {
+    routeValues["extensionName"] = *args.ExtensionName
+    if args.Version == nil || *args.Version == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "version"} 
     }
-    routeValues["version"] = *version
-    if assetType == nil || *assetType == "" {
+    routeValues["version"] = *args.Version
+    if args.AssetType == nil || *args.AssetType == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "assetType"} 
     }
-    routeValues["assetType"] = *assetType
+    routeValues["assetType"] = *args.AssetType
 
     queryParams := url.Values{}
-    if accountToken != nil {
-        queryParams.Add("accountToken", *accountToken)
+    if args.AccountToken != nil {
+        queryParams.Add("accountToken", *args.AccountToken)
     }
-    if acceptDefault != nil {
-        queryParams.Add("acceptDefault", strconv.FormatBool(*acceptDefault))
+    if args.AcceptDefault != nil {
+        queryParams.Add("acceptDefault", strconv.FormatBool(*args.AcceptDefault))
     }
     additionalHeaders := make(map[string]string)
-    if accountTokenHeader != nil {
-        additionalHeaders["X-Market-AccountToken"] = *accountTokenHeader
+    if args.AccountTokenHeader != nil {
+        additionalHeaders["X-Market-AccountToken"] = *args.AccountTokenHeader
     }
     locationId, _ := uuid.Parse("7529171f-a002-4180-93ba-685f358a0482")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/octet-stream", additionalHeaders)
@@ -248,39 +273,50 @@ func (client Client) GetAssetByName(ctx context.Context, publisherName *string, 
     return resp.Body, err
 }
 
+// Arguments for the GetAssetByName function
+type GetAssetByNameArgs struct {
+    // (required)
+    PublisherName *string
+    // (required)
+    ExtensionName *string
+    // (required)
+    Version *string
+    // (required)
+    AssetType *string
+    // (optional)
+    AccountToken *string
+    // (optional)
+    AcceptDefault *bool
+    // (optional) Header to pass the account token
+    AccountTokenHeader *string
+}
+
 // [Preview API]
-// ctx
-// extensionId (required)
-// version (required)
-// assetType (required)
-// accountToken (optional)
-// acceptDefault (optional)
-// accountTokenHeader (optional): Header to pass the account token
-func (client Client) GetAsset(ctx context.Context, extensionId *uuid.UUID, version *string, assetType *string, accountToken *string, acceptDefault *bool, accountTokenHeader *string) (io.ReadCloser, error) {
+func (client Client) GetAsset(ctx context.Context, args GetAssetArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if extensionId == nil {
+    if args.ExtensionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "extensionId"} 
     }
-    routeValues["extensionId"] = (*extensionId).String()
-    if version == nil || *version == "" {
+    routeValues["extensionId"] = (*args.ExtensionId).String()
+    if args.Version == nil || *args.Version == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "version"} 
     }
-    routeValues["version"] = *version
-    if assetType == nil || *assetType == "" {
+    routeValues["version"] = *args.Version
+    if args.AssetType == nil || *args.AssetType == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "assetType"} 
     }
-    routeValues["assetType"] = *assetType
+    routeValues["assetType"] = *args.AssetType
 
     queryParams := url.Values{}
-    if accountToken != nil {
-        queryParams.Add("accountToken", *accountToken)
+    if args.AccountToken != nil {
+        queryParams.Add("accountToken", *args.AccountToken)
     }
-    if acceptDefault != nil {
-        queryParams.Add("acceptDefault", strconv.FormatBool(*acceptDefault))
+    if args.AcceptDefault != nil {
+        queryParams.Add("acceptDefault", strconv.FormatBool(*args.AcceptDefault))
     }
     additionalHeaders := make(map[string]string)
-    if accountTokenHeader != nil {
-        additionalHeaders["X-Market-AccountToken"] = *accountTokenHeader
+    if args.AccountTokenHeader != nil {
+        additionalHeaders["X-Market-AccountToken"] = *args.AccountTokenHeader
     }
     locationId, _ := uuid.Parse("5d545f3d-ef47-488b-8be3-f5ee1517856c")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/octet-stream", additionalHeaders)
@@ -291,40 +327,49 @@ func (client Client) GetAsset(ctx context.Context, extensionId *uuid.UUID, versi
     return resp.Body, err
 }
 
+// Arguments for the GetAsset function
+type GetAssetArgs struct {
+    // (required)
+    ExtensionId *uuid.UUID
+    // (required)
+    Version *string
+    // (required)
+    AssetType *string
+    // (optional)
+    AccountToken *string
+    // (optional)
+    AcceptDefault *bool
+    // (optional) Header to pass the account token
+    AccountTokenHeader *string
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-// extensionName (required)
-// version (required)
-// assetType (required)
-// accountToken (optional)
-// accountTokenHeader (optional): Header to pass the account token
-func (client Client) GetAssetAuthenticated(ctx context.Context, publisherName *string, extensionName *string, version *string, assetType *string, accountToken *string, accountTokenHeader *string) (io.ReadCloser, error) {
+func (client Client) GetAssetAuthenticated(ctx context.Context, args GetAssetAuthenticatedArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
-    if version == nil || *version == "" {
+    routeValues["extensionName"] = *args.ExtensionName
+    if args.Version == nil || *args.Version == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "version"} 
     }
-    routeValues["version"] = *version
-    if assetType == nil || *assetType == "" {
+    routeValues["version"] = *args.Version
+    if args.AssetType == nil || *args.AssetType == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "assetType"} 
     }
-    routeValues["assetType"] = *assetType
+    routeValues["assetType"] = *args.AssetType
 
     queryParams := url.Values{}
-    if accountToken != nil {
-        queryParams.Add("accountToken", *accountToken)
+    if args.AccountToken != nil {
+        queryParams.Add("accountToken", *args.AccountToken)
     }
     additionalHeaders := make(map[string]string)
-    if accountTokenHeader != nil {
-        additionalHeaders["X-Market-AccountToken"] = *accountTokenHeader
+    if args.AccountTokenHeader != nil {
+        additionalHeaders["X-Market-AccountToken"] = *args.AccountTokenHeader
     }
     locationId, _ := uuid.Parse("506aff36-2622-4f70-8063-77cce6366d20")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/octet-stream", additionalHeaders)
@@ -335,22 +380,35 @@ func (client Client) GetAssetAuthenticated(ctx context.Context, publisherName *s
     return resp.Body, err
 }
 
+// Arguments for the GetAssetAuthenticated function
+type GetAssetAuthenticatedArgs struct {
+    // (required)
+    PublisherName *string
+    // (required)
+    ExtensionName *string
+    // (required)
+    Version *string
+    // (required)
+    AssetType *string
+    // (optional)
+    AccountToken *string
+    // (optional) Header to pass the account token
+    AccountTokenHeader *string
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-// azurePublisherId (required)
-func (client Client) AssociateAzurePublisher(ctx context.Context, publisherName *string, azurePublisherId *string) (*AzurePublisher, error) {
+func (client Client) AssociateAzurePublisher(ctx context.Context, args AssociateAzurePublisherArgs) (*AzurePublisher, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
+    routeValues["publisherName"] = *args.PublisherName
 
     queryParams := url.Values{}
-    if azurePublisherId == nil {
+    if args.AzurePublisherId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "azurePublisherId"}
     }
-    queryParams.Add("azurePublisherId", *azurePublisherId)
+    queryParams.Add("azurePublisherId", *args.AzurePublisherId)
     locationId, _ := uuid.Parse("efd202a6-9d87-4ebc-9229-d2b8ae2fdb6d")
     resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -362,15 +420,21 @@ func (client Client) AssociateAzurePublisher(ctx context.Context, publisherName 
     return &responseValue, err
 }
 
+// Arguments for the AssociateAzurePublisher function
+type AssociateAzurePublisherArgs struct {
+    // (required)
+    PublisherName *string
+    // (required)
+    AzurePublisherId *string
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-func (client Client) QueryAssociatedAzurePublisher(ctx context.Context, publisherName *string) (*AzurePublisher, error) {
+func (client Client) QueryAssociatedAzurePublisher(ctx context.Context, args QueryAssociatedAzurePublisherArgs) (*AzurePublisher, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
+    routeValues["publisherName"] = *args.PublisherName
 
     locationId, _ := uuid.Parse("efd202a6-9d87-4ebc-9229-d2b8ae2fdb6d")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -383,13 +447,17 @@ func (client Client) QueryAssociatedAzurePublisher(ctx context.Context, publishe
     return &responseValue, err
 }
 
+// Arguments for the QueryAssociatedAzurePublisher function
+type QueryAssociatedAzurePublisherArgs struct {
+    // (required)
+    PublisherName *string
+}
+
 // [Preview API]
-// ctx
-// languages (optional)
-func (client Client) GetCategories(ctx context.Context, languages *string) (*[]string, error) {
+func (client Client) GetCategories(ctx context.Context, args GetCategoriesArgs) (*[]string, error) {
     queryParams := url.Values{}
-    if languages != nil {
-        queryParams.Add("languages", *languages)
+    if args.Languages != nil {
+        queryParams.Add("languages", *args.Languages)
     }
     locationId, _ := uuid.Parse("e0a5a71e-3ac3-43a0-ae7d-0bb5c3046a2a")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
@@ -402,24 +470,26 @@ func (client Client) GetCategories(ctx context.Context, languages *string) (*[]s
     return &responseValue, err
 }
 
+// Arguments for the GetCategories function
+type GetCategoriesArgs struct {
+    // (optional)
+    Languages *string
+}
+
 // [Preview API]
-// ctx
-// categoryName (required)
-// languages (optional)
-// product (optional)
-func (client Client) GetCategoryDetails(ctx context.Context, categoryName *string, languages *string, product *string) (*CategoriesResult, error) {
+func (client Client) GetCategoryDetails(ctx context.Context, args GetCategoryDetailsArgs) (*CategoriesResult, error) {
     routeValues := make(map[string]string)
-    if categoryName == nil || *categoryName == "" {
+    if args.CategoryName == nil || *args.CategoryName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "categoryName"} 
     }
-    routeValues["categoryName"] = *categoryName
+    routeValues["categoryName"] = *args.CategoryName
 
     queryParams := url.Values{}
-    if languages != nil {
-        queryParams.Add("languages", *languages)
+    if args.Languages != nil {
+        queryParams.Add("languages", *args.Languages)
     }
-    if product != nil {
-        queryParams.Add("product", *product)
+    if args.Product != nil {
+        queryParams.Add("product", *args.Product)
     }
     locationId, _ := uuid.Parse("75d3c04d-84d2-4973-acd2-22627587dabc")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -432,41 +502,43 @@ func (client Client) GetCategoryDetails(ctx context.Context, categoryName *strin
     return &responseValue, err
 }
 
+// Arguments for the GetCategoryDetails function
+type GetCategoryDetailsArgs struct {
+    // (required)
+    CategoryName *string
+    // (optional)
+    Languages *string
+    // (optional)
+    Product *string
+}
+
 // [Preview API]
-// ctx
-// product (required)
-// categoryId (required)
-// lcid (optional)
-// source (optional)
-// productVersion (optional)
-// skus (optional)
-// subSkus (optional)
-func (client Client) GetCategoryTree(ctx context.Context, product *string, categoryId *string, lcid *int, source *string, productVersion *string, skus *string, subSkus *string) (*ProductCategory, error) {
+func (client Client) GetCategoryTree(ctx context.Context, args GetCategoryTreeArgs) (*ProductCategory, error) {
     routeValues := make(map[string]string)
-    if product == nil || *product == "" {
+    if args.Product == nil || *args.Product == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "product"} 
     }
-    routeValues["product"] = *product
-    if categoryId == nil || *categoryId == "" {
+    routeValues["product"] = *args.Product
+    if args.CategoryId == nil || *args.CategoryId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "categoryId"} 
     }
-    routeValues["categoryId"] = *categoryId
+    routeValues["categoryId"] = *args.CategoryId
 
     queryParams := url.Values{}
-    if lcid != nil {
-        queryParams.Add("lcid", strconv.Itoa(*lcid))
+    if args.Lcid != nil {
+        queryParams.Add("lcid", strconv.Itoa(*args.Lcid))
     }
-    if source != nil {
-        queryParams.Add("source", *source)
+    if args.Source != nil {
+        queryParams.Add("source", *args.Source)
     }
-    if productVersion != nil {
-        queryParams.Add("productVersion", *productVersion)
+    if args.ProductVersion != nil {
+        queryParams.Add("productVersion", *args.ProductVersion)
     }
-    if skus != nil {
-        queryParams.Add("skus", *skus)
+    if args.Skus != nil {
+        queryParams.Add("skus", *args.Skus)
     }
-    if subSkus != nil {
-        queryParams.Add("subSkus", *subSkus)
+    if args.SubSkus != nil {
+        queryParams.Add("subSkus", *args.SubSkus)
     }
     locationId, _ := uuid.Parse("1102bb42-82b0-4955-8d8a-435d6b4cedd3")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -479,36 +551,47 @@ func (client Client) GetCategoryTree(ctx context.Context, product *string, categ
     return &responseValue, err
 }
 
+// Arguments for the GetCategoryTree function
+type GetCategoryTreeArgs struct {
+    // (required)
+    Product *string
+    // (required)
+    CategoryId *string
+    // (optional)
+    Lcid *int
+    // (optional)
+    Source *string
+    // (optional)
+    ProductVersion *string
+    // (optional)
+    Skus *string
+    // (optional)
+    SubSkus *string
+}
+
 // [Preview API]
-// ctx
-// product (required)
-// lcid (optional)
-// source (optional)
-// productVersion (optional)
-// skus (optional)
-// subSkus (optional)
-func (client Client) GetRootCategories(ctx context.Context, product *string, lcid *int, source *string, productVersion *string, skus *string, subSkus *string) (*ProductCategoriesResult, error) {
+func (client Client) GetRootCategories(ctx context.Context, args GetRootCategoriesArgs) (*ProductCategoriesResult, error) {
     routeValues := make(map[string]string)
-    if product == nil || *product == "" {
+    if args.Product == nil || *args.Product == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "product"} 
     }
-    routeValues["product"] = *product
+    routeValues["product"] = *args.Product
 
     queryParams := url.Values{}
-    if lcid != nil {
-        queryParams.Add("lcid", strconv.Itoa(*lcid))
+    if args.Lcid != nil {
+        queryParams.Add("lcid", strconv.Itoa(*args.Lcid))
     }
-    if source != nil {
-        queryParams.Add("source", *source)
+    if args.Source != nil {
+        queryParams.Add("source", *args.Source)
     }
-    if productVersion != nil {
-        queryParams.Add("productVersion", *productVersion)
+    if args.ProductVersion != nil {
+        queryParams.Add("productVersion", *args.ProductVersion)
     }
-    if skus != nil {
-        queryParams.Add("skus", *skus)
+    if args.Skus != nil {
+        queryParams.Add("skus", *args.Skus)
     }
-    if subSkus != nil {
-        queryParams.Add("subSkus", *subSkus)
+    if args.SubSkus != nil {
+        queryParams.Add("subSkus", *args.SubSkus)
     }
     locationId, _ := uuid.Parse("31fba831-35b2-46f6-a641-d05de5a877d8")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -521,23 +604,35 @@ func (client Client) GetRootCategories(ctx context.Context, product *string, lci
     return &responseValue, err
 }
 
+// Arguments for the GetRootCategories function
+type GetRootCategoriesArgs struct {
+    // (required)
+    Product *string
+    // (optional)
+    Lcid *int
+    // (optional)
+    Source *string
+    // (optional)
+    ProductVersion *string
+    // (optional)
+    Skus *string
+    // (optional)
+    SubSkus *string
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-// extensionName (required)
-// version (optional)
-func (client Client) GetCertificate(ctx context.Context, publisherName *string, extensionName *string, version *string) (io.ReadCloser, error) {
+func (client Client) GetCertificate(ctx context.Context, args GetCertificateArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
-    if version != nil && *version != "" {
-        routeValues["version"] = *version
+    routeValues["extensionName"] = *args.ExtensionName
+    if args.Version != nil && *args.Version != "" {
+        routeValues["version"] = *args.Version
     }
 
     locationId, _ := uuid.Parse("e905ad6a-3f1f-4d08-9f6d-7d357ff8b7d0")
@@ -549,20 +644,27 @@ func (client Client) GetCertificate(ctx context.Context, publisherName *string, 
     return resp.Body, err
 }
 
+// Arguments for the GetCertificate function
+type GetCertificateArgs struct {
+    // (required)
+    PublisherName *string
+    // (required)
+    ExtensionName *string
+    // (optional)
+    Version *string
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-// extensionName (required)
-func (client Client) GetContentVerificationLog(ctx context.Context, publisherName *string, extensionName *string) (io.ReadCloser, error) {
+func (client Client) GetContentVerificationLog(ctx context.Context, args GetContentVerificationLogArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
+    routeValues["extensionName"] = *args.ExtensionName
 
     locationId, _ := uuid.Parse("c0f1c7c4-3557-4ffb-b774-1e48c4865e99")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/octet-stream", nil)
@@ -573,20 +675,25 @@ func (client Client) GetContentVerificationLog(ctx context.Context, publisherNam
     return resp.Body, err
 }
 
+// Arguments for the GetContentVerificationLog function
+type GetContentVerificationLogArgs struct {
+    // (required)
+    PublisherName *string
+    // (required)
+    ExtensionName *string
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-// extensionName (required)
-func (client Client) CreateDraftForEditExtension(ctx context.Context, publisherName *string, extensionName *string) (*ExtensionDraft, error) {
+func (client Client) CreateDraftForEditExtension(ctx context.Context, args CreateDraftForEditExtensionArgs) (*ExtensionDraft, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
+    routeValues["extensionName"] = *args.ExtensionName
 
     locationId, _ := uuid.Parse("02b33873-4e61-496e-83a2-59d1df46b7d8")
     resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -599,31 +706,34 @@ func (client Client) CreateDraftForEditExtension(ctx context.Context, publisherN
     return &responseValue, err
 }
 
+// Arguments for the CreateDraftForEditExtension function
+type CreateDraftForEditExtensionArgs struct {
+    // (required)
+    PublisherName *string
+    // (required)
+    ExtensionName *string
+}
+
 // [Preview API]
-// ctx
-// draftPatch (required)
-// publisherName (required)
-// extensionName (required)
-// draftId (required)
-func (client Client) PerformEditExtensionDraftOperation(ctx context.Context, draftPatch *ExtensionDraftPatch, publisherName *string, extensionName *string, draftId *uuid.UUID) (*ExtensionDraft, error) {
-    if draftPatch == nil {
+func (client Client) PerformEditExtensionDraftOperation(ctx context.Context, args PerformEditExtensionDraftOperationArgs) (*ExtensionDraft, error) {
+    if args.DraftPatch == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "draftPatch"}
     }
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
-    if draftId == nil {
+    routeValues["extensionName"] = *args.ExtensionName
+    if args.DraftId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "draftId"} 
     }
-    routeValues["draftId"] = (*draftId).String()
+    routeValues["draftId"] = (*args.DraftId).String()
 
-    body, marshalErr := json.Marshal(*draftPatch)
+    body, marshalErr := json.Marshal(*args.DraftPatch)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -638,37 +748,43 @@ func (client Client) PerformEditExtensionDraftOperation(ctx context.Context, dra
     return &responseValue, err
 }
 
+// Arguments for the PerformEditExtensionDraftOperation function
+type PerformEditExtensionDraftOperationArgs struct {
+    // (required)
+    DraftPatch *ExtensionDraftPatch
+    // (required)
+    PublisherName *string
+    // (required)
+    ExtensionName *string
+    // (required)
+    DraftId *uuid.UUID
+}
+
 // [Preview API]
-// ctx
-// uploadStream (required): Stream to upload
-// publisherName (required)
-// extensionName (required)
-// draftId (required)
-// fileName (optional): Header to pass the filename of the uploaded data
-func (client Client) UpdatePayloadInDraftForEditExtension(ctx context.Context, uploadStream io.Reader, publisherName *string, extensionName *string, draftId *uuid.UUID, fileName *string) (*ExtensionDraft, error) {
-    if uploadStream == nil {
+func (client Client) UpdatePayloadInDraftForEditExtension(ctx context.Context, args UpdatePayloadInDraftForEditExtensionArgs) (*ExtensionDraft, error) {
+    if args.UploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
-    if draftId == nil {
+    routeValues["extensionName"] = *args.ExtensionName
+    if args.DraftId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "draftId"} 
     }
-    routeValues["draftId"] = (*draftId).String()
+    routeValues["draftId"] = (*args.DraftId).String()
 
     additionalHeaders := make(map[string]string)
-    if fileName != nil {
-        additionalHeaders["X-Market-UploadFileName"] = *fileName
+    if args.FileName != nil {
+        additionalHeaders["X-Market-UploadFileName"] = *args.FileName
     }
     locationId, _ := uuid.Parse("02b33873-4e61-496e-83a2-59d1df46b7d8")
-    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, uploadStream, "application/octet-stream", "application/json", additionalHeaders)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, args.UploadStream, "application/octet-stream", "application/json", additionalHeaders)
     if err != nil {
         return nil, err
     }
@@ -678,37 +794,45 @@ func (client Client) UpdatePayloadInDraftForEditExtension(ctx context.Context, u
     return &responseValue, err
 }
 
+// Arguments for the UpdatePayloadInDraftForEditExtension function
+type UpdatePayloadInDraftForEditExtensionArgs struct {
+    // (required) Stream to upload
+    UploadStream io.Reader
+    // (required)
+    PublisherName *string
+    // (required)
+    ExtensionName *string
+    // (required)
+    DraftId *uuid.UUID
+    // (optional) Header to pass the filename of the uploaded data
+    FileName *string
+}
+
 // [Preview API]
-// ctx
-// uploadStream (required): Stream to upload
-// publisherName (required)
-// extensionName (required)
-// draftId (required)
-// assetType (required)
-func (client Client) AddAssetForEditExtensionDraft(ctx context.Context, uploadStream io.Reader, publisherName *string, extensionName *string, draftId *uuid.UUID, assetType *string) (*ExtensionDraftAsset, error) {
-    if uploadStream == nil {
+func (client Client) AddAssetForEditExtensionDraft(ctx context.Context, args AddAssetForEditExtensionDraftArgs) (*ExtensionDraftAsset, error) {
+    if args.UploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
-    if draftId == nil {
+    routeValues["extensionName"] = *args.ExtensionName
+    if args.DraftId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "draftId"} 
     }
-    routeValues["draftId"] = (*draftId).String()
-    if assetType == nil || *assetType == "" {
+    routeValues["draftId"] = (*args.DraftId).String()
+    if args.AssetType == nil || *args.AssetType == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "assetType"} 
     }
-    routeValues["assetType"] = *assetType
+    routeValues["assetType"] = *args.AssetType
 
     locationId, _ := uuid.Parse("f1db9c47-6619-4998-a7e5-d7f9f41a4617")
-    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, uploadStream, "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, args.UploadStream, "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -718,31 +842,40 @@ func (client Client) AddAssetForEditExtensionDraft(ctx context.Context, uploadSt
     return &responseValue, err
 }
 
+// Arguments for the AddAssetForEditExtensionDraft function
+type AddAssetForEditExtensionDraftArgs struct {
+    // (required) Stream to upload
+    UploadStream io.Reader
+    // (required)
+    PublisherName *string
+    // (required)
+    ExtensionName *string
+    // (required)
+    DraftId *uuid.UUID
+    // (required)
+    AssetType *string
+}
+
 // [Preview API]
-// ctx
-// uploadStream (required): Stream to upload
-// publisherName (required)
-// product (required): Header to pass the product type of the payload file
-// fileName (optional): Header to pass the filename of the uploaded data
-func (client Client) CreateDraftForNewExtension(ctx context.Context, uploadStream io.Reader, publisherName *string, product *string, fileName *string) (*ExtensionDraft, error) {
-    if uploadStream == nil {
+func (client Client) CreateDraftForNewExtension(ctx context.Context, args CreateDraftForNewExtensionArgs) (*ExtensionDraft, error) {
+    if args.UploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
+    routeValues["publisherName"] = *args.PublisherName
 
     additionalHeaders := make(map[string]string)
-    if product != nil {
-        additionalHeaders["X-Market-UploadFileProduct"] = *product
+    if args.Product != nil {
+        additionalHeaders["X-Market-UploadFileProduct"] = *args.Product
     }
-    if fileName != nil {
-        additionalHeaders["X-Market-UploadFileName"] = *fileName
+    if args.FileName != nil {
+        additionalHeaders["X-Market-UploadFileName"] = *args.FileName
     }
     locationId, _ := uuid.Parse("b3ab127d-ebb9-4d22-b611-4e09593c8d79")
-    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, uploadStream, "application/octet-stream", "application/json", additionalHeaders)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, args.UploadStream, "application/octet-stream", "application/json", additionalHeaders)
     if err != nil {
         return nil, err
     }
@@ -752,26 +885,34 @@ func (client Client) CreateDraftForNewExtension(ctx context.Context, uploadStrea
     return &responseValue, err
 }
 
+// Arguments for the CreateDraftForNewExtension function
+type CreateDraftForNewExtensionArgs struct {
+    // (required) Stream to upload
+    UploadStream io.Reader
+    // (required)
+    PublisherName *string
+    // (required) Header to pass the product type of the payload file
+    Product *string
+    // (optional) Header to pass the filename of the uploaded data
+    FileName *string
+}
+
 // [Preview API]
-// ctx
-// draftPatch (required)
-// publisherName (required)
-// draftId (required)
-func (client Client) PerformNewExtensionDraftOperation(ctx context.Context, draftPatch *ExtensionDraftPatch, publisherName *string, draftId *uuid.UUID) (*ExtensionDraft, error) {
-    if draftPatch == nil {
+func (client Client) PerformNewExtensionDraftOperation(ctx context.Context, args PerformNewExtensionDraftOperationArgs) (*ExtensionDraft, error) {
+    if args.DraftPatch == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "draftPatch"}
     }
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if draftId == nil {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.DraftId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "draftId"} 
     }
-    routeValues["draftId"] = (*draftId).String()
+    routeValues["draftId"] = (*args.DraftId).String()
 
-    body, marshalErr := json.Marshal(*draftPatch)
+    body, marshalErr := json.Marshal(*args.DraftPatch)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -786,32 +927,37 @@ func (client Client) PerformNewExtensionDraftOperation(ctx context.Context, draf
     return &responseValue, err
 }
 
+// Arguments for the PerformNewExtensionDraftOperation function
+type PerformNewExtensionDraftOperationArgs struct {
+    // (required)
+    DraftPatch *ExtensionDraftPatch
+    // (required)
+    PublisherName *string
+    // (required)
+    DraftId *uuid.UUID
+}
+
 // [Preview API]
-// ctx
-// uploadStream (required): Stream to upload
-// publisherName (required)
-// draftId (required)
-// fileName (optional): Header to pass the filename of the uploaded data
-func (client Client) UpdatePayloadInDraftForNewExtension(ctx context.Context, uploadStream io.Reader, publisherName *string, draftId *uuid.UUID, fileName *string) (*ExtensionDraft, error) {
-    if uploadStream == nil {
+func (client Client) UpdatePayloadInDraftForNewExtension(ctx context.Context, args UpdatePayloadInDraftForNewExtensionArgs) (*ExtensionDraft, error) {
+    if args.UploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if draftId == nil {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.DraftId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "draftId"} 
     }
-    routeValues["draftId"] = (*draftId).String()
+    routeValues["draftId"] = (*args.DraftId).String()
 
     additionalHeaders := make(map[string]string)
-    if fileName != nil {
-        additionalHeaders["X-Market-UploadFileName"] = *fileName
+    if args.FileName != nil {
+        additionalHeaders["X-Market-UploadFileName"] = *args.FileName
     }
     locationId, _ := uuid.Parse("b3ab127d-ebb9-4d22-b611-4e09593c8d79")
-    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, uploadStream, "application/octet-stream", "application/json", additionalHeaders)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, args.UploadStream, "application/octet-stream", "application/json", additionalHeaders)
     if err != nil {
         return nil, err
     }
@@ -821,32 +967,39 @@ func (client Client) UpdatePayloadInDraftForNewExtension(ctx context.Context, up
     return &responseValue, err
 }
 
+// Arguments for the UpdatePayloadInDraftForNewExtension function
+type UpdatePayloadInDraftForNewExtensionArgs struct {
+    // (required) Stream to upload
+    UploadStream io.Reader
+    // (required)
+    PublisherName *string
+    // (required)
+    DraftId *uuid.UUID
+    // (optional) Header to pass the filename of the uploaded data
+    FileName *string
+}
+
 // [Preview API]
-// ctx
-// uploadStream (required): Stream to upload
-// publisherName (required)
-// draftId (required)
-// assetType (required)
-func (client Client) AddAssetForNewExtensionDraft(ctx context.Context, uploadStream io.Reader, publisherName *string, draftId *uuid.UUID, assetType *string) (*ExtensionDraftAsset, error) {
-    if uploadStream == nil {
+func (client Client) AddAssetForNewExtensionDraft(ctx context.Context, args AddAssetForNewExtensionDraftArgs) (*ExtensionDraftAsset, error) {
+    if args.UploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if draftId == nil {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.DraftId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "draftId"} 
     }
-    routeValues["draftId"] = (*draftId).String()
-    if assetType == nil || *assetType == "" {
+    routeValues["draftId"] = (*args.DraftId).String()
+    if args.AssetType == nil || *args.AssetType == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "assetType"} 
     }
-    routeValues["assetType"] = *assetType
+    routeValues["assetType"] = *args.AssetType
 
     locationId, _ := uuid.Parse("88c0b1c8-b4f1-498a-9b2a-8446ef9f32e7")
-    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, uploadStream, "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, args.UploadStream, "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -856,32 +1009,39 @@ func (client Client) AddAssetForNewExtensionDraft(ctx context.Context, uploadStr
     return &responseValue, err
 }
 
+// Arguments for the AddAssetForNewExtensionDraft function
+type AddAssetForNewExtensionDraftArgs struct {
+    // (required) Stream to upload
+    UploadStream io.Reader
+    // (required)
+    PublisherName *string
+    // (required)
+    DraftId *uuid.UUID
+    // (required)
+    AssetType *string
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-// draftId (required)
-// assetType (required)
-// extensionName (required)
-func (client Client) GetAssetFromEditExtensionDraft(ctx context.Context, publisherName *string, draftId *uuid.UUID, assetType *string, extensionName *string) (io.ReadCloser, error) {
+func (client Client) GetAssetFromEditExtensionDraft(ctx context.Context, args GetAssetFromEditExtensionDraftArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if draftId == nil {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.DraftId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "draftId"} 
     }
-    routeValues["draftId"] = (*draftId).String()
-    if assetType == nil || *assetType == "" {
+    routeValues["draftId"] = (*args.DraftId).String()
+    if args.AssetType == nil || *args.AssetType == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "assetType"} 
     }
-    routeValues["assetType"] = *assetType
+    routeValues["assetType"] = *args.AssetType
 
     queryParams := url.Values{}
-    if extensionName == nil {
+    if args.ExtensionName == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "extensionName"}
     }
-    queryParams.Add("extensionName", *extensionName)
+    queryParams.Add("extensionName", *args.ExtensionName)
     locationId, _ := uuid.Parse("88c0b1c8-b4f1-498a-9b2a-8446ef9f32e7")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/octet-stream", nil)
     if err != nil {
@@ -891,25 +1051,33 @@ func (client Client) GetAssetFromEditExtensionDraft(ctx context.Context, publish
     return resp.Body, err
 }
 
+// Arguments for the GetAssetFromEditExtensionDraft function
+type GetAssetFromEditExtensionDraftArgs struct {
+    // (required)
+    PublisherName *string
+    // (required)
+    DraftId *uuid.UUID
+    // (required)
+    AssetType *string
+    // (required)
+    ExtensionName *string
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-// draftId (required)
-// assetType (required)
-func (client Client) GetAssetFromNewExtensionDraft(ctx context.Context, publisherName *string, draftId *uuid.UUID, assetType *string) (io.ReadCloser, error) {
+func (client Client) GetAssetFromNewExtensionDraft(ctx context.Context, args GetAssetFromNewExtensionDraftArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if draftId == nil {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.DraftId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "draftId"} 
     }
-    routeValues["draftId"] = (*draftId).String()
-    if assetType == nil || *assetType == "" {
+    routeValues["draftId"] = (*args.DraftId).String()
+    if args.AssetType == nil || *args.AssetType == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "assetType"} 
     }
-    routeValues["assetType"] = *assetType
+    routeValues["assetType"] = *args.AssetType
 
     locationId, _ := uuid.Parse("88c0b1c8-b4f1-498a-9b2a-8446ef9f32e7")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/octet-stream", nil)
@@ -920,37 +1088,40 @@ func (client Client) GetAssetFromNewExtensionDraft(ctx context.Context, publishe
     return resp.Body, err
 }
 
+// Arguments for the GetAssetFromNewExtensionDraft function
+type GetAssetFromNewExtensionDraftArgs struct {
+    // (required)
+    PublisherName *string
+    // (required)
+    DraftId *uuid.UUID
+    // (required)
+    AssetType *string
+}
+
 // [Preview API] Get install/uninstall events of an extension. If both count and afterDate parameters are specified, count takes precedence.
-// ctx
-// publisherName (required): Name of the publisher
-// extensionName (required): Name of the extension
-// count (optional): Count of events to fetch, applies to each event type.
-// afterDate (optional): Fetch events that occurred on or after this date
-// include (optional): Filter options. Supported values: install, uninstall, review, acquisition, sales. Default is to fetch all types of events
-// includeProperty (optional): Event properties to include. Currently only 'lastContactDetails' is supported for uninstall events
-func (client Client) GetExtensionEvents(ctx context.Context, publisherName *string, extensionName *string, count *int, afterDate *time.Time, include *string, includeProperty *string) (*ExtensionEvents, error) {
+func (client Client) GetExtensionEvents(ctx context.Context, args GetExtensionEventsArgs) (*ExtensionEvents, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
+    routeValues["extensionName"] = *args.ExtensionName
 
     queryParams := url.Values{}
-    if count != nil {
-        queryParams.Add("count", strconv.Itoa(*count))
+    if args.Count != nil {
+        queryParams.Add("count", strconv.Itoa(*args.Count))
     }
-    if afterDate != nil {
-        queryParams.Add("afterDate", (*afterDate).String())
+    if args.AfterDate != nil {
+        queryParams.Add("afterDate", (*args.AfterDate).String())
     }
-    if include != nil {
-        queryParams.Add("include", *include)
+    if args.Include != nil {
+        queryParams.Add("include", *args.Include)
     }
-    if includeProperty != nil {
-        queryParams.Add("includeProperty", *includeProperty)
+    if args.IncludeProperty != nil {
+        queryParams.Add("includeProperty", *args.IncludeProperty)
     }
     locationId, _ := uuid.Parse("3d13c499-2168-4d06-bef4-14aba185dcd5")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -963,14 +1134,28 @@ func (client Client) GetExtensionEvents(ctx context.Context, publisherName *stri
     return &responseValue, err
 }
 
+// Arguments for the GetExtensionEvents function
+type GetExtensionEventsArgs struct {
+    // (required) Name of the publisher
+    PublisherName *string
+    // (required) Name of the extension
+    ExtensionName *string
+    // (optional) Count of events to fetch, applies to each event type.
+    Count *int
+    // (optional) Fetch events that occurred on or after this date
+    AfterDate *time.Time
+    // (optional) Filter options. Supported values: install, uninstall, review, acquisition, sales. Default is to fetch all types of events
+    Include *string
+    // (optional) Event properties to include. Currently only 'lastContactDetails' is supported for uninstall events
+    IncludeProperty *string
+}
+
 // [Preview API] API endpoint to publish extension install/uninstall events. This is meant to be invoked by EMS only for sending us data related to install/uninstall of an extension.
-// ctx
-// extensionEvents (required)
-func (client Client) PublishExtensionEvents(ctx context.Context, extensionEvents *[]ExtensionEvents) error {
-    if extensionEvents == nil {
+func (client Client) PublishExtensionEvents(ctx context.Context, args PublishExtensionEventsArgs) error {
+    if args.ExtensionEvents == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "extensionEvents"}
     }
-    body, marshalErr := json.Marshal(*extensionEvents)
+    body, marshalErr := json.Marshal(*args.ExtensionEvents)
     if marshalErr != nil {
         return marshalErr
     }
@@ -983,24 +1168,26 @@ func (client Client) PublishExtensionEvents(ctx context.Context, extensionEvents
     return nil
 }
 
+// Arguments for the PublishExtensionEvents function
+type PublishExtensionEventsArgs struct {
+    // (required)
+    ExtensionEvents *[]ExtensionEvents
+}
+
 // [Preview API]
-// ctx
-// extensionQuery (required)
-// accountToken (optional)
-// accountTokenHeader (optional): Header to pass the account token
-func (client Client) QueryExtensions(ctx context.Context, extensionQuery *ExtensionQuery, accountToken *string, accountTokenHeader *string) (*ExtensionQueryResult, error) {
-    if extensionQuery == nil {
+func (client Client) QueryExtensions(ctx context.Context, args QueryExtensionsArgs) (*ExtensionQueryResult, error) {
+    if args.ExtensionQuery == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "extensionQuery"}
     }
     queryParams := url.Values{}
-    if accountToken != nil {
-        queryParams.Add("accountToken", *accountToken)
+    if args.AccountToken != nil {
+        queryParams.Add("accountToken", *args.AccountToken)
     }
     additionalHeaders := make(map[string]string)
-    if accountTokenHeader != nil {
-        additionalHeaders["X-Market-AccountToken"] = *accountTokenHeader
+    if args.AccountTokenHeader != nil {
+        additionalHeaders["X-Market-AccountToken"] = *args.AccountTokenHeader
     }
-    body, marshalErr := json.Marshal(*extensionQuery)
+    body, marshalErr := json.Marshal(*args.ExtensionQuery)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1015,15 +1202,23 @@ func (client Client) QueryExtensions(ctx context.Context, extensionQuery *Extens
     return &responseValue, err
 }
 
+// Arguments for the QueryExtensions function
+type QueryExtensionsArgs struct {
+    // (required)
+    ExtensionQuery *ExtensionQuery
+    // (optional)
+    AccountToken *string
+    // (optional) Header to pass the account token
+    AccountTokenHeader *string
+}
+
 // [Preview API]
-// ctx
-// uploadStream (required): Stream to upload
-func (client Client) CreateExtension(ctx context.Context, uploadStream io.Reader) (*PublishedExtension, error) {
-    if uploadStream == nil {
+func (client Client) CreateExtension(ctx context.Context, args CreateExtensionArgs) (*PublishedExtension, error) {
+    if args.UploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
     locationId, _ := uuid.Parse("a41192c8-9525-4b58-bc86-179fa549d80d")
-    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.2", nil, nil, uploadStream, "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.2", nil, nil, args.UploadStream, "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1033,20 +1228,23 @@ func (client Client) CreateExtension(ctx context.Context, uploadStream io.Reader
     return &responseValue, err
 }
 
+// Arguments for the CreateExtension function
+type CreateExtensionArgs struct {
+    // (required) Stream to upload
+    UploadStream io.Reader
+}
+
 // [Preview API]
-// ctx
-// extensionId (required)
-// version (optional)
-func (client Client) DeleteExtensionById(ctx context.Context, extensionId *uuid.UUID, version *string) error {
+func (client Client) DeleteExtensionById(ctx context.Context, args DeleteExtensionByIdArgs) error {
     routeValues := make(map[string]string)
-    if extensionId == nil {
+    if args.ExtensionId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "extensionId"} 
     }
-    routeValues["extensionId"] = (*extensionId).String()
+    routeValues["extensionId"] = (*args.ExtensionId).String()
 
     queryParams := url.Values{}
-    if version != nil {
-        queryParams.Add("version", *version)
+    if args.Version != nil {
+        queryParams.Add("version", *args.Version)
     }
     locationId, _ := uuid.Parse("a41192c8-9525-4b58-bc86-179fa549d80d")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1057,24 +1255,28 @@ func (client Client) DeleteExtensionById(ctx context.Context, extensionId *uuid.
     return nil
 }
 
+// Arguments for the DeleteExtensionById function
+type DeleteExtensionByIdArgs struct {
+    // (required)
+    ExtensionId *uuid.UUID
+    // (optional)
+    Version *string
+}
+
 // [Preview API]
-// ctx
-// extensionId (required)
-// version (optional)
-// flags (optional)
-func (client Client) GetExtensionById(ctx context.Context, extensionId *uuid.UUID, version *string, flags *ExtensionQueryFlags) (*PublishedExtension, error) {
+func (client Client) GetExtensionById(ctx context.Context, args GetExtensionByIdArgs) (*PublishedExtension, error) {
     routeValues := make(map[string]string)
-    if extensionId == nil {
+    if args.ExtensionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "extensionId"} 
     }
-    routeValues["extensionId"] = (*extensionId).String()
+    routeValues["extensionId"] = (*args.ExtensionId).String()
 
     queryParams := url.Values{}
-    if version != nil {
-        queryParams.Add("version", *version)
+    if args.Version != nil {
+        queryParams.Add("version", *args.Version)
     }
-    if flags != nil {
-        queryParams.Add("flags", string(*flags))
+    if args.Flags != nil {
+        queryParams.Add("flags", string(*args.Flags))
     }
     locationId, _ := uuid.Parse("a41192c8-9525-4b58-bc86-179fa549d80d")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1087,15 +1289,23 @@ func (client Client) GetExtensionById(ctx context.Context, extensionId *uuid.UUI
     return &responseValue, err
 }
 
+// Arguments for the GetExtensionById function
+type GetExtensionByIdArgs struct {
+    // (required)
+    ExtensionId *uuid.UUID
+    // (optional)
+    Version *string
+    // (optional)
+    Flags *ExtensionQueryFlags
+}
+
 // [Preview API]
-// ctx
-// extensionId (required)
-func (client Client) UpdateExtensionById(ctx context.Context, extensionId *uuid.UUID) (*PublishedExtension, error) {
+func (client Client) UpdateExtensionById(ctx context.Context, args UpdateExtensionByIdArgs) (*PublishedExtension, error) {
     routeValues := make(map[string]string)
-    if extensionId == nil {
+    if args.ExtensionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "extensionId"} 
     }
-    routeValues["extensionId"] = (*extensionId).String()
+    routeValues["extensionId"] = (*args.ExtensionId).String()
 
     locationId, _ := uuid.Parse("a41192c8-9525-4b58-bc86-179fa549d80d")
     resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/json", nil)
@@ -1108,22 +1318,25 @@ func (client Client) UpdateExtensionById(ctx context.Context, extensionId *uuid.
     return &responseValue, err
 }
 
+// Arguments for the UpdateExtensionById function
+type UpdateExtensionByIdArgs struct {
+    // (required)
+    ExtensionId *uuid.UUID
+}
+
 // [Preview API]
-// ctx
-// uploadStream (required): Stream to upload
-// publisherName (required)
-func (client Client) CreateExtensionWithPublisher(ctx context.Context, uploadStream io.Reader, publisherName *string) (*PublishedExtension, error) {
-    if uploadStream == nil {
+func (client Client) CreateExtensionWithPublisher(ctx context.Context, args CreateExtensionWithPublisherArgs) (*PublishedExtension, error) {
+    if args.UploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
+    routeValues["publisherName"] = *args.PublisherName
 
     locationId, _ := uuid.Parse("e11ea35a-16fe-4b80-ab11-c4cab88a0966")
-    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.2", routeValues, nil, uploadStream, "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.2", routeValues, nil, args.UploadStream, "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1133,25 +1346,29 @@ func (client Client) CreateExtensionWithPublisher(ctx context.Context, uploadStr
     return &responseValue, err
 }
 
+// Arguments for the CreateExtensionWithPublisher function
+type CreateExtensionWithPublisherArgs struct {
+    // (required) Stream to upload
+    UploadStream io.Reader
+    // (required)
+    PublisherName *string
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-// extensionName (required)
-// version (optional)
-func (client Client) DeleteExtension(ctx context.Context, publisherName *string, extensionName *string, version *string) error {
+func (client Client) DeleteExtension(ctx context.Context, args DeleteExtensionArgs) error {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
+    routeValues["extensionName"] = *args.ExtensionName
 
     queryParams := url.Values{}
-    if version != nil {
-        queryParams.Add("version", *version)
+    if args.Version != nil {
+        queryParams.Add("version", *args.Version)
     }
     locationId, _ := uuid.Parse("e11ea35a-16fe-4b80-ab11-c4cab88a0966")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1162,38 +1379,41 @@ func (client Client) DeleteExtension(ctx context.Context, publisherName *string,
     return nil
 }
 
+// Arguments for the DeleteExtension function
+type DeleteExtensionArgs struct {
+    // (required)
+    PublisherName *string
+    // (required)
+    ExtensionName *string
+    // (optional)
+    Version *string
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-// extensionName (required)
-// version (optional)
-// flags (optional)
-// accountToken (optional)
-// accountTokenHeader (optional): Header to pass the account token
-func (client Client) GetExtension(ctx context.Context, publisherName *string, extensionName *string, version *string, flags *ExtensionQueryFlags, accountToken *string, accountTokenHeader *string) (*PublishedExtension, error) {
+func (client Client) GetExtension(ctx context.Context, args GetExtensionArgs) (*PublishedExtension, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
+    routeValues["extensionName"] = *args.ExtensionName
 
     queryParams := url.Values{}
-    if version != nil {
-        queryParams.Add("version", *version)
+    if args.Version != nil {
+        queryParams.Add("version", *args.Version)
     }
-    if flags != nil {
-        queryParams.Add("flags", string(*flags))
+    if args.Flags != nil {
+        queryParams.Add("flags", string(*args.Flags))
     }
-    if accountToken != nil {
-        queryParams.Add("accountToken", *accountToken)
+    if args.AccountToken != nil {
+        queryParams.Add("accountToken", *args.AccountToken)
     }
     additionalHeaders := make(map[string]string)
-    if accountTokenHeader != nil {
-        additionalHeaders["X-Market-AccountToken"] = *accountTokenHeader
+    if args.AccountTokenHeader != nil {
+        additionalHeaders["X-Market-AccountToken"] = *args.AccountTokenHeader
     }
     locationId, _ := uuid.Parse("e11ea35a-16fe-4b80-ab11-c4cab88a0966")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", additionalHeaders)
@@ -1206,32 +1426,43 @@ func (client Client) GetExtension(ctx context.Context, publisherName *string, ex
     return &responseValue, err
 }
 
+// Arguments for the GetExtension function
+type GetExtensionArgs struct {
+    // (required)
+    PublisherName *string
+    // (required)
+    ExtensionName *string
+    // (optional)
+    Version *string
+    // (optional)
+    Flags *ExtensionQueryFlags
+    // (optional)
+    AccountToken *string
+    // (optional) Header to pass the account token
+    AccountTokenHeader *string
+}
+
 // [Preview API] REST endpoint to update an extension.
-// ctx
-// uploadStream (required): Stream to upload
-// publisherName (required): Name of the publisher
-// extensionName (required): Name of the extension
-// bypassScopeCheck (optional): This parameter decides if the scope change check needs to be invoked or not
-func (client Client) UpdateExtension(ctx context.Context, uploadStream io.Reader, publisherName *string, extensionName *string, bypassScopeCheck *bool) (*PublishedExtension, error) {
-    if uploadStream == nil {
+func (client Client) UpdateExtension(ctx context.Context, args UpdateExtensionArgs) (*PublishedExtension, error) {
+    if args.UploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
+    routeValues["extensionName"] = *args.ExtensionName
 
     queryParams := url.Values{}
-    if bypassScopeCheck != nil {
-        queryParams.Add("bypassScopeCheck", strconv.FormatBool(*bypassScopeCheck))
+    if args.BypassScopeCheck != nil {
+        queryParams.Add("bypassScopeCheck", strconv.FormatBool(*args.BypassScopeCheck))
     }
     locationId, _ := uuid.Parse("e11ea35a-16fe-4b80-ab11-c4cab88a0966")
-    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.2", routeValues, queryParams, uploadStream, "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.2", routeValues, queryParams, args.UploadStream, "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -1241,27 +1472,35 @@ func (client Client) UpdateExtension(ctx context.Context, uploadStream io.Reader
     return &responseValue, err
 }
 
+// Arguments for the UpdateExtension function
+type UpdateExtensionArgs struct {
+    // (required) Stream to upload
+    UploadStream io.Reader
+    // (required) Name of the publisher
+    PublisherName *string
+    // (required) Name of the extension
+    ExtensionName *string
+    // (optional) This parameter decides if the scope change check needs to be invoked or not
+    BypassScopeCheck *bool
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-// extensionName (required)
-// flags (required)
-func (client Client) UpdateExtensionProperties(ctx context.Context, publisherName *string, extensionName *string, flags *PublishedExtensionFlags) (*PublishedExtension, error) {
+func (client Client) UpdateExtensionProperties(ctx context.Context, args UpdateExtensionPropertiesArgs) (*PublishedExtension, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
+    routeValues["extensionName"] = *args.ExtensionName
 
     queryParams := url.Values{}
-    if flags == nil {
+    if args.Flags == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "flags"}
     }
-    queryParams.Add("flags", string(*flags))
+    queryParams.Add("flags", string(*args.Flags))
     locationId, _ := uuid.Parse("e11ea35a-16fe-4b80-ab11-c4cab88a0966")
     resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -1273,30 +1512,35 @@ func (client Client) UpdateExtensionProperties(ctx context.Context, publisherNam
     return &responseValue, err
 }
 
+// Arguments for the UpdateExtensionProperties function
+type UpdateExtensionPropertiesArgs struct {
+    // (required)
+    PublisherName *string
+    // (required)
+    ExtensionName *string
+    // (required)
+    Flags *PublishedExtensionFlags
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-// extensionName (required)
-// hostType (required)
-// hostName (required)
-func (client Client) ShareExtensionWithHost(ctx context.Context, publisherName *string, extensionName *string, hostType *string, hostName *string) error {
+func (client Client) ShareExtensionWithHost(ctx context.Context, args ShareExtensionWithHostArgs) error {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
-    if hostType == nil || *hostType == "" {
+    routeValues["extensionName"] = *args.ExtensionName
+    if args.HostType == nil || *args.HostType == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hostType"} 
     }
-    routeValues["hostType"] = *hostType
-    if hostName == nil || *hostName == "" {
+    routeValues["hostType"] = *args.HostType
+    if args.HostName == nil || *args.HostName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hostName"} 
     }
-    routeValues["hostName"] = *hostName
+    routeValues["hostName"] = *args.HostName
 
     locationId, _ := uuid.Parse("328a3af8-d124-46e9-9483-01690cd415b9")
     _, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -1307,30 +1551,37 @@ func (client Client) ShareExtensionWithHost(ctx context.Context, publisherName *
     return nil
 }
 
+// Arguments for the ShareExtensionWithHost function
+type ShareExtensionWithHostArgs struct {
+    // (required)
+    PublisherName *string
+    // (required)
+    ExtensionName *string
+    // (required)
+    HostType *string
+    // (required)
+    HostName *string
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-// extensionName (required)
-// hostType (required)
-// hostName (required)
-func (client Client) UnshareExtensionWithHost(ctx context.Context, publisherName *string, extensionName *string, hostType *string, hostName *string) error {
+func (client Client) UnshareExtensionWithHost(ctx context.Context, args UnshareExtensionWithHostArgs) error {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
-    if hostType == nil || *hostType == "" {
+    routeValues["extensionName"] = *args.ExtensionName
+    if args.HostType == nil || *args.HostType == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hostType"} 
     }
-    routeValues["hostType"] = *hostType
-    if hostName == nil || *hostName == "" {
+    routeValues["hostType"] = *args.HostType
+    if args.HostName == nil || *args.HostName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "hostName"} 
     }
-    routeValues["hostName"] = *hostName
+    routeValues["hostName"] = *args.HostName
 
     locationId, _ := uuid.Parse("328a3af8-d124-46e9-9483-01690cd415b9")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -1341,14 +1592,24 @@ func (client Client) UnshareExtensionWithHost(ctx context.Context, publisherName
     return nil
 }
 
+// Arguments for the UnshareExtensionWithHost function
+type UnshareExtensionWithHostArgs struct {
+    // (required)
+    PublisherName *string
+    // (required)
+    ExtensionName *string
+    // (required)
+    HostType *string
+    // (required)
+    HostName *string
+}
+
 // [Preview API]
-// ctx
-// azureRestApiRequestModel (required)
-func (client Client) ExtensionValidator(ctx context.Context, azureRestApiRequestModel *AzureRestApiRequestModel) error {
-    if azureRestApiRequestModel == nil {
+func (client Client) ExtensionValidator(ctx context.Context, args ExtensionValidatorArgs) error {
+    if args.AzureRestApiRequestModel == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "azureRestApiRequestModel"}
     }
-    body, marshalErr := json.Marshal(*azureRestApiRequestModel)
+    body, marshalErr := json.Marshal(*args.AzureRestApiRequestModel)
     if marshalErr != nil {
         return marshalErr
     }
@@ -1361,14 +1622,18 @@ func (client Client) ExtensionValidator(ctx context.Context, azureRestApiRequest
     return nil
 }
 
+// Arguments for the ExtensionValidator function
+type ExtensionValidatorArgs struct {
+    // (required)
+    AzureRestApiRequestModel *AzureRestApiRequestModel
+}
+
 // [Preview API] Send Notification
-// ctx
-// notificationData (required): Denoting the data needed to send notification
-func (client Client) SendNotifications(ctx context.Context, notificationData *NotificationsData) error {
-    if notificationData == nil {
+func (client Client) SendNotifications(ctx context.Context, args SendNotificationsArgs) error {
+    if args.NotificationData == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "notificationData"}
     }
-    body, marshalErr := json.Marshal(*notificationData)
+    body, marshalErr := json.Marshal(*args.NotificationData)
     if marshalErr != nil {
         return marshalErr
     }
@@ -1381,39 +1646,38 @@ func (client Client) SendNotifications(ctx context.Context, notificationData *No
     return nil
 }
 
+// Arguments for the SendNotifications function
+type SendNotificationsArgs struct {
+    // (required) Denoting the data needed to send notification
+    NotificationData *NotificationsData
+}
+
 // [Preview API] This endpoint gets hit when you download a VSTS extension from the Web UI
-// ctx
-// publisherName (required)
-// extensionName (required)
-// version (required)
-// accountToken (optional)
-// acceptDefault (optional)
-// accountTokenHeader (optional): Header to pass the account token
-func (client Client) GetPackage(ctx context.Context, publisherName *string, extensionName *string, version *string, accountToken *string, acceptDefault *bool, accountTokenHeader *string) (io.ReadCloser, error) {
+func (client Client) GetPackage(ctx context.Context, args GetPackageArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
-    if version == nil || *version == "" {
+    routeValues["extensionName"] = *args.ExtensionName
+    if args.Version == nil || *args.Version == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "version"} 
     }
-    routeValues["version"] = *version
+    routeValues["version"] = *args.Version
 
     queryParams := url.Values{}
-    if accountToken != nil {
-        queryParams.Add("accountToken", *accountToken)
+    if args.AccountToken != nil {
+        queryParams.Add("accountToken", *args.AccountToken)
     }
-    if acceptDefault != nil {
-        queryParams.Add("acceptDefault", strconv.FormatBool(*acceptDefault))
+    if args.AcceptDefault != nil {
+        queryParams.Add("acceptDefault", strconv.FormatBool(*args.AcceptDefault))
     }
     additionalHeaders := make(map[string]string)
-    if accountTokenHeader != nil {
-        additionalHeaders["X-Market-AccountToken"] = *accountTokenHeader
+    if args.AccountTokenHeader != nil {
+        additionalHeaders["X-Market-AccountToken"] = *args.AccountTokenHeader
     }
     locationId, _ := uuid.Parse("7cb576f8-1cae-4c4b-b7b1-e4af5759e965")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/octet-stream", additionalHeaders)
@@ -1424,48 +1688,55 @@ func (client Client) GetPackage(ctx context.Context, publisherName *string, exte
     return resp.Body, err
 }
 
+// Arguments for the GetPackage function
+type GetPackageArgs struct {
+    // (required)
+    PublisherName *string
+    // (required)
+    ExtensionName *string
+    // (required)
+    Version *string
+    // (optional)
+    AccountToken *string
+    // (optional)
+    AcceptDefault *bool
+    // (optional) Header to pass the account token
+    AccountTokenHeader *string
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-// extensionName (required)
-// version (required)
-// assetType (required)
-// assetToken (optional)
-// accountToken (optional)
-// acceptDefault (optional)
-// accountTokenHeader (optional): Header to pass the account token
-func (client Client) GetAssetWithToken(ctx context.Context, publisherName *string, extensionName *string, version *string, assetType *string, assetToken *string, accountToken *string, acceptDefault *bool, accountTokenHeader *string) (io.ReadCloser, error) {
+func (client Client) GetAssetWithToken(ctx context.Context, args GetAssetWithTokenArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
-    if version == nil || *version == "" {
+    routeValues["extensionName"] = *args.ExtensionName
+    if args.Version == nil || *args.Version == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "version"} 
     }
-    routeValues["version"] = *version
-    if assetType == nil || *assetType == "" {
+    routeValues["version"] = *args.Version
+    if args.AssetType == nil || *args.AssetType == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "assetType"} 
     }
-    routeValues["assetType"] = *assetType
-    if assetToken != nil && *assetToken != "" {
-        routeValues["assetToken"] = *assetToken
+    routeValues["assetType"] = *args.AssetType
+    if args.AssetToken != nil && *args.AssetToken != "" {
+        routeValues["assetToken"] = *args.AssetToken
     }
 
     queryParams := url.Values{}
-    if accountToken != nil {
-        queryParams.Add("accountToken", *accountToken)
+    if args.AccountToken != nil {
+        queryParams.Add("accountToken", *args.AccountToken)
     }
-    if acceptDefault != nil {
-        queryParams.Add("acceptDefault", strconv.FormatBool(*acceptDefault))
+    if args.AcceptDefault != nil {
+        queryParams.Add("acceptDefault", strconv.FormatBool(*args.AcceptDefault))
     }
     additionalHeaders := make(map[string]string)
-    if accountTokenHeader != nil {
-        additionalHeaders["X-Market-AccountToken"] = *accountTokenHeader
+    if args.AccountTokenHeader != nil {
+        additionalHeaders["X-Market-AccountToken"] = *args.AccountTokenHeader
     }
     locationId, _ := uuid.Parse("364415a1-0077-4a41-a7a0-06edd4497492")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/octet-stream", additionalHeaders)
@@ -1476,20 +1747,37 @@ func (client Client) GetAssetWithToken(ctx context.Context, publisherName *strin
     return resp.Body, err
 }
 
+// Arguments for the GetAssetWithToken function
+type GetAssetWithTokenArgs struct {
+    // (required)
+    PublisherName *string
+    // (required)
+    ExtensionName *string
+    // (required)
+    Version *string
+    // (required)
+    AssetType *string
+    // (optional)
+    AssetToken *string
+    // (optional)
+    AccountToken *string
+    // (optional)
+    AcceptDefault *bool
+    // (optional) Header to pass the account token
+    AccountTokenHeader *string
+}
+
 // [Preview API] Delete publisher asset like logo
-// ctx
-// publisherName (required): Internal name of the publisher
-// assetType (optional): Type of asset. Default value is 'logo'.
-func (client Client) DeletePublisherAsset(ctx context.Context, publisherName *string, assetType *string) error {
+func (client Client) DeletePublisherAsset(ctx context.Context, args DeletePublisherAssetArgs) error {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
+    routeValues["publisherName"] = *args.PublisherName
 
     queryParams := url.Values{}
-    if assetType != nil {
-        queryParams.Add("assetType", *assetType)
+    if args.AssetType != nil {
+        queryParams.Add("assetType", *args.AssetType)
     }
     locationId, _ := uuid.Parse("21143299-34f9-4c62-8ca8-53da691192f9")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1500,20 +1788,25 @@ func (client Client) DeletePublisherAsset(ctx context.Context, publisherName *st
     return nil
 }
 
+// Arguments for the DeletePublisherAsset function
+type DeletePublisherAssetArgs struct {
+    // (required) Internal name of the publisher
+    PublisherName *string
+    // (optional) Type of asset. Default value is 'logo'.
+    AssetType *string
+}
+
 // [Preview API] Get publisher asset like logo as a stream
-// ctx
-// publisherName (required): Internal name of the publisher
-// assetType (optional): Type of asset. Default value is 'logo'.
-func (client Client) GetPublisherAsset(ctx context.Context, publisherName *string, assetType *string) (io.ReadCloser, error) {
+func (client Client) GetPublisherAsset(ctx context.Context, args GetPublisherAssetArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
+    routeValues["publisherName"] = *args.PublisherName
 
     queryParams := url.Values{}
-    if assetType != nil {
-        queryParams.Add("assetType", *assetType)
+    if args.AssetType != nil {
+        queryParams.Add("assetType", *args.AssetType)
     }
     locationId, _ := uuid.Parse("21143299-34f9-4c62-8ca8-53da691192f9")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/octet-stream", nil)
@@ -1524,32 +1817,35 @@ func (client Client) GetPublisherAsset(ctx context.Context, publisherName *strin
     return resp.Body, err
 }
 
+// Arguments for the GetPublisherAsset function
+type GetPublisherAssetArgs struct {
+    // (required) Internal name of the publisher
+    PublisherName *string
+    // (optional) Type of asset. Default value is 'logo'.
+    AssetType *string
+}
+
 // [Preview API] Update publisher asset like logo. It accepts asset file as an octet stream and file name is passed in header values.
-// ctx
-// uploadStream (required): Stream to upload
-// publisherName (required): Internal name of the publisher
-// assetType (optional): Type of asset. Default value is 'logo'.
-// fileName (optional): Header to pass the filename of the uploaded data
-func (client Client) UpdatePublisherAsset(ctx context.Context, uploadStream io.Reader, publisherName *string, assetType *string, fileName *string) (*map[string]string, error) {
-    if uploadStream == nil {
+func (client Client) UpdatePublisherAsset(ctx context.Context, args UpdatePublisherAssetArgs) (*map[string]string, error) {
+    if args.UploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
+    routeValues["publisherName"] = *args.PublisherName
 
     queryParams := url.Values{}
-    if assetType != nil {
-        queryParams.Add("assetType", *assetType)
+    if args.AssetType != nil {
+        queryParams.Add("assetType", *args.AssetType)
     }
     additionalHeaders := make(map[string]string)
-    if fileName != nil {
-        additionalHeaders["X-Market-UploadFileName"] = *fileName
+    if args.FileName != nil {
+        additionalHeaders["X-Market-UploadFileName"] = *args.FileName
     }
     locationId, _ := uuid.Parse("21143299-34f9-4c62-8ca8-53da691192f9")
-    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, queryParams, uploadStream, "application/octet-stream", "application/json", additionalHeaders)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, queryParams, args.UploadStream, "application/octet-stream", "application/json", additionalHeaders)
     if err != nil {
         return nil, err
     }
@@ -1559,14 +1855,24 @@ func (client Client) UpdatePublisherAsset(ctx context.Context, uploadStream io.R
     return &responseValue, err
 }
 
+// Arguments for the UpdatePublisherAsset function
+type UpdatePublisherAssetArgs struct {
+    // (required) Stream to upload
+    UploadStream io.Reader
+    // (required) Internal name of the publisher
+    PublisherName *string
+    // (optional) Type of asset. Default value is 'logo'.
+    AssetType *string
+    // (optional) Header to pass the filename of the uploaded data
+    FileName *string
+}
+
 // [Preview API]
-// ctx
-// publisherQuery (required)
-func (client Client) QueryPublishers(ctx context.Context, publisherQuery *PublisherQuery) (*PublisherQueryResult, error) {
-    if publisherQuery == nil {
+func (client Client) QueryPublishers(ctx context.Context, args QueryPublishersArgs) (*PublisherQueryResult, error) {
+    if args.PublisherQuery == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "publisherQuery"}
     }
-    body, marshalErr := json.Marshal(*publisherQuery)
+    body, marshalErr := json.Marshal(*args.PublisherQuery)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1581,14 +1887,18 @@ func (client Client) QueryPublishers(ctx context.Context, publisherQuery *Publis
     return &responseValue, err
 }
 
+// Arguments for the QueryPublishers function
+type QueryPublishersArgs struct {
+    // (required)
+    PublisherQuery *PublisherQuery
+}
+
 // [Preview API]
-// ctx
-// publisher (required)
-func (client Client) CreatePublisher(ctx context.Context, publisher *Publisher) (*Publisher, error) {
-    if publisher == nil {
+func (client Client) CreatePublisher(ctx context.Context, args CreatePublisherArgs) (*Publisher, error) {
+    if args.Publisher == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "publisher"}
     }
-    body, marshalErr := json.Marshal(*publisher)
+    body, marshalErr := json.Marshal(*args.Publisher)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1603,15 +1913,19 @@ func (client Client) CreatePublisher(ctx context.Context, publisher *Publisher) 
     return &responseValue, err
 }
 
+// Arguments for the CreatePublisher function
+type CreatePublisherArgs struct {
+    // (required)
+    Publisher *Publisher
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-func (client Client) DeletePublisher(ctx context.Context, publisherName *string) error {
+func (client Client) DeletePublisher(ctx context.Context, args DeletePublisherArgs) error {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
+    routeValues["publisherName"] = *args.PublisherName
 
     locationId, _ := uuid.Parse("4ddec66a-e4f6-4f5d-999e-9e77710d7ff4")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -1622,20 +1936,23 @@ func (client Client) DeletePublisher(ctx context.Context, publisherName *string)
     return nil
 }
 
+// Arguments for the DeletePublisher function
+type DeletePublisherArgs struct {
+    // (required)
+    PublisherName *string
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-// flags (optional)
-func (client Client) GetPublisher(ctx context.Context, publisherName *string, flags *int) (*Publisher, error) {
+func (client Client) GetPublisher(ctx context.Context, args GetPublisherArgs) (*Publisher, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
+    routeValues["publisherName"] = *args.PublisherName
 
     queryParams := url.Values{}
-    if flags != nil {
-        queryParams.Add("flags", strconv.Itoa(*flags))
+    if args.Flags != nil {
+        queryParams.Add("flags", strconv.Itoa(*args.Flags))
     }
     locationId, _ := uuid.Parse("4ddec66a-e4f6-4f5d-999e-9e77710d7ff4")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1648,21 +1965,26 @@ func (client Client) GetPublisher(ctx context.Context, publisherName *string, fl
     return &responseValue, err
 }
 
+// Arguments for the GetPublisher function
+type GetPublisherArgs struct {
+    // (required)
+    PublisherName *string
+    // (optional)
+    Flags *int
+}
+
 // [Preview API]
-// ctx
-// publisher (required)
-// publisherName (required)
-func (client Client) UpdatePublisher(ctx context.Context, publisher *Publisher, publisherName *string) (*Publisher, error) {
-    if publisher == nil {
+func (client Client) UpdatePublisher(ctx context.Context, args UpdatePublisherArgs) (*Publisher, error) {
+    if args.Publisher == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "publisher"}
     }
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
+    routeValues["publisherName"] = *args.PublisherName
 
-    body, marshalErr := json.Marshal(*publisher)
+    body, marshalErr := json.Marshal(*args.Publisher)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1677,26 +1999,30 @@ func (client Client) UpdatePublisher(ctx context.Context, publisher *Publisher, 
     return &responseValue, err
 }
 
+// Arguments for the UpdatePublisher function
+type UpdatePublisherArgs struct {
+    // (required)
+    Publisher *Publisher
+    // (required)
+    PublisherName *string
+}
+
 // [Preview API] Endpoint to add/modify publisher membership. Currently Supports only addition/modification of 1 user at a time Works only for adding members of same tenant.
-// ctx
-// roleAssignments (required): List of user identifiers(email address) and role to be added. Currently only one entry is supported.
-// publisherName (required): The name/id of publisher to which users have to be added
-// limitToCallerIdentityDomain (optional): Should cross tenant addtions be allowed or not.
-func (client Client) UpdatePublisherMembers(ctx context.Context, roleAssignments *[]PublisherUserRoleAssignmentRef, publisherName *string, limitToCallerIdentityDomain *bool) (*[]PublisherRoleAssignment, error) {
-    if roleAssignments == nil {
+func (client Client) UpdatePublisherMembers(ctx context.Context, args UpdatePublisherMembersArgs) (*[]PublisherRoleAssignment, error) {
+    if args.RoleAssignments == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "roleAssignments"}
     }
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
+    routeValues["publisherName"] = *args.PublisherName
 
     queryParams := url.Values{}
-    if limitToCallerIdentityDomain != nil {
-        queryParams.Add("limitToCallerIdentityDomain", strconv.FormatBool(*limitToCallerIdentityDomain))
+    if args.LimitToCallerIdentityDomain != nil {
+        queryParams.Add("limitToCallerIdentityDomain", strconv.FormatBool(*args.LimitToCallerIdentityDomain))
     }
-    body, marshalErr := json.Marshal(*roleAssignments)
+    body, marshalErr := json.Marshal(*args.RoleAssignments)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1711,33 +2037,37 @@ func (client Client) UpdatePublisherMembers(ctx context.Context, roleAssignments
     return &responseValue, err
 }
 
+// Arguments for the UpdatePublisherMembers function
+type UpdatePublisherMembersArgs struct {
+    // (required) List of user identifiers(email address) and role to be added. Currently only one entry is supported.
+    RoleAssignments *[]PublisherUserRoleAssignmentRef
+    // (required) The name/id of publisher to which users have to be added
+    PublisherName *string
+    // (optional) Should cross tenant addtions be allowed or not.
+    LimitToCallerIdentityDomain *bool
+}
+
 // [Preview API] Returns a list of questions with their responses associated with an extension.
-// ctx
-// publisherName (required): Name of the publisher who published the extension.
-// extensionName (required): Name of the extension.
-// count (optional): Number of questions to retrieve (defaults to 10).
-// page (optional): Page number from which set of questions are to be retrieved.
-// afterDate (optional): If provided, results questions are returned which were posted after this date
-func (client Client) GetQuestions(ctx context.Context, publisherName *string, extensionName *string, count *int, page *int, afterDate *time.Time) (*QuestionsResult, error) {
+func (client Client) GetQuestions(ctx context.Context, args GetQuestionsArgs) (*QuestionsResult, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
+    routeValues["extensionName"] = *args.ExtensionName
 
     queryParams := url.Values{}
-    if count != nil {
-        queryParams.Add("count", strconv.Itoa(*count))
+    if args.Count != nil {
+        queryParams.Add("count", strconv.Itoa(*args.Count))
     }
-    if page != nil {
-        queryParams.Add("page", strconv.Itoa(*page))
+    if args.Page != nil {
+        queryParams.Add("page", strconv.Itoa(*args.Page))
     }
-    if afterDate != nil {
-        queryParams.Add("afterDate", (*afterDate).String())
+    if args.AfterDate != nil {
+        queryParams.Add("afterDate", (*args.AfterDate).String())
     }
     locationId, _ := uuid.Parse("c010d03d-812c-4ade-ae07-c1862475eda5")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1750,31 +2080,40 @@ func (client Client) GetQuestions(ctx context.Context, publisherName *string, ex
     return &responseValue, err
 }
 
+// Arguments for the GetQuestions function
+type GetQuestionsArgs struct {
+    // (required) Name of the publisher who published the extension.
+    PublisherName *string
+    // (required) Name of the extension.
+    ExtensionName *string
+    // (optional) Number of questions to retrieve (defaults to 10).
+    Count *int
+    // (optional) Page number from which set of questions are to be retrieved.
+    Page *int
+    // (optional) If provided, results questions are returned which were posted after this date
+    AfterDate *time.Time
+}
+
 // [Preview API] Flags a concern with an existing question for an extension.
-// ctx
-// concern (required): User reported concern with a question for the extension.
-// pubName (required): Name of the publisher who published the extension.
-// extName (required): Name of the extension.
-// questionId (required): Identifier of the question to be updated for the extension.
-func (client Client) ReportQuestion(ctx context.Context, concern *Concern, pubName *string, extName *string, questionId *uint64) (*Concern, error) {
-    if concern == nil {
+func (client Client) ReportQuestion(ctx context.Context, args ReportQuestionArgs) (*Concern, error) {
+    if args.Concern == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "concern"}
     }
     routeValues := make(map[string]string)
-    if pubName == nil || *pubName == "" {
+    if args.PubName == nil || *args.PubName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "pubName"} 
     }
-    routeValues["pubName"] = *pubName
-    if extName == nil || *extName == "" {
+    routeValues["pubName"] = *args.PubName
+    if args.ExtName == nil || *args.ExtName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extName"} 
     }
-    routeValues["extName"] = *extName
-    if questionId == nil {
+    routeValues["extName"] = *args.ExtName
+    if args.QuestionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "questionId"} 
     }
-    routeValues["questionId"] = strconv.FormatUint(*questionId, 10)
+    routeValues["questionId"] = strconv.FormatUint(*args.QuestionId, 10)
 
-    body, marshalErr := json.Marshal(*concern)
+    body, marshalErr := json.Marshal(*args.Concern)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1789,26 +2128,34 @@ func (client Client) ReportQuestion(ctx context.Context, concern *Concern, pubNa
     return &responseValue, err
 }
 
+// Arguments for the ReportQuestion function
+type ReportQuestionArgs struct {
+    // (required) User reported concern with a question for the extension.
+    Concern *Concern
+    // (required) Name of the publisher who published the extension.
+    PubName *string
+    // (required) Name of the extension.
+    ExtName *string
+    // (required) Identifier of the question to be updated for the extension.
+    QuestionId *uint64
+}
+
 // [Preview API] Creates a new question for an extension.
-// ctx
-// question (required): Question to be created for the extension.
-// publisherName (required): Name of the publisher who published the extension.
-// extensionName (required): Name of the extension.
-func (client Client) CreateQuestion(ctx context.Context, question *Question, publisherName *string, extensionName *string) (*Question, error) {
-    if question == nil {
+func (client Client) CreateQuestion(ctx context.Context, args CreateQuestionArgs) (*Question, error) {
+    if args.Question == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "question"}
     }
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
+    routeValues["extensionName"] = *args.ExtensionName
 
-    body, marshalErr := json.Marshal(*question)
+    body, marshalErr := json.Marshal(*args.Question)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1821,27 +2168,33 @@ func (client Client) CreateQuestion(ctx context.Context, question *Question, pub
     var responseValue Question
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the CreateQuestion function
+type CreateQuestionArgs struct {
+    // (required) Question to be created for the extension.
+    Question *Question
+    // (required) Name of the publisher who published the extension.
+    PublisherName *string
+    // (required) Name of the extension.
+    ExtensionName *string
 }
 
 // [Preview API] Deletes an existing question and all its associated responses for an extension. (soft delete)
-// ctx
-// publisherName (required): Name of the publisher who published the extension.
-// extensionName (required): Name of the extension.
-// questionId (required): Identifier of the question to be deleted for the extension.
-func (client Client) DeleteQuestion(ctx context.Context, publisherName *string, extensionName *string, questionId *uint64) error {
+func (client Client) DeleteQuestion(ctx context.Context, args DeleteQuestionArgs) error {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
-    if questionId == nil {
+    routeValues["extensionName"] = *args.ExtensionName
+    if args.QuestionId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "questionId"} 
     }
-    routeValues["questionId"] = strconv.FormatUint(*questionId, 10)
+    routeValues["questionId"] = strconv.FormatUint(*args.QuestionId, 10)
 
     locationId, _ := uuid.Parse("6d1d9741-eca8-4701-a3a5-235afc82dfa4")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -1852,31 +2205,36 @@ func (client Client) DeleteQuestion(ctx context.Context, publisherName *string, 
     return nil
 }
 
+// Arguments for the DeleteQuestion function
+type DeleteQuestionArgs struct {
+    // (required) Name of the publisher who published the extension.
+    PublisherName *string
+    // (required) Name of the extension.
+    ExtensionName *string
+    // (required) Identifier of the question to be deleted for the extension.
+    QuestionId *uint64
+}
+
 // [Preview API] Updates an existing question for an extension.
-// ctx
-// question (required): Updated question to be set for the extension.
-// publisherName (required): Name of the publisher who published the extension.
-// extensionName (required): Name of the extension.
-// questionId (required): Identifier of the question to be updated for the extension.
-func (client Client) UpdateQuestion(ctx context.Context, question *Question, publisherName *string, extensionName *string, questionId *uint64) (*Question, error) {
-    if question == nil {
+func (client Client) UpdateQuestion(ctx context.Context, args UpdateQuestionArgs) (*Question, error) {
+    if args.Question == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "question"}
     }
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
-    if questionId == nil {
+    routeValues["extensionName"] = *args.ExtensionName
+    if args.QuestionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "questionId"} 
     }
-    routeValues["questionId"] = strconv.FormatUint(*questionId, 10)
+    routeValues["questionId"] = strconv.FormatUint(*args.QuestionId, 10)
 
-    body, marshalErr := json.Marshal(*question)
+    body, marshalErr := json.Marshal(*args.Question)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1891,31 +2249,38 @@ func (client Client) UpdateQuestion(ctx context.Context, question *Question, pub
     return &responseValue, err
 }
 
+// Arguments for the UpdateQuestion function
+type UpdateQuestionArgs struct {
+    // (required) Updated question to be set for the extension.
+    Question *Question
+    // (required) Name of the publisher who published the extension.
+    PublisherName *string
+    // (required) Name of the extension.
+    ExtensionName *string
+    // (required) Identifier of the question to be updated for the extension.
+    QuestionId *uint64
+}
+
 // [Preview API] Creates a new response for a given question for an extension.
-// ctx
-// response (required): Response to be created for the extension.
-// publisherName (required): Name of the publisher who published the extension.
-// extensionName (required): Name of the extension.
-// questionId (required): Identifier of the question for which response is to be created for the extension.
-func (client Client) CreateResponse(ctx context.Context, response *Response, publisherName *string, extensionName *string, questionId *uint64) (*Response, error) {
-    if response == nil {
+func (client Client) CreateResponse(ctx context.Context, args CreateResponseArgs) (*Response, error) {
+    if args.Response == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "response"}
     }
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
-    if questionId == nil {
+    routeValues["extensionName"] = *args.ExtensionName
+    if args.QuestionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "questionId"} 
     }
-    routeValues["questionId"] = strconv.FormatUint(*questionId, 10)
+    routeValues["questionId"] = strconv.FormatUint(*args.QuestionId, 10)
 
-    body, marshalErr := json.Marshal(*response)
+    body, marshalErr := json.Marshal(*args.Response)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1930,30 +2295,37 @@ func (client Client) CreateResponse(ctx context.Context, response *Response, pub
     return &responseValue, err
 }
 
+// Arguments for the CreateResponse function
+type CreateResponseArgs struct {
+    // (required) Response to be created for the extension.
+    Response *Response
+    // (required) Name of the publisher who published the extension.
+    PublisherName *string
+    // (required) Name of the extension.
+    ExtensionName *string
+    // (required) Identifier of the question for which response is to be created for the extension.
+    QuestionId *uint64
+}
+
 // [Preview API] Deletes a response for an extension. (soft delete)
-// ctx
-// publisherName (required): Name of the publisher who published the extension.
-// extensionName (required): Name of the extension.
-// questionId (required): Identifies the question whose response is to be deleted.
-// responseId (required): Identifies the response to be deleted.
-func (client Client) DeleteResponse(ctx context.Context, publisherName *string, extensionName *string, questionId *uint64, responseId *uint64) error {
+func (client Client) DeleteResponse(ctx context.Context, args DeleteResponseArgs) error {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
-    if questionId == nil {
+    routeValues["extensionName"] = *args.ExtensionName
+    if args.QuestionId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "questionId"} 
     }
-    routeValues["questionId"] = strconv.FormatUint(*questionId, 10)
-    if responseId == nil {
+    routeValues["questionId"] = strconv.FormatUint(*args.QuestionId, 10)
+    if args.ResponseId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "responseId"} 
     }
-    routeValues["responseId"] = strconv.FormatUint(*responseId, 10)
+    routeValues["responseId"] = strconv.FormatUint(*args.ResponseId, 10)
 
     locationId, _ := uuid.Parse("7f8ae5e0-46b0-438f-b2e8-13e8513517bd")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -1964,36 +2336,42 @@ func (client Client) DeleteResponse(ctx context.Context, publisherName *string, 
     return nil
 }
 
+// Arguments for the DeleteResponse function
+type DeleteResponseArgs struct {
+    // (required) Name of the publisher who published the extension.
+    PublisherName *string
+    // (required) Name of the extension.
+    ExtensionName *string
+    // (required) Identifies the question whose response is to be deleted.
+    QuestionId *uint64
+    // (required) Identifies the response to be deleted.
+    ResponseId *uint64
+}
+
 // [Preview API] Updates an existing response for a given question for an extension.
-// ctx
-// response (required): Updated response to be set for the extension.
-// publisherName (required): Name of the publisher who published the extension.
-// extensionName (required): Name of the extension.
-// questionId (required): Identifier of the question for which response is to be updated for the extension.
-// responseId (required): Identifier of the response which has to be updated.
-func (client Client) UpdateResponse(ctx context.Context, response *Response, publisherName *string, extensionName *string, questionId *uint64, responseId *uint64) (*Response, error) {
-    if response == nil {
+func (client Client) UpdateResponse(ctx context.Context, args UpdateResponseArgs) (*Response, error) {
+    if args.Response == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "response"}
     }
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
-    if questionId == nil {
+    routeValues["extensionName"] = *args.ExtensionName
+    if args.QuestionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "questionId"} 
     }
-    routeValues["questionId"] = strconv.FormatUint(*questionId, 10)
-    if responseId == nil {
+    routeValues["questionId"] = strconv.FormatUint(*args.QuestionId, 10)
+    if args.ResponseId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "responseId"} 
     }
-    routeValues["responseId"] = strconv.FormatUint(*responseId, 10)
+    routeValues["responseId"] = strconv.FormatUint(*args.ResponseId, 10)
 
-    body, marshalErr := json.Marshal(*response)
+    body, marshalErr := json.Marshal(*args.Response)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -2008,33 +2386,41 @@ func (client Client) UpdateResponse(ctx context.Context, response *Response, pub
     return &responseValue, err
 }
 
+// Arguments for the UpdateResponse function
+type UpdateResponseArgs struct {
+    // (required) Updated response to be set for the extension.
+    Response *Response
+    // (required) Name of the publisher who published the extension.
+    PublisherName *string
+    // (required) Name of the extension.
+    ExtensionName *string
+    // (required) Identifier of the question for which response is to be updated for the extension.
+    QuestionId *uint64
+    // (required) Identifier of the response which has to be updated.
+    ResponseId *uint64
+}
+
 // [Preview API] Returns extension reports
-// ctx
-// publisherName (required): Name of the publisher who published the extension
-// extensionName (required): Name of the extension
-// days (optional): Last n days report. If afterDate and days are specified, days will take priority
-// count (optional): Number of events to be returned
-// afterDate (optional): Use if you want to fetch events newer than the specified date
-func (client Client) GetExtensionReports(ctx context.Context, publisherName *string, extensionName *string, days *int, count *int, afterDate *time.Time) (interface{}, error) {
+func (client Client) GetExtensionReports(ctx context.Context, args GetExtensionReportsArgs) (interface{}, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
+    routeValues["extensionName"] = *args.ExtensionName
 
     queryParams := url.Values{}
-    if days != nil {
-        queryParams.Add("days", strconv.Itoa(*days))
+    if args.Days != nil {
+        queryParams.Add("days", strconv.Itoa(*args.Days))
     }
-    if count != nil {
-        queryParams.Add("count", strconv.Itoa(*count))
+    if args.Count != nil {
+        queryParams.Add("count", strconv.Itoa(*args.Count))
     }
-    if afterDate != nil {
-        queryParams.Add("afterDate", (*afterDate).String())
+    if args.AfterDate != nil {
+        queryParams.Add("afterDate", (*args.AfterDate).String())
     }
     locationId, _ := uuid.Parse("79e0c74f-157f-437e-845f-74fbb4121d4c")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -2047,37 +2433,44 @@ func (client Client) GetExtensionReports(ctx context.Context, publisherName *str
     return responseValue, err
 }
 
+// Arguments for the GetExtensionReports function
+type GetExtensionReportsArgs struct {
+    // (required) Name of the publisher who published the extension
+    PublisherName *string
+    // (required) Name of the extension
+    ExtensionName *string
+    // (optional) Last n days report. If afterDate and days are specified, days will take priority
+    Days *int
+    // (optional) Number of events to be returned
+    Count *int
+    // (optional) Use if you want to fetch events newer than the specified date
+    AfterDate *time.Time
+}
+
 // [Preview API] Returns a list of reviews associated with an extension
-// ctx
-// publisherName (required): Name of the publisher who published the extension
-// extensionName (required): Name of the extension
-// count (optional): Number of reviews to retrieve (defaults to 5)
-// filterOptions (optional): FilterOptions to filter out empty reviews etcetera, defaults to none
-// beforeDate (optional): Use if you want to fetch reviews older than the specified date, defaults to null
-// afterDate (optional): Use if you want to fetch reviews newer than the specified date, defaults to null
-func (client Client) GetReviews(ctx context.Context, publisherName *string, extensionName *string, count *int, filterOptions *ReviewFilterOptions, beforeDate *time.Time, afterDate *time.Time) (*ReviewsResult, error) {
+func (client Client) GetReviews(ctx context.Context, args GetReviewsArgs) (*ReviewsResult, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
+    routeValues["extensionName"] = *args.ExtensionName
 
     queryParams := url.Values{}
-    if count != nil {
-        queryParams.Add("count", strconv.Itoa(*count))
+    if args.Count != nil {
+        queryParams.Add("count", strconv.Itoa(*args.Count))
     }
-    if filterOptions != nil {
-        queryParams.Add("filterOptions", string(*filterOptions))
+    if args.FilterOptions != nil {
+        queryParams.Add("filterOptions", string(*args.FilterOptions))
     }
-    if beforeDate != nil {
-        queryParams.Add("beforeDate", (*beforeDate).String())
+    if args.BeforeDate != nil {
+        queryParams.Add("beforeDate", (*args.BeforeDate).String())
     }
-    if afterDate != nil {
-        queryParams.Add("afterDate", (*afterDate).String())
+    if args.AfterDate != nil {
+        queryParams.Add("afterDate", (*args.AfterDate).String())
     }
     locationId, _ := uuid.Parse("5b3f819f-f247-42ad-8c00-dd9ab9ab246d")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -2090,29 +2483,40 @@ func (client Client) GetReviews(ctx context.Context, publisherName *string, exte
     return &responseValue, err
 }
 
+// Arguments for the GetReviews function
+type GetReviewsArgs struct {
+    // (required) Name of the publisher who published the extension
+    PublisherName *string
+    // (required) Name of the extension
+    ExtensionName *string
+    // (optional) Number of reviews to retrieve (defaults to 5)
+    Count *int
+    // (optional) FilterOptions to filter out empty reviews etcetera, defaults to none
+    FilterOptions *ReviewFilterOptions
+    // (optional) Use if you want to fetch reviews older than the specified date, defaults to null
+    BeforeDate *time.Time
+    // (optional) Use if you want to fetch reviews newer than the specified date, defaults to null
+    AfterDate *time.Time
+}
+
 // [Preview API] Returns a summary of the reviews
-// ctx
-// pubName (required): Name of the publisher who published the extension
-// extName (required): Name of the extension
-// beforeDate (optional): Use if you want to fetch summary of reviews older than the specified date, defaults to null
-// afterDate (optional): Use if you want to fetch summary of reviews newer than the specified date, defaults to null
-func (client Client) GetReviewsSummary(ctx context.Context, pubName *string, extName *string, beforeDate *time.Time, afterDate *time.Time) (*ReviewSummary, error) {
+func (client Client) GetReviewsSummary(ctx context.Context, args GetReviewsSummaryArgs) (*ReviewSummary, error) {
     routeValues := make(map[string]string)
-    if pubName == nil || *pubName == "" {
+    if args.PubName == nil || *args.PubName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "pubName"} 
     }
-    routeValues["pubName"] = *pubName
-    if extName == nil || *extName == "" {
+    routeValues["pubName"] = *args.PubName
+    if args.ExtName == nil || *args.ExtName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extName"} 
     }
-    routeValues["extName"] = *extName
+    routeValues["extName"] = *args.ExtName
 
     queryParams := url.Values{}
-    if beforeDate != nil {
-        queryParams.Add("beforeDate", (*beforeDate).String())
+    if args.BeforeDate != nil {
+        queryParams.Add("beforeDate", (*args.BeforeDate).String())
     }
-    if afterDate != nil {
-        queryParams.Add("afterDate", (*afterDate).String())
+    if args.AfterDate != nil {
+        queryParams.Add("afterDate", (*args.AfterDate).String())
     }
     locationId, _ := uuid.Parse("b7b44e21-209e-48f0-ae78-04727fc37d77")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -2125,26 +2529,34 @@ func (client Client) GetReviewsSummary(ctx context.Context, pubName *string, ext
     return &responseValue, err
 }
 
+// Arguments for the GetReviewsSummary function
+type GetReviewsSummaryArgs struct {
+    // (required) Name of the publisher who published the extension
+    PubName *string
+    // (required) Name of the extension
+    ExtName *string
+    // (optional) Use if you want to fetch summary of reviews older than the specified date, defaults to null
+    BeforeDate *time.Time
+    // (optional) Use if you want to fetch summary of reviews newer than the specified date, defaults to null
+    AfterDate *time.Time
+}
+
 // [Preview API] Creates a new review for an extension
-// ctx
-// review (required): Review to be created for the extension
-// pubName (required): Name of the publisher who published the extension
-// extName (required): Name of the extension
-func (client Client) CreateReview(ctx context.Context, review *Review, pubName *string, extName *string) (*Review, error) {
-    if review == nil {
+func (client Client) CreateReview(ctx context.Context, args CreateReviewArgs) (*Review, error) {
+    if args.Review == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "review"}
     }
     routeValues := make(map[string]string)
-    if pubName == nil || *pubName == "" {
+    if args.PubName == nil || *args.PubName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "pubName"} 
     }
-    routeValues["pubName"] = *pubName
-    if extName == nil || *extName == "" {
+    routeValues["pubName"] = *args.PubName
+    if args.ExtName == nil || *args.ExtName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extName"} 
     }
-    routeValues["extName"] = *extName
+    routeValues["extName"] = *args.ExtName
 
-    body, marshalErr := json.Marshal(*review)
+    body, marshalErr := json.Marshal(*args.Review)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -2159,25 +2571,31 @@ func (client Client) CreateReview(ctx context.Context, review *Review, pubName *
     return &responseValue, err
 }
 
+// Arguments for the CreateReview function
+type CreateReviewArgs struct {
+    // (required) Review to be created for the extension
+    Review *Review
+    // (required) Name of the publisher who published the extension
+    PubName *string
+    // (required) Name of the extension
+    ExtName *string
+}
+
 // [Preview API] Deletes a review
-// ctx
-// pubName (required): Name of the pubilsher who published the extension
-// extName (required): Name of the extension
-// reviewId (required): Id of the review which needs to be updated
-func (client Client) DeleteReview(ctx context.Context, pubName *string, extName *string, reviewId *uint64) error {
+func (client Client) DeleteReview(ctx context.Context, args DeleteReviewArgs) error {
     routeValues := make(map[string]string)
-    if pubName == nil || *pubName == "" {
+    if args.PubName == nil || *args.PubName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "pubName"} 
     }
-    routeValues["pubName"] = *pubName
-    if extName == nil || *extName == "" {
+    routeValues["pubName"] = *args.PubName
+    if args.ExtName == nil || *args.ExtName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extName"} 
     }
-    routeValues["extName"] = *extName
-    if reviewId == nil {
+    routeValues["extName"] = *args.ExtName
+    if args.ReviewId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "reviewId"} 
     }
-    routeValues["reviewId"] = strconv.FormatUint(*reviewId, 10)
+    routeValues["reviewId"] = strconv.FormatUint(*args.ReviewId, 10)
 
     locationId, _ := uuid.Parse("e6e85b9d-aa70-40e6-aa28-d0fbf40b91a3")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -2188,31 +2606,36 @@ func (client Client) DeleteReview(ctx context.Context, pubName *string, extName 
     return nil
 }
 
+// Arguments for the DeleteReview function
+type DeleteReviewArgs struct {
+    // (required) Name of the pubilsher who published the extension
+    PubName *string
+    // (required) Name of the extension
+    ExtName *string
+    // (required) Id of the review which needs to be updated
+    ReviewId *uint64
+}
+
 // [Preview API] Updates or Flags a review
-// ctx
-// reviewPatch (required): ReviewPatch object which contains the changes to be applied to the review
-// pubName (required): Name of the pubilsher who published the extension
-// extName (required): Name of the extension
-// reviewId (required): Id of the review which needs to be updated
-func (client Client) UpdateReview(ctx context.Context, reviewPatch *ReviewPatch, pubName *string, extName *string, reviewId *uint64) (*ReviewPatch, error) {
-    if reviewPatch == nil {
+func (client Client) UpdateReview(ctx context.Context, args UpdateReviewArgs) (*ReviewPatch, error) {
+    if args.ReviewPatch == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "reviewPatch"}
     }
     routeValues := make(map[string]string)
-    if pubName == nil || *pubName == "" {
+    if args.PubName == nil || *args.PubName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "pubName"} 
     }
-    routeValues["pubName"] = *pubName
-    if extName == nil || *extName == "" {
+    routeValues["pubName"] = *args.PubName
+    if args.ExtName == nil || *args.ExtName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extName"} 
     }
-    routeValues["extName"] = *extName
-    if reviewId == nil {
+    routeValues["extName"] = *args.ExtName
+    if args.ReviewId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "reviewId"} 
     }
-    routeValues["reviewId"] = strconv.FormatUint(*reviewId, 10)
+    routeValues["reviewId"] = strconv.FormatUint(*args.ReviewId, 10)
 
-    body, marshalErr := json.Marshal(*reviewPatch)
+    body, marshalErr := json.Marshal(*args.ReviewPatch)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -2227,14 +2650,24 @@ func (client Client) UpdateReview(ctx context.Context, reviewPatch *ReviewPatch,
     return &responseValue, err
 }
 
+// Arguments for the UpdateReview function
+type UpdateReviewArgs struct {
+    // (required) ReviewPatch object which contains the changes to be applied to the review
+    ReviewPatch *ReviewPatch
+    // (required) Name of the pubilsher who published the extension
+    PubName *string
+    // (required) Name of the extension
+    ExtName *string
+    // (required) Id of the review which needs to be updated
+    ReviewId *uint64
+}
+
 // [Preview API]
-// ctx
-// category (required)
-func (client Client) CreateCategory(ctx context.Context, category *ExtensionCategory) (*ExtensionCategory, error) {
-    if category == nil {
+func (client Client) CreateCategory(ctx context.Context, args CreateCategoryArgs) (*ExtensionCategory, error) {
+    if args.Category == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "category"}
     }
-    body, marshalErr := json.Marshal(*category)
+    body, marshalErr := json.Marshal(*args.Category)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -2249,18 +2682,21 @@ func (client Client) CreateCategory(ctx context.Context, category *ExtensionCate
     return &responseValue, err
 }
 
+// Arguments for the CreateCategory function
+type CreateCategoryArgs struct {
+    // (required)
+    Category *ExtensionCategory
+}
+
 // [Preview API] Get all setting entries for the given user/all-users scope
-// ctx
-// userScope (required): User-Scope at which to get the value. Should be "me" for the current user or "host" for all users.
-// key (optional): Optional key under which to filter all the entries
-func (client Client) GetGalleryUserSettings(ctx context.Context, userScope *string, key *string) (*map[string]interface{}, error) {
+func (client Client) GetGalleryUserSettings(ctx context.Context, args GetGalleryUserSettingsArgs) (*map[string]interface{}, error) {
     routeValues := make(map[string]string)
-    if userScope == nil || *userScope == "" {
+    if args.UserScope == nil || *args.UserScope == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "userScope"} 
     }
-    routeValues["userScope"] = *userScope
-    if key != nil && *key != "" {
-        routeValues["key"] = *key
+    routeValues["userScope"] = *args.UserScope
+    if args.Key != nil && *args.Key != "" {
+        routeValues["key"] = *args.Key
     }
 
     locationId, _ := uuid.Parse("9b75ece3-7960-401c-848b-148ac01ca350")
@@ -2274,21 +2710,26 @@ func (client Client) GetGalleryUserSettings(ctx context.Context, userScope *stri
     return &responseValue, err
 }
 
+// Arguments for the GetGalleryUserSettings function
+type GetGalleryUserSettingsArgs struct {
+    // (required) User-Scope at which to get the value. Should be "me" for the current user or "host" for all users.
+    UserScope *string
+    // (optional) Optional key under which to filter all the entries
+    Key *string
+}
+
 // [Preview API] Set all setting entries for the given user/all-users scope
-// ctx
-// entries (required): A key-value pair of all settings that need to be set
-// userScope (required): User-Scope at which to get the value. Should be "me" for the current user or "host" for all users.
-func (client Client) SetGalleryUserSettings(ctx context.Context, entries *map[string]interface{}, userScope *string) error {
-    if entries == nil {
+func (client Client) SetGalleryUserSettings(ctx context.Context, args SetGalleryUserSettingsArgs) error {
+    if args.Entries == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "entries"}
     }
     routeValues := make(map[string]string)
-    if userScope == nil || *userScope == "" {
+    if args.UserScope == nil || *args.UserScope == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "userScope"} 
     }
-    routeValues["userScope"] = *userScope
+    routeValues["userScope"] = *args.UserScope
 
-    body, marshalErr := json.Marshal(*entries)
+    body, marshalErr := json.Marshal(*args.Entries)
     if marshalErr != nil {
         return marshalErr
     }
@@ -2301,20 +2742,25 @@ func (client Client) SetGalleryUserSettings(ctx context.Context, entries *map[st
     return nil
 }
 
+// Arguments for the SetGalleryUserSettings function
+type SetGalleryUserSettingsArgs struct {
+    // (required) A key-value pair of all settings that need to be set
+    Entries *map[string]interface{}
+    // (required) User-Scope at which to get the value. Should be "me" for the current user or "host" for all users.
+    UserScope *string
+}
+
 // [Preview API]
-// ctx
-// keyType (required)
-// expireCurrentSeconds (optional)
-func (client Client) GenerateKey(ctx context.Context, keyType *string, expireCurrentSeconds *int) error {
+func (client Client) GenerateKey(ctx context.Context, args GenerateKeyArgs) error {
     routeValues := make(map[string]string)
-    if keyType == nil || *keyType == "" {
+    if args.KeyType == nil || *args.KeyType == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "keyType"} 
     }
-    routeValues["keyType"] = *keyType
+    routeValues["keyType"] = *args.KeyType
 
     queryParams := url.Values{}
-    if expireCurrentSeconds != nil {
-        queryParams.Add("expireCurrentSeconds", strconv.Itoa(*expireCurrentSeconds))
+    if args.ExpireCurrentSeconds != nil {
+        queryParams.Add("expireCurrentSeconds", strconv.Itoa(*args.ExpireCurrentSeconds))
     }
     locationId, _ := uuid.Parse("92ed5cf4-c38b-465a-9059-2f2fb7c624b5")
     _, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -2325,15 +2771,21 @@ func (client Client) GenerateKey(ctx context.Context, keyType *string, expireCur
     return nil
 }
 
+// Arguments for the GenerateKey function
+type GenerateKeyArgs struct {
+    // (required)
+    KeyType *string
+    // (optional)
+    ExpireCurrentSeconds *int
+}
+
 // [Preview API]
-// ctx
-// keyType (required)
-func (client Client) GetSigningKey(ctx context.Context, keyType *string) (*string, error) {
+func (client Client) GetSigningKey(ctx context.Context, args GetSigningKeyArgs) (*string, error) {
     routeValues := make(map[string]string)
-    if keyType == nil || *keyType == "" {
+    if args.KeyType == nil || *args.KeyType == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "keyType"} 
     }
-    routeValues["keyType"] = *keyType
+    routeValues["keyType"] = *args.KeyType
 
     locationId, _ := uuid.Parse("92ed5cf4-c38b-465a-9059-2f2fb7c624b5")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -2346,26 +2798,28 @@ func (client Client) GetSigningKey(ctx context.Context, keyType *string) (*strin
     return &responseValue, err
 }
 
+// Arguments for the GetSigningKey function
+type GetSigningKeyArgs struct {
+    // (required)
+    KeyType *string
+}
+
 // [Preview API]
-// ctx
-// extensionStatisticsUpdate (required)
-// publisherName (required)
-// extensionName (required)
-func (client Client) UpdateExtensionStatistics(ctx context.Context, extensionStatisticsUpdate *ExtensionStatisticUpdate, publisherName *string, extensionName *string) error {
-    if extensionStatisticsUpdate == nil {
+func (client Client) UpdateExtensionStatistics(ctx context.Context, args UpdateExtensionStatisticsArgs) error {
+    if args.ExtensionStatisticsUpdate == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "extensionStatisticsUpdate"}
     }
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
+    routeValues["extensionName"] = *args.ExtensionName
 
-    body, marshalErr := json.Marshal(*extensionStatisticsUpdate)
+    body, marshalErr := json.Marshal(*args.ExtensionStatisticsUpdate)
     if marshalErr != nil {
         return marshalErr
     }
@@ -2378,33 +2832,37 @@ func (client Client) UpdateExtensionStatistics(ctx context.Context, extensionSta
     return nil
 }
 
+// Arguments for the UpdateExtensionStatistics function
+type UpdateExtensionStatisticsArgs struct {
+    // (required)
+    ExtensionStatisticsUpdate *ExtensionStatisticUpdate
+    // (required)
+    PublisherName *string
+    // (required)
+    ExtensionName *string
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-// extensionName (required)
-// days (optional)
-// aggregate (optional)
-// afterDate (optional)
-func (client Client) GetExtensionDailyStats(ctx context.Context, publisherName *string, extensionName *string, days *int, aggregate *ExtensionStatsAggregateType, afterDate *time.Time) (*ExtensionDailyStats, error) {
+func (client Client) GetExtensionDailyStats(ctx context.Context, args GetExtensionDailyStatsArgs) (*ExtensionDailyStats, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
+    routeValues["extensionName"] = *args.ExtensionName
 
     queryParams := url.Values{}
-    if days != nil {
-        queryParams.Add("days", strconv.Itoa(*days))
+    if args.Days != nil {
+        queryParams.Add("days", strconv.Itoa(*args.Days))
     }
-    if aggregate != nil {
-        queryParams.Add("aggregate", string(*aggregate))
+    if args.Aggregate != nil {
+        queryParams.Add("aggregate", string(*args.Aggregate))
     }
-    if afterDate != nil {
-        queryParams.Add("afterDate", (*afterDate).String())
+    if args.AfterDate != nil {
+        queryParams.Add("afterDate", (*args.AfterDate).String())
     }
     locationId, _ := uuid.Parse("ae06047e-51c5-4fb4-ab65-7be488544416")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -2417,25 +2875,35 @@ func (client Client) GetExtensionDailyStats(ctx context.Context, publisherName *
     return &responseValue, err
 }
 
+// Arguments for the GetExtensionDailyStats function
+type GetExtensionDailyStatsArgs struct {
+    // (required)
+    PublisherName *string
+    // (required)
+    ExtensionName *string
+    // (optional)
+    Days *int
+    // (optional)
+    Aggregate *ExtensionStatsAggregateType
+    // (optional)
+    AfterDate *time.Time
+}
+
 // [Preview API] This route/location id only supports HTTP POST anonymously, so that the page view daily stat can be incremented from Marketplace client. Trying to call GET on this route should result in an exception. Without this explicit implementation, calling GET on this public route invokes the above GET implementation GetExtensionDailyStats.
-// ctx
-// publisherName (required): Name of the publisher
-// extensionName (required): Name of the extension
-// version (required): Version of the extension
-func (client Client) GetExtensionDailyStatsAnonymous(ctx context.Context, publisherName *string, extensionName *string, version *string) (*ExtensionDailyStats, error) {
+func (client Client) GetExtensionDailyStatsAnonymous(ctx context.Context, args GetExtensionDailyStatsAnonymousArgs) (*ExtensionDailyStats, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
-    if version == nil || *version == "" {
+    routeValues["extensionName"] = *args.ExtensionName
+    if args.Version == nil || *args.Version == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "version"} 
     }
-    routeValues["version"] = *version
+    routeValues["version"] = *args.Version
 
     locationId, _ := uuid.Parse("4fa7adb6-ca65-4075-a232-5f28323288ea")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -2448,32 +2916,37 @@ func (client Client) GetExtensionDailyStatsAnonymous(ctx context.Context, publis
     return &responseValue, err
 }
 
+// Arguments for the GetExtensionDailyStatsAnonymous function
+type GetExtensionDailyStatsAnonymousArgs struct {
+    // (required) Name of the publisher
+    PublisherName *string
+    // (required) Name of the extension
+    ExtensionName *string
+    // (required) Version of the extension
+    Version *string
+}
+
 // [Preview API] Increments a daily statistic associated with the extension
-// ctx
-// publisherName (required): Name of the publisher
-// extensionName (required): Name of the extension
-// version (required): Version of the extension
-// statType (required): Type of stat to increment
-func (client Client) IncrementExtensionDailyStat(ctx context.Context, publisherName *string, extensionName *string, version *string, statType *string) error {
+func (client Client) IncrementExtensionDailyStat(ctx context.Context, args IncrementExtensionDailyStatArgs) error {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
-    if version == nil || *version == "" {
+    routeValues["extensionName"] = *args.ExtensionName
+    if args.Version == nil || *args.Version == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "version"} 
     }
-    routeValues["version"] = *version
+    routeValues["version"] = *args.Version
 
     queryParams := url.Values{}
-    if statType == nil {
+    if args.StatType == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "statType"}
     }
-    queryParams.Add("statType", *statType)
+    queryParams.Add("statType", *args.StatType)
     locationId, _ := uuid.Parse("4fa7adb6-ca65-4075-a232-5f28323288ea")
     _, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -2483,25 +2956,33 @@ func (client Client) IncrementExtensionDailyStat(ctx context.Context, publisherN
     return nil
 }
 
+// Arguments for the IncrementExtensionDailyStat function
+type IncrementExtensionDailyStatArgs struct {
+    // (required) Name of the publisher
+    PublisherName *string
+    // (required) Name of the extension
+    ExtensionName *string
+    // (required) Version of the extension
+    Version *string
+    // (required) Type of stat to increment
+    StatType *string
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-// extensionName (required)
-// version (required)
-func (client Client) GetVerificationLog(ctx context.Context, publisherName *string, extensionName *string, version *string) (io.ReadCloser, error) {
+func (client Client) GetVerificationLog(ctx context.Context, args GetVerificationLogArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
-    if version == nil || *version == "" {
+    routeValues["extensionName"] = *args.ExtensionName
+    if args.Version == nil || *args.Version == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "version"} 
     }
-    routeValues["version"] = *version
+    routeValues["version"] = *args.Version
 
     locationId, _ := uuid.Parse("c5523abe-b843-437f-875b-5833064efe4d")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/octet-stream", nil)
@@ -2510,5 +2991,15 @@ func (client Client) GetVerificationLog(ctx context.Context, publisherName *stri
     }
 
     return resp.Body, err
+}
+
+// Arguments for the GetVerificationLog function
+type GetVerificationLogArgs struct {
+    // (required)
+    PublisherName *string
+    // (required)
+    ExtensionName *string
+    // (required)
+    Version *string
 }
 

@@ -31,25 +31,21 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
 }
 
 // [Preview API] Creates the specified items in in the referenced container.
-// ctx
-// items (required)
-// containerId (required)
-// scope (optional): A guid representing the scope of the container. This is often the project id.
-func (client Client) CreateItems(ctx context.Context, items *azureDevops.VssJsonCollectionWrapper, containerId *int, scope *uuid.UUID) (*[]FileContainerItem, error) {
-    if items == nil {
+func (client Client) CreateItems(ctx context.Context, args CreateItemsArgs) (*[]FileContainerItem, error) {
+    if args.Items == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "items"}
     }
     routeValues := make(map[string]string)
-    if containerId == nil {
+    if args.ContainerId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "containerId"} 
     }
-    routeValues["containerId"] = strconv.Itoa(*containerId)
+    routeValues["containerId"] = strconv.Itoa(*args.ContainerId)
 
     queryParams := url.Values{}
-    if scope != nil {
-        queryParams.Add("scope", (*scope).String())
+    if args.Scope != nil {
+        queryParams.Add("scope", (*args.Scope).String())
     }
-    body, marshalErr := json.Marshal(*items)
+    body, marshalErr := json.Marshal(*args.Items)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -64,25 +60,31 @@ func (client Client) CreateItems(ctx context.Context, items *azureDevops.VssJson
     return &responseValue, err
 }
 
+// Arguments for the CreateItems function
+type CreateItemsArgs struct {
+    // (required)
+    Items *azureDevops.VssJsonCollectionWrapper
+    // (required)
+    ContainerId *int
+    // (optional) A guid representing the scope of the container. This is often the project id.
+    Scope *uuid.UUID
+}
+
 // [Preview API] Deletes the specified items in a container.
-// ctx
-// containerId (required): Container Id.
-// itemPath (required): Path to delete.
-// scope (optional): A guid representing the scope of the container. This is often the project id.
-func (client Client) DeleteItem(ctx context.Context, containerId *uint64, itemPath *string, scope *uuid.UUID) error {
+func (client Client) DeleteItem(ctx context.Context, args DeleteItemArgs) error {
     routeValues := make(map[string]string)
-    if containerId == nil {
+    if args.ContainerId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "containerId"} 
     }
-    routeValues["containerId"] = strconv.FormatUint(*containerId, 10)
+    routeValues["containerId"] = strconv.FormatUint(*args.ContainerId, 10)
 
     queryParams := url.Values{}
-    if itemPath == nil {
+    if args.ItemPath == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "itemPath"}
     }
-    queryParams.Add("itemPath", *itemPath)
-    if scope != nil {
-        queryParams.Add("scope", (*scope).String())
+    queryParams.Add("itemPath", *args.ItemPath)
+    if args.Scope != nil {
+        queryParams.Add("scope", (*args.Scope).String())
     }
     locationId, _ := uuid.Parse("e4f5c81e-e250-447b-9fef-bd48471bea5e")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.4", routeValues, queryParams, nil, "", "application/json", nil)
@@ -93,17 +95,24 @@ func (client Client) DeleteItem(ctx context.Context, containerId *uint64, itemPa
     return nil
 }
 
+// Arguments for the DeleteItem function
+type DeleteItemArgs struct {
+    // (required) Container Id.
+    ContainerId *uint64
+    // (required) Path to delete.
+    ItemPath *string
+    // (optional) A guid representing the scope of the container. This is often the project id.
+    Scope *uuid.UUID
+}
+
 // [Preview API] Gets containers filtered by a comma separated list of artifact uris within the same scope, if not specified returns all containers
-// ctx
-// scope (optional): A guid representing the scope of the container. This is often the project id.
-// artifactUris (optional)
-func (client Client) GetContainers(ctx context.Context, scope *uuid.UUID, artifactUris *string) (*[]FileContainer, error) {
+func (client Client) GetContainers(ctx context.Context, args GetContainersArgs) (*[]FileContainer, error) {
     queryParams := url.Values{}
-    if scope != nil {
-        queryParams.Add("scope", (*scope).String())
+    if args.Scope != nil {
+        queryParams.Add("scope", (*args.Scope).String())
     }
-    if artifactUris != nil {
-        queryParams.Add("artifactUris", *artifactUris)
+    if args.ArtifactUris != nil {
+        queryParams.Add("artifactUris", *args.ArtifactUris)
     }
     locationId, _ := uuid.Parse("e4f5c81e-e250-447b-9fef-bd48471bea5e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.4", nil, queryParams, nil, "", "application/json", nil)
@@ -116,44 +125,43 @@ func (client Client) GetContainers(ctx context.Context, scope *uuid.UUID, artifa
     return &responseValue, err
 }
 
+// Arguments for the GetContainers function
+type GetContainersArgs struct {
+    // (optional) A guid representing the scope of the container. This is often the project id.
+    Scope *uuid.UUID
+    // (optional)
+    ArtifactUris *string
+}
+
 // [Preview API]
-// ctx
-// containerId (required)
-// scope (optional)
-// itemPath (optional)
-// metadata (optional)
-// format (optional)
-// downloadFileName (optional)
-// includeDownloadTickets (optional)
-// isShallow (optional)
-func (client Client) GetItems(ctx context.Context, containerId *uint64, scope *uuid.UUID, itemPath *string, metadata *bool, format *string, downloadFileName *string, includeDownloadTickets *bool, isShallow *bool) (*[]FileContainerItem, error) {
+func (client Client) GetItems(ctx context.Context, args GetItemsArgs) (*[]FileContainerItem, error) {
     routeValues := make(map[string]string)
-    if containerId == nil {
+    if args.ContainerId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "containerId"} 
     }
-    routeValues["containerId"] = strconv.FormatUint(*containerId, 10)
+    routeValues["containerId"] = strconv.FormatUint(*args.ContainerId, 10)
 
     queryParams := url.Values{}
-    if scope != nil {
-        queryParams.Add("scope", (*scope).String())
+    if args.Scope != nil {
+        queryParams.Add("scope", (*args.Scope).String())
     }
-    if itemPath != nil {
-        queryParams.Add("itemPath", *itemPath)
+    if args.ItemPath != nil {
+        queryParams.Add("itemPath", *args.ItemPath)
     }
-    if metadata != nil {
-        queryParams.Add("metadata", strconv.FormatBool(*metadata))
+    if args.Metadata != nil {
+        queryParams.Add("metadata", strconv.FormatBool(*args.Metadata))
     }
-    if format != nil {
-        queryParams.Add("$format", *format)
+    if args.Format != nil {
+        queryParams.Add("$format", *args.Format)
     }
-    if downloadFileName != nil {
-        queryParams.Add("downloadFileName", *downloadFileName)
+    if args.DownloadFileName != nil {
+        queryParams.Add("downloadFileName", *args.DownloadFileName)
     }
-    if includeDownloadTickets != nil {
-        queryParams.Add("includeDownloadTickets", strconv.FormatBool(*includeDownloadTickets))
+    if args.IncludeDownloadTickets != nil {
+        queryParams.Add("includeDownloadTickets", strconv.FormatBool(*args.IncludeDownloadTickets))
     }
-    if isShallow != nil {
-        queryParams.Add("isShallow", strconv.FormatBool(*isShallow))
+    if args.IsShallow != nil {
+        queryParams.Add("isShallow", strconv.FormatBool(*args.IsShallow))
     }
     locationId, _ := uuid.Parse("e4f5c81e-e250-447b-9fef-bd48471bea5e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.4", routeValues, queryParams, nil, "", "application/json", nil)
@@ -164,5 +172,25 @@ func (client Client) GetItems(ctx context.Context, containerId *uint64, scope *u
     var responseValue []FileContainerItem
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the GetItems function
+type GetItemsArgs struct {
+    // (required)
+    ContainerId *uint64
+    // (optional)
+    Scope *uuid.UUID
+    // (optional)
+    ItemPath *string
+    // (optional)
+    Metadata *bool
+    // (optional)
+    Format *string
+    // (optional)
+    DownloadFileName *string
+    // (optional)
+    IncludeDownloadTickets *bool
+    // (optional)
+    IsShallow *bool
 }
 
