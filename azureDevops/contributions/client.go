@@ -37,13 +37,11 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 }
 
 // [Preview API] Query for contribution nodes and provider details according the parameters in the passed in query object.
-// ctx
-// query (required)
-func (client Client) QueryContributionNodes(ctx context.Context, query *ContributionNodeQuery) (*ContributionNodeQueryResult, error) {
-    if query == nil {
+func (client Client) QueryContributionNodes(ctx context.Context, args QueryContributionNodesArgs) (*ContributionNodeQueryResult, error) {
+    if args.Query == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "query"}
     }
-    body, marshalErr := json.Marshal(*query)
+    body, marshalErr := json.Marshal(*args.Query)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -58,24 +56,26 @@ func (client Client) QueryContributionNodes(ctx context.Context, query *Contribu
     return &responseValue, err
 }
 
+// Arguments for the QueryContributionNodes function
+type QueryContributionNodesArgs struct {
+    // (required)
+    Query *ContributionNodeQuery
+}
+
 // [Preview API]
-// ctx
-// query (required)
-// scopeName (optional)
-// scopeValue (optional)
-func (client Client) QueryDataProviders(ctx context.Context, query *DataProviderQuery, scopeName *string, scopeValue *string) (*DataProviderResult, error) {
-    if query == nil {
+func (client Client) QueryDataProviders(ctx context.Context, args QueryDataProvidersArgs) (*DataProviderResult, error) {
+    if args.Query == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "query"}
     }
     routeValues := make(map[string]string)
-    if scopeName != nil && *scopeName != "" {
-        routeValues["scopeName"] = *scopeName
+    if args.ScopeName != nil && *args.ScopeName != "" {
+        routeValues["scopeName"] = *args.ScopeName
     }
-    if scopeValue != nil && *scopeValue != "" {
-        routeValues["scopeValue"] = *scopeValue
+    if args.ScopeValue != nil && *args.ScopeValue != "" {
+        routeValues["scopeValue"] = *args.ScopeValue
     }
 
-    body, marshalErr := json.Marshal(*query)
+    body, marshalErr := json.Marshal(*args.Query)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -90,22 +90,28 @@ func (client Client) QueryDataProviders(ctx context.Context, query *DataProvider
     return &responseValue, err
 }
 
+// Arguments for the QueryDataProviders function
+type QueryDataProvidersArgs struct {
+    // (required)
+    Query *DataProviderQuery
+    // (optional)
+    ScopeName *string
+    // (optional)
+    ScopeValue *string
+}
+
 // [Preview API]
-// ctx
-// contributionIds (optional)
-// includeDisabledApps (optional)
-// assetTypes (optional)
-func (client Client) GetInstalledExtensions(ctx context.Context, contributionIds *[]string, includeDisabledApps *bool, assetTypes *[]string) (*[]InstalledExtension, error) {
+func (client Client) GetInstalledExtensions(ctx context.Context, args GetInstalledExtensionsArgs) (*[]InstalledExtension, error) {
     queryParams := url.Values{}
-    if contributionIds != nil {
-        listAsString := strings.Join((*contributionIds)[:], ";")
+    if args.ContributionIds != nil {
+        listAsString := strings.Join((*args.ContributionIds)[:], ";")
         queryParams.Add("contributionIds", listAsString)
     }
-    if includeDisabledApps != nil {
-        queryParams.Add("includeDisabledApps", strconv.FormatBool(*includeDisabledApps))
+    if args.IncludeDisabledApps != nil {
+        queryParams.Add("includeDisabledApps", strconv.FormatBool(*args.IncludeDisabledApps))
     }
-    if assetTypes != nil {
-        listAsString := strings.Join((*assetTypes)[:], ":")
+    if args.AssetTypes != nil {
+        listAsString := strings.Join((*args.AssetTypes)[:], ":")
         queryParams.Add("assetTypes", listAsString)
     }
     locationId, _ := uuid.Parse("2648442b-fd63-4b9a-902f-0c913510f139")
@@ -119,25 +125,31 @@ func (client Client) GetInstalledExtensions(ctx context.Context, contributionIds
     return &responseValue, err
 }
 
+// Arguments for the GetInstalledExtensions function
+type GetInstalledExtensionsArgs struct {
+    // (optional)
+    ContributionIds *[]string
+    // (optional)
+    IncludeDisabledApps *bool
+    // (optional)
+    AssetTypes *[]string
+}
+
 // [Preview API]
-// ctx
-// publisherName (required)
-// extensionName (required)
-// assetTypes (optional)
-func (client Client) GetInstalledExtensionByName(ctx context.Context, publisherName *string, extensionName *string, assetTypes *[]string) (*InstalledExtension, error) {
+func (client Client) GetInstalledExtensionByName(ctx context.Context, args GetInstalledExtensionByNameArgs) (*InstalledExtension, error) {
     routeValues := make(map[string]string)
-    if publisherName == nil || *publisherName == "" {
+    if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
     }
-    routeValues["publisherName"] = *publisherName
-    if extensionName == nil || *extensionName == "" {
+    routeValues["publisherName"] = *args.PublisherName
+    if args.ExtensionName == nil || *args.ExtensionName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"} 
     }
-    routeValues["extensionName"] = *extensionName
+    routeValues["extensionName"] = *args.ExtensionName
 
     queryParams := url.Values{}
-    if assetTypes != nil {
-        listAsString := strings.Join((*assetTypes)[:], ":")
+    if args.AssetTypes != nil {
+        listAsString := strings.Join((*args.AssetTypes)[:], ":")
         queryParams.Add("assetTypes", listAsString)
     }
     locationId, _ := uuid.Parse("3e2f6668-0798-4dcb-b592-bfe2fa57fde2")
@@ -149,5 +161,15 @@ func (client Client) GetInstalledExtensionByName(ctx context.Context, publisherN
     var responseValue InstalledExtension
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the GetInstalledExtensionByName function
+type GetInstalledExtensionByNameArgs struct {
+    // (required)
+    PublisherName *string
+    // (required)
+    ExtensionName *string
+    // (optional)
+    AssetTypes *[]string
 }
 

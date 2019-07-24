@@ -29,17 +29,14 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
 }
 
 // [Preview API] Get all setting entries for the given user/all-users scope
-// ctx
-// userScope (required): User-Scope at which to get the value. Should be "me" for the current user or "host" for all users.
-// key (optional): Optional key under which to filter all the entries
-func (client Client) GetEntries(ctx context.Context, userScope *string, key *string) (*map[string]interface{}, error) {
+func (client Client) GetEntries(ctx context.Context, args GetEntriesArgs) (*map[string]interface{}, error) {
     routeValues := make(map[string]string)
-    if userScope == nil || *userScope == "" {
+    if args.UserScope == nil || *args.UserScope == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "userScope"} 
     }
-    routeValues["userScope"] = *userScope
-    if key != nil && *key != "" {
-        routeValues["key"] = *key
+    routeValues["userScope"] = *args.UserScope
+    if args.Key != nil && *args.Key != "" {
+        routeValues["key"] = *args.Key
     }
 
     locationId, _ := uuid.Parse("cd006711-163d-4cd4-a597-b05bad2556ff")
@@ -53,20 +50,25 @@ func (client Client) GetEntries(ctx context.Context, userScope *string, key *str
     return &responseValue, err
 }
 
+// Arguments for the GetEntries function
+type GetEntriesArgs struct {
+    // (required) User-Scope at which to get the value. Should be "me" for the current user or "host" for all users.
+    UserScope *string
+    // (optional) Optional key under which to filter all the entries
+    Key *string
+}
+
 // [Preview API] Remove the entry or entries under the specified path
-// ctx
-// userScope (required): User-Scope at which to remove the value. Should be "me" for the current user or "host" for all users.
-// key (required): Root key of the entry or entries to remove
-func (client Client) RemoveEntries(ctx context.Context, userScope *string, key *string) error {
+func (client Client) RemoveEntries(ctx context.Context, args RemoveEntriesArgs) error {
     routeValues := make(map[string]string)
-    if userScope == nil || *userScope == "" {
+    if args.UserScope == nil || *args.UserScope == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "userScope"} 
     }
-    routeValues["userScope"] = *userScope
-    if key == nil || *key == "" {
+    routeValues["userScope"] = *args.UserScope
+    if args.Key == nil || *args.Key == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "key"} 
     }
-    routeValues["key"] = *key
+    routeValues["key"] = *args.Key
 
     locationId, _ := uuid.Parse("cd006711-163d-4cd4-a597-b05bad2556ff")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -75,23 +77,28 @@ func (client Client) RemoveEntries(ctx context.Context, userScope *string, key *
     }
 
     return nil
+}
+
+// Arguments for the RemoveEntries function
+type RemoveEntriesArgs struct {
+    // (required) User-Scope at which to remove the value. Should be "me" for the current user or "host" for all users.
+    UserScope *string
+    // (required) Root key of the entry or entries to remove
+    Key *string
 }
 
 // [Preview API] Set the specified setting entry values for the given user/all-users scope
-// ctx
-// entries (required): The entries to set
-// userScope (required): User-Scope at which to set the values. Should be "me" for the current user or "host" for all users.
-func (client Client) SetEntries(ctx context.Context, entries *map[string]interface{}, userScope *string) error {
-    if entries == nil {
+func (client Client) SetEntries(ctx context.Context, args SetEntriesArgs) error {
+    if args.Entries == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "entries"}
     }
     routeValues := make(map[string]string)
-    if userScope == nil || *userScope == "" {
+    if args.UserScope == nil || *args.UserScope == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "userScope"} 
     }
-    routeValues["userScope"] = *userScope
+    routeValues["userScope"] = *args.UserScope
 
-    body, marshalErr := json.Marshal(*entries)
+    body, marshalErr := json.Marshal(*args.Entries)
     if marshalErr != nil {
         return marshalErr
     }
@@ -104,28 +111,31 @@ func (client Client) SetEntries(ctx context.Context, entries *map[string]interfa
     return nil
 }
 
+// Arguments for the SetEntries function
+type SetEntriesArgs struct {
+    // (required) The entries to set
+    Entries *map[string]interface{}
+    // (required) User-Scope at which to set the values. Should be "me" for the current user or "host" for all users.
+    UserScope *string
+}
+
 // [Preview API] Get all setting entries for the given named scope
-// ctx
-// userScope (required): User-Scope at which to get the value. Should be "me" for the current user or "host" for all users.
-// scopeName (required): Scope at which to get the setting for (e.g. "project" or "team")
-// scopeValue (required): Value of the scope (e.g. the project or team id)
-// key (optional): Optional key under which to filter all the entries
-func (client Client) GetEntriesForScope(ctx context.Context, userScope *string, scopeName *string, scopeValue *string, key *string) (*map[string]interface{}, error) {
+func (client Client) GetEntriesForScope(ctx context.Context, args GetEntriesForScopeArgs) (*map[string]interface{}, error) {
     routeValues := make(map[string]string)
-    if userScope == nil || *userScope == "" {
+    if args.UserScope == nil || *args.UserScope == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "userScope"} 
     }
-    routeValues["userScope"] = *userScope
-    if scopeName == nil || *scopeName == "" {
+    routeValues["userScope"] = *args.UserScope
+    if args.ScopeName == nil || *args.ScopeName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "scopeName"} 
     }
-    routeValues["scopeName"] = *scopeName
-    if scopeValue == nil || *scopeValue == "" {
+    routeValues["scopeName"] = *args.ScopeName
+    if args.ScopeValue == nil || *args.ScopeValue == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "scopeValue"} 
     }
-    routeValues["scopeValue"] = *scopeValue
-    if key != nil && *key != "" {
-        routeValues["key"] = *key
+    routeValues["scopeValue"] = *args.ScopeValue
+    if args.Key != nil && *args.Key != "" {
+        routeValues["key"] = *args.Key
     }
 
     locationId, _ := uuid.Parse("4cbaafaf-e8af-4570-98d1-79ee99c56327")
@@ -139,30 +149,37 @@ func (client Client) GetEntriesForScope(ctx context.Context, userScope *string, 
     return &responseValue, err
 }
 
+// Arguments for the GetEntriesForScope function
+type GetEntriesForScopeArgs struct {
+    // (required) User-Scope at which to get the value. Should be "me" for the current user or "host" for all users.
+    UserScope *string
+    // (required) Scope at which to get the setting for (e.g. "project" or "team")
+    ScopeName *string
+    // (required) Value of the scope (e.g. the project or team id)
+    ScopeValue *string
+    // (optional) Optional key under which to filter all the entries
+    Key *string
+}
+
 // [Preview API] Remove the entry or entries under the specified path
-// ctx
-// userScope (required): User-Scope at which to remove the value. Should be "me" for the current user or "host" for all users.
-// scopeName (required): Scope at which to get the setting for (e.g. "project" or "team")
-// scopeValue (required): Value of the scope (e.g. the project or team id)
-// key (required): Root key of the entry or entries to remove
-func (client Client) RemoveEntriesForScope(ctx context.Context, userScope *string, scopeName *string, scopeValue *string, key *string) error {
+func (client Client) RemoveEntriesForScope(ctx context.Context, args RemoveEntriesForScopeArgs) error {
     routeValues := make(map[string]string)
-    if userScope == nil || *userScope == "" {
+    if args.UserScope == nil || *args.UserScope == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "userScope"} 
     }
-    routeValues["userScope"] = *userScope
-    if scopeName == nil || *scopeName == "" {
+    routeValues["userScope"] = *args.UserScope
+    if args.ScopeName == nil || *args.ScopeName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "scopeName"} 
     }
-    routeValues["scopeName"] = *scopeName
-    if scopeValue == nil || *scopeValue == "" {
+    routeValues["scopeName"] = *args.ScopeName
+    if args.ScopeValue == nil || *args.ScopeValue == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "scopeValue"} 
     }
-    routeValues["scopeValue"] = *scopeValue
-    if key == nil || *key == "" {
+    routeValues["scopeValue"] = *args.ScopeValue
+    if args.Key == nil || *args.Key == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "key"} 
     }
-    routeValues["key"] = *key
+    routeValues["key"] = *args.Key
 
     locationId, _ := uuid.Parse("4cbaafaf-e8af-4570-98d1-79ee99c56327")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -173,31 +190,38 @@ func (client Client) RemoveEntriesForScope(ctx context.Context, userScope *strin
     return nil
 }
 
+// Arguments for the RemoveEntriesForScope function
+type RemoveEntriesForScopeArgs struct {
+    // (required) User-Scope at which to remove the value. Should be "me" for the current user or "host" for all users.
+    UserScope *string
+    // (required) Scope at which to get the setting for (e.g. "project" or "team")
+    ScopeName *string
+    // (required) Value of the scope (e.g. the project or team id)
+    ScopeValue *string
+    // (required) Root key of the entry or entries to remove
+    Key *string
+}
+
 // [Preview API] Set the specified entries for the given named scope
-// ctx
-// entries (required): The entries to set
-// userScope (required): User-Scope at which to set the values. Should be "me" for the current user or "host" for all users.
-// scopeName (required): Scope at which to set the settings on (e.g. "project" or "team")
-// scopeValue (required): Value of the scope (e.g. the project or team id)
-func (client Client) SetEntriesForScope(ctx context.Context, entries *map[string]interface{}, userScope *string, scopeName *string, scopeValue *string) error {
-    if entries == nil {
+func (client Client) SetEntriesForScope(ctx context.Context, args SetEntriesForScopeArgs) error {
+    if args.Entries == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "entries"}
     }
     routeValues := make(map[string]string)
-    if userScope == nil || *userScope == "" {
+    if args.UserScope == nil || *args.UserScope == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "userScope"} 
     }
-    routeValues["userScope"] = *userScope
-    if scopeName == nil || *scopeName == "" {
+    routeValues["userScope"] = *args.UserScope
+    if args.ScopeName == nil || *args.ScopeName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "scopeName"} 
     }
-    routeValues["scopeName"] = *scopeName
-    if scopeValue == nil || *scopeValue == "" {
+    routeValues["scopeName"] = *args.ScopeName
+    if args.ScopeValue == nil || *args.ScopeValue == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "scopeValue"} 
     }
-    routeValues["scopeValue"] = *scopeValue
+    routeValues["scopeValue"] = *args.ScopeValue
 
-    body, marshalErr := json.Marshal(*entries)
+    body, marshalErr := json.Marshal(*args.Entries)
     if marshalErr != nil {
         return marshalErr
     }
@@ -208,5 +232,17 @@ func (client Client) SetEntriesForScope(ctx context.Context, entries *map[string
     }
 
     return nil
+}
+
+// Arguments for the SetEntriesForScope function
+type SetEntriesForScopeArgs struct {
+    // (required) The entries to set
+    Entries *map[string]interface{}
+    // (required) User-Scope at which to set the values. Should be "me" for the current user or "host" for all users.
+    UserScope *string
+    // (required) Scope at which to set the settings on (e.g. "project" or "team")
+    ScopeName *string
+    // (required) Value of the scope (e.g. the project or team id)
+    ScopeValue *string
 }
 

@@ -29,13 +29,11 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
 }
 
 // [Preview API]
-// ctx
-// events (required)
-func (client Client) PublishEvents(ctx context.Context, events *[]ClientTraceEvent) error {
-    if events == nil {
+func (client Client) PublishEvents(ctx context.Context, args PublishEventsArgs) error {
+    if args.Events == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "events"}
     }
-    body, marshalErr := json.Marshal(*events)
+    body, marshalErr := json.Marshal(*args.Events)
     if marshalErr != nil {
         return marshalErr
     }
@@ -46,5 +44,11 @@ func (client Client) PublishEvents(ctx context.Context, events *[]ClientTraceEve
     }
 
     return nil
+}
+
+// Arguments for the PublishEvents function
+type PublishEventsArgs struct {
+    // (required)
+    Events *[]ClientTraceEvent
 }
 

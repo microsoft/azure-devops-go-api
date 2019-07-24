@@ -30,31 +30,25 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
 }
 
 // [Preview API] Gets a list of existing configuration files for the given repository.
-// ctx
-// project (required): Project ID or project name
-// repositoryType (optional): The type of the repository such as GitHub, TfsGit (i.e. Azure Repos), Bitbucket, etc.
-// repositoryId (optional): The vendor-specific identifier or the name of the repository, e.g. Microsoft/vscode (GitHub) or e9d82045-ddba-4e01-a63d-2ab9f040af62 (Azure Repos)
-// branch (optional): The repository branch where to look for the configuration file.
-// serviceConnectionId (optional): If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TfsGit (i.e. Azure Repos).
-func (client Client) GetConfigurations(ctx context.Context, project *string, repositoryType *string, repositoryId *string, branch *string, serviceConnectionId *uuid.UUID) (*[]ConfigurationFile, error) {
+func (client Client) GetConfigurations(ctx context.Context, args GetConfigurationsArgs) (*[]ConfigurationFile, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if repositoryType != nil {
-        queryParams.Add("repositoryType", *repositoryType)
+    if args.RepositoryType != nil {
+        queryParams.Add("repositoryType", *args.RepositoryType)
     }
-    if repositoryId != nil {
-        queryParams.Add("repositoryId", *repositoryId)
+    if args.RepositoryId != nil {
+        queryParams.Add("repositoryId", *args.RepositoryId)
     }
-    if branch != nil {
-        queryParams.Add("branch", *branch)
+    if args.Branch != nil {
+        queryParams.Add("branch", *args.Branch)
     }
-    if serviceConnectionId != nil {
-        queryParams.Add("serviceConnectionId", (*serviceConnectionId).String())
+    if args.ServiceConnectionId != nil {
+        queryParams.Add("serviceConnectionId", (*args.ServiceConnectionId).String())
     }
     locationId, _ := uuid.Parse("8fc87684-9ebc-4c37-ab92-f4ac4a58cb3a")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -67,20 +61,31 @@ func (client Client) GetConfigurations(ctx context.Context, project *string, rep
     return &responseValue, err
 }
 
+// Arguments for the GetConfigurations function
+type GetConfigurationsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (optional) The type of the repository such as GitHub, TfsGit (i.e. Azure Repos), Bitbucket, etc.
+    RepositoryType *string
+    // (optional) The vendor-specific identifier or the name of the repository, e.g. Microsoft/vscode (GitHub) or e9d82045-ddba-4e01-a63d-2ab9f040af62 (Azure Repos)
+    RepositoryId *string
+    // (optional) The repository branch where to look for the configuration file.
+    Branch *string
+    // (optional) If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TfsGit (i.e. Azure Repos).
+    ServiceConnectionId *uuid.UUID
+}
+
 // [Preview API] Creates a new Pipeline connection between the provider installation and the specified project. Returns the PipelineConnection object created.
-// ctx
-// createConnectionInputs (required)
-// project (required)
-func (client Client) CreateProjectConnection(ctx context.Context, createConnectionInputs *CreatePipelineConnectionInputs, project *string) (*PipelineConnection, error) {
-    if createConnectionInputs == nil {
+func (client Client) CreateProjectConnection(ctx context.Context, args CreateProjectConnectionArgs) (*PipelineConnection, error) {
+    if args.CreateConnectionInputs == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "createConnectionInputs"}
     }
     queryParams := url.Values{}
-    if project == nil {
+    if args.Project == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "project"}
     }
-    queryParams.Add("project", *project)
-    body, marshalErr := json.Marshal(*createConnectionInputs)
+    queryParams.Add("project", *args.Project)
+    body, marshalErr := json.Marshal(*args.CreateConnectionInputs)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -95,36 +100,37 @@ func (client Client) CreateProjectConnection(ctx context.Context, createConnecti
     return &responseValue, err
 }
 
+// Arguments for the CreateProjectConnection function
+type CreateProjectConnectionArgs struct {
+    // (required)
+    CreateConnectionInputs *CreatePipelineConnectionInputs
+    // (required)
+    Project *string
+}
+
 // [Preview API] Returns a list of build frameworks that best match the given repository based on its contents.
-// ctx
-// project (required): Project ID or project name
-// repositoryType (optional): The type of the repository such as GitHub, TfsGit (i.e. Azure Repos), Bitbucket, etc.
-// repositoryId (optional): The vendor-specific identifier or the name of the repository, e.g. Microsoft/vscode (GitHub) or e9d82045-ddba-4e01-a63d-2ab9f040af62 (Azure Repos)
-// branch (optional): The repository branch to detect build frameworks for.
-// detectionType (optional)
-// serviceConnectionId (optional): If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TfsGit (i.e. Azure Repos).
-func (client Client) GetDetectedBuildFrameworks(ctx context.Context, project *string, repositoryType *string, repositoryId *string, branch *string, detectionType *BuildFrameworkDetectionType, serviceConnectionId *uuid.UUID) (*[]DetectedBuildFramework, error) {
+func (client Client) GetDetectedBuildFrameworks(ctx context.Context, args GetDetectedBuildFrameworksArgs) (*[]DetectedBuildFramework, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if repositoryType != nil {
-        queryParams.Add("repositoryType", *repositoryType)
+    if args.RepositoryType != nil {
+        queryParams.Add("repositoryType", *args.RepositoryType)
     }
-    if repositoryId != nil {
-        queryParams.Add("repositoryId", *repositoryId)
+    if args.RepositoryId != nil {
+        queryParams.Add("repositoryId", *args.RepositoryId)
     }
-    if branch != nil {
-        queryParams.Add("branch", *branch)
+    if args.Branch != nil {
+        queryParams.Add("branch", *args.Branch)
     }
-    if detectionType != nil {
-        queryParams.Add("detectionType", string(*detectionType))
+    if args.DetectionType != nil {
+        queryParams.Add("detectionType", string(*args.DetectionType))
     }
-    if serviceConnectionId != nil {
-        queryParams.Add("serviceConnectionId", (*serviceConnectionId).String())
+    if args.ServiceConnectionId != nil {
+        queryParams.Add("serviceConnectionId", (*args.ServiceConnectionId).String())
     }
     locationId, _ := uuid.Parse("29a30bab-9efb-4652-bf1b-9269baca0980")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -137,32 +143,42 @@ func (client Client) GetDetectedBuildFrameworks(ctx context.Context, project *st
     return &responseValue, err
 }
 
+// Arguments for the GetDetectedBuildFrameworks function
+type GetDetectedBuildFrameworksArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (optional) The type of the repository such as GitHub, TfsGit (i.e. Azure Repos), Bitbucket, etc.
+    RepositoryType *string
+    // (optional) The vendor-specific identifier or the name of the repository, e.g. Microsoft/vscode (GitHub) or e9d82045-ddba-4e01-a63d-2ab9f040af62 (Azure Repos)
+    RepositoryId *string
+    // (optional) The repository branch to detect build frameworks for.
+    Branch *string
+    // (optional)
+    DetectionType *BuildFrameworkDetectionType
+    // (optional) If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TfsGit (i.e. Azure Repos).
+    ServiceConnectionId *uuid.UUID
+}
+
 // [Preview API] Returns a list of all YAML templates with weighting based on which would best fit the given repository.
-// ctx
-// project (required): Project ID or project name
-// repositoryType (optional): The type of the repository such as GitHub, TfsGit (i.e. Azure Repos), Bitbucket, etc.
-// repositoryId (optional): The vendor-specific identifier or the name of the repository, e.g. Microsoft/vscode (GitHub) or e9d82045-ddba-4e01-a63d-2ab9f040af62 (Azure Repos)
-// branch (optional): The repository branch which to find matching templates for.
-// serviceConnectionId (optional): If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TfsGit (i.e. Azure Repos).
-func (client Client) GetTemplateRecommendations(ctx context.Context, project *string, repositoryType *string, repositoryId *string, branch *string, serviceConnectionId *uuid.UUID) (*[]Template, error) {
+func (client Client) GetTemplateRecommendations(ctx context.Context, args GetTemplateRecommendationsArgs) (*[]Template, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if repositoryType != nil {
-        queryParams.Add("repositoryType", *repositoryType)
+    if args.RepositoryType != nil {
+        queryParams.Add("repositoryType", *args.RepositoryType)
     }
-    if repositoryId != nil {
-        queryParams.Add("repositoryId", *repositoryId)
+    if args.RepositoryId != nil {
+        queryParams.Add("repositoryId", *args.RepositoryId)
     }
-    if branch != nil {
-        queryParams.Add("branch", *branch)
+    if args.Branch != nil {
+        queryParams.Add("branch", *args.Branch)
     }
-    if serviceConnectionId != nil {
-        queryParams.Add("serviceConnectionId", (*serviceConnectionId).String())
+    if args.ServiceConnectionId != nil {
+        queryParams.Add("serviceConnectionId", (*args.ServiceConnectionId).String())
     }
     locationId, _ := uuid.Parse("63ea8f13-b563-4be7-bc31-3a96eda27220")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -175,21 +191,32 @@ func (client Client) GetTemplateRecommendations(ctx context.Context, project *st
     return &responseValue, err
 }
 
+// Arguments for the GetTemplateRecommendations function
+type GetTemplateRecommendationsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (optional) The type of the repository such as GitHub, TfsGit (i.e. Azure Repos), Bitbucket, etc.
+    RepositoryType *string
+    // (optional) The vendor-specific identifier or the name of the repository, e.g. Microsoft/vscode (GitHub) or e9d82045-ddba-4e01-a63d-2ab9f040af62 (Azure Repos)
+    RepositoryId *string
+    // (optional) The repository branch which to find matching templates for.
+    Branch *string
+    // (optional) If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TfsGit (i.e. Azure Repos).
+    ServiceConnectionId *uuid.UUID
+}
+
 // [Preview API]
-// ctx
-// creationParameters (required)
-// project (required): Project ID or project name
-func (client Client) CreateResources(ctx context.Context, creationParameters *map[string]ResourceCreationParameter, project *string) (*CreatedResources, error) {
-    if creationParameters == nil {
+func (client Client) CreateResources(ctx context.Context, args CreateResourcesArgs) (*CreatedResources, error) {
+    if args.CreationParameters == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "creationParameters"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
-    body, marshalErr := json.Marshal(*creationParameters)
+    body, marshalErr := json.Marshal(*args.CreationParameters)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -204,21 +231,26 @@ func (client Client) CreateResources(ctx context.Context, creationParameters *ma
     return &responseValue, err
 }
 
+// Arguments for the CreateResources function
+type CreateResourcesArgs struct {
+    // (required)
+    CreationParameters *map[string]ResourceCreationParameter
+    // (required) Project ID or project name
+    Project *string
+}
+
 // [Preview API]
-// ctx
-// templateParameters (required)
-// templateId (required)
-func (client Client) RenderTemplate(ctx context.Context, templateParameters *TemplateParameters, templateId *string) (*Template, error) {
-    if templateParameters == nil {
+func (client Client) RenderTemplate(ctx context.Context, args RenderTemplateArgs) (*Template, error) {
+    if args.TemplateParameters == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "templateParameters"}
     }
     routeValues := make(map[string]string)
-    if templateId == nil || *templateId == "" {
+    if args.TemplateId == nil || *args.TemplateId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "templateId"} 
     }
-    routeValues["templateId"] = *templateId
+    routeValues["templateId"] = *args.TemplateId
 
-    body, marshalErr := json.Marshal(*templateParameters)
+    body, marshalErr := json.Marshal(*args.TemplateParameters)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -231,5 +263,13 @@ func (client Client) RenderTemplate(ctx context.Context, templateParameters *Tem
     var responseValue Template
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the RenderTemplate function
+type RenderTemplateArgs struct {
+    // (required)
+    TemplateParameters *TemplateParameters
+    // (required)
+    TemplateId *string
 }
 

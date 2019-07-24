@@ -32,12 +32,10 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 }
 
 // [Preview API] Get a time-limited session token representing the current user, with permissions scoped to the read/write of Artifacts.
-// ctx
-// feedName (optional)
-func (client Client) GetPersonalAccessToken(ctx context.Context, feedName *string) (*FeedSessionToken, error) {
+func (client Client) GetPersonalAccessToken(ctx context.Context, args GetPersonalAccessTokenArgs) (*FeedSessionToken, error) {
     routeValues := make(map[string]string)
-    if feedName != nil && *feedName != "" {
-        routeValues["feedName"] = *feedName
+    if args.FeedName != nil && *args.FeedName != "" {
+        routeValues["feedName"] = *args.FeedName
     }
 
     locationId, _ := uuid.Parse("dfdb7ad7-3d8e-4907-911e-19b4a8330550")
@@ -49,5 +47,11 @@ func (client Client) GetPersonalAccessToken(ctx context.Context, feedName *strin
     var responseValue FeedSessionToken
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the GetPersonalAccessToken function
+type GetPersonalAccessTokenArgs struct {
+    // (optional)
+    FeedName *string
 }
 

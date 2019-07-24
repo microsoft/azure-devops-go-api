@@ -35,30 +35,25 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 }
 
 // [Preview API]
-// ctx
-// metadata (required)
-// feedId (required)
-// packageName (required)
-// packageVersion (required)
-func (client Client) AddPackage(ctx context.Context, metadata *UPackPackagePushMetadata, feedId *string, packageName *string, packageVersion *string) error {
-    if metadata == nil {
+func (client Client) AddPackage(ctx context.Context, args AddPackageArgs) error {
+    if args.Metadata == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "metadata"}
     }
     routeValues := make(map[string]string)
-    if feedId == nil || *feedId == "" {
+    if args.FeedId == nil || *args.FeedId == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
-    routeValues["feedId"] = *feedId
-    if packageName == nil || *packageName == "" {
+    routeValues["feedId"] = *args.FeedId
+    if args.PackageName == nil || *args.PackageName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"} 
     }
-    routeValues["packageName"] = *packageName
-    if packageVersion == nil || *packageVersion == "" {
+    routeValues["packageName"] = *args.PackageName
+    if args.PackageVersion == nil || *args.PackageVersion == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageVersion"} 
     }
-    routeValues["packageVersion"] = *packageVersion
+    routeValues["packageVersion"] = *args.PackageVersion
 
-    body, marshalErr := json.Marshal(*metadata)
+    body, marshalErr := json.Marshal(*args.Metadata)
     if marshalErr != nil {
         return marshalErr
     }
@@ -71,30 +66,37 @@ func (client Client) AddPackage(ctx context.Context, metadata *UPackPackagePushM
     return nil
 }
 
+// Arguments for the AddPackage function
+type AddPackageArgs struct {
+    // (required)
+    Metadata *UPackPackagePushMetadata
+    // (required)
+    FeedId *string
+    // (required)
+    PackageName *string
+    // (required)
+    PackageVersion *string
+}
+
 // [Preview API]
-// ctx
-// feedId (required)
-// packageName (required)
-// packageVersion (required)
-// intent (optional)
-func (client Client) GetPackageMetadata(ctx context.Context, feedId *string, packageName *string, packageVersion *string, intent *UPackGetPackageMetadataIntent) (*UPackPackageMetadata, error) {
+func (client Client) GetPackageMetadata(ctx context.Context, args GetPackageMetadataArgs) (*UPackPackageMetadata, error) {
     routeValues := make(map[string]string)
-    if feedId == nil || *feedId == "" {
+    if args.FeedId == nil || *args.FeedId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
-    routeValues["feedId"] = *feedId
-    if packageName == nil || *packageName == "" {
+    routeValues["feedId"] = *args.FeedId
+    if args.PackageName == nil || *args.PackageName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"} 
     }
-    routeValues["packageName"] = *packageName
-    if packageVersion == nil || *packageVersion == "" {
+    routeValues["packageName"] = *args.PackageName
+    if args.PackageVersion == nil || *args.PackageVersion == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageVersion"} 
     }
-    routeValues["packageVersion"] = *packageVersion
+    routeValues["packageVersion"] = *args.PackageVersion
 
     queryParams := url.Values{}
-    if intent != nil {
-        queryParams.Add("intent", string(*intent))
+    if args.Intent != nil {
+        queryParams.Add("intent", string(*args.Intent))
     }
     locationId, _ := uuid.Parse("4cdb2ced-0758-4651-8032-010f070dd7e5")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -107,20 +109,29 @@ func (client Client) GetPackageMetadata(ctx context.Context, feedId *string, pac
     return &responseValue, err
 }
 
+// Arguments for the GetPackageMetadata function
+type GetPackageMetadataArgs struct {
+    // (required)
+    FeedId *string
+    // (required)
+    PackageName *string
+    // (required)
+    PackageVersion *string
+    // (optional)
+    Intent *UPackGetPackageMetadataIntent
+}
+
 // [Preview API]
-// ctx
-// feedId (required)
-// packageName (required)
-func (client Client) GetPackageVersionsMetadata(ctx context.Context, feedId *string, packageName *string) (*UPackLimitedPackageMetadataListResponse, error) {
+func (client Client) GetPackageVersionsMetadata(ctx context.Context, args GetPackageVersionsMetadataArgs) (*UPackLimitedPackageMetadataListResponse, error) {
     routeValues := make(map[string]string)
-    if feedId == nil || *feedId == "" {
+    if args.FeedId == nil || *args.FeedId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
     }
-    routeValues["feedId"] = *feedId
-    if packageName == nil || *packageName == "" {
+    routeValues["feedId"] = *args.FeedId
+    if args.PackageName == nil || *args.PackageName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"} 
     }
-    routeValues["packageName"] = *packageName
+    routeValues["packageName"] = *args.PackageName
 
     locationId, _ := uuid.Parse("4cdb2ced-0758-4651-8032-010f070dd7e5")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -131,5 +142,13 @@ func (client Client) GetPackageVersionsMetadata(ctx context.Context, feedId *str
     var responseValue UPackLimitedPackageMetadataListResponse
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the GetPackageVersionsMetadata function
+type GetPackageVersionsMetadataArgs struct {
+    // (required)
+    FeedId *string
+    // (required)
+    PackageName *string
 }
 

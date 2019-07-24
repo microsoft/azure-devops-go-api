@@ -32,27 +32,22 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
 }
 
 // List diagnostic logs this service.
-// ctx
-// source (required)
-// entryId (optional)
-// startTime (optional)
-// endTime (optional)
-func (client Client) ListLogs(ctx context.Context, source *uuid.UUID, entryId *uuid.UUID, startTime *time.Time, endTime *time.Time) (*[]INotificationDiagnosticLog, error) {
+func (client Client) ListLogs(ctx context.Context, args ListLogsArgs) (*[]INotificationDiagnosticLog, error) {
     routeValues := make(map[string]string)
-    if source == nil {
+    if args.Source == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "source"} 
     }
-    routeValues["source"] = (*source).String()
-    if entryId != nil {
-        routeValues["entryId"] = (*entryId).String()
+    routeValues["source"] = (*args.Source).String()
+    if args.EntryId != nil {
+        routeValues["entryId"] = (*args.EntryId).String()
     }
 
     queryParams := url.Values{}
-    if startTime != nil {
-        queryParams.Add("startTime", (*startTime).String())
+    if args.StartTime != nil {
+        queryParams.Add("startTime", (*args.StartTime).String())
     }
-    if endTime != nil {
-        queryParams.Add("endTime", (*endTime).String())
+    if args.EndTime != nil {
+        queryParams.Add("endTime", (*args.EndTime).String())
     }
     locationId, _ := uuid.Parse("991842f3-eb16-4aea-ac81-81353ef2b75c")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -65,14 +60,24 @@ func (client Client) ListLogs(ctx context.Context, source *uuid.UUID, entryId *u
     return &responseValue, err
 }
 
-// ctx
-// subscriptionId (required)
-func (client Client) GetSubscriptionDiagnostics(ctx context.Context, subscriptionId *string) (*SubscriptionDiagnostics, error) {
+// Arguments for the ListLogs function
+type ListLogsArgs struct {
+    // (required)
+    Source *uuid.UUID
+    // (optional)
+    EntryId *uuid.UUID
+    // (optional)
+    StartTime *time.Time
+    // (optional)
+    EndTime *time.Time
+}
+
+func (client Client) GetSubscriptionDiagnostics(ctx context.Context, args GetSubscriptionDiagnosticsArgs) (*SubscriptionDiagnostics, error) {
     routeValues := make(map[string]string)
-    if subscriptionId == nil || *subscriptionId == "" {
+    if args.SubscriptionId == nil || *args.SubscriptionId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "subscriptionId"} 
     }
-    routeValues["subscriptionId"] = *subscriptionId
+    routeValues["subscriptionId"] = *args.SubscriptionId
 
     locationId, _ := uuid.Parse("20f1929d-4be7-4c2e-a74e-d47640ff3418")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -85,20 +90,23 @@ func (client Client) GetSubscriptionDiagnostics(ctx context.Context, subscriptio
     return &responseValue, err
 }
 
-// ctx
-// updateParameters (required)
-// subscriptionId (required)
-func (client Client) UpdateSubscriptionDiagnostics(ctx context.Context, updateParameters *UpdateSubscripitonDiagnosticsParameters, subscriptionId *string) (*SubscriptionDiagnostics, error) {
-    if updateParameters == nil {
+// Arguments for the GetSubscriptionDiagnostics function
+type GetSubscriptionDiagnosticsArgs struct {
+    // (required)
+    SubscriptionId *string
+}
+
+func (client Client) UpdateSubscriptionDiagnostics(ctx context.Context, args UpdateSubscriptionDiagnosticsArgs) (*SubscriptionDiagnostics, error) {
+    if args.UpdateParameters == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "updateParameters"}
     }
     routeValues := make(map[string]string)
-    if subscriptionId == nil || *subscriptionId == "" {
+    if args.SubscriptionId == nil || *args.SubscriptionId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "subscriptionId"} 
     }
-    routeValues["subscriptionId"] = *subscriptionId
+    routeValues["subscriptionId"] = *args.SubscriptionId
 
-    body, marshalErr := json.Marshal(*updateParameters)
+    body, marshalErr := json.Marshal(*args.UpdateParameters)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -113,15 +121,21 @@ func (client Client) UpdateSubscriptionDiagnostics(ctx context.Context, updatePa
     return &responseValue, err
 }
 
+// Arguments for the UpdateSubscriptionDiagnostics function
+type UpdateSubscriptionDiagnosticsArgs struct {
+    // (required)
+    UpdateParameters *UpdateSubscripitonDiagnosticsParameters
+    // (required)
+    SubscriptionId *string
+}
+
 // Get a specific event type.
-// ctx
-// eventType (required)
-func (client Client) GetEventType(ctx context.Context, eventType *string) (*NotificationEventType, error) {
+func (client Client) GetEventType(ctx context.Context, args GetEventTypeArgs) (*NotificationEventType, error) {
     routeValues := make(map[string]string)
-    if eventType == nil || *eventType == "" {
+    if args.EventType == nil || *args.EventType == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "eventType"} 
     }
-    routeValues["eventType"] = *eventType
+    routeValues["eventType"] = *args.EventType
 
     locationId, _ := uuid.Parse("cc84fb5f-6247-4c7a-aeae-e5a3c3fddb21")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -134,13 +148,17 @@ func (client Client) GetEventType(ctx context.Context, eventType *string) (*Noti
     return &responseValue, err
 }
 
+// Arguments for the GetEventType function
+type GetEventTypeArgs struct {
+    // (required)
+    EventType *string
+}
+
 // List available event types for this service. Optionally filter by only event types for the specified publisher.
-// ctx
-// publisherId (optional): Limit to event types for this publisher
-func (client Client) ListEventTypes(ctx context.Context, publisherId *string) (*[]NotificationEventType, error) {
+func (client Client) ListEventTypes(ctx context.Context, args ListEventTypesArgs) (*[]NotificationEventType, error) {
     queryParams := url.Values{}
-    if publisherId != nil {
-        queryParams.Add("publisherId", *publisherId)
+    if args.PublisherId != nil {
+        queryParams.Add("publisherId", *args.PublisherId)
     }
     locationId, _ := uuid.Parse("cc84fb5f-6247-4c7a-aeae-e5a3c3fddb21")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
@@ -153,8 +171,13 @@ func (client Client) ListEventTypes(ctx context.Context, publisherId *string) (*
     return &responseValue, err
 }
 
-// ctx
-func (client Client) GetSettings(ctx context.Context, ) (*NotificationAdminSettings, error) {
+// Arguments for the ListEventTypes function
+type ListEventTypesArgs struct {
+    // (optional) Limit to event types for this publisher
+    PublisherId *string
+}
+
+func (client Client) GetSettings(ctx context.Context, args GetSettingsArgs) (*NotificationAdminSettings, error) {
     locationId, _ := uuid.Parse("cbe076d8-2803-45ff-8d8d-44653686ea2a")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, nil, nil, "", "application/json", nil)
     if err != nil {
@@ -166,13 +189,15 @@ func (client Client) GetSettings(ctx context.Context, ) (*NotificationAdminSetti
     return &responseValue, err
 }
 
-// ctx
-// updateParameters (required)
-func (client Client) UpdateSettings(ctx context.Context, updateParameters *NotificationAdminSettingsUpdateParameters) (*NotificationAdminSettings, error) {
-    if updateParameters == nil {
+// Arguments for the GetSettings function
+type GetSettingsArgs struct {
+}
+
+func (client Client) UpdateSettings(ctx context.Context, args UpdateSettingsArgs) (*NotificationAdminSettings, error) {
+    if args.UpdateParameters == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "updateParameters"}
     }
-    body, marshalErr := json.Marshal(*updateParameters)
+    body, marshalErr := json.Marshal(*args.UpdateParameters)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -187,14 +212,18 @@ func (client Client) UpdateSettings(ctx context.Context, updateParameters *Notif
     return &responseValue, err
 }
 
-// ctx
-// subscriberId (required)
-func (client Client) GetSubscriber(ctx context.Context, subscriberId *uuid.UUID) (*NotificationSubscriber, error) {
+// Arguments for the UpdateSettings function
+type UpdateSettingsArgs struct {
+    // (required)
+    UpdateParameters *NotificationAdminSettingsUpdateParameters
+}
+
+func (client Client) GetSubscriber(ctx context.Context, args GetSubscriberArgs) (*NotificationSubscriber, error) {
     routeValues := make(map[string]string)
-    if subscriberId == nil {
+    if args.SubscriberId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "subscriberId"} 
     }
-    routeValues["subscriberId"] = (*subscriberId).String()
+    routeValues["subscriberId"] = (*args.SubscriberId).String()
 
     locationId, _ := uuid.Parse("4d5caff1-25ba-430b-b808-7a1f352cc197")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -207,20 +236,23 @@ func (client Client) GetSubscriber(ctx context.Context, subscriberId *uuid.UUID)
     return &responseValue, err
 }
 
-// ctx
-// updateParameters (required)
-// subscriberId (required)
-func (client Client) UpdateSubscriber(ctx context.Context, updateParameters *NotificationSubscriberUpdateParameters, subscriberId *uuid.UUID) (*NotificationSubscriber, error) {
-    if updateParameters == nil {
+// Arguments for the GetSubscriber function
+type GetSubscriberArgs struct {
+    // (required)
+    SubscriberId *uuid.UUID
+}
+
+func (client Client) UpdateSubscriber(ctx context.Context, args UpdateSubscriberArgs) (*NotificationSubscriber, error) {
+    if args.UpdateParameters == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "updateParameters"}
     }
     routeValues := make(map[string]string)
-    if subscriberId == nil {
+    if args.SubscriberId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "subscriberId"} 
     }
-    routeValues["subscriberId"] = (*subscriberId).String()
+    routeValues["subscriberId"] = (*args.SubscriberId).String()
 
-    body, marshalErr := json.Marshal(*updateParameters)
+    body, marshalErr := json.Marshal(*args.UpdateParameters)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -235,14 +267,20 @@ func (client Client) UpdateSubscriber(ctx context.Context, updateParameters *Not
     return &responseValue, err
 }
 
+// Arguments for the UpdateSubscriber function
+type UpdateSubscriberArgs struct {
+    // (required)
+    UpdateParameters *NotificationSubscriberUpdateParameters
+    // (required)
+    SubscriberId *uuid.UUID
+}
+
 // Query for subscriptions. A subscription is returned if it matches one or more of the specified conditions.
-// ctx
-// subscriptionQuery (required)
-func (client Client) QuerySubscriptions(ctx context.Context, subscriptionQuery *SubscriptionQuery) (*[]NotificationSubscription, error) {
-    if subscriptionQuery == nil {
+func (client Client) QuerySubscriptions(ctx context.Context, args QuerySubscriptionsArgs) (*[]NotificationSubscription, error) {
+    if args.SubscriptionQuery == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "subscriptionQuery"}
     }
-    body, marshalErr := json.Marshal(*subscriptionQuery)
+    body, marshalErr := json.Marshal(*args.SubscriptionQuery)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -257,14 +295,18 @@ func (client Client) QuerySubscriptions(ctx context.Context, subscriptionQuery *
     return &responseValue, err
 }
 
+// Arguments for the QuerySubscriptions function
+type QuerySubscriptionsArgs struct {
+    // (required)
+    SubscriptionQuery *SubscriptionQuery
+}
+
 // Create a new subscription.
-// ctx
-// createParameters (required)
-func (client Client) CreateSubscription(ctx context.Context, createParameters *NotificationSubscriptionCreateParameters) (*NotificationSubscription, error) {
-    if createParameters == nil {
+func (client Client) CreateSubscription(ctx context.Context, args CreateSubscriptionArgs) (*NotificationSubscription, error) {
+    if args.CreateParameters == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "createParameters"}
     }
-    body, marshalErr := json.Marshal(*createParameters)
+    body, marshalErr := json.Marshal(*args.CreateParameters)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -279,15 +321,19 @@ func (client Client) CreateSubscription(ctx context.Context, createParameters *N
     return &responseValue, err
 }
 
+// Arguments for the CreateSubscription function
+type CreateSubscriptionArgs struct {
+    // (required)
+    CreateParameters *NotificationSubscriptionCreateParameters
+}
+
 // Delete a subscription.
-// ctx
-// subscriptionId (required)
-func (client Client) DeleteSubscription(ctx context.Context, subscriptionId *string) error {
+func (client Client) DeleteSubscription(ctx context.Context, args DeleteSubscriptionArgs) error {
     routeValues := make(map[string]string)
-    if subscriptionId == nil || *subscriptionId == "" {
+    if args.SubscriptionId == nil || *args.SubscriptionId == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "subscriptionId"} 
     }
-    routeValues["subscriptionId"] = *subscriptionId
+    routeValues["subscriptionId"] = *args.SubscriptionId
 
     locationId, _ := uuid.Parse("70f911d6-abac-488c-85b3-a206bf57e165")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -298,20 +344,23 @@ func (client Client) DeleteSubscription(ctx context.Context, subscriptionId *str
     return nil
 }
 
+// Arguments for the DeleteSubscription function
+type DeleteSubscriptionArgs struct {
+    // (required)
+    SubscriptionId *string
+}
+
 // Get a notification subscription by its ID.
-// ctx
-// subscriptionId (required)
-// queryFlags (optional)
-func (client Client) GetSubscription(ctx context.Context, subscriptionId *string, queryFlags *SubscriptionQueryFlags) (*NotificationSubscription, error) {
+func (client Client) GetSubscription(ctx context.Context, args GetSubscriptionArgs) (*NotificationSubscription, error) {
     routeValues := make(map[string]string)
-    if subscriptionId == nil || *subscriptionId == "" {
+    if args.SubscriptionId == nil || *args.SubscriptionId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "subscriptionId"} 
     }
-    routeValues["subscriptionId"] = *subscriptionId
+    routeValues["subscriptionId"] = *args.SubscriptionId
 
     queryParams := url.Values{}
-    if queryFlags != nil {
-        queryParams.Add("queryFlags", string(*queryFlags))
+    if args.QueryFlags != nil {
+        queryParams.Add("queryFlags", string(*args.QueryFlags))
     }
     locationId, _ := uuid.Parse("70f911d6-abac-488c-85b3-a206bf57e165")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -324,22 +373,26 @@ func (client Client) GetSubscription(ctx context.Context, subscriptionId *string
     return &responseValue, err
 }
 
+// Arguments for the GetSubscription function
+type GetSubscriptionArgs struct {
+    // (required)
+    SubscriptionId *string
+    // (optional)
+    QueryFlags *SubscriptionQueryFlags
+}
+
 // Get a list of notification subscriptions, either by subscription IDs or by all subscriptions for a given user or group.
-// ctx
-// targetId (optional): User or Group ID
-// ids (optional): List of subscription IDs
-// queryFlags (optional)
-func (client Client) ListSubscriptions(ctx context.Context, targetId *uuid.UUID, ids *[]string, queryFlags *SubscriptionQueryFlags) (*[]NotificationSubscription, error) {
+func (client Client) ListSubscriptions(ctx context.Context, args ListSubscriptionsArgs) (*[]NotificationSubscription, error) {
     queryParams := url.Values{}
-    if targetId != nil {
-        queryParams.Add("targetId", (*targetId).String())
+    if args.TargetId != nil {
+        queryParams.Add("targetId", (*args.TargetId).String())
     }
-    if ids != nil {
-        listAsString := strings.Join((*ids)[:], ",")
+    if args.Ids != nil {
+        listAsString := strings.Join((*args.Ids)[:], ",")
         queryParams.Add("ids", listAsString)
     }
-    if queryFlags != nil {
-        queryParams.Add("queryFlags", string(*queryFlags))
+    if args.QueryFlags != nil {
+        queryParams.Add("queryFlags", string(*args.QueryFlags))
     }
     locationId, _ := uuid.Parse("70f911d6-abac-488c-85b3-a206bf57e165")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
@@ -352,21 +405,28 @@ func (client Client) ListSubscriptions(ctx context.Context, targetId *uuid.UUID,
     return &responseValue, err
 }
 
+// Arguments for the ListSubscriptions function
+type ListSubscriptionsArgs struct {
+    // (optional) User or Group ID
+    TargetId *uuid.UUID
+    // (optional) List of subscription IDs
+    Ids *[]string
+    // (optional)
+    QueryFlags *SubscriptionQueryFlags
+}
+
 // Update an existing subscription. Depending on the type of subscription and permissions, the caller can update the description, filter settings, channel (delivery) settings and more.
-// ctx
-// updateParameters (required)
-// subscriptionId (required)
-func (client Client) UpdateSubscription(ctx context.Context, updateParameters *NotificationSubscriptionUpdateParameters, subscriptionId *string) (*NotificationSubscription, error) {
-    if updateParameters == nil {
+func (client Client) UpdateSubscription(ctx context.Context, args UpdateSubscriptionArgs) (*NotificationSubscription, error) {
+    if args.UpdateParameters == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "updateParameters"}
     }
     routeValues := make(map[string]string)
-    if subscriptionId == nil || *subscriptionId == "" {
+    if args.SubscriptionId == nil || *args.SubscriptionId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "subscriptionId"} 
     }
-    routeValues["subscriptionId"] = *subscriptionId
+    routeValues["subscriptionId"] = *args.SubscriptionId
 
-    body, marshalErr := json.Marshal(*updateParameters)
+    body, marshalErr := json.Marshal(*args.UpdateParameters)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -381,9 +441,16 @@ func (client Client) UpdateSubscription(ctx context.Context, updateParameters *N
     return &responseValue, err
 }
 
+// Arguments for the UpdateSubscription function
+type UpdateSubscriptionArgs struct {
+    // (required)
+    UpdateParameters *NotificationSubscriptionUpdateParameters
+    // (required)
+    SubscriptionId *string
+}
+
 // Get available subscription templates.
-// ctx
-func (client Client) GetSubscriptionTemplates(ctx context.Context, ) (*[]NotificationSubscriptionTemplate, error) {
+func (client Client) GetSubscriptionTemplates(ctx context.Context, args GetSubscriptionTemplatesArgs) (*[]NotificationSubscriptionTemplate, error) {
     locationId, _ := uuid.Parse("fa5d24ba-7484-4f3d-888d-4ec6b1974082")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, nil, nil, "", "application/json", nil)
     if err != nil {
@@ -395,26 +462,26 @@ func (client Client) GetSubscriptionTemplates(ctx context.Context, ) (*[]Notific
     return &responseValue, err
 }
 
+// Arguments for the GetSubscriptionTemplates function
+type GetSubscriptionTemplatesArgs struct {
+}
+
 // Update the specified user's settings for the specified subscription. This API is typically used to opt in or out of a shared subscription. User settings can only be applied to shared subscriptions, like team subscriptions or default subscriptions.
-// ctx
-// userSettings (required)
-// subscriptionId (required)
-// userId (required): ID of the user
-func (client Client) UpdateSubscriptionUserSettings(ctx context.Context, userSettings *SubscriptionUserSettings, subscriptionId *string, userId *uuid.UUID) (*SubscriptionUserSettings, error) {
-    if userSettings == nil {
+func (client Client) UpdateSubscriptionUserSettings(ctx context.Context, args UpdateSubscriptionUserSettingsArgs) (*SubscriptionUserSettings, error) {
+    if args.UserSettings == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "userSettings"}
     }
     routeValues := make(map[string]string)
-    if subscriptionId == nil || *subscriptionId == "" {
+    if args.SubscriptionId == nil || *args.SubscriptionId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "subscriptionId"} 
     }
-    routeValues["subscriptionId"] = *subscriptionId
-    if userId == nil {
+    routeValues["subscriptionId"] = *args.SubscriptionId
+    if args.UserId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "userId"} 
     }
-    routeValues["userId"] = (*userId).String()
+    routeValues["userId"] = (*args.UserId).String()
 
-    body, marshalErr := json.Marshal(*userSettings)
+    body, marshalErr := json.Marshal(*args.UserSettings)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -427,5 +494,15 @@ func (client Client) UpdateSubscriptionUserSettings(ctx context.Context, userSet
     var responseValue SubscriptionUserSettings
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the UpdateSubscriptionUserSettings function
+type UpdateSubscriptionUserSettingsArgs struct {
+    // (required)
+    UserSettings *SubscriptionUserSettings
+    // (required)
+    SubscriptionId *string
+    // (required) ID of the user
+    UserId *uuid.UUID
 }
 

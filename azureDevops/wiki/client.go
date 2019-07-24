@@ -37,44 +37,38 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 }
 
 // Creates an attachment in the wiki.
-// ctx
-// uploadStream (required): Stream to upload
-// project (required): Project ID or project name
-// wikiIdentifier (required): Wiki Id or name.
-// name (required): Wiki attachment name.
-// versionDescriptor (optional): GitVersionDescriptor for the page. (Optional in case of ProjectWiki).
-func (client Client) CreateAttachment(ctx context.Context, uploadStream io.Reader, project *string, wikiIdentifier *string, name *string, versionDescriptor *GitVersionDescriptor) (*WikiAttachmentResponse, error) {
-    if uploadStream == nil {
+func (client Client) CreateAttachment(ctx context.Context, args CreateAttachmentArgs) (*WikiAttachmentResponse, error) {
+    if args.UploadStream == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "uploadStream"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if wikiIdentifier == nil || *wikiIdentifier == "" {
+    routeValues["project"] = *args.Project
+    if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"} 
     }
-    routeValues["wikiIdentifier"] = *wikiIdentifier
+    routeValues["wikiIdentifier"] = *args.WikiIdentifier
 
     queryParams := url.Values{}
-    if name == nil {
+    if args.Name == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "name"}
     }
-    queryParams.Add("name", *name)
-    if versionDescriptor != nil {
-        if versionDescriptor.VersionType != nil {
-            queryParams.Add("versionDescriptor.versionType", string(*versionDescriptor.VersionType))
+    queryParams.Add("name", *args.Name)
+    if args.VersionDescriptor != nil {
+        if args.VersionDescriptor.VersionType != nil {
+            queryParams.Add("versionDescriptor.versionType", string(*args.VersionDescriptor.VersionType))
         }
-        if versionDescriptor.Version != nil {
-            queryParams.Add("versionDescriptor.version", *versionDescriptor.Version)
+        if args.VersionDescriptor.Version != nil {
+            queryParams.Add("versionDescriptor.version", *args.VersionDescriptor.Version)
         }
-        if versionDescriptor.VersionOptions != nil {
-            queryParams.Add("versionDescriptor.versionOptions", string(*versionDescriptor.VersionOptions))
+        if args.VersionDescriptor.VersionOptions != nil {
+            queryParams.Add("versionDescriptor.versionOptions", string(*args.VersionDescriptor.VersionOptions))
         }
     }
     locationId, _ := uuid.Parse("c4382d8d-fefc-40e0-92c5-49852e9e17c0")
-    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1", routeValues, queryParams, uploadStream, "application/octet-stream", "application/json", nil)
+    resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1", routeValues, queryParams, args.UploadStream, "application/octet-stream", "application/json", nil)
     if err != nil {
         return nil, err
     }
@@ -93,43 +87,51 @@ func (client Client) CreateAttachment(ctx context.Context, uploadStream io.Reade
     return responseValue, err
 }
 
+// Arguments for the CreateAttachment function
+type CreateAttachmentArgs struct {
+    // (required) Stream to upload
+    UploadStream io.Reader
+    // (required) Project ID or project name
+    Project *string
+    // (required) Wiki Id or name.
+    WikiIdentifier *string
+    // (required) Wiki attachment name.
+    Name *string
+    // (optional) GitVersionDescriptor for the page. (Optional in case of ProjectWiki).
+    VersionDescriptor *GitVersionDescriptor
+}
+
 // Creates a page move operation that updates the path and order of the page as provided in the parameters.
-// ctx
-// pageMoveParameters (required): Page more operation parameters.
-// project (required): Project ID or project name
-// wikiIdentifier (required): Wiki Id or name.
-// comment (optional): Comment that is to be associated with this page move.
-// versionDescriptor (optional): GitVersionDescriptor for the page. (Optional in case of ProjectWiki).
-func (client Client) CreatePageMove(ctx context.Context, pageMoveParameters *WikiPageMoveParameters, project *string, wikiIdentifier *string, comment *string, versionDescriptor *GitVersionDescriptor) (*WikiPageMoveResponse, error) {
-    if pageMoveParameters == nil {
+func (client Client) CreatePageMove(ctx context.Context, args CreatePageMoveArgs) (*WikiPageMoveResponse, error) {
+    if args.PageMoveParameters == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "pageMoveParameters"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if wikiIdentifier == nil || *wikiIdentifier == "" {
+    routeValues["project"] = *args.Project
+    if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"} 
     }
-    routeValues["wikiIdentifier"] = *wikiIdentifier
+    routeValues["wikiIdentifier"] = *args.WikiIdentifier
 
     queryParams := url.Values{}
-    if comment != nil {
-        queryParams.Add("comment", *comment)
+    if args.Comment != nil {
+        queryParams.Add("comment", *args.Comment)
     }
-    if versionDescriptor != nil {
-        if versionDescriptor.VersionType != nil {
-            queryParams.Add("versionDescriptor.versionType", string(*versionDescriptor.VersionType))
+    if args.VersionDescriptor != nil {
+        if args.VersionDescriptor.VersionType != nil {
+            queryParams.Add("versionDescriptor.versionType", string(*args.VersionDescriptor.VersionType))
         }
-        if versionDescriptor.Version != nil {
-            queryParams.Add("versionDescriptor.version", *versionDescriptor.Version)
+        if args.VersionDescriptor.Version != nil {
+            queryParams.Add("versionDescriptor.version", *args.VersionDescriptor.Version)
         }
-        if versionDescriptor.VersionOptions != nil {
-            queryParams.Add("versionDescriptor.versionOptions", string(*versionDescriptor.VersionOptions))
+        if args.VersionDescriptor.VersionOptions != nil {
+            queryParams.Add("versionDescriptor.versionOptions", string(*args.VersionDescriptor.VersionOptions))
         }
     }
-    body, marshalErr := json.Marshal(*pageMoveParameters)
+    body, marshalErr := json.Marshal(*args.PageMoveParameters)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -153,30 +155,39 @@ func (client Client) CreatePageMove(ctx context.Context, pageMoveParameters *Wik
     return responseValue, err
 }
 
+// Arguments for the CreatePageMove function
+type CreatePageMoveArgs struct {
+    // (required) Page more operation parameters.
+    PageMoveParameters *WikiPageMoveParameters
+    // (required) Project ID or project name
+    Project *string
+    // (required) Wiki Id or name.
+    WikiIdentifier *string
+    // (optional) Comment that is to be associated with this page move.
+    Comment *string
+    // (optional) GitVersionDescriptor for the page. (Optional in case of ProjectWiki).
+    VersionDescriptor *GitVersionDescriptor
+}
+
 // [Preview API] Deletes a wiki page.
-// ctx
-// project (required): Project ID or project name
-// wikiIdentifier (required): Wiki Id or name.
-// id (required): Wiki page id.
-// comment (optional): Comment to be associated with this page delete.
-func (client Client) DeletePageById(ctx context.Context, project *string, wikiIdentifier *string, id *int, comment *string) (*WikiPageResponse, error) {
+func (client Client) DeletePageById(ctx context.Context, args DeletePageByIdArgs) (*WikiPageResponse, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if wikiIdentifier == nil || *wikiIdentifier == "" {
+    routeValues["project"] = *args.Project
+    if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"} 
     }
-    routeValues["wikiIdentifier"] = *wikiIdentifier
-    if id == nil {
+    routeValues["wikiIdentifier"] = *args.WikiIdentifier
+    if args.Id == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
-    routeValues["id"] = strconv.Itoa(*id)
+    routeValues["id"] = strconv.Itoa(*args.Id)
 
     queryParams := url.Values{}
-    if comment != nil {
-        queryParams.Add("comment", *comment)
+    if args.Comment != nil {
+        queryParams.Add("comment", *args.Comment)
     }
     locationId, _ := uuid.Parse("ceddcf75-1068-452d-8b13-2d4d76e1f970")
     resp, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -198,34 +209,40 @@ func (client Client) DeletePageById(ctx context.Context, project *string, wikiId
     return responseValue, err
 }
 
+// Arguments for the DeletePageById function
+type DeletePageByIdArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Wiki Id or name.
+    WikiIdentifier *string
+    // (required) Wiki page id.
+    Id *int
+    // (optional) Comment to be associated with this page delete.
+    Comment *string
+}
+
 // [Preview API] Gets metadata or content of the wiki page for the provided page id. Content negotiation is done based on the `Accept` header sent in the request.
-// ctx
-// project (required): Project ID or project name
-// wikiIdentifier (required): Wiki Id or name.
-// id (required): Wiki page id.
-// recursionLevel (optional): Recursion level for subpages retrieval. Defaults to `None` (Optional).
-// includeContent (optional): True to include the content of the page in the response for Json content type. Defaults to false (Optional)
-func (client Client) GetPageById(ctx context.Context, project *string, wikiIdentifier *string, id *int, recursionLevel *VersionControlRecursionType, includeContent *bool) (*WikiPageResponse, error) {
+func (client Client) GetPageById(ctx context.Context, args GetPageByIdArgs) (*WikiPageResponse, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if wikiIdentifier == nil || *wikiIdentifier == "" {
+    routeValues["project"] = *args.Project
+    if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"} 
     }
-    routeValues["wikiIdentifier"] = *wikiIdentifier
-    if id == nil {
+    routeValues["wikiIdentifier"] = *args.WikiIdentifier
+    if args.Id == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
-    routeValues["id"] = strconv.Itoa(*id)
+    routeValues["id"] = strconv.Itoa(*args.Id)
 
     queryParams := url.Values{}
-    if recursionLevel != nil {
-        queryParams.Add("recursionLevel", string(*recursionLevel))
+    if args.RecursionLevel != nil {
+        queryParams.Add("recursionLevel", string(*args.RecursionLevel))
     }
-    if includeContent != nil {
-        queryParams.Add("includeContent", strconv.FormatBool(*includeContent))
+    if args.IncludeContent != nil {
+        queryParams.Add("includeContent", strconv.FormatBool(*args.IncludeContent))
     }
     locationId, _ := uuid.Parse("ceddcf75-1068-452d-8b13-2d4d76e1f970")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -247,34 +264,42 @@ func (client Client) GetPageById(ctx context.Context, project *string, wikiIdent
     return responseValue, err
 }
 
+// Arguments for the GetPageById function
+type GetPageByIdArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Wiki Id or name.
+    WikiIdentifier *string
+    // (required) Wiki page id.
+    Id *int
+    // (optional) Recursion level for subpages retrieval. Defaults to `None` (Optional).
+    RecursionLevel *VersionControlRecursionType
+    // (optional) True to include the content of the page in the response for Json content type. Defaults to false (Optional)
+    IncludeContent *bool
+}
+
 // [Preview API] Gets metadata or content of the wiki page for the provided page id. Content negotiation is done based on the `Accept` header sent in the request.
-// ctx
-// project (required): Project ID or project name
-// wikiIdentifier (required): Wiki Id or name.
-// id (required): Wiki page id.
-// recursionLevel (optional): Recursion level for subpages retrieval. Defaults to `None` (Optional).
-// includeContent (optional): True to include the content of the page in the response for Json content type. Defaults to false (Optional)
-func (client Client) GetPageByIdText(ctx context.Context, project *string, wikiIdentifier *string, id *int, recursionLevel *VersionControlRecursionType, includeContent *bool) (io.ReadCloser, error) {
+func (client Client) GetPageByIdText(ctx context.Context, args GetPageByIdTextArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if wikiIdentifier == nil || *wikiIdentifier == "" {
+    routeValues["project"] = *args.Project
+    if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"} 
     }
-    routeValues["wikiIdentifier"] = *wikiIdentifier
-    if id == nil {
+    routeValues["wikiIdentifier"] = *args.WikiIdentifier
+    if args.Id == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
-    routeValues["id"] = strconv.Itoa(*id)
+    routeValues["id"] = strconv.Itoa(*args.Id)
 
     queryParams := url.Values{}
-    if recursionLevel != nil {
-        queryParams.Add("recursionLevel", string(*recursionLevel))
+    if args.RecursionLevel != nil {
+        queryParams.Add("recursionLevel", string(*args.RecursionLevel))
     }
-    if includeContent != nil {
-        queryParams.Add("includeContent", strconv.FormatBool(*includeContent))
+    if args.IncludeContent != nil {
+        queryParams.Add("includeContent", strconv.FormatBool(*args.IncludeContent))
     }
     locationId, _ := uuid.Parse("ceddcf75-1068-452d-8b13-2d4d76e1f970")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "text/plain", nil)
@@ -285,34 +310,42 @@ func (client Client) GetPageByIdText(ctx context.Context, project *string, wikiI
     return resp.Body, err
 }
 
+// Arguments for the GetPageByIdText function
+type GetPageByIdTextArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Wiki Id or name.
+    WikiIdentifier *string
+    // (required) Wiki page id.
+    Id *int
+    // (optional) Recursion level for subpages retrieval. Defaults to `None` (Optional).
+    RecursionLevel *VersionControlRecursionType
+    // (optional) True to include the content of the page in the response for Json content type. Defaults to false (Optional)
+    IncludeContent *bool
+}
+
 // [Preview API] Gets metadata or content of the wiki page for the provided page id. Content negotiation is done based on the `Accept` header sent in the request.
-// ctx
-// project (required): Project ID or project name
-// wikiIdentifier (required): Wiki Id or name.
-// id (required): Wiki page id.
-// recursionLevel (optional): Recursion level for subpages retrieval. Defaults to `None` (Optional).
-// includeContent (optional): True to include the content of the page in the response for Json content type. Defaults to false (Optional)
-func (client Client) GetPageByIdZip(ctx context.Context, project *string, wikiIdentifier *string, id *int, recursionLevel *VersionControlRecursionType, includeContent *bool) (io.ReadCloser, error) {
+func (client Client) GetPageByIdZip(ctx context.Context, args GetPageByIdZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if wikiIdentifier == nil || *wikiIdentifier == "" {
+    routeValues["project"] = *args.Project
+    if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"} 
     }
-    routeValues["wikiIdentifier"] = *wikiIdentifier
-    if id == nil {
+    routeValues["wikiIdentifier"] = *args.WikiIdentifier
+    if args.Id == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
-    routeValues["id"] = strconv.Itoa(*id)
+    routeValues["id"] = strconv.Itoa(*args.Id)
 
     queryParams := url.Values{}
-    if recursionLevel != nil {
-        queryParams.Add("recursionLevel", string(*recursionLevel))
+    if args.RecursionLevel != nil {
+        queryParams.Add("recursionLevel", string(*args.RecursionLevel))
     }
-    if includeContent != nil {
-        queryParams.Add("includeContent", strconv.FormatBool(*includeContent))
+    if args.IncludeContent != nil {
+        queryParams.Add("includeContent", strconv.FormatBool(*args.IncludeContent))
     }
     locationId, _ := uuid.Parse("ceddcf75-1068-452d-8b13-2d4d76e1f970")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/zip", nil)
@@ -323,41 +356,48 @@ func (client Client) GetPageByIdZip(ctx context.Context, project *string, wikiId
     return resp.Body, err
 }
 
+// Arguments for the GetPageByIdZip function
+type GetPageByIdZipArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Wiki Id or name.
+    WikiIdentifier *string
+    // (required) Wiki page id.
+    Id *int
+    // (optional) Recursion level for subpages retrieval. Defaults to `None` (Optional).
+    RecursionLevel *VersionControlRecursionType
+    // (optional) True to include the content of the page in the response for Json content type. Defaults to false (Optional)
+    IncludeContent *bool
+}
+
 // [Preview API] Edits a wiki page.
-// ctx
-// parameters (required): Wiki update operation parameters.
-// project (required): Project ID or project name
-// wikiIdentifier (required): Wiki Id or name.
-// id (required): Wiki page id.
-// version (required): Version of the page on which the change is to be made. Mandatory for `Edit` scenario. To be populated in the If-Match header of the request.
-// comment (optional): Comment to be associated with the page operation.
-func (client Client) UpdatePageById(ctx context.Context, parameters *WikiPageCreateOrUpdateParameters, project *string, wikiIdentifier *string, id *int, version *string, comment *string) (*WikiPageResponse, error) {
-    if parameters == nil {
+func (client Client) UpdatePageById(ctx context.Context, args UpdatePageByIdArgs) (*WikiPageResponse, error) {
+    if args.Parameters == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "parameters"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if wikiIdentifier == nil || *wikiIdentifier == "" {
+    routeValues["project"] = *args.Project
+    if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"} 
     }
-    routeValues["wikiIdentifier"] = *wikiIdentifier
-    if id == nil {
+    routeValues["wikiIdentifier"] = *args.WikiIdentifier
+    if args.Id == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "id"} 
     }
-    routeValues["id"] = strconv.Itoa(*id)
+    routeValues["id"] = strconv.Itoa(*args.Id)
 
     queryParams := url.Values{}
-    if comment != nil {
-        queryParams.Add("comment", *comment)
+    if args.Comment != nil {
+        queryParams.Add("comment", *args.Comment)
     }
     additionalHeaders := make(map[string]string)
-    if version != nil {
-        additionalHeaders["If-Match"] = *version
+    if args.Version != nil {
+        additionalHeaders["If-Match"] = *args.Version
     }
-    body, marshalErr := json.Marshal(*parameters)
+    body, marshalErr := json.Marshal(*args.Parameters)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -381,53 +421,61 @@ func (client Client) UpdatePageById(ctx context.Context, parameters *WikiPageCre
     return responseValue, err
 }
 
+// Arguments for the UpdatePageById function
+type UpdatePageByIdArgs struct {
+    // (required) Wiki update operation parameters.
+    Parameters *WikiPageCreateOrUpdateParameters
+    // (required) Project ID or project name
+    Project *string
+    // (required) Wiki Id or name.
+    WikiIdentifier *string
+    // (required) Wiki page id.
+    Id *int
+    // (required) Version of the page on which the change is to be made. Mandatory for `Edit` scenario. To be populated in the If-Match header of the request.
+    Version *string
+    // (optional) Comment to be associated with the page operation.
+    Comment *string
+}
+
 // Creates or edits a wiki page.
-// ctx
-// parameters (required): Wiki create or update operation parameters.
-// project (required): Project ID or project name
-// wikiIdentifier (required): Wiki Id or name.
-// path (required): Wiki page path.
-// version (required): Version of the page on which the change is to be made. Mandatory for `Edit` scenario. To be populated in the If-Match header of the request.
-// comment (optional): Comment to be associated with the page operation.
-// versionDescriptor (optional): GitVersionDescriptor for the page. (Optional in case of ProjectWiki).
-func (client Client) CreateOrUpdatePage(ctx context.Context, parameters *WikiPageCreateOrUpdateParameters, project *string, wikiIdentifier *string, path *string, version *string, comment *string, versionDescriptor *GitVersionDescriptor) (*WikiPageResponse, error) {
-    if parameters == nil {
+func (client Client) CreateOrUpdatePage(ctx context.Context, args CreateOrUpdatePageArgs) (*WikiPageResponse, error) {
+    if args.Parameters == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "parameters"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if wikiIdentifier == nil || *wikiIdentifier == "" {
+    routeValues["project"] = *args.Project
+    if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"} 
     }
-    routeValues["wikiIdentifier"] = *wikiIdentifier
+    routeValues["wikiIdentifier"] = *args.WikiIdentifier
 
     queryParams := url.Values{}
-    if path == nil {
+    if args.Path == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "path"}
     }
-    queryParams.Add("path", *path)
-    if comment != nil {
-        queryParams.Add("comment", *comment)
+    queryParams.Add("path", *args.Path)
+    if args.Comment != nil {
+        queryParams.Add("comment", *args.Comment)
     }
-    if versionDescriptor != nil {
-        if versionDescriptor.VersionType != nil {
-            queryParams.Add("versionDescriptor.versionType", string(*versionDescriptor.VersionType))
+    if args.VersionDescriptor != nil {
+        if args.VersionDescriptor.VersionType != nil {
+            queryParams.Add("versionDescriptor.versionType", string(*args.VersionDescriptor.VersionType))
         }
-        if versionDescriptor.Version != nil {
-            queryParams.Add("versionDescriptor.version", *versionDescriptor.Version)
+        if args.VersionDescriptor.Version != nil {
+            queryParams.Add("versionDescriptor.version", *args.VersionDescriptor.Version)
         }
-        if versionDescriptor.VersionOptions != nil {
-            queryParams.Add("versionDescriptor.versionOptions", string(*versionDescriptor.VersionOptions))
+        if args.VersionDescriptor.VersionOptions != nil {
+            queryParams.Add("versionDescriptor.versionOptions", string(*args.VersionDescriptor.VersionOptions))
         }
     }
     additionalHeaders := make(map[string]string)
-    if version != nil {
-        additionalHeaders["If-Match"] = *version
+    if args.Version != nil {
+        additionalHeaders["If-Match"] = *args.Version
     }
-    body, marshalErr := json.Marshal(*parameters)
+    body, marshalErr := json.Marshal(*args.Parameters)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -451,41 +499,53 @@ func (client Client) CreateOrUpdatePage(ctx context.Context, parameters *WikiPag
     return responseValue, err
 }
 
+// Arguments for the CreateOrUpdatePage function
+type CreateOrUpdatePageArgs struct {
+    // (required) Wiki create or update operation parameters.
+    Parameters *WikiPageCreateOrUpdateParameters
+    // (required) Project ID or project name
+    Project *string
+    // (required) Wiki Id or name.
+    WikiIdentifier *string
+    // (required) Wiki page path.
+    Path *string
+    // (required) Version of the page on which the change is to be made. Mandatory for `Edit` scenario. To be populated in the If-Match header of the request.
+    Version *string
+    // (optional) Comment to be associated with the page operation.
+    Comment *string
+    // (optional) GitVersionDescriptor for the page. (Optional in case of ProjectWiki).
+    VersionDescriptor *GitVersionDescriptor
+}
+
 // Deletes a wiki page.
-// ctx
-// project (required): Project ID or project name
-// wikiIdentifier (required): Wiki Id or name.
-// path (required): Wiki page path.
-// comment (optional): Comment to be associated with this page delete.
-// versionDescriptor (optional): GitVersionDescriptor for the page. (Optional in case of ProjectWiki).
-func (client Client) DeletePage(ctx context.Context, project *string, wikiIdentifier *string, path *string, comment *string, versionDescriptor *GitVersionDescriptor) (*WikiPageResponse, error) {
+func (client Client) DeletePage(ctx context.Context, args DeletePageArgs) (*WikiPageResponse, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if wikiIdentifier == nil || *wikiIdentifier == "" {
+    routeValues["project"] = *args.Project
+    if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"} 
     }
-    routeValues["wikiIdentifier"] = *wikiIdentifier
+    routeValues["wikiIdentifier"] = *args.WikiIdentifier
 
     queryParams := url.Values{}
-    if path == nil {
+    if args.Path == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "path"}
     }
-    queryParams.Add("path", *path)
-    if comment != nil {
-        queryParams.Add("comment", *comment)
+    queryParams.Add("path", *args.Path)
+    if args.Comment != nil {
+        queryParams.Add("comment", *args.Comment)
     }
-    if versionDescriptor != nil {
-        if versionDescriptor.VersionType != nil {
-            queryParams.Add("versionDescriptor.versionType", string(*versionDescriptor.VersionType))
+    if args.VersionDescriptor != nil {
+        if args.VersionDescriptor.VersionType != nil {
+            queryParams.Add("versionDescriptor.versionType", string(*args.VersionDescriptor.VersionType))
         }
-        if versionDescriptor.Version != nil {
-            queryParams.Add("versionDescriptor.version", *versionDescriptor.Version)
+        if args.VersionDescriptor.Version != nil {
+            queryParams.Add("versionDescriptor.version", *args.VersionDescriptor.Version)
         }
-        if versionDescriptor.VersionOptions != nil {
-            queryParams.Add("versionDescriptor.versionOptions", string(*versionDescriptor.VersionOptions))
+        if args.VersionDescriptor.VersionOptions != nil {
+            queryParams.Add("versionDescriptor.versionOptions", string(*args.VersionDescriptor.VersionOptions))
         }
     }
     locationId, _ := uuid.Parse("25d3fbc7-fe3d-46cb-b5a5-0b6f79caf27b")
@@ -508,45 +568,52 @@ func (client Client) DeletePage(ctx context.Context, project *string, wikiIdenti
     return responseValue, err
 }
 
+// Arguments for the DeletePage function
+type DeletePageArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Wiki Id or name.
+    WikiIdentifier *string
+    // (required) Wiki page path.
+    Path *string
+    // (optional) Comment to be associated with this page delete.
+    Comment *string
+    // (optional) GitVersionDescriptor for the page. (Optional in case of ProjectWiki).
+    VersionDescriptor *GitVersionDescriptor
+}
+
 // Gets metadata or content of the wiki page for the provided path. Content negotiation is done based on the `Accept` header sent in the request.
-// ctx
-// project (required): Project ID or project name
-// wikiIdentifier (required): Wiki Id or name.
-// path (optional): Wiki page path.
-// recursionLevel (optional): Recursion level for subpages retrieval. Defaults to `None` (Optional).
-// versionDescriptor (optional): GitVersionDescriptor for the page. Defaults to the default branch (Optional).
-// includeContent (optional): True to include the content of the page in the response for Json content type. Defaults to false (Optional)
-func (client Client) GetPage(ctx context.Context, project *string, wikiIdentifier *string, path *string, recursionLevel *VersionControlRecursionType, versionDescriptor *GitVersionDescriptor, includeContent *bool) (*WikiPageResponse, error) {
+func (client Client) GetPage(ctx context.Context, args GetPageArgs) (*WikiPageResponse, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if wikiIdentifier == nil || *wikiIdentifier == "" {
+    routeValues["project"] = *args.Project
+    if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"} 
     }
-    routeValues["wikiIdentifier"] = *wikiIdentifier
+    routeValues["wikiIdentifier"] = *args.WikiIdentifier
 
     queryParams := url.Values{}
-    if path != nil {
-        queryParams.Add("path", *path)
+    if args.Path != nil {
+        queryParams.Add("path", *args.Path)
     }
-    if recursionLevel != nil {
-        queryParams.Add("recursionLevel", string(*recursionLevel))
+    if args.RecursionLevel != nil {
+        queryParams.Add("recursionLevel", string(*args.RecursionLevel))
     }
-    if versionDescriptor != nil {
-        if versionDescriptor.VersionType != nil {
-            queryParams.Add("versionDescriptor.versionType", string(*versionDescriptor.VersionType))
+    if args.VersionDescriptor != nil {
+        if args.VersionDescriptor.VersionType != nil {
+            queryParams.Add("versionDescriptor.versionType", string(*args.VersionDescriptor.VersionType))
         }
-        if versionDescriptor.Version != nil {
-            queryParams.Add("versionDescriptor.version", *versionDescriptor.Version)
+        if args.VersionDescriptor.Version != nil {
+            queryParams.Add("versionDescriptor.version", *args.VersionDescriptor.Version)
         }
-        if versionDescriptor.VersionOptions != nil {
-            queryParams.Add("versionDescriptor.versionOptions", string(*versionDescriptor.VersionOptions))
+        if args.VersionDescriptor.VersionOptions != nil {
+            queryParams.Add("versionDescriptor.versionOptions", string(*args.VersionDescriptor.VersionOptions))
         }
     }
-    if includeContent != nil {
-        queryParams.Add("includeContent", strconv.FormatBool(*includeContent))
+    if args.IncludeContent != nil {
+        queryParams.Add("includeContent", strconv.FormatBool(*args.IncludeContent))
     }
     locationId, _ := uuid.Parse("25d3fbc7-fe3d-46cb-b5a5-0b6f79caf27b")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -568,45 +635,54 @@ func (client Client) GetPage(ctx context.Context, project *string, wikiIdentifie
     return responseValue, err
 }
 
+// Arguments for the GetPage function
+type GetPageArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Wiki Id or name.
+    WikiIdentifier *string
+    // (optional) Wiki page path.
+    Path *string
+    // (optional) Recursion level for subpages retrieval. Defaults to `None` (Optional).
+    RecursionLevel *VersionControlRecursionType
+    // (optional) GitVersionDescriptor for the page. Defaults to the default branch (Optional).
+    VersionDescriptor *GitVersionDescriptor
+    // (optional) True to include the content of the page in the response for Json content type. Defaults to false (Optional)
+    IncludeContent *bool
+}
+
 // Gets metadata or content of the wiki page for the provided path. Content negotiation is done based on the `Accept` header sent in the request.
-// ctx
-// project (required): Project ID or project name
-// wikiIdentifier (required): Wiki Id or name.
-// path (optional): Wiki page path.
-// recursionLevel (optional): Recursion level for subpages retrieval. Defaults to `None` (Optional).
-// versionDescriptor (optional): GitVersionDescriptor for the page. Defaults to the default branch (Optional).
-// includeContent (optional): True to include the content of the page in the response for Json content type. Defaults to false (Optional)
-func (client Client) GetPageText(ctx context.Context, project *string, wikiIdentifier *string, path *string, recursionLevel *VersionControlRecursionType, versionDescriptor *GitVersionDescriptor, includeContent *bool) (io.ReadCloser, error) {
+func (client Client) GetPageText(ctx context.Context, args GetPageTextArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if wikiIdentifier == nil || *wikiIdentifier == "" {
+    routeValues["project"] = *args.Project
+    if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"} 
     }
-    routeValues["wikiIdentifier"] = *wikiIdentifier
+    routeValues["wikiIdentifier"] = *args.WikiIdentifier
 
     queryParams := url.Values{}
-    if path != nil {
-        queryParams.Add("path", *path)
+    if args.Path != nil {
+        queryParams.Add("path", *args.Path)
     }
-    if recursionLevel != nil {
-        queryParams.Add("recursionLevel", string(*recursionLevel))
+    if args.RecursionLevel != nil {
+        queryParams.Add("recursionLevel", string(*args.RecursionLevel))
     }
-    if versionDescriptor != nil {
-        if versionDescriptor.VersionType != nil {
-            queryParams.Add("versionDescriptor.versionType", string(*versionDescriptor.VersionType))
+    if args.VersionDescriptor != nil {
+        if args.VersionDescriptor.VersionType != nil {
+            queryParams.Add("versionDescriptor.versionType", string(*args.VersionDescriptor.VersionType))
         }
-        if versionDescriptor.Version != nil {
-            queryParams.Add("versionDescriptor.version", *versionDescriptor.Version)
+        if args.VersionDescriptor.Version != nil {
+            queryParams.Add("versionDescriptor.version", *args.VersionDescriptor.Version)
         }
-        if versionDescriptor.VersionOptions != nil {
-            queryParams.Add("versionDescriptor.versionOptions", string(*versionDescriptor.VersionOptions))
+        if args.VersionDescriptor.VersionOptions != nil {
+            queryParams.Add("versionDescriptor.versionOptions", string(*args.VersionDescriptor.VersionOptions))
         }
     }
-    if includeContent != nil {
-        queryParams.Add("includeContent", strconv.FormatBool(*includeContent))
+    if args.IncludeContent != nil {
+        queryParams.Add("includeContent", strconv.FormatBool(*args.IncludeContent))
     }
     locationId, _ := uuid.Parse("25d3fbc7-fe3d-46cb-b5a5-0b6f79caf27b")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "text/plain", nil)
@@ -617,45 +693,54 @@ func (client Client) GetPageText(ctx context.Context, project *string, wikiIdent
     return resp.Body, err
 }
 
+// Arguments for the GetPageText function
+type GetPageTextArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Wiki Id or name.
+    WikiIdentifier *string
+    // (optional) Wiki page path.
+    Path *string
+    // (optional) Recursion level for subpages retrieval. Defaults to `None` (Optional).
+    RecursionLevel *VersionControlRecursionType
+    // (optional) GitVersionDescriptor for the page. Defaults to the default branch (Optional).
+    VersionDescriptor *GitVersionDescriptor
+    // (optional) True to include the content of the page in the response for Json content type. Defaults to false (Optional)
+    IncludeContent *bool
+}
+
 // Gets metadata or content of the wiki page for the provided path. Content negotiation is done based on the `Accept` header sent in the request.
-// ctx
-// project (required): Project ID or project name
-// wikiIdentifier (required): Wiki Id or name.
-// path (optional): Wiki page path.
-// recursionLevel (optional): Recursion level for subpages retrieval. Defaults to `None` (Optional).
-// versionDescriptor (optional): GitVersionDescriptor for the page. Defaults to the default branch (Optional).
-// includeContent (optional): True to include the content of the page in the response for Json content type. Defaults to false (Optional)
-func (client Client) GetPageZip(ctx context.Context, project *string, wikiIdentifier *string, path *string, recursionLevel *VersionControlRecursionType, versionDescriptor *GitVersionDescriptor, includeContent *bool) (io.ReadCloser, error) {
+func (client Client) GetPageZip(ctx context.Context, args GetPageZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if wikiIdentifier == nil || *wikiIdentifier == "" {
+    routeValues["project"] = *args.Project
+    if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"} 
     }
-    routeValues["wikiIdentifier"] = *wikiIdentifier
+    routeValues["wikiIdentifier"] = *args.WikiIdentifier
 
     queryParams := url.Values{}
-    if path != nil {
-        queryParams.Add("path", *path)
+    if args.Path != nil {
+        queryParams.Add("path", *args.Path)
     }
-    if recursionLevel != nil {
-        queryParams.Add("recursionLevel", string(*recursionLevel))
+    if args.RecursionLevel != nil {
+        queryParams.Add("recursionLevel", string(*args.RecursionLevel))
     }
-    if versionDescriptor != nil {
-        if versionDescriptor.VersionType != nil {
-            queryParams.Add("versionDescriptor.versionType", string(*versionDescriptor.VersionType))
+    if args.VersionDescriptor != nil {
+        if args.VersionDescriptor.VersionType != nil {
+            queryParams.Add("versionDescriptor.versionType", string(*args.VersionDescriptor.VersionType))
         }
-        if versionDescriptor.Version != nil {
-            queryParams.Add("versionDescriptor.version", *versionDescriptor.Version)
+        if args.VersionDescriptor.Version != nil {
+            queryParams.Add("versionDescriptor.version", *args.VersionDescriptor.Version)
         }
-        if versionDescriptor.VersionOptions != nil {
-            queryParams.Add("versionDescriptor.versionOptions", string(*versionDescriptor.VersionOptions))
+        if args.VersionDescriptor.VersionOptions != nil {
+            queryParams.Add("versionDescriptor.versionOptions", string(*args.VersionDescriptor.VersionOptions))
         }
     }
-    if includeContent != nil {
-        queryParams.Add("includeContent", strconv.FormatBool(*includeContent))
+    if args.IncludeContent != nil {
+        queryParams.Add("includeContent", strconv.FormatBool(*args.IncludeContent))
     }
     locationId, _ := uuid.Parse("25d3fbc7-fe3d-46cb-b5a5-0b6f79caf27b")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/zip", nil)
@@ -666,20 +751,33 @@ func (client Client) GetPageZip(ctx context.Context, project *string, wikiIdenti
     return resp.Body, err
 }
 
+// Arguments for the GetPageZip function
+type GetPageZipArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Wiki Id or name.
+    WikiIdentifier *string
+    // (optional) Wiki page path.
+    Path *string
+    // (optional) Recursion level for subpages retrieval. Defaults to `None` (Optional).
+    RecursionLevel *VersionControlRecursionType
+    // (optional) GitVersionDescriptor for the page. Defaults to the default branch (Optional).
+    VersionDescriptor *GitVersionDescriptor
+    // (optional) True to include the content of the page in the response for Json content type. Defaults to false (Optional)
+    IncludeContent *bool
+}
+
 // Creates the wiki resource.
-// ctx
-// wikiCreateParams (required): Parameters for the wiki creation.
-// project (optional): Project ID or project name
-func (client Client) CreateWiki(ctx context.Context, wikiCreateParams *WikiCreateParametersV2, project *string) (*WikiV2, error) {
-    if wikiCreateParams == nil {
+func (client Client) CreateWiki(ctx context.Context, args CreateWikiArgs) (*WikiV2, error) {
+    if args.WikiCreateParams == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "wikiCreateParams"}
     }
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
 
-    body, marshalErr := json.Marshal(*wikiCreateParams)
+    body, marshalErr := json.Marshal(*args.WikiCreateParams)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -694,19 +792,24 @@ func (client Client) CreateWiki(ctx context.Context, wikiCreateParams *WikiCreat
     return &responseValue, err
 }
 
+// Arguments for the CreateWiki function
+type CreateWikiArgs struct {
+    // (required) Parameters for the wiki creation.
+    WikiCreateParams *WikiCreateParametersV2
+    // (optional) Project ID or project name
+    Project *string
+}
+
 // Deletes the wiki corresponding to the wiki name or Id provided.
-// ctx
-// wikiIdentifier (required): Wiki name or Id.
-// project (optional): Project ID or project name
-func (client Client) DeleteWiki(ctx context.Context, wikiIdentifier *string, project *string) (*WikiV2, error) {
+func (client Client) DeleteWiki(ctx context.Context, args DeleteWikiArgs) (*WikiV2, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
-    if wikiIdentifier == nil || *wikiIdentifier == "" {
+    if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"} 
     }
-    routeValues["wikiIdentifier"] = *wikiIdentifier
+    routeValues["wikiIdentifier"] = *args.WikiIdentifier
 
     locationId, _ := uuid.Parse("288d122c-dbd4-451d-aa5f-7dbbba070728")
     resp, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -719,13 +822,19 @@ func (client Client) DeleteWiki(ctx context.Context, wikiIdentifier *string, pro
     return &responseValue, err
 }
 
+// Arguments for the DeleteWiki function
+type DeleteWikiArgs struct {
+    // (required) Wiki name or Id.
+    WikiIdentifier *string
+    // (optional) Project ID or project name
+    Project *string
+}
+
 // Gets all wikis in a project or collection.
-// ctx
-// project (optional): Project ID or project name
-func (client Client) GetAllWikis(ctx context.Context, project *string) (*[]WikiV2, error) {
+func (client Client) GetAllWikis(ctx context.Context, args GetAllWikisArgs) (*[]WikiV2, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
 
     locationId, _ := uuid.Parse("288d122c-dbd4-451d-aa5f-7dbbba070728")
@@ -739,19 +848,22 @@ func (client Client) GetAllWikis(ctx context.Context, project *string) (*[]WikiV
     return &responseValue, err
 }
 
+// Arguments for the GetAllWikis function
+type GetAllWikisArgs struct {
+    // (optional) Project ID or project name
+    Project *string
+}
+
 // Gets the wiki corresponding to the wiki name or Id provided.
-// ctx
-// wikiIdentifier (required): Wiki name or id.
-// project (optional): Project ID or project name
-func (client Client) GetWiki(ctx context.Context, wikiIdentifier *string, project *string) (*WikiV2, error) {
+func (client Client) GetWiki(ctx context.Context, args GetWikiArgs) (*WikiV2, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
-    if wikiIdentifier == nil || *wikiIdentifier == "" {
+    if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"} 
     }
-    routeValues["wikiIdentifier"] = *wikiIdentifier
+    routeValues["wikiIdentifier"] = *args.WikiIdentifier
 
     locationId, _ := uuid.Parse("288d122c-dbd4-451d-aa5f-7dbbba070728")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -764,25 +876,29 @@ func (client Client) GetWiki(ctx context.Context, wikiIdentifier *string, projec
     return &responseValue, err
 }
 
+// Arguments for the GetWiki function
+type GetWikiArgs struct {
+    // (required) Wiki name or id.
+    WikiIdentifier *string
+    // (optional) Project ID or project name
+    Project *string
+}
+
 // Updates the wiki corresponding to the wiki Id or name provided using the update parameters.
-// ctx
-// updateParameters (required): Update parameters.
-// wikiIdentifier (required): Wiki name or Id.
-// project (optional): Project ID or project name
-func (client Client) UpdateWiki(ctx context.Context, updateParameters *WikiUpdateParameters, wikiIdentifier *string, project *string) (*WikiV2, error) {
-    if updateParameters == nil {
+func (client Client) UpdateWiki(ctx context.Context, args UpdateWikiArgs) (*WikiV2, error) {
+    if args.UpdateParameters == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "updateParameters"}
     }
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
-    if wikiIdentifier == nil || *wikiIdentifier == "" {
+    if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"} 
     }
-    routeValues["wikiIdentifier"] = *wikiIdentifier
+    routeValues["wikiIdentifier"] = *args.WikiIdentifier
 
-    body, marshalErr := json.Marshal(*updateParameters)
+    body, marshalErr := json.Marshal(*args.UpdateParameters)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -795,5 +911,15 @@ func (client Client) UpdateWiki(ctx context.Context, updateParameters *WikiUpdat
     var responseValue WikiV2
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the UpdateWiki function
+type UpdateWikiArgs struct {
+    // (required) Update parameters.
+    UpdateParameters *WikiUpdateParameters
+    // (required) Wiki name or Id.
+    WikiIdentifier *string
+    // (optional) Project ID or project name
+    Project *string
 }
 

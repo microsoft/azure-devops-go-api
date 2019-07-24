@@ -35,14 +35,12 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 }
 
 // [Preview API]
-// ctx
-// project (required): Project ID or project name
-func (client Client) GetProjectLanguageAnalytics(ctx context.Context, project *string) (*ProjectLanguageAnalytics, error) {
+func (client Client) GetProjectLanguageAnalytics(ctx context.Context, args GetProjectLanguageAnalyticsArgs) (*ProjectLanguageAnalytics, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     locationId, _ := uuid.Parse("5b02a779-1867-433f-90b7-d23ed5e33e57")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -55,27 +53,29 @@ func (client Client) GetProjectLanguageAnalytics(ctx context.Context, project *s
     return &responseValue, err
 }
 
+// Arguments for the GetProjectLanguageAnalytics function
+type GetProjectLanguageAnalyticsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+}
+
 // [Preview API]
-// ctx
-// project (required): Project ID or project name
-// fromDate (required)
-// aggregationType (required)
-func (client Client) GetProjectActivityMetrics(ctx context.Context, project *string, fromDate *time.Time, aggregationType *AggregationType) (*ProjectActivityMetrics, error) {
+func (client Client) GetProjectActivityMetrics(ctx context.Context, args GetProjectActivityMetricsArgs) (*ProjectActivityMetrics, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if fromDate == nil {
+    if args.FromDate == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "fromDate"}
     }
-    queryParams.Add("fromDate", (*fromDate).String())
-    if aggregationType == nil {
+    queryParams.Add("fromDate", (*args.FromDate).String())
+    if args.AggregationType == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "aggregationType"}
     }
-    queryParams.Add("aggregationType", string(*aggregationType))
+    queryParams.Add("aggregationType", string(*args.AggregationType))
     locationId, _ := uuid.Parse("e40ae584-9ea6-4f06-a7c7-6284651b466b")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -87,37 +87,41 @@ func (client Client) GetProjectActivityMetrics(ctx context.Context, project *str
     return &responseValue, err
 }
 
+// Arguments for the GetProjectActivityMetrics function
+type GetProjectActivityMetricsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required)
+    FromDate *time.Time
+    // (required)
+    AggregationType *AggregationType
+}
+
 // [Preview API] Retrieves git activity metrics for repositories matching a specified criteria.
-// ctx
-// project (required): Project ID or project name
-// fromDate (required): Date from which, the trends are to be fetched.
-// aggregationType (required): Bucket size on which, trends are to be aggregated.
-// skip (required): The number of repositories to ignore.
-// top (required): The number of repositories for which activity metrics are to be retrieved.
-func (client Client) GetGitRepositoriesActivityMetrics(ctx context.Context, project *string, fromDate *time.Time, aggregationType *AggregationType, skip *int, top *int) (*[]RepositoryActivityMetrics, error) {
+func (client Client) GetGitRepositoriesActivityMetrics(ctx context.Context, args GetGitRepositoriesActivityMetricsArgs) (*[]RepositoryActivityMetrics, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if fromDate == nil {
+    if args.FromDate == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "fromDate"}
     }
-    queryParams.Add("fromDate", (*fromDate).String())
-    if aggregationType == nil {
+    queryParams.Add("fromDate", (*args.FromDate).String())
+    if args.AggregationType == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "aggregationType"}
     }
-    queryParams.Add("aggregationType", string(*aggregationType))
-    if skip == nil {
+    queryParams.Add("aggregationType", string(*args.AggregationType))
+    if args.Skip == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "skip"}
     }
-    queryParams.Add("$skip", strconv.Itoa(*skip))
-    if top == nil {
+    queryParams.Add("$skip", strconv.Itoa(*args.Skip))
+    if args.Top == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "top"}
     }
-    queryParams.Add("$top", strconv.Itoa(*top))
+    queryParams.Add("$top", strconv.Itoa(*args.Top))
     locationId, _ := uuid.Parse("df7fbbca-630a-40e3-8aa3-7a3faf66947e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -129,32 +133,41 @@ func (client Client) GetGitRepositoriesActivityMetrics(ctx context.Context, proj
     return &responseValue, err
 }
 
+// Arguments for the GetGitRepositoriesActivityMetrics function
+type GetGitRepositoriesActivityMetricsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Date from which, the trends are to be fetched.
+    FromDate *time.Time
+    // (required) Bucket size on which, trends are to be aggregated.
+    AggregationType *AggregationType
+    // (required) The number of repositories to ignore.
+    Skip *int
+    // (required) The number of repositories for which activity metrics are to be retrieved.
+    Top *int
+}
+
 // [Preview API]
-// ctx
-// project (required): Project ID or project name
-// repositoryId (required)
-// fromDate (required)
-// aggregationType (required)
-func (client Client) GetRepositoryActivityMetrics(ctx context.Context, project *string, repositoryId *uuid.UUID, fromDate *time.Time, aggregationType *AggregationType) (*RepositoryActivityMetrics, error) {
+func (client Client) GetRepositoryActivityMetrics(ctx context.Context, args GetRepositoryActivityMetricsArgs) (*RepositoryActivityMetrics, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if repositoryId == nil {
+    routeValues["project"] = *args.Project
+    if args.RepositoryId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "repositoryId"} 
     }
-    routeValues["repositoryId"] = (*repositoryId).String()
+    routeValues["repositoryId"] = (*args.RepositoryId).String()
 
     queryParams := url.Values{}
-    if fromDate == nil {
+    if args.FromDate == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "fromDate"}
     }
-    queryParams.Add("fromDate", (*fromDate).String())
-    if aggregationType == nil {
+    queryParams.Add("fromDate", (*args.FromDate).String())
+    if args.AggregationType == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "aggregationType"}
     }
-    queryParams.Add("aggregationType", string(*aggregationType))
+    queryParams.Add("aggregationType", string(*args.AggregationType))
     locationId, _ := uuid.Parse("df7fbbca-630a-40e3-8aa3-7a3faf66947e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -164,5 +177,17 @@ func (client Client) GetRepositoryActivityMetrics(ctx context.Context, project *
     var responseValue RepositoryActivityMetrics
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the GetRepositoryActivityMetrics function
+type GetRepositoryActivityMetricsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required)
+    RepositoryId *uuid.UUID
+    // (required)
+    FromDate *time.Time
+    // (required)
+    AggregationType *AggregationType
 }
 

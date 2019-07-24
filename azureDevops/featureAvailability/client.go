@@ -31,12 +31,10 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
 }
 
 // [Preview API] Retrieve a listing of all feature flags and their current states for a user
-// ctx
-// userEmail (optional): The email of the user to check
-func (client Client) GetAllFeatureFlags(ctx context.Context, userEmail *string) (*[]FeatureFlag, error) {
+func (client Client) GetAllFeatureFlags(ctx context.Context, args GetAllFeatureFlagsArgs) (*[]FeatureFlag, error) {
     queryParams := url.Values{}
-    if userEmail != nil {
-        queryParams.Add("userEmail", *userEmail)
+    if args.UserEmail != nil {
+        queryParams.Add("userEmail", *args.UserEmail)
     }
     locationId, _ := uuid.Parse("3e2b80f8-9e6f-441e-8393-005610692d9c")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
@@ -49,20 +47,23 @@ func (client Client) GetAllFeatureFlags(ctx context.Context, userEmail *string) 
     return &responseValue, err
 }
 
+// Arguments for the GetAllFeatureFlags function
+type GetAllFeatureFlagsArgs struct {
+    // (optional) The email of the user to check
+    UserEmail *string
+}
+
 // [Preview API] Retrieve information on a single feature flag and its current states
-// ctx
-// name (required): The name of the feature to retrieve
-// checkFeatureExists (optional): Check if feature exists
-func (client Client) GetFeatureFlagByName(ctx context.Context, name *string, checkFeatureExists *bool) (*FeatureFlag, error) {
+func (client Client) GetFeatureFlagByName(ctx context.Context, args GetFeatureFlagByNameArgs) (*FeatureFlag, error) {
     routeValues := make(map[string]string)
-    if name == nil || *name == "" {
+    if args.Name == nil || *args.Name == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
-    routeValues["name"] = *name
+    routeValues["name"] = *args.Name
 
     queryParams := url.Values{}
-    if checkFeatureExists != nil {
-        queryParams.Add("checkFeatureExists", strconv.FormatBool(*checkFeatureExists))
+    if args.CheckFeatureExists != nil {
+        queryParams.Add("checkFeatureExists", strconv.FormatBool(*args.CheckFeatureExists))
     }
     locationId, _ := uuid.Parse("3e2b80f8-9e6f-441e-8393-005610692d9c")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -75,25 +76,29 @@ func (client Client) GetFeatureFlagByName(ctx context.Context, name *string, che
     return &responseValue, err
 }
 
+// Arguments for the GetFeatureFlagByName function
+type GetFeatureFlagByNameArgs struct {
+    // (required) The name of the feature to retrieve
+    Name *string
+    // (optional) Check if feature exists
+    CheckFeatureExists *bool
+}
+
 // [Preview API] Retrieve information on a single feature flag and its current states for a user
-// ctx
-// name (required): The name of the feature to retrieve
-// userEmail (required): The email of the user to check
-// checkFeatureExists (optional): Check if feature exists
-func (client Client) GetFeatureFlagByNameAndUserEmail(ctx context.Context, name *string, userEmail *string, checkFeatureExists *bool) (*FeatureFlag, error) {
+func (client Client) GetFeatureFlagByNameAndUserEmail(ctx context.Context, args GetFeatureFlagByNameAndUserEmailArgs) (*FeatureFlag, error) {
     routeValues := make(map[string]string)
-    if name == nil || *name == "" {
+    if args.Name == nil || *args.Name == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
-    routeValues["name"] = *name
+    routeValues["name"] = *args.Name
 
     queryParams := url.Values{}
-    if userEmail == nil {
+    if args.UserEmail == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "userEmail"}
     }
-    queryParams.Add("userEmail", *userEmail)
-    if checkFeatureExists != nil {
-        queryParams.Add("checkFeatureExists", strconv.FormatBool(*checkFeatureExists))
+    queryParams.Add("userEmail", *args.UserEmail)
+    if args.CheckFeatureExists != nil {
+        queryParams.Add("checkFeatureExists", strconv.FormatBool(*args.CheckFeatureExists))
     }
     locationId, _ := uuid.Parse("3e2b80f8-9e6f-441e-8393-005610692d9c")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -106,25 +111,31 @@ func (client Client) GetFeatureFlagByNameAndUserEmail(ctx context.Context, name 
     return &responseValue, err
 }
 
+// Arguments for the GetFeatureFlagByNameAndUserEmail function
+type GetFeatureFlagByNameAndUserEmailArgs struct {
+    // (required) The name of the feature to retrieve
+    Name *string
+    // (required) The email of the user to check
+    UserEmail *string
+    // (optional) Check if feature exists
+    CheckFeatureExists *bool
+}
+
 // [Preview API] Retrieve information on a single feature flag and its current states for a user
-// ctx
-// name (required): The name of the feature to retrieve
-// userId (required): The id of the user to check
-// checkFeatureExists (optional): Check if feature exists
-func (client Client) GetFeatureFlagByNameAndUserId(ctx context.Context, name *string, userId *uuid.UUID, checkFeatureExists *bool) (*FeatureFlag, error) {
+func (client Client) GetFeatureFlagByNameAndUserId(ctx context.Context, args GetFeatureFlagByNameAndUserIdArgs) (*FeatureFlag, error) {
     routeValues := make(map[string]string)
-    if name == nil || *name == "" {
+    if args.Name == nil || *args.Name == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
-    routeValues["name"] = *name
+    routeValues["name"] = *args.Name
 
     queryParams := url.Values{}
-    if userId == nil {
+    if args.UserId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "userId"}
     }
-    queryParams.Add("userId", (*userId).String())
-    if checkFeatureExists != nil {
-        queryParams.Add("checkFeatureExists", strconv.FormatBool(*checkFeatureExists))
+    queryParams.Add("userId", (*args.UserId).String())
+    if args.CheckFeatureExists != nil {
+        queryParams.Add("checkFeatureExists", strconv.FormatBool(*args.CheckFeatureExists))
     }
     locationId, _ := uuid.Parse("3e2b80f8-9e6f-441e-8393-005610692d9c")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -135,36 +146,40 @@ func (client Client) GetFeatureFlagByNameAndUserId(ctx context.Context, name *st
     var responseValue FeatureFlag
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the GetFeatureFlagByNameAndUserId function
+type GetFeatureFlagByNameAndUserIdArgs struct {
+    // (required) The name of the feature to retrieve
+    Name *string
+    // (required) The id of the user to check
+    UserId *uuid.UUID
+    // (optional) Check if feature exists
+    CheckFeatureExists *bool
 }
 
 // [Preview API] Change the state of an individual feature flag for a name
-// ctx
-// state (required): State that should be set
-// name (required): The name of the feature to change
-// userEmail (optional)
-// checkFeatureExists (optional): Checks if the feature exists before setting the state
-// setAtApplicationLevelAlso (optional)
-func (client Client) UpdateFeatureFlag(ctx context.Context, state *FeatureFlagPatch, name *string, userEmail *string, checkFeatureExists *bool, setAtApplicationLevelAlso *bool) (*FeatureFlag, error) {
-    if state == nil {
+func (client Client) UpdateFeatureFlag(ctx context.Context, args UpdateFeatureFlagArgs) (*FeatureFlag, error) {
+    if args.State == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "state"}
     }
     routeValues := make(map[string]string)
-    if name == nil || *name == "" {
+    if args.Name == nil || *args.Name == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
-    routeValues["name"] = *name
+    routeValues["name"] = *args.Name
 
     queryParams := url.Values{}
-    if userEmail != nil {
-        queryParams.Add("userEmail", *userEmail)
+    if args.UserEmail != nil {
+        queryParams.Add("userEmail", *args.UserEmail)
     }
-    if checkFeatureExists != nil {
-        queryParams.Add("checkFeatureExists", strconv.FormatBool(*checkFeatureExists))
+    if args.CheckFeatureExists != nil {
+        queryParams.Add("checkFeatureExists", strconv.FormatBool(*args.CheckFeatureExists))
     }
-    if setAtApplicationLevelAlso != nil {
-        queryParams.Add("setAtApplicationLevelAlso", strconv.FormatBool(*setAtApplicationLevelAlso))
+    if args.SetAtApplicationLevelAlso != nil {
+        queryParams.Add("setAtApplicationLevelAlso", strconv.FormatBool(*args.SetAtApplicationLevelAlso))
     }
-    body, marshalErr := json.Marshal(*state)
+    body, marshalErr := json.Marshal(*args.State)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -177,5 +192,19 @@ func (client Client) UpdateFeatureFlag(ctx context.Context, state *FeatureFlagPa
     var responseValue FeatureFlag
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the UpdateFeatureFlag function
+type UpdateFeatureFlagArgs struct {
+    // (required) State that should be set
+    State *FeatureFlagPatch
+    // (required) The name of the feature to change
+    Name *string
+    // (optional)
+    UserEmail *string
+    // (optional) Checks if the feature exists before setting the state
+    CheckFeatureExists *bool
+    // (optional)
+    SetAtApplicationLevelAlso *bool
 }
 

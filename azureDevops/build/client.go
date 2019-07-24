@@ -39,25 +39,21 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 }
 
 // Associates an artifact with a build.
-// ctx
-// artifact (required): The artifact.
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-func (client Client) CreateArtifact(ctx context.Context, artifact *BuildArtifact, project *string, buildId *int) (*BuildArtifact, error) {
-    if artifact == nil {
+func (client Client) CreateArtifact(ctx context.Context, args CreateArtifactArgs) (*BuildArtifact, error) {
+    if args.Artifact == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "artifact"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
-    body, marshalErr := json.Marshal(*artifact)
+    body, marshalErr := json.Marshal(*args.Artifact)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -72,27 +68,33 @@ func (client Client) CreateArtifact(ctx context.Context, artifact *BuildArtifact
     return &responseValue, err
 }
 
+// Arguments for the CreateArtifact function
+type CreateArtifactArgs struct {
+    // (required) The artifact.
+    Artifact *BuildArtifact
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+}
+
 // Gets a specific artifact for a build.
-// ctx
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-// artifactName (required): The name of the artifact.
-func (client Client) GetArtifact(ctx context.Context, project *string, buildId *int, artifactName *string) (*BuildArtifact, error) {
+func (client Client) GetArtifact(ctx context.Context, args GetArtifactArgs) (*BuildArtifact, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
     queryParams := url.Values{}
-    if artifactName == nil {
+    if args.ArtifactName == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "artifactName"}
     }
-    queryParams.Add("artifactName", *artifactName)
+    queryParams.Add("artifactName", *args.ArtifactName)
     locationId, _ := uuid.Parse("1db06c96-014e-44e1-ac91-90b2d4b3e984")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -104,27 +106,33 @@ func (client Client) GetArtifact(ctx context.Context, project *string, buildId *
     return &responseValue, err
 }
 
+// Arguments for the GetArtifact function
+type GetArtifactArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+    // (required) The name of the artifact.
+    ArtifactName *string
+}
+
 // Gets a specific artifact for a build.
-// ctx
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-// artifactName (required): The name of the artifact.
-func (client Client) GetArtifactContentZip(ctx context.Context, project *string, buildId *int, artifactName *string) (io.ReadCloser, error) {
+func (client Client) GetArtifactContentZip(ctx context.Context, args GetArtifactContentZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
     queryParams := url.Values{}
-    if artifactName == nil {
+    if args.ArtifactName == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "artifactName"}
     }
-    queryParams.Add("artifactName", *artifactName)
+    queryParams.Add("artifactName", *args.ArtifactName)
     locationId, _ := uuid.Parse("1db06c96-014e-44e1-ac91-90b2d4b3e984")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/zip", nil)
     if err != nil {
@@ -134,20 +142,27 @@ func (client Client) GetArtifactContentZip(ctx context.Context, project *string,
     return resp.Body, err
 }
 
+// Arguments for the GetArtifactContentZip function
+type GetArtifactContentZipArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+    // (required) The name of the artifact.
+    ArtifactName *string
+}
+
 // Gets all artifacts for a build.
-// ctx
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-func (client Client) GetArtifacts(ctx context.Context, project *string, buildId *int) (*[]BuildArtifact, error) {
+func (client Client) GetArtifacts(ctx context.Context, args GetArtifactsArgs) (*[]BuildArtifact, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
     locationId, _ := uuid.Parse("1db06c96-014e-44e1-ac91-90b2d4b3e984")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -160,37 +175,39 @@ func (client Client) GetArtifacts(ctx context.Context, project *string, buildId 
     return &responseValue, err
 }
 
+// Arguments for the GetArtifacts function
+type GetArtifactsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+}
+
 // Gets a file from the build.
-// ctx
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-// artifactName (required): The name of the artifact.
-// fileId (required): The primary key for the file.
-// fileName (required): The name that the file will be set to.
-func (client Client) GetFile(ctx context.Context, project *string, buildId *int, artifactName *string, fileId *string, fileName *string) (io.ReadCloser, error) {
+func (client Client) GetFile(ctx context.Context, args GetFileArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
     queryParams := url.Values{}
-    if artifactName == nil {
+    if args.ArtifactName == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "artifactName"}
     }
-    queryParams.Add("artifactName", *artifactName)
-    if fileId == nil {
+    queryParams.Add("artifactName", *args.ArtifactName)
+    if args.FileId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "fileId"}
     }
-    queryParams.Add("fileId", *fileId)
-    if fileName == nil {
+    queryParams.Add("fileId", *args.FileId)
+    if args.FileName == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "fileName"}
     }
-    queryParams.Add("fileName", *fileName)
+    queryParams.Add("fileName", *args.FileName)
     locationId, _ := uuid.Parse("1db06c96-014e-44e1-ac91-90b2d4b3e984")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/octet-stream", nil)
     if err != nil {
@@ -200,25 +217,35 @@ func (client Client) GetFile(ctx context.Context, project *string, buildId *int,
     return resp.Body, err
 }
 
+// Arguments for the GetFile function
+type GetFileArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+    // (required) The name of the artifact.
+    ArtifactName *string
+    // (required) The primary key for the file.
+    FileId *string
+    // (required) The name that the file will be set to.
+    FileName *string
+}
+
 // [Preview API] Gets the list of attachments of a specific type that are associated with a build.
-// ctx
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-// type_ (required): The type of attachment.
-func (client Client) GetAttachments(ctx context.Context, project *string, buildId *int, type_ *string) (*[]Attachment, error) {
+func (client Client) GetAttachments(ctx context.Context, args GetAttachmentsArgs) (*[]Attachment, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
-    if type_ == nil || *type_ == "" {
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
+    if args.Type_ == nil || *args.Type_ == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
-    routeValues["type_"] = *type_
+    routeValues["type_"] = *args.Type_
 
     locationId, _ := uuid.Parse("f2192269-89fa-4f94-baf6-8fb128c55159")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/json", nil)
@@ -231,40 +258,43 @@ func (client Client) GetAttachments(ctx context.Context, project *string, buildI
     return &responseValue, err
 }
 
+// Arguments for the GetAttachments function
+type GetAttachmentsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+    // (required) The type of attachment.
+    Type_ *string
+}
+
 // [Preview API] Gets a specific attachment.
-// ctx
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-// timelineId (required): The ID of the timeline.
-// recordId (required): The ID of the timeline record.
-// type_ (required): The type of the attachment.
-// name (required): The name of the attachment.
-func (client Client) GetAttachment(ctx context.Context, project *string, buildId *int, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (io.ReadCloser, error) {
+func (client Client) GetAttachment(ctx context.Context, args GetAttachmentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
-    if timelineId == nil {
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
+    if args.TimelineId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
     }
-    routeValues["timelineId"] = (*timelineId).String()
-    if recordId == nil {
+    routeValues["timelineId"] = (*args.TimelineId).String()
+    if args.RecordId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "recordId"} 
     }
-    routeValues["recordId"] = (*recordId).String()
-    if type_ == nil || *type_ == "" {
+    routeValues["recordId"] = (*args.RecordId).String()
+    if args.Type_ == nil || *args.Type_ == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
-    routeValues["type_"] = *type_
-    if name == nil || *name == "" {
+    routeValues["type_"] = *args.Type_
+    if args.Name == nil || *args.Name == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
-    routeValues["name"] = *name
+    routeValues["name"] = *args.Name
 
     locationId, _ := uuid.Parse("af5122d3-3438-485e-a25a-2dbbfde84ee6")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/octet-stream", nil)
@@ -275,21 +305,34 @@ func (client Client) GetAttachment(ctx context.Context, project *string, buildId
     return resp.Body, err
 }
 
+// Arguments for the GetAttachment function
+type GetAttachmentArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+    // (required) The ID of the timeline.
+    TimelineId *uuid.UUID
+    // (required) The ID of the timeline record.
+    RecordId *uuid.UUID
+    // (required) The type of the attachment.
+    Type_ *string
+    // (required) The name of the attachment.
+    Name *string
+}
+
 // [Preview API]
-// ctx
-// resources (required)
-// project (required): Project ID or project name
-func (client Client) AuthorizeProjectResources(ctx context.Context, resources *[]DefinitionResourceReference, project *string) (*[]DefinitionResourceReference, error) {
-    if resources == nil {
+func (client Client) AuthorizeProjectResources(ctx context.Context, args AuthorizeProjectResourcesArgs) (*[]DefinitionResourceReference, error) {
+    if args.Resources == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "resources"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
-    body, marshalErr := json.Marshal(*resources)
+    body, marshalErr := json.Marshal(*args.Resources)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -304,24 +347,28 @@ func (client Client) AuthorizeProjectResources(ctx context.Context, resources *[
     return &responseValue, err
 }
 
+// Arguments for the AuthorizeProjectResources function
+type AuthorizeProjectResourcesArgs struct {
+    // (required)
+    Resources *[]DefinitionResourceReference
+    // (required) Project ID or project name
+    Project *string
+}
+
 // [Preview API]
-// ctx
-// project (required): Project ID or project name
-// type_ (optional)
-// id (optional)
-func (client Client) GetProjectResources(ctx context.Context, project *string, type_ *string, id *string) (*[]DefinitionResourceReference, error) {
+func (client Client) GetProjectResources(ctx context.Context, args GetProjectResourcesArgs) (*[]DefinitionResourceReference, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if type_ != nil {
-        queryParams.Add("type_", *type_)
+    if args.Type_ != nil {
+        queryParams.Add("type_", *args.Type_)
     }
-    if id != nil {
-        queryParams.Add("id", *id)
+    if args.Id != nil {
+        queryParams.Add("id", *args.Id)
     }
     locationId, _ := uuid.Parse("398c85bc-81aa-4822-947c-a194a05f0fef")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -334,33 +381,37 @@ func (client Client) GetProjectResources(ctx context.Context, project *string, t
     return &responseValue, err
 }
 
+// Arguments for the GetProjectResources function
+type GetProjectResourcesArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (optional)
+    Type_ *string
+    // (optional)
+    Id *string
+}
+
 // [Preview API] Gets a list of branches for the given source code repository.
-// ctx
-// project (required): Project ID or project name
-// providerName (required): The name of the source provider.
-// serviceEndpointId (optional): If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TFVC or TFGit.
-// repository (optional): The vendor-specific identifier or the name of the repository to get branches. Can only be omitted for providers that do not support multiple repositories.
-// branchName (optional): If supplied, the name of the branch to check for specifically.
-func (client Client) ListBranches(ctx context.Context, project *string, providerName *string, serviceEndpointId *uuid.UUID, repository *string, branchName *string) (*[]string, error) {
+func (client Client) ListBranches(ctx context.Context, args ListBranchesArgs) (*[]string, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if providerName == nil || *providerName == "" {
+    routeValues["project"] = *args.Project
+    if args.ProviderName == nil || *args.ProviderName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "providerName"} 
     }
-    routeValues["providerName"] = *providerName
+    routeValues["providerName"] = *args.ProviderName
 
     queryParams := url.Values{}
-    if serviceEndpointId != nil {
-        queryParams.Add("serviceEndpointId", (*serviceEndpointId).String())
+    if args.ServiceEndpointId != nil {
+        queryParams.Add("serviceEndpointId", (*args.ServiceEndpointId).String())
     }
-    if repository != nil {
-        queryParams.Add("repository", *repository)
+    if args.Repository != nil {
+        queryParams.Add("repository", *args.Repository)
     }
-    if branchName != nil {
-        queryParams.Add("branchName", *branchName)
+    if args.BranchName != nil {
+        queryParams.Add("branchName", *args.BranchName)
     }
     locationId, _ := uuid.Parse("e05d4403-9b81-4244-8763-20fde28d1976")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -373,29 +424,38 @@ func (client Client) ListBranches(ctx context.Context, project *string, provider
     return &responseValue, err
 }
 
+// Arguments for the ListBranches function
+type ListBranchesArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The name of the source provider.
+    ProviderName *string
+    // (optional) If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TFVC or TFGit.
+    ServiceEndpointId *uuid.UUID
+    // (optional) The vendor-specific identifier or the name of the repository to get branches. Can only be omitted for providers that do not support multiple repositories.
+    Repository *string
+    // (optional) If supplied, the name of the branch to check for specifically.
+    BranchName *string
+}
+
 // [Preview API] Gets a badge that indicates the status of the most recent build for the specified branch.
-// ctx
-// project (required): Project ID or project name
-// repoType (required): The repository type.
-// repoId (optional): The repository ID.
-// branchName (optional): The branch name.
-func (client Client) GetBuildBadge(ctx context.Context, project *string, repoType *string, repoId *string, branchName *string) (*BuildBadge, error) {
+func (client Client) GetBuildBadge(ctx context.Context, args GetBuildBadgeArgs) (*BuildBadge, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if repoType == nil || *repoType == "" {
+    routeValues["project"] = *args.Project
+    if args.RepoType == nil || *args.RepoType == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repoType"} 
     }
-    routeValues["repoType"] = *repoType
+    routeValues["repoType"] = *args.RepoType
 
     queryParams := url.Values{}
-    if repoId != nil {
-        queryParams.Add("repoId", *repoId)
+    if args.RepoId != nil {
+        queryParams.Add("repoId", *args.RepoId)
     }
-    if branchName != nil {
-        queryParams.Add("branchName", *branchName)
+    if args.BranchName != nil {
+        queryParams.Add("branchName", *args.BranchName)
     }
     locationId, _ := uuid.Parse("21b3b9ce-fad5-4567-9ad0-80679794e003")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -408,29 +468,36 @@ func (client Client) GetBuildBadge(ctx context.Context, project *string, repoTyp
     return &responseValue, err
 }
 
+// Arguments for the GetBuildBadge function
+type GetBuildBadgeArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The repository type.
+    RepoType *string
+    // (optional) The repository ID.
+    RepoId *string
+    // (optional) The branch name.
+    BranchName *string
+}
+
 // [Preview API] Gets a badge that indicates the status of the most recent build for the specified branch.
-// ctx
-// project (required): Project ID or project name
-// repoType (required): The repository type.
-// repoId (optional): The repository ID.
-// branchName (optional): The branch name.
-func (client Client) GetBuildBadgeData(ctx context.Context, project *string, repoType *string, repoId *string, branchName *string) (*string, error) {
+func (client Client) GetBuildBadgeData(ctx context.Context, args GetBuildBadgeDataArgs) (*string, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if repoType == nil || *repoType == "" {
+    routeValues["project"] = *args.Project
+    if args.RepoType == nil || *args.RepoType == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "repoType"} 
     }
-    routeValues["repoType"] = *repoType
+    routeValues["repoType"] = *args.RepoType
 
     queryParams := url.Values{}
-    if repoId != nil {
-        queryParams.Add("repoId", *repoId)
+    if args.RepoId != nil {
+        queryParams.Add("repoId", *args.RepoId)
     }
-    if branchName != nil {
-        queryParams.Add("branchName", *branchName)
+    if args.BranchName != nil {
+        queryParams.Add("branchName", *args.BranchName)
     }
     locationId, _ := uuid.Parse("21b3b9ce-fad5-4567-9ad0-80679794e003")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -443,20 +510,29 @@ func (client Client) GetBuildBadgeData(ctx context.Context, project *string, rep
     return &responseValue, err
 }
 
+// Arguments for the GetBuildBadgeData function
+type GetBuildBadgeDataArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The repository type.
+    RepoType *string
+    // (optional) The repository ID.
+    RepoId *string
+    // (optional) The branch name.
+    BranchName *string
+}
+
 // Deletes a build.
-// ctx
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-func (client Client) DeleteBuild(ctx context.Context, project *string, buildId *int) error {
+func (client Client) DeleteBuild(ctx context.Context, args DeleteBuildArgs) error {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
     locationId, _ := uuid.Parse("0cd358e1-9217-4d94-8269-1c1ee6f93dcf")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -467,25 +543,29 @@ func (client Client) DeleteBuild(ctx context.Context, project *string, buildId *
     return nil
 }
 
+// Arguments for the DeleteBuild function
+type DeleteBuildArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+}
+
 // Gets a build
-// ctx
-// project (required): Project ID or project name
-// buildId (required)
-// propertyFilters (optional)
-func (client Client) GetBuild(ctx context.Context, project *string, buildId *int, propertyFilters *string) (*Build, error) {
+func (client Client) GetBuild(ctx context.Context, args GetBuildArgs) (*Build, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
     queryParams := url.Values{}
-    if propertyFilters != nil {
-        queryParams.Add("propertyFilters", *propertyFilters)
+    if args.PropertyFilters != nil {
+        queryParams.Add("propertyFilters", *args.PropertyFilters)
     }
     locationId, _ := uuid.Parse("0cd358e1-9217-4d94-8269-1c1ee6f93dcf")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -498,113 +578,101 @@ func (client Client) GetBuild(ctx context.Context, project *string, buildId *int
     return &responseValue, err
 }
 
+// Arguments for the GetBuild function
+type GetBuildArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required)
+    BuildId *int
+    // (optional)
+    PropertyFilters *string
+}
+
 // Gets a list of builds.
-// ctx
-// project (required): Project ID or project name
-// definitions (optional): A comma-delimited list of definition IDs. If specified, filters to builds for these definitions.
-// queues (optional): A comma-delimited list of queue IDs. If specified, filters to builds that ran against these queues.
-// buildNumber (optional): If specified, filters to builds that match this build number. Append * to do a prefix search.
-// minTime (optional): If specified, filters to builds that finished/started/queued after this date based on the queryOrder specified.
-// maxTime (optional): If specified, filters to builds that finished/started/queued before this date based on the queryOrder specified.
-// requestedFor (optional): If specified, filters to builds requested for the specified user.
-// reasonFilter (optional): If specified, filters to builds that match this reason.
-// statusFilter (optional): If specified, filters to builds that match this status.
-// resultFilter (optional): If specified, filters to builds that match this result.
-// tagFilters (optional): A comma-delimited list of tags. If specified, filters to builds that have the specified tags.
-// properties (optional): A comma-delimited list of properties to retrieve.
-// top (optional): The maximum number of builds to return.
-// continuationToken (optional): A continuation token, returned by a previous call to this method, that can be used to return the next set of builds.
-// maxBuildsPerDefinition (optional): The maximum number of builds to return per definition.
-// deletedFilter (optional): Indicates whether to exclude, include, or only return deleted builds.
-// queryOrder (optional): The order in which builds should be returned.
-// branchName (optional): If specified, filters to builds that built branches that built this branch.
-// buildIds (optional): A comma-delimited list that specifies the IDs of builds to retrieve.
-// repositoryId (optional): If specified, filters to builds that built from this repository.
-// repositoryType (optional): If specified, filters to builds that built from repositories of this type.
-func (client Client) GetBuilds(ctx context.Context, project *string, definitions *[]int, queues *[]int, buildNumber *string, minTime *time.Time, maxTime *time.Time, requestedFor *string, reasonFilter *BuildReason, statusFilter *BuildStatus, resultFilter *BuildResult, tagFilters *[]string, properties *[]string, top *int, continuationToken *string, maxBuildsPerDefinition *int, deletedFilter *QueryDeletedOption, queryOrder *BuildQueryOrder, branchName *string, buildIds *[]int, repositoryId *string, repositoryType *string) (*[]Build, error) {
+func (client Client) GetBuilds(ctx context.Context, args GetBuildsArgs) (*[]Build, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if definitions != nil {
+    if args.Definitions != nil {
         var stringList []string
-        for _, item := range *definitions {
+        for _, item := range *args.Definitions {
             stringList = append(stringList, strconv.Itoa(item))
         }
         listAsString := strings.Join((stringList)[:], ",")
         queryParams.Add("definitions", listAsString)
     }
-    if queues != nil {
+    if args.Queues != nil {
         var stringList []string
-        for _, item := range *queues {
+        for _, item := range *args.Queues {
             stringList = append(stringList, strconv.Itoa(item))
         }
         listAsString := strings.Join((stringList)[:], ",")
         queryParams.Add("definitions", listAsString)
     }
-    if buildNumber != nil {
-        queryParams.Add("buildNumber", *buildNumber)
+    if args.BuildNumber != nil {
+        queryParams.Add("buildNumber", *args.BuildNumber)
     }
-    if minTime != nil {
-        queryParams.Add("minTime", (*minTime).String())
+    if args.MinTime != nil {
+        queryParams.Add("minTime", (*args.MinTime).String())
     }
-    if maxTime != nil {
-        queryParams.Add("maxTime", (*maxTime).String())
+    if args.MaxTime != nil {
+        queryParams.Add("maxTime", (*args.MaxTime).String())
     }
-    if requestedFor != nil {
-        queryParams.Add("requestedFor", *requestedFor)
+    if args.RequestedFor != nil {
+        queryParams.Add("requestedFor", *args.RequestedFor)
     }
-    if reasonFilter != nil {
-        queryParams.Add("reasonFilter", string(*reasonFilter))
+    if args.ReasonFilter != nil {
+        queryParams.Add("reasonFilter", string(*args.ReasonFilter))
     }
-    if statusFilter != nil {
-        queryParams.Add("statusFilter", string(*statusFilter))
+    if args.StatusFilter != nil {
+        queryParams.Add("statusFilter", string(*args.StatusFilter))
     }
-    if resultFilter != nil {
-        queryParams.Add("resultFilter", string(*resultFilter))
+    if args.ResultFilter != nil {
+        queryParams.Add("resultFilter", string(*args.ResultFilter))
     }
-    if tagFilters != nil {
-        listAsString := strings.Join((*tagFilters)[:], ",")
+    if args.TagFilters != nil {
+        listAsString := strings.Join((*args.TagFilters)[:], ",")
         queryParams.Add("tagFilters", listAsString)
     }
-    if properties != nil {
-        listAsString := strings.Join((*properties)[:], ",")
+    if args.Properties != nil {
+        listAsString := strings.Join((*args.Properties)[:], ",")
         queryParams.Add("properties", listAsString)
     }
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    if continuationToken != nil {
-        queryParams.Add("continuationToken", *continuationToken)
+    if args.ContinuationToken != nil {
+        queryParams.Add("continuationToken", *args.ContinuationToken)
     }
-    if maxBuildsPerDefinition != nil {
-        queryParams.Add("maxBuildsPerDefinition", strconv.Itoa(*maxBuildsPerDefinition))
+    if args.MaxBuildsPerDefinition != nil {
+        queryParams.Add("maxBuildsPerDefinition", strconv.Itoa(*args.MaxBuildsPerDefinition))
     }
-    if deletedFilter != nil {
-        queryParams.Add("deletedFilter", string(*deletedFilter))
+    if args.DeletedFilter != nil {
+        queryParams.Add("deletedFilter", string(*args.DeletedFilter))
     }
-    if queryOrder != nil {
-        queryParams.Add("queryOrder", string(*queryOrder))
+    if args.QueryOrder != nil {
+        queryParams.Add("queryOrder", string(*args.QueryOrder))
     }
-    if branchName != nil {
-        queryParams.Add("branchName", *branchName)
+    if args.BranchName != nil {
+        queryParams.Add("branchName", *args.BranchName)
     }
-    if buildIds != nil {
+    if args.BuildIds != nil {
         var stringList []string
-        for _, item := range *buildIds {
+        for _, item := range *args.BuildIds {
             stringList = append(stringList, strconv.Itoa(item))
         }
         listAsString := strings.Join((stringList)[:], ",")
         queryParams.Add("definitions", listAsString)
     }
-    if repositoryId != nil {
-        queryParams.Add("repositoryId", *repositoryId)
+    if args.RepositoryId != nil {
+        queryParams.Add("repositoryId", *args.RepositoryId)
     }
-    if repositoryType != nil {
-        queryParams.Add("repositoryType", *repositoryType)
+    if args.RepositoryType != nil {
+        queryParams.Add("repositoryType", *args.RepositoryType)
     }
     locationId, _ := uuid.Parse("0cd358e1-9217-4d94-8269-1c1ee6f93dcf")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -617,34 +685,74 @@ func (client Client) GetBuilds(ctx context.Context, project *string, definitions
     return &responseValue, err
 }
 
+// Arguments for the GetBuilds function
+type GetBuildsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (optional) A comma-delimited list of definition IDs. If specified, filters to builds for these definitions.
+    Definitions *[]int
+    // (optional) A comma-delimited list of queue IDs. If specified, filters to builds that ran against these queues.
+    Queues *[]int
+    // (optional) If specified, filters to builds that match this build number. Append * to do a prefix search.
+    BuildNumber *string
+    // (optional) If specified, filters to builds that finished/started/queued after this date based on the queryOrder specified.
+    MinTime *time.Time
+    // (optional) If specified, filters to builds that finished/started/queued before this date based on the queryOrder specified.
+    MaxTime *time.Time
+    // (optional) If specified, filters to builds requested for the specified user.
+    RequestedFor *string
+    // (optional) If specified, filters to builds that match this reason.
+    ReasonFilter *BuildReason
+    // (optional) If specified, filters to builds that match this status.
+    StatusFilter *BuildStatus
+    // (optional) If specified, filters to builds that match this result.
+    ResultFilter *BuildResult
+    // (optional) A comma-delimited list of tags. If specified, filters to builds that have the specified tags.
+    TagFilters *[]string
+    // (optional) A comma-delimited list of properties to retrieve.
+    Properties *[]string
+    // (optional) The maximum number of builds to return.
+    Top *int
+    // (optional) A continuation token, returned by a previous call to this method, that can be used to return the next set of builds.
+    ContinuationToken *string
+    // (optional) The maximum number of builds to return per definition.
+    MaxBuildsPerDefinition *int
+    // (optional) Indicates whether to exclude, include, or only return deleted builds.
+    DeletedFilter *QueryDeletedOption
+    // (optional) The order in which builds should be returned.
+    QueryOrder *BuildQueryOrder
+    // (optional) If specified, filters to builds that built branches that built this branch.
+    BranchName *string
+    // (optional) A comma-delimited list that specifies the IDs of builds to retrieve.
+    BuildIds *[]int
+    // (optional) If specified, filters to builds that built from this repository.
+    RepositoryId *string
+    // (optional) If specified, filters to builds that built from repositories of this type.
+    RepositoryType *string
+}
+
 // Queues a build
-// ctx
-// build (required)
-// project (required): Project ID or project name
-// ignoreWarnings (optional)
-// checkInTicket (optional)
-// sourceBuildId (optional)
-func (client Client) QueueBuild(ctx context.Context, build *Build, project *string, ignoreWarnings *bool, checkInTicket *string, sourceBuildId *int) (*Build, error) {
-    if build == nil {
+func (client Client) QueueBuild(ctx context.Context, args QueueBuildArgs) (*Build, error) {
+    if args.Build == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "build"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if ignoreWarnings != nil {
-        queryParams.Add("ignoreWarnings", strconv.FormatBool(*ignoreWarnings))
+    if args.IgnoreWarnings != nil {
+        queryParams.Add("ignoreWarnings", strconv.FormatBool(*args.IgnoreWarnings))
     }
-    if checkInTicket != nil {
-        queryParams.Add("checkInTicket", *checkInTicket)
+    if args.CheckInTicket != nil {
+        queryParams.Add("checkInTicket", *args.CheckInTicket)
     }
-    if sourceBuildId != nil {
-        queryParams.Add("sourceBuildId", strconv.Itoa(*sourceBuildId))
+    if args.SourceBuildId != nil {
+        queryParams.Add("sourceBuildId", strconv.Itoa(*args.SourceBuildId))
     }
-    body, marshalErr := json.Marshal(*build)
+    body, marshalErr := json.Marshal(*args.Build)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -659,31 +767,40 @@ func (client Client) QueueBuild(ctx context.Context, build *Build, project *stri
     return &responseValue, err
 }
 
+// Arguments for the QueueBuild function
+type QueueBuildArgs struct {
+    // (required)
+    Build *Build
+    // (required) Project ID or project name
+    Project *string
+    // (optional)
+    IgnoreWarnings *bool
+    // (optional)
+    CheckInTicket *string
+    // (optional)
+    SourceBuildId *int
+}
+
 // Updates a build.
-// ctx
-// build (required): The build.
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-// retry (optional)
-func (client Client) UpdateBuild(ctx context.Context, build *Build, project *string, buildId *int, retry *bool) (*Build, error) {
-    if build == nil {
+func (client Client) UpdateBuild(ctx context.Context, args UpdateBuildArgs) (*Build, error) {
+    if args.Build == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "build"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
     queryParams := url.Values{}
-    if retry != nil {
-        queryParams.Add("retry", strconv.FormatBool(*retry))
+    if args.Retry != nil {
+        queryParams.Add("retry", strconv.FormatBool(*args.Retry))
     }
-    body, marshalErr := json.Marshal(*build)
+    body, marshalErr := json.Marshal(*args.Build)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -698,21 +815,30 @@ func (client Client) UpdateBuild(ctx context.Context, build *Build, project *str
     return &responseValue, err
 }
 
+// Arguments for the UpdateBuild function
+type UpdateBuildArgs struct {
+    // (required) The build.
+    Build *Build
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+    // (optional)
+    Retry *bool
+}
+
 // Updates multiple builds.
-// ctx
-// builds (required): The builds to update.
-// project (required): Project ID or project name
-func (client Client) UpdateBuilds(ctx context.Context, builds *[]Build, project *string) (*[]Build, error) {
-    if builds == nil {
+func (client Client) UpdateBuilds(ctx context.Context, args UpdateBuildsArgs) (*[]Build, error) {
+    if args.Builds == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "builds"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
-    body, marshalErr := json.Marshal(*builds)
+    body, marshalErr := json.Marshal(*args.Builds)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -727,33 +853,35 @@ func (client Client) UpdateBuilds(ctx context.Context, builds *[]Build, project 
     return &responseValue, err
 }
 
+// Arguments for the UpdateBuilds function
+type UpdateBuildsArgs struct {
+    // (required) The builds to update.
+    Builds *[]Build
+    // (required) Project ID or project name
+    Project *string
+}
+
 // Gets the changes associated with a build
-// ctx
-// project (required): Project ID or project name
-// buildId (required)
-// continuationToken (optional)
-// top (optional): The maximum number of changes to return
-// includeSourceChange (optional)
-func (client Client) GetBuildChanges(ctx context.Context, project *string, buildId *int, continuationToken *string, top *int, includeSourceChange *bool) (*[]Change, error) {
+func (client Client) GetBuildChanges(ctx context.Context, args GetBuildChangesArgs) (*[]Change, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
     queryParams := url.Values{}
-    if continuationToken != nil {
-        queryParams.Add("continuationToken", *continuationToken)
+    if args.ContinuationToken != nil {
+        queryParams.Add("continuationToken", *args.ContinuationToken)
     }
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    if includeSourceChange != nil {
-        queryParams.Add("includeSourceChange", strconv.FormatBool(*includeSourceChange))
+    if args.IncludeSourceChange != nil {
+        queryParams.Add("includeSourceChange", strconv.FormatBool(*args.IncludeSourceChange))
     }
     locationId, _ := uuid.Parse("54572c7b-bbd3-45d4-80dc-28be08941620")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -766,28 +894,37 @@ func (client Client) GetBuildChanges(ctx context.Context, project *string, build
     return &responseValue, err
 }
 
+// Arguments for the GetBuildChanges function
+type GetBuildChangesArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required)
+    BuildId *int
+    // (optional)
+    ContinuationToken *string
+    // (optional) The maximum number of changes to return
+    Top *int
+    // (optional)
+    IncludeSourceChange *bool
+}
+
 // [Preview API] Gets the changes made to the repository between two given builds.
-// ctx
-// project (required): Project ID or project name
-// fromBuildId (optional): The ID of the first build.
-// toBuildId (optional): The ID of the last build.
-// top (optional): The maximum number of changes to return.
-func (client Client) GetChangesBetweenBuilds(ctx context.Context, project *string, fromBuildId *int, toBuildId *int, top *int) (*[]Change, error) {
+func (client Client) GetChangesBetweenBuilds(ctx context.Context, args GetChangesBetweenBuildsArgs) (*[]Change, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if fromBuildId != nil {
-        queryParams.Add("fromBuildId", strconv.Itoa(*fromBuildId))
+    if args.FromBuildId != nil {
+        queryParams.Add("fromBuildId", strconv.Itoa(*args.FromBuildId))
     }
-    if toBuildId != nil {
-        queryParams.Add("toBuildId", strconv.Itoa(*toBuildId))
+    if args.ToBuildId != nil {
+        queryParams.Add("toBuildId", strconv.Itoa(*args.ToBuildId))
     }
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
     locationId, _ := uuid.Parse("f10f0ea5-18a1-43ec-a8fb-2042c7be9b43")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -800,15 +937,25 @@ func (client Client) GetChangesBetweenBuilds(ctx context.Context, project *strin
     return &responseValue, err
 }
 
+// Arguments for the GetChangesBetweenBuilds function
+type GetChangesBetweenBuildsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (optional) The ID of the first build.
+    FromBuildId *int
+    // (optional) The ID of the last build.
+    ToBuildId *int
+    // (optional) The maximum number of changes to return.
+    Top *int
+}
+
 // Gets a controller
-// ctx
-// controllerId (required)
-func (client Client) GetBuildController(ctx context.Context, controllerId *int) (*BuildController, error) {
+func (client Client) GetBuildController(ctx context.Context, args GetBuildControllerArgs) (*BuildController, error) {
     routeValues := make(map[string]string)
-    if controllerId == nil {
+    if args.ControllerId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "controllerId"} 
     }
-    routeValues["controllerId"] = strconv.Itoa(*controllerId)
+    routeValues["controllerId"] = strconv.Itoa(*args.ControllerId)
 
     locationId, _ := uuid.Parse("fcac1932-2ee1-437f-9b6f-7f696be858f6")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -821,13 +968,17 @@ func (client Client) GetBuildController(ctx context.Context, controllerId *int) 
     return &responseValue, err
 }
 
+// Arguments for the GetBuildController function
+type GetBuildControllerArgs struct {
+    // (required)
+    ControllerId *int
+}
+
 // Gets controller, optionally filtered by name
-// ctx
-// name (optional)
-func (client Client) GetBuildControllers(ctx context.Context, name *string) (*[]BuildController, error) {
+func (client Client) GetBuildControllers(ctx context.Context, args GetBuildControllersArgs) (*[]BuildController, error) {
     queryParams := url.Values{}
-    if name != nil {
-        queryParams.Add("name", *name)
+    if args.Name != nil {
+        queryParams.Add("name", *args.Name)
     }
     locationId, _ := uuid.Parse("fcac1932-2ee1-437f-9b6f-7f696be858f6")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
@@ -840,30 +991,31 @@ func (client Client) GetBuildControllers(ctx context.Context, name *string) (*[]
     return &responseValue, err
 }
 
+// Arguments for the GetBuildControllers function
+type GetBuildControllersArgs struct {
+    // (optional)
+    Name *string
+}
+
 // Creates a new definition.
-// ctx
-// definition (required): The definition.
-// project (required): Project ID or project name
-// definitionToCloneId (optional)
-// definitionToCloneRevision (optional)
-func (client Client) CreateDefinition(ctx context.Context, definition *BuildDefinition, project *string, definitionToCloneId *int, definitionToCloneRevision *int) (*BuildDefinition, error) {
-    if definition == nil {
+func (client Client) CreateDefinition(ctx context.Context, args CreateDefinitionArgs) (*BuildDefinition, error) {
+    if args.Definition == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "definition"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if definitionToCloneId != nil {
-        queryParams.Add("definitionToCloneId", strconv.Itoa(*definitionToCloneId))
+    if args.DefinitionToCloneId != nil {
+        queryParams.Add("definitionToCloneId", strconv.Itoa(*args.DefinitionToCloneId))
     }
-    if definitionToCloneRevision != nil {
-        queryParams.Add("definitionToCloneRevision", strconv.Itoa(*definitionToCloneRevision))
+    if args.DefinitionToCloneRevision != nil {
+        queryParams.Add("definitionToCloneRevision", strconv.Itoa(*args.DefinitionToCloneRevision))
     }
-    body, marshalErr := json.Marshal(*definition)
+    body, marshalErr := json.Marshal(*args.Definition)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -878,20 +1030,29 @@ func (client Client) CreateDefinition(ctx context.Context, definition *BuildDefi
     return &responseValue, err
 }
 
+// Arguments for the CreateDefinition function
+type CreateDefinitionArgs struct {
+    // (required) The definition.
+    Definition *BuildDefinition
+    // (required) Project ID or project name
+    Project *string
+    // (optional)
+    DefinitionToCloneId *int
+    // (optional)
+    DefinitionToCloneRevision *int
+}
+
 // Deletes a definition and all associated builds.
-// ctx
-// project (required): Project ID or project name
-// definitionId (required): The ID of the definition.
-func (client Client) DeleteDefinition(ctx context.Context, project *string, definitionId *int) error {
+func (client Client) DeleteDefinition(ctx context.Context, args DeleteDefinitionArgs) error {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if definitionId == nil {
+    routeValues["project"] = *args.Project
+    if args.DefinitionId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
     }
-    routeValues["definitionId"] = strconv.Itoa(*definitionId)
+    routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
     locationId, _ := uuid.Parse("dbeaf647-6167-421a-bda9-c9327b25e2e6")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -902,38 +1063,39 @@ func (client Client) DeleteDefinition(ctx context.Context, project *string, defi
     return nil
 }
 
+// Arguments for the DeleteDefinition function
+type DeleteDefinitionArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the definition.
+    DefinitionId *int
+}
+
 // Gets a definition, optionally at a specific revision.
-// ctx
-// project (required): Project ID or project name
-// definitionId (required): The ID of the definition.
-// revision (optional): The revision number to retrieve. If this is not specified, the latest version will be returned.
-// minMetricsTime (optional): If specified, indicates the date from which metrics should be included.
-// propertyFilters (optional): A comma-delimited list of properties to include in the results.
-// includeLatestBuilds (optional)
-func (client Client) GetDefinition(ctx context.Context, project *string, definitionId *int, revision *int, minMetricsTime *time.Time, propertyFilters *[]string, includeLatestBuilds *bool) (*BuildDefinition, error) {
+func (client Client) GetDefinition(ctx context.Context, args GetDefinitionArgs) (*BuildDefinition, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if definitionId == nil {
+    routeValues["project"] = *args.Project
+    if args.DefinitionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
     }
-    routeValues["definitionId"] = strconv.Itoa(*definitionId)
+    routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
     queryParams := url.Values{}
-    if revision != nil {
-        queryParams.Add("revision", strconv.Itoa(*revision))
+    if args.Revision != nil {
+        queryParams.Add("revision", strconv.Itoa(*args.Revision))
     }
-    if minMetricsTime != nil {
-        queryParams.Add("minMetricsTime", (*minMetricsTime).String())
+    if args.MinMetricsTime != nil {
+        queryParams.Add("minMetricsTime", (*args.MinMetricsTime).String())
     }
-    if propertyFilters != nil {
-        listAsString := strings.Join((*propertyFilters)[:], ",")
+    if args.PropertyFilters != nil {
+        listAsString := strings.Join((*args.PropertyFilters)[:], ",")
         queryParams.Add("propertyFilters", listAsString)
     }
-    if includeLatestBuilds != nil {
-        queryParams.Add("includeLatestBuilds", strconv.FormatBool(*includeLatestBuilds))
+    if args.IncludeLatestBuilds != nil {
+        queryParams.Add("includeLatestBuilds", strconv.FormatBool(*args.IncludeLatestBuilds))
     }
     locationId, _ := uuid.Parse("dbeaf647-6167-421a-bda9-c9327b25e2e6")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -946,85 +1108,83 @@ func (client Client) GetDefinition(ctx context.Context, project *string, definit
     return &responseValue, err
 }
 
+// Arguments for the GetDefinition function
+type GetDefinitionArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the definition.
+    DefinitionId *int
+    // (optional) The revision number to retrieve. If this is not specified, the latest version will be returned.
+    Revision *int
+    // (optional) If specified, indicates the date from which metrics should be included.
+    MinMetricsTime *time.Time
+    // (optional) A comma-delimited list of properties to include in the results.
+    PropertyFilters *[]string
+    // (optional)
+    IncludeLatestBuilds *bool
+}
+
 // Gets a list of definitions.
-// ctx
-// project (required): Project ID or project name
-// name (optional): If specified, filters to definitions whose names match this pattern.
-// repositoryId (optional): A repository ID. If specified, filters to definitions that use this repository.
-// repositoryType (optional): If specified, filters to definitions that have a repository of this type.
-// queryOrder (optional): Indicates the order in which definitions should be returned.
-// top (optional): The maximum number of definitions to return.
-// continuationToken (optional): A continuation token, returned by a previous call to this method, that can be used to return the next set of definitions.
-// minMetricsTime (optional): If specified, indicates the date from which metrics should be included.
-// definitionIds (optional): A comma-delimited list that specifies the IDs of definitions to retrieve.
-// path (optional): If specified, filters to definitions under this folder.
-// builtAfter (optional): If specified, filters to definitions that have builds after this date.
-// notBuiltAfter (optional): If specified, filters to definitions that do not have builds after this date.
-// includeAllProperties (optional): Indicates whether the full definitions should be returned. By default, shallow representations of the definitions are returned.
-// includeLatestBuilds (optional): Indicates whether to return the latest and latest completed builds for this definition.
-// taskIdFilter (optional): If specified, filters to definitions that use the specified task.
-// processType (optional): If specified, filters to definitions with the given process type.
-// yamlFilename (optional): If specified, filters to YAML definitions that match the given filename.
-func (client Client) GetDefinitions(ctx context.Context, project *string, name *string, repositoryId *string, repositoryType *string, queryOrder *DefinitionQueryOrder, top *int, continuationToken *string, minMetricsTime *time.Time, definitionIds *[]int, path *string, builtAfter *time.Time, notBuiltAfter *time.Time, includeAllProperties *bool, includeLatestBuilds *bool, taskIdFilter *uuid.UUID, processType *int, yamlFilename *string) (*[]BuildDefinitionReference, error) {
+func (client Client) GetDefinitions(ctx context.Context, args GetDefinitionsArgs) (*[]BuildDefinitionReference, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if name != nil {
-        queryParams.Add("name", *name)
+    if args.Name != nil {
+        queryParams.Add("name", *args.Name)
     }
-    if repositoryId != nil {
-        queryParams.Add("repositoryId", *repositoryId)
+    if args.RepositoryId != nil {
+        queryParams.Add("repositoryId", *args.RepositoryId)
     }
-    if repositoryType != nil {
-        queryParams.Add("repositoryType", *repositoryType)
+    if args.RepositoryType != nil {
+        queryParams.Add("repositoryType", *args.RepositoryType)
     }
-    if queryOrder != nil {
-        queryParams.Add("queryOrder", string(*queryOrder))
+    if args.QueryOrder != nil {
+        queryParams.Add("queryOrder", string(*args.QueryOrder))
     }
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    if continuationToken != nil {
-        queryParams.Add("continuationToken", *continuationToken)
+    if args.ContinuationToken != nil {
+        queryParams.Add("continuationToken", *args.ContinuationToken)
     }
-    if minMetricsTime != nil {
-        queryParams.Add("minMetricsTime", (*minMetricsTime).String())
+    if args.MinMetricsTime != nil {
+        queryParams.Add("minMetricsTime", (*args.MinMetricsTime).String())
     }
-    if definitionIds != nil {
+    if args.DefinitionIds != nil {
         var stringList []string
-        for _, item := range *definitionIds {
+        for _, item := range *args.DefinitionIds {
             stringList = append(stringList, strconv.Itoa(item))
         }
         listAsString := strings.Join((stringList)[:], ",")
         queryParams.Add("definitions", listAsString)
     }
-    if path != nil {
-        queryParams.Add("path", *path)
+    if args.Path != nil {
+        queryParams.Add("path", *args.Path)
     }
-    if builtAfter != nil {
-        queryParams.Add("builtAfter", (*builtAfter).String())
+    if args.BuiltAfter != nil {
+        queryParams.Add("builtAfter", (*args.BuiltAfter).String())
     }
-    if notBuiltAfter != nil {
-        queryParams.Add("notBuiltAfter", (*notBuiltAfter).String())
+    if args.NotBuiltAfter != nil {
+        queryParams.Add("notBuiltAfter", (*args.NotBuiltAfter).String())
     }
-    if includeAllProperties != nil {
-        queryParams.Add("includeAllProperties", strconv.FormatBool(*includeAllProperties))
+    if args.IncludeAllProperties != nil {
+        queryParams.Add("includeAllProperties", strconv.FormatBool(*args.IncludeAllProperties))
     }
-    if includeLatestBuilds != nil {
-        queryParams.Add("includeLatestBuilds", strconv.FormatBool(*includeLatestBuilds))
+    if args.IncludeLatestBuilds != nil {
+        queryParams.Add("includeLatestBuilds", strconv.FormatBool(*args.IncludeLatestBuilds))
     }
-    if taskIdFilter != nil {
-        queryParams.Add("taskIdFilter", (*taskIdFilter).String())
+    if args.TaskIdFilter != nil {
+        queryParams.Add("taskIdFilter", (*args.TaskIdFilter).String())
     }
-    if processType != nil {
-        queryParams.Add("processType", strconv.Itoa(*processType))
+    if args.ProcessType != nil {
+        queryParams.Add("processType", strconv.Itoa(*args.ProcessType))
     }
-    if yamlFilename != nil {
-        queryParams.Add("yamlFilename", *yamlFilename)
+    if args.YamlFilename != nil {
+        queryParams.Add("yamlFilename", *args.YamlFilename)
     }
     locationId, _ := uuid.Parse("dbeaf647-6167-421a-bda9-c9327b25e2e6")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1037,27 +1197,61 @@ func (client Client) GetDefinitions(ctx context.Context, project *string, name *
     return &responseValue, err
 }
 
+// Arguments for the GetDefinitions function
+type GetDefinitionsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (optional) If specified, filters to definitions whose names match this pattern.
+    Name *string
+    // (optional) A repository ID. If specified, filters to definitions that use this repository.
+    RepositoryId *string
+    // (optional) If specified, filters to definitions that have a repository of this type.
+    RepositoryType *string
+    // (optional) Indicates the order in which definitions should be returned.
+    QueryOrder *DefinitionQueryOrder
+    // (optional) The maximum number of definitions to return.
+    Top *int
+    // (optional) A continuation token, returned by a previous call to this method, that can be used to return the next set of definitions.
+    ContinuationToken *string
+    // (optional) If specified, indicates the date from which metrics should be included.
+    MinMetricsTime *time.Time
+    // (optional) A comma-delimited list that specifies the IDs of definitions to retrieve.
+    DefinitionIds *[]int
+    // (optional) If specified, filters to definitions under this folder.
+    Path *string
+    // (optional) If specified, filters to definitions that have builds after this date.
+    BuiltAfter *time.Time
+    // (optional) If specified, filters to definitions that do not have builds after this date.
+    NotBuiltAfter *time.Time
+    // (optional) Indicates whether the full definitions should be returned. By default, shallow representations of the definitions are returned.
+    IncludeAllProperties *bool
+    // (optional) Indicates whether to return the latest and latest completed builds for this definition.
+    IncludeLatestBuilds *bool
+    // (optional) If specified, filters to definitions that use the specified task.
+    TaskIdFilter *uuid.UUID
+    // (optional) If specified, filters to definitions with the given process type.
+    ProcessType *int
+    // (optional) If specified, filters to YAML definitions that match the given filename.
+    YamlFilename *string
+}
+
 // Restores a deleted definition
-// ctx
-// project (required): Project ID or project name
-// definitionId (required): The identifier of the definition to restore.
-// deleted (required): When false, restores a deleted definition.
-func (client Client) RestoreDefinition(ctx context.Context, project *string, definitionId *int, deleted *bool) (*BuildDefinition, error) {
+func (client Client) RestoreDefinition(ctx context.Context, args RestoreDefinitionArgs) (*BuildDefinition, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if definitionId == nil {
+    routeValues["project"] = *args.Project
+    if args.DefinitionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
     }
-    routeValues["definitionId"] = strconv.Itoa(*definitionId)
+    routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
     queryParams := url.Values{}
-    if deleted == nil {
+    if args.Deleted == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "deleted"}
     }
-    queryParams.Add("deleted", strconv.FormatBool(*deleted))
+    queryParams.Add("deleted", strconv.FormatBool(*args.Deleted))
     locationId, _ := uuid.Parse("dbeaf647-6167-421a-bda9-c9327b25e2e6")
     resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -1069,35 +1263,39 @@ func (client Client) RestoreDefinition(ctx context.Context, project *string, def
     return &responseValue, err
 }
 
+// Arguments for the RestoreDefinition function
+type RestoreDefinitionArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The identifier of the definition to restore.
+    DefinitionId *int
+    // (required) When false, restores a deleted definition.
+    Deleted *bool
+}
+
 // Updates an existing definition.
-// ctx
-// definition (required): The new version of the defintion.
-// project (required): Project ID or project name
-// definitionId (required): The ID of the definition.
-// secretsSourceDefinitionId (optional)
-// secretsSourceDefinitionRevision (optional)
-func (client Client) UpdateDefinition(ctx context.Context, definition *BuildDefinition, project *string, definitionId *int, secretsSourceDefinitionId *int, secretsSourceDefinitionRevision *int) (*BuildDefinition, error) {
-    if definition == nil {
+func (client Client) UpdateDefinition(ctx context.Context, args UpdateDefinitionArgs) (*BuildDefinition, error) {
+    if args.Definition == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "definition"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if definitionId == nil {
+    routeValues["project"] = *args.Project
+    if args.DefinitionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
     }
-    routeValues["definitionId"] = strconv.Itoa(*definitionId)
+    routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
     queryParams := url.Values{}
-    if secretsSourceDefinitionId != nil {
-        queryParams.Add("secretsSourceDefinitionId", strconv.Itoa(*secretsSourceDefinitionId))
+    if args.SecretsSourceDefinitionId != nil {
+        queryParams.Add("secretsSourceDefinitionId", strconv.Itoa(*args.SecretsSourceDefinitionId))
     }
-    if secretsSourceDefinitionRevision != nil {
-        queryParams.Add("secretsSourceDefinitionRevision", strconv.Itoa(*secretsSourceDefinitionRevision))
+    if args.SecretsSourceDefinitionRevision != nil {
+        queryParams.Add("secretsSourceDefinitionRevision", strconv.Itoa(*args.SecretsSourceDefinitionRevision))
     }
-    body, marshalErr := json.Marshal(*definition)
+    body, marshalErr := json.Marshal(*args.Definition)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1112,37 +1310,44 @@ func (client Client) UpdateDefinition(ctx context.Context, definition *BuildDefi
     return &responseValue, err
 }
 
+// Arguments for the UpdateDefinition function
+type UpdateDefinitionArgs struct {
+    // (required) The new version of the defintion.
+    Definition *BuildDefinition
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the definition.
+    DefinitionId *int
+    // (optional)
+    SecretsSourceDefinitionId *int
+    // (optional)
+    SecretsSourceDefinitionRevision *int
+}
+
 // [Preview API] Gets the contents of a file in the given source code repository.
-// ctx
-// project (required): Project ID or project name
-// providerName (required): The name of the source provider.
-// serviceEndpointId (optional): If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TFVC or TFGit.
-// repository (optional): If specified, the vendor-specific identifier or the name of the repository to get branches. Can only be omitted for providers that do not support multiple repositories.
-// commitOrBranch (optional): The identifier of the commit or branch from which a file's contents are retrieved.
-// path (optional): The path to the file to retrieve, relative to the root of the repository.
-func (client Client) GetFileContents(ctx context.Context, project *string, providerName *string, serviceEndpointId *uuid.UUID, repository *string, commitOrBranch *string, path *string) (io.ReadCloser, error) {
+func (client Client) GetFileContents(ctx context.Context, args GetFileContentsArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if providerName == nil || *providerName == "" {
+    routeValues["project"] = *args.Project
+    if args.ProviderName == nil || *args.ProviderName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "providerName"} 
     }
-    routeValues["providerName"] = *providerName
+    routeValues["providerName"] = *args.ProviderName
 
     queryParams := url.Values{}
-    if serviceEndpointId != nil {
-        queryParams.Add("serviceEndpointId", (*serviceEndpointId).String())
+    if args.ServiceEndpointId != nil {
+        queryParams.Add("serviceEndpointId", (*args.ServiceEndpointId).String())
     }
-    if repository != nil {
-        queryParams.Add("repository", *repository)
+    if args.Repository != nil {
+        queryParams.Add("repository", *args.Repository)
     }
-    if commitOrBranch != nil {
-        queryParams.Add("commitOrBranch", *commitOrBranch)
+    if args.CommitOrBranch != nil {
+        queryParams.Add("commitOrBranch", *args.CommitOrBranch)
     }
-    if path != nil {
-        queryParams.Add("path", *path)
+    if args.Path != nil {
+        queryParams.Add("path", *args.Path)
     }
     locationId, _ := uuid.Parse("29d12225-b1d9-425f-b668-6c594a981313")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "text/plain", nil)
@@ -1153,27 +1358,39 @@ func (client Client) GetFileContents(ctx context.Context, project *string, provi
     return resp.Body, err
 }
 
+// Arguments for the GetFileContents function
+type GetFileContentsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The name of the source provider.
+    ProviderName *string
+    // (optional) If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TFVC or TFGit.
+    ServiceEndpointId *uuid.UUID
+    // (optional) If specified, the vendor-specific identifier or the name of the repository to get branches. Can only be omitted for providers that do not support multiple repositories.
+    Repository *string
+    // (optional) The identifier of the commit or branch from which a file's contents are retrieved.
+    CommitOrBranch *string
+    // (optional) The path to the file to retrieve, relative to the root of the repository.
+    Path *string
+}
+
 // [Preview API] Creates a new folder.
-// ctx
-// folder (required): The folder.
-// project (required): Project ID or project name
-// path (required): The full path of the folder.
-func (client Client) CreateFolder(ctx context.Context, folder *Folder, project *string, path *string) (*Folder, error) {
-    if folder == nil {
+func (client Client) CreateFolder(ctx context.Context, args CreateFolderArgs) (*Folder, error) {
+    if args.Folder == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "folder"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if path == nil {
+    if args.Path == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "path"}
     }
-    queryParams.Add("path", *path)
-    body, marshalErr := json.Marshal(*folder)
+    queryParams.Add("path", *args.Path)
+    body, marshalErr := json.Marshal(*args.Folder)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1188,22 +1405,29 @@ func (client Client) CreateFolder(ctx context.Context, folder *Folder, project *
     return &responseValue, err
 }
 
+// Arguments for the CreateFolder function
+type CreateFolderArgs struct {
+    // (required) The folder.
+    Folder *Folder
+    // (required) Project ID or project name
+    Project *string
+    // (required) The full path of the folder.
+    Path *string
+}
+
 // [Preview API] Deletes a definition folder. Definitions and their corresponding builds will also be deleted.
-// ctx
-// project (required): Project ID or project name
-// path (required): The full path to the folder.
-func (client Client) DeleteFolder(ctx context.Context, project *string, path *string) error {
+func (client Client) DeleteFolder(ctx context.Context, args DeleteFolderArgs) error {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if path == nil {
+    if args.Path == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "path"}
     }
-    queryParams.Add("path", *path)
+    queryParams.Add("path", *args.Path)
     locationId, _ := uuid.Parse("a906531b-d2da-4f55-bda7-f3e676cc50d9")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -1213,24 +1437,28 @@ func (client Client) DeleteFolder(ctx context.Context, project *string, path *st
     return nil
 }
 
+// Arguments for the DeleteFolder function
+type DeleteFolderArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The full path to the folder.
+    Path *string
+}
+
 // [Preview API] Gets a list of build definition folders.
-// ctx
-// project (required): Project ID or project name
-// path (optional): The path to start with.
-// queryOrder (optional): The order in which folders should be returned.
-func (client Client) GetFolders(ctx context.Context, project *string, path *string, queryOrder *FolderQueryOrder) (*[]Folder, error) {
+func (client Client) GetFolders(ctx context.Context, args GetFoldersArgs) (*[]Folder, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if path != nil && *path != "" {
-        routeValues["path"] = *path
+    routeValues["project"] = *args.Project
+    if args.Path != nil && *args.Path != "" {
+        routeValues["path"] = *args.Path
     }
 
     queryParams := url.Values{}
-    if queryOrder != nil {
-        queryParams.Add("queryOrder", string(*queryOrder))
+    if args.QueryOrder != nil {
+        queryParams.Add("queryOrder", string(*args.QueryOrder))
     }
     locationId, _ := uuid.Parse("a906531b-d2da-4f55-bda7-f3e676cc50d9")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1243,27 +1471,33 @@ func (client Client) GetFolders(ctx context.Context, project *string, path *stri
     return &responseValue, err
 }
 
+// Arguments for the GetFolders function
+type GetFoldersArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (optional) The path to start with.
+    Path *string
+    // (optional) The order in which folders should be returned.
+    QueryOrder *FolderQueryOrder
+}
+
 // [Preview API] Updates an existing folder at given  existing path
-// ctx
-// folder (required): The new version of the folder.
-// project (required): Project ID or project name
-// path (required): The full path to the folder.
-func (client Client) UpdateFolder(ctx context.Context, folder *Folder, project *string, path *string) (*Folder, error) {
-    if folder == nil {
+func (client Client) UpdateFolder(ctx context.Context, args UpdateFolderArgs) (*Folder, error) {
+    if args.Folder == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "folder"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if path == nil {
+    if args.Path == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "path"}
     }
-    queryParams.Add("path", *path)
-    body, marshalErr := json.Marshal(*folder)
+    queryParams.Add("path", *args.Path)
+    body, marshalErr := json.Marshal(*args.Folder)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1278,25 +1512,31 @@ func (client Client) UpdateFolder(ctx context.Context, folder *Folder, project *
     return &responseValue, err
 }
 
+// Arguments for the UpdateFolder function
+type UpdateFolderArgs struct {
+    // (required) The new version of the folder.
+    Folder *Folder
+    // (required) Project ID or project name
+    Project *string
+    // (required) The full path to the folder.
+    Path *string
+}
+
 // [Preview API] Gets the latest build for a definition, optionally scoped to a specific branch.
-// ctx
-// project (required): Project ID or project name
-// definition (required): definition name with optional leading folder path, or the definition id
-// branchName (optional): optional parameter that indicates the specific branch to use
-func (client Client) GetLatestBuild(ctx context.Context, project *string, definition *string, branchName *string) (*Build, error) {
+func (client Client) GetLatestBuild(ctx context.Context, args GetLatestBuildArgs) (*Build, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if definition == nil || *definition == "" {
+    routeValues["project"] = *args.Project
+    if args.Definition == nil || *args.Definition == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "definition"} 
     }
-    routeValues["definition"] = *definition
+    routeValues["definition"] = *args.Definition
 
     queryParams := url.Values{}
-    if branchName != nil {
-        queryParams.Add("branchName", *branchName)
+    if args.BranchName != nil {
+        queryParams.Add("branchName", *args.BranchName)
     }
     locationId, _ := uuid.Parse("54481611-01f4-47f3-998f-160da0f0c229")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1309,34 +1549,38 @@ func (client Client) GetLatestBuild(ctx context.Context, project *string, defini
     return &responseValue, err
 }
 
+// Arguments for the GetLatestBuild function
+type GetLatestBuildArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) definition name with optional leading folder path, or the definition id
+    Definition *string
+    // (optional) optional parameter that indicates the specific branch to use
+    BranchName *string
+}
+
 // Gets an individual log file for a build.
-// ctx
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-// logId (required): The ID of the log file.
-// startLine (optional): The start line.
-// endLine (optional): The end line.
-func (client Client) GetBuildLog(ctx context.Context, project *string, buildId *int, logId *int, startLine *uint64, endLine *uint64) (io.ReadCloser, error) {
+func (client Client) GetBuildLog(ctx context.Context, args GetBuildLogArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
-    if logId == nil {
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
+    if args.LogId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "logId"} 
     }
-    routeValues["logId"] = strconv.Itoa(*logId)
+    routeValues["logId"] = strconv.Itoa(*args.LogId)
 
     queryParams := url.Values{}
-    if startLine != nil {
-        queryParams.Add("startLine", strconv.FormatUint(*startLine, 10))
+    if args.StartLine != nil {
+        queryParams.Add("startLine", strconv.FormatUint(*args.StartLine, 10))
     }
-    if endLine != nil {
-        queryParams.Add("endLine", strconv.FormatUint(*endLine, 10))
+    if args.EndLine != nil {
+        queryParams.Add("endLine", strconv.FormatUint(*args.EndLine, 10))
     }
     locationId, _ := uuid.Parse("35a80daf-7f30-45fc-86e8-6b813d9c90df")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "text/plain", nil)
@@ -1347,34 +1591,42 @@ func (client Client) GetBuildLog(ctx context.Context, project *string, buildId *
     return resp.Body, err
 }
 
+// Arguments for the GetBuildLog function
+type GetBuildLogArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+    // (required) The ID of the log file.
+    LogId *int
+    // (optional) The start line.
+    StartLine *uint64
+    // (optional) The end line.
+    EndLine *uint64
+}
+
 // Gets an individual log file for a build.
-// ctx
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-// logId (required): The ID of the log file.
-// startLine (optional): The start line.
-// endLine (optional): The end line.
-func (client Client) GetBuildLogLines(ctx context.Context, project *string, buildId *int, logId *int, startLine *uint64, endLine *uint64) (*[]string, error) {
+func (client Client) GetBuildLogLines(ctx context.Context, args GetBuildLogLinesArgs) (*[]string, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
-    if logId == nil {
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
+    if args.LogId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "logId"} 
     }
-    routeValues["logId"] = strconv.Itoa(*logId)
+    routeValues["logId"] = strconv.Itoa(*args.LogId)
 
     queryParams := url.Values{}
-    if startLine != nil {
-        queryParams.Add("startLine", strconv.FormatUint(*startLine, 10))
+    if args.StartLine != nil {
+        queryParams.Add("startLine", strconv.FormatUint(*args.StartLine, 10))
     }
-    if endLine != nil {
-        queryParams.Add("endLine", strconv.FormatUint(*endLine, 10))
+    if args.EndLine != nil {
+        queryParams.Add("endLine", strconv.FormatUint(*args.EndLine, 10))
     }
     locationId, _ := uuid.Parse("35a80daf-7f30-45fc-86e8-6b813d9c90df")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1387,20 +1639,31 @@ func (client Client) GetBuildLogLines(ctx context.Context, project *string, buil
     return &responseValue, err
 }
 
+// Arguments for the GetBuildLogLines function
+type GetBuildLogLinesArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+    // (required) The ID of the log file.
+    LogId *int
+    // (optional) The start line.
+    StartLine *uint64
+    // (optional) The end line.
+    EndLine *uint64
+}
+
 // Gets the logs for a build.
-// ctx
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-func (client Client) GetBuildLogs(ctx context.Context, project *string, buildId *int) (*[]BuildLog, error) {
+func (client Client) GetBuildLogs(ctx context.Context, args GetBuildLogsArgs) (*[]BuildLog, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
     locationId, _ := uuid.Parse("35a80daf-7f30-45fc-86e8-6b813d9c90df")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -1413,20 +1676,25 @@ func (client Client) GetBuildLogs(ctx context.Context, project *string, buildId 
     return &responseValue, err
 }
 
+// Arguments for the GetBuildLogs function
+type GetBuildLogsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+}
+
 // Gets the logs for a build.
-// ctx
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-func (client Client) GetBuildLogsZip(ctx context.Context, project *string, buildId *int) (io.ReadCloser, error) {
+func (client Client) GetBuildLogsZip(ctx context.Context, args GetBuildLogsZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
     locationId, _ := uuid.Parse("35a80daf-7f30-45fc-86e8-6b813d9c90df")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/zip", nil)
@@ -1437,34 +1705,36 @@ func (client Client) GetBuildLogsZip(ctx context.Context, project *string, build
     return resp.Body, err
 }
 
+// Arguments for the GetBuildLogsZip function
+type GetBuildLogsZipArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+}
+
 // Gets an individual log file for a build.
-// ctx
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-// logId (required): The ID of the log file.
-// startLine (optional): The start line.
-// endLine (optional): The end line.
-func (client Client) GetBuildLogZip(ctx context.Context, project *string, buildId *int, logId *int, startLine *uint64, endLine *uint64) (io.ReadCloser, error) {
+func (client Client) GetBuildLogZip(ctx context.Context, args GetBuildLogZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
-    if logId == nil {
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
+    if args.LogId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "logId"} 
     }
-    routeValues["logId"] = strconv.Itoa(*logId)
+    routeValues["logId"] = strconv.Itoa(*args.LogId)
 
     queryParams := url.Values{}
-    if startLine != nil {
-        queryParams.Add("startLine", strconv.FormatUint(*startLine, 10))
+    if args.StartLine != nil {
+        queryParams.Add("startLine", strconv.FormatUint(*args.StartLine, 10))
     }
-    if endLine != nil {
-        queryParams.Add("endLine", strconv.FormatUint(*endLine, 10))
+    if args.EndLine != nil {
+        queryParams.Add("endLine", strconv.FormatUint(*args.EndLine, 10))
     }
     locationId, _ := uuid.Parse("35a80daf-7f30-45fc-86e8-6b813d9c90df")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/zip", nil)
@@ -1475,24 +1745,34 @@ func (client Client) GetBuildLogZip(ctx context.Context, project *string, buildI
     return resp.Body, err
 }
 
+// Arguments for the GetBuildLogZip function
+type GetBuildLogZipArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+    // (required) The ID of the log file.
+    LogId *int
+    // (optional) The start line.
+    StartLine *uint64
+    // (optional) The end line.
+    EndLine *uint64
+}
+
 // [Preview API] Gets build metrics for a project.
-// ctx
-// project (required): Project ID or project name
-// metricAggregationType (optional): The aggregation type to use (hourly, daily).
-// minMetricsTime (optional): The date from which to calculate metrics.
-func (client Client) GetProjectMetrics(ctx context.Context, project *string, metricAggregationType *string, minMetricsTime *time.Time) (*[]BuildMetric, error) {
+func (client Client) GetProjectMetrics(ctx context.Context, args GetProjectMetricsArgs) (*[]BuildMetric, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if metricAggregationType != nil && *metricAggregationType != "" {
-        routeValues["metricAggregationType"] = *metricAggregationType
+    routeValues["project"] = *args.Project
+    if args.MetricAggregationType != nil && *args.MetricAggregationType != "" {
+        routeValues["metricAggregationType"] = *args.MetricAggregationType
     }
 
     queryParams := url.Values{}
-    if minMetricsTime != nil {
-        queryParams.Add("minMetricsTime", (*minMetricsTime).String())
+    if args.MinMetricsTime != nil {
+        queryParams.Add("minMetricsTime", (*args.MinMetricsTime).String())
     }
     locationId, _ := uuid.Parse("7433fae7-a6bc-41dc-a6e2-eef9005ce41a")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1505,25 +1785,31 @@ func (client Client) GetProjectMetrics(ctx context.Context, project *string, met
     return &responseValue, err
 }
 
+// Arguments for the GetProjectMetrics function
+type GetProjectMetricsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (optional) The aggregation type to use (hourly, daily).
+    MetricAggregationType *string
+    // (optional) The date from which to calculate metrics.
+    MinMetricsTime *time.Time
+}
+
 // [Preview API] Gets build metrics for a definition.
-// ctx
-// project (required): Project ID or project name
-// definitionId (required): The ID of the definition.
-// minMetricsTime (optional): The date from which to calculate metrics.
-func (client Client) GetDefinitionMetrics(ctx context.Context, project *string, definitionId *int, minMetricsTime *time.Time) (*[]BuildMetric, error) {
+func (client Client) GetDefinitionMetrics(ctx context.Context, args GetDefinitionMetricsArgs) (*[]BuildMetric, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if definitionId == nil {
+    routeValues["project"] = *args.Project
+    if args.DefinitionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
     }
-    routeValues["definitionId"] = strconv.Itoa(*definitionId)
+    routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
     queryParams := url.Values{}
-    if minMetricsTime != nil {
-        queryParams.Add("minMetricsTime", (*minMetricsTime).String())
+    if args.MinMetricsTime != nil {
+        queryParams.Add("minMetricsTime", (*args.MinMetricsTime).String())
     }
     locationId, _ := uuid.Parse("d973b939-0ce0-4fec-91d8-da3940fa1827")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1536,13 +1822,21 @@ func (client Client) GetDefinitionMetrics(ctx context.Context, project *string, 
     return &responseValue, err
 }
 
+// Arguments for the GetDefinitionMetrics function
+type GetDefinitionMetricsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the definition.
+    DefinitionId *int
+    // (optional) The date from which to calculate metrics.
+    MinMetricsTime *time.Time
+}
+
 // Gets all build definition options supported by the system.
-// ctx
-// project (optional): Project ID or project name
-func (client Client) GetBuildOptionDefinitions(ctx context.Context, project *string) (*[]BuildOptionDefinition, error) {
+func (client Client) GetBuildOptionDefinitions(ctx context.Context, args GetBuildOptionDefinitionsArgs) (*[]BuildOptionDefinition, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
 
     locationId, _ := uuid.Parse("591cb5a4-2d46-4f3a-a697-5cd42b6bd332")
@@ -1556,37 +1850,36 @@ func (client Client) GetBuildOptionDefinitions(ctx context.Context, project *str
     return &responseValue, err
 }
 
+// Arguments for the GetBuildOptionDefinitions function
+type GetBuildOptionDefinitionsArgs struct {
+    // (optional) Project ID or project name
+    Project *string
+}
+
 // [Preview API] Gets the contents of a directory in the given source code repository.
-// ctx
-// project (required): Project ID or project name
-// providerName (required): The name of the source provider.
-// serviceEndpointId (optional): If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TFVC or TFGit.
-// repository (optional): If specified, the vendor-specific identifier or the name of the repository to get branches. Can only be omitted for providers that do not support multiple repositories.
-// commitOrBranch (optional): The identifier of the commit or branch from which a file's contents are retrieved.
-// path (optional): The path contents to list, relative to the root of the repository.
-func (client Client) GetPathContents(ctx context.Context, project *string, providerName *string, serviceEndpointId *uuid.UUID, repository *string, commitOrBranch *string, path *string) (*[]SourceRepositoryItem, error) {
+func (client Client) GetPathContents(ctx context.Context, args GetPathContentsArgs) (*[]SourceRepositoryItem, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if providerName == nil || *providerName == "" {
+    routeValues["project"] = *args.Project
+    if args.ProviderName == nil || *args.ProviderName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "providerName"} 
     }
-    routeValues["providerName"] = *providerName
+    routeValues["providerName"] = *args.ProviderName
 
     queryParams := url.Values{}
-    if serviceEndpointId != nil {
-        queryParams.Add("serviceEndpointId", (*serviceEndpointId).String())
+    if args.ServiceEndpointId != nil {
+        queryParams.Add("serviceEndpointId", (*args.ServiceEndpointId).String())
     }
-    if repository != nil {
-        queryParams.Add("repository", *repository)
+    if args.Repository != nil {
+        queryParams.Add("repository", *args.Repository)
     }
-    if commitOrBranch != nil {
-        queryParams.Add("commitOrBranch", *commitOrBranch)
+    if args.CommitOrBranch != nil {
+        queryParams.Add("commitOrBranch", *args.CommitOrBranch)
     }
-    if path != nil {
-        queryParams.Add("path", *path)
+    if args.Path != nil {
+        queryParams.Add("path", *args.Path)
     }
     locationId, _ := uuid.Parse("7944d6fb-df01-4709-920a-7a189aa34037")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1599,25 +1892,37 @@ func (client Client) GetPathContents(ctx context.Context, project *string, provi
     return &responseValue, err
 }
 
+// Arguments for the GetPathContents function
+type GetPathContentsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The name of the source provider.
+    ProviderName *string
+    // (optional) If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TFVC or TFGit.
+    ServiceEndpointId *uuid.UUID
+    // (optional) If specified, the vendor-specific identifier or the name of the repository to get branches. Can only be omitted for providers that do not support multiple repositories.
+    Repository *string
+    // (optional) The identifier of the commit or branch from which a file's contents are retrieved.
+    CommitOrBranch *string
+    // (optional) The path contents to list, relative to the root of the repository.
+    Path *string
+}
+
 // [Preview API] Gets properties for a build.
-// ctx
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-// filter (optional): A comma-delimited list of properties. If specified, filters to these specific properties.
-func (client Client) GetBuildProperties(ctx context.Context, project *string, buildId *int, filter *[]string) (interface{}, error) {
+func (client Client) GetBuildProperties(ctx context.Context, args GetBuildPropertiesArgs) (interface{}, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
     queryParams := url.Values{}
-    if filter != nil {
-        listAsString := strings.Join((*filter)[:], ",")
+    if args.Filter != nil {
+        listAsString := strings.Join((*args.Filter)[:], ",")
         queryParams.Add("filter", listAsString)
     }
     locationId, _ := uuid.Parse("0a6312e9-0627-49b7-8083-7d74a64849c9")
@@ -1629,28 +1934,34 @@ func (client Client) GetBuildProperties(ctx context.Context, project *string, bu
     var responseValue interface{}
     err = client.Client.UnmarshalBody(resp, responseValue)
     return responseValue, err
+}
+
+// Arguments for the GetBuildProperties function
+type GetBuildPropertiesArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+    // (optional) A comma-delimited list of properties. If specified, filters to these specific properties.
+    Filter *[]string
 }
 
 // [Preview API] Updates properties for a build.
-// ctx
-// document (required): A json-patch document describing the properties to update.
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-func (client Client) UpdateBuildProperties(ctx context.Context, document *[]JsonPatchOperation, project *string, buildId *int) (interface{}, error) {
-    if document == nil {
+func (client Client) UpdateBuildProperties(ctx context.Context, args UpdateBuildPropertiesArgs) (interface{}, error) {
+    if args.Document == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "document"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
-    body, marshalErr := json.Marshal(*document)
+    body, marshalErr := json.Marshal(*args.Document)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1665,25 +1976,31 @@ func (client Client) UpdateBuildProperties(ctx context.Context, document *[]Json
     return responseValue, err
 }
 
+// Arguments for the UpdateBuildProperties function
+type UpdateBuildPropertiesArgs struct {
+    // (required) A json-patch document describing the properties to update.
+    Document *[]JsonPatchOperation
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+}
+
 // [Preview API] Gets properties for a definition.
-// ctx
-// project (required): Project ID or project name
-// definitionId (required): The ID of the definition.
-// filter (optional): A comma-delimited list of properties. If specified, filters to these specific properties.
-func (client Client) GetDefinitionProperties(ctx context.Context, project *string, definitionId *int, filter *[]string) (interface{}, error) {
+func (client Client) GetDefinitionProperties(ctx context.Context, args GetDefinitionPropertiesArgs) (interface{}, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if definitionId == nil {
+    routeValues["project"] = *args.Project
+    if args.DefinitionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
     }
-    routeValues["definitionId"] = strconv.Itoa(*definitionId)
+    routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
     queryParams := url.Values{}
-    if filter != nil {
-        listAsString := strings.Join((*filter)[:], ",")
+    if args.Filter != nil {
+        listAsString := strings.Join((*args.Filter)[:], ",")
         queryParams.Add("filter", listAsString)
     }
     locationId, _ := uuid.Parse("d9826ad7-2a68-46a9-a6e9-677698777895")
@@ -1697,26 +2014,32 @@ func (client Client) GetDefinitionProperties(ctx context.Context, project *strin
     return responseValue, err
 }
 
+// Arguments for the GetDefinitionProperties function
+type GetDefinitionPropertiesArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the definition.
+    DefinitionId *int
+    // (optional) A comma-delimited list of properties. If specified, filters to these specific properties.
+    Filter *[]string
+}
+
 // [Preview API] Updates properties for a definition.
-// ctx
-// document (required): A json-patch document describing the properties to update.
-// project (required): Project ID or project name
-// definitionId (required): The ID of the definition.
-func (client Client) UpdateDefinitionProperties(ctx context.Context, document *[]JsonPatchOperation, project *string, definitionId *int) (interface{}, error) {
-    if document == nil {
+func (client Client) UpdateDefinitionProperties(ctx context.Context, args UpdateDefinitionPropertiesArgs) (interface{}, error) {
+    if args.Document == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "document"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if definitionId == nil {
+    routeValues["project"] = *args.Project
+    if args.DefinitionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
     }
-    routeValues["definitionId"] = strconv.Itoa(*definitionId)
+    routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
-    body, marshalErr := json.Marshal(*document)
+    body, marshalErr := json.Marshal(*args.Document)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1731,34 +2054,38 @@ func (client Client) UpdateDefinitionProperties(ctx context.Context, document *[
     return responseValue, err
 }
 
+// Arguments for the UpdateDefinitionProperties function
+type UpdateDefinitionPropertiesArgs struct {
+    // (required) A json-patch document describing the properties to update.
+    Document *[]JsonPatchOperation
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the definition.
+    DefinitionId *int
+}
+
 // [Preview API] Gets a pull request object from source provider.
-// ctx
-// project (required): Project ID or project name
-// providerName (required): The name of the source provider.
-// pullRequestId (required): Vendor-specific id of the pull request.
-// repositoryId (optional): Vendor-specific identifier or the name of the repository that contains the pull request.
-// serviceEndpointId (optional): If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TFVC or TFGit.
-func (client Client) GetPullRequest(ctx context.Context, project *string, providerName *string, pullRequestId *string, repositoryId *string, serviceEndpointId *uuid.UUID) (*PullRequest, error) {
+func (client Client) GetPullRequest(ctx context.Context, args GetPullRequestArgs) (*PullRequest, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if providerName == nil || *providerName == "" {
+    routeValues["project"] = *args.Project
+    if args.ProviderName == nil || *args.ProviderName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "providerName"} 
     }
-    routeValues["providerName"] = *providerName
-    if pullRequestId == nil || *pullRequestId == "" {
+    routeValues["providerName"] = *args.ProviderName
+    if args.PullRequestId == nil || *args.PullRequestId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "pullRequestId"} 
     }
-    routeValues["pullRequestId"] = *pullRequestId
+    routeValues["pullRequestId"] = *args.PullRequestId
 
     queryParams := url.Values{}
-    if repositoryId != nil {
-        queryParams.Add("repositoryId", *repositoryId)
+    if args.RepositoryId != nil {
+        queryParams.Add("repositoryId", *args.RepositoryId)
     }
-    if serviceEndpointId != nil {
-        queryParams.Add("serviceEndpointId", (*serviceEndpointId).String())
+    if args.ServiceEndpointId != nil {
+        queryParams.Add("serviceEndpointId", (*args.ServiceEndpointId).String())
     }
     locationId, _ := uuid.Parse("d8763ec7-9ff0-4fb4-b2b2-9d757906ff14")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1771,25 +2098,35 @@ func (client Client) GetPullRequest(ctx context.Context, project *string, provid
     return &responseValue, err
 }
 
+// Arguments for the GetPullRequest function
+type GetPullRequestArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The name of the source provider.
+    ProviderName *string
+    // (required) Vendor-specific id of the pull request.
+    PullRequestId *string
+    // (optional) Vendor-specific identifier or the name of the repository that contains the pull request.
+    RepositoryId *string
+    // (optional) If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TFVC or TFGit.
+    ServiceEndpointId *uuid.UUID
+}
+
 // [Preview API] Gets a build report.
-// ctx
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-// type_ (optional)
-func (client Client) GetBuildReport(ctx context.Context, project *string, buildId *int, type_ *string) (*BuildReportMetadata, error) {
+func (client Client) GetBuildReport(ctx context.Context, args GetBuildReportArgs) (*BuildReportMetadata, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
     queryParams := url.Values{}
-    if type_ != nil {
-        queryParams.Add("type_", *type_)
+    if args.Type_ != nil {
+        queryParams.Add("type_", *args.Type_)
     }
     locationId, _ := uuid.Parse("45bcaa88-67e1-4042-a035-56d3b4a7d44c")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1802,25 +2139,31 @@ func (client Client) GetBuildReport(ctx context.Context, project *string, buildI
     return &responseValue, err
 }
 
+// Arguments for the GetBuildReport function
+type GetBuildReportArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+    // (optional)
+    Type_ *string
+}
+
 // [Preview API] Gets a build report.
-// ctx
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-// type_ (optional)
-func (client Client) GetBuildReportHtmlContent(ctx context.Context, project *string, buildId *int, type_ *string) (io.ReadCloser, error) {
+func (client Client) GetBuildReportHtmlContent(ctx context.Context, args GetBuildReportHtmlContentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
     queryParams := url.Values{}
-    if type_ != nil {
-        queryParams.Add("type_", *type_)
+    if args.Type_ != nil {
+        queryParams.Add("type_", *args.Type_)
     }
     locationId, _ := uuid.Parse("45bcaa88-67e1-4042-a035-56d3b4a7d44c")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "text/html", nil)
@@ -1831,41 +2174,43 @@ func (client Client) GetBuildReportHtmlContent(ctx context.Context, project *str
     return resp.Body, err
 }
 
+// Arguments for the GetBuildReportHtmlContent function
+type GetBuildReportHtmlContentArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+    // (optional)
+    Type_ *string
+}
+
 // [Preview API] Gets a list of source code repositories.
-// ctx
-// project (required): Project ID or project name
-// providerName (required): The name of the source provider.
-// serviceEndpointId (optional): If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TFVC or TFGit.
-// repository (optional): If specified, the vendor-specific identifier or the name of a single repository to get.
-// resultSet (optional): 'top' for the repositories most relevant for the endpoint. If not set, all repositories are returned. Ignored if 'repository' is set.
-// pageResults (optional): If set to true, this will limit the set of results and will return a continuation token to continue the query.
-// continuationToken (optional): When paging results, this is a continuation token, returned by a previous call to this method, that can be used to return the next set of repositories.
-func (client Client) ListRepositories(ctx context.Context, project *string, providerName *string, serviceEndpointId *uuid.UUID, repository *string, resultSet *ResultSet, pageResults *bool, continuationToken *string) (*SourceRepositories, error) {
+func (client Client) ListRepositories(ctx context.Context, args ListRepositoriesArgs) (*SourceRepositories, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if providerName == nil || *providerName == "" {
+    routeValues["project"] = *args.Project
+    if args.ProviderName == nil || *args.ProviderName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "providerName"} 
     }
-    routeValues["providerName"] = *providerName
+    routeValues["providerName"] = *args.ProviderName
 
     queryParams := url.Values{}
-    if serviceEndpointId != nil {
-        queryParams.Add("serviceEndpointId", (*serviceEndpointId).String())
+    if args.ServiceEndpointId != nil {
+        queryParams.Add("serviceEndpointId", (*args.ServiceEndpointId).String())
     }
-    if repository != nil {
-        queryParams.Add("repository", *repository)
+    if args.Repository != nil {
+        queryParams.Add("repository", *args.Repository)
     }
-    if resultSet != nil {
-        queryParams.Add("resultSet", string(*resultSet))
+    if args.ResultSet != nil {
+        queryParams.Add("resultSet", string(*args.ResultSet))
     }
-    if pageResults != nil {
-        queryParams.Add("pageResults", strconv.FormatBool(*pageResults))
+    if args.PageResults != nil {
+        queryParams.Add("pageResults", strconv.FormatBool(*args.PageResults))
     }
-    if continuationToken != nil {
-        queryParams.Add("continuationToken", *continuationToken)
+    if args.ContinuationToken != nil {
+        queryParams.Add("continuationToken", *args.ContinuationToken)
     }
     locationId, _ := uuid.Parse("d44d1680-f978-4834-9b93-8c6e132329c9")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1878,26 +2223,40 @@ func (client Client) ListRepositories(ctx context.Context, project *string, prov
     return &responseValue, err
 }
 
+// Arguments for the ListRepositories function
+type ListRepositoriesArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The name of the source provider.
+    ProviderName *string
+    // (optional) If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TFVC or TFGit.
+    ServiceEndpointId *uuid.UUID
+    // (optional) If specified, the vendor-specific identifier or the name of a single repository to get.
+    Repository *string
+    // (optional) 'top' for the repositories most relevant for the endpoint. If not set, all repositories are returned. Ignored if 'repository' is set.
+    ResultSet *ResultSet
+    // (optional) If set to true, this will limit the set of results and will return a continuation token to continue the query.
+    PageResults *bool
+    // (optional) When paging results, this is a continuation token, returned by a previous call to this method, that can be used to return the next set of repositories.
+    ContinuationToken *string
+}
+
 // [Preview API]
-// ctx
-// resources (required)
-// project (required): Project ID or project name
-// definitionId (required)
-func (client Client) AuthorizeDefinitionResources(ctx context.Context, resources *[]DefinitionResourceReference, project *string, definitionId *int) (*[]DefinitionResourceReference, error) {
-    if resources == nil {
+func (client Client) AuthorizeDefinitionResources(ctx context.Context, args AuthorizeDefinitionResourcesArgs) (*[]DefinitionResourceReference, error) {
+    if args.Resources == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "resources"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if definitionId == nil {
+    routeValues["project"] = *args.Project
+    if args.DefinitionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
     }
-    routeValues["definitionId"] = strconv.Itoa(*definitionId)
+    routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
-    body, marshalErr := json.Marshal(*resources)
+    body, marshalErr := json.Marshal(*args.Resources)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1912,20 +2271,27 @@ func (client Client) AuthorizeDefinitionResources(ctx context.Context, resources
     return &responseValue, err
 }
 
+// Arguments for the AuthorizeDefinitionResources function
+type AuthorizeDefinitionResourcesArgs struct {
+    // (required)
+    Resources *[]DefinitionResourceReference
+    // (required) Project ID or project name
+    Project *string
+    // (required)
+    DefinitionId *int
+}
+
 // [Preview API]
-// ctx
-// project (required): Project ID or project name
-// definitionId (required)
-func (client Client) GetDefinitionResources(ctx context.Context, project *string, definitionId *int) (*[]DefinitionResourceReference, error) {
+func (client Client) GetDefinitionResources(ctx context.Context, args GetDefinitionResourcesArgs) (*[]DefinitionResourceReference, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if definitionId == nil {
+    routeValues["project"] = *args.Project
+    if args.DefinitionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
     }
-    routeValues["definitionId"] = strconv.Itoa(*definitionId)
+    routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
     locationId, _ := uuid.Parse("ea623316-1967-45eb-89ab-e9e6110cf2d6")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -1938,9 +2304,16 @@ func (client Client) GetDefinitionResources(ctx context.Context, project *string
     return &responseValue, err
 }
 
+// Arguments for the GetDefinitionResources function
+type GetDefinitionResourcesArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required)
+    DefinitionId *int
+}
+
 // [Preview API] Gets information about build resources in the system.
-// ctx
-func (client Client) GetResourceUsage(ctx context.Context, ) (*BuildResourceUsage, error) {
+func (client Client) GetResourceUsage(ctx context.Context, args GetResourceUsageArgs) (*BuildResourceUsage, error) {
     locationId, _ := uuid.Parse("3813d06c-9e36-4ea1-aac3-61a485d60e3d")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", nil, nil, nil, "", "application/json", nil)
     if err != nil {
@@ -1952,20 +2325,21 @@ func (client Client) GetResourceUsage(ctx context.Context, ) (*BuildResourceUsag
     return &responseValue, err
 }
 
+// Arguments for the GetResourceUsage function
+type GetResourceUsageArgs struct {
+}
+
 // Gets all revisions of a definition.
-// ctx
-// project (required): Project ID or project name
-// definitionId (required): The ID of the definition.
-func (client Client) GetDefinitionRevisions(ctx context.Context, project *string, definitionId *int) (*[]BuildDefinitionRevision, error) {
+func (client Client) GetDefinitionRevisions(ctx context.Context, args GetDefinitionRevisionsArgs) (*[]BuildDefinitionRevision, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if definitionId == nil {
+    routeValues["project"] = *args.Project
+    if args.DefinitionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
     }
-    routeValues["definitionId"] = strconv.Itoa(*definitionId)
+    routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
     locationId, _ := uuid.Parse("7c116775-52e5-453e-8c5d-914d9762d8c4")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -1978,13 +2352,19 @@ func (client Client) GetDefinitionRevisions(ctx context.Context, project *string
     return &responseValue, err
 }
 
+// Arguments for the GetDefinitionRevisions function
+type GetDefinitionRevisionsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the definition.
+    DefinitionId *int
+}
+
 // Gets the build settings.
-// ctx
-// project (optional): Project ID or project name
-func (client Client) GetBuildSettings(ctx context.Context, project *string) (*BuildSettings, error) {
+func (client Client) GetBuildSettings(ctx context.Context, args GetBuildSettingsArgs) (*BuildSettings, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
 
     locationId, _ := uuid.Parse("aa8c1c9c-ef8b-474a-b8c4-785c7b191d0d")
@@ -1998,20 +2378,23 @@ func (client Client) GetBuildSettings(ctx context.Context, project *string) (*Bu
     return &responseValue, err
 }
 
+// Arguments for the GetBuildSettings function
+type GetBuildSettingsArgs struct {
+    // (optional) Project ID or project name
+    Project *string
+}
+
 // Updates the build settings.
-// ctx
-// settings (required): The new settings.
-// project (optional): Project ID or project name
-func (client Client) UpdateBuildSettings(ctx context.Context, settings *BuildSettings, project *string) (*BuildSettings, error) {
-    if settings == nil {
+func (client Client) UpdateBuildSettings(ctx context.Context, args UpdateBuildSettingsArgs) (*BuildSettings, error) {
+    if args.Settings == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "settings"}
     }
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
 
-    body, marshalErr := json.Marshal(*settings)
+    body, marshalErr := json.Marshal(*args.Settings)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -2026,15 +2409,21 @@ func (client Client) UpdateBuildSettings(ctx context.Context, settings *BuildSet
     return &responseValue, err
 }
 
+// Arguments for the UpdateBuildSettings function
+type UpdateBuildSettingsArgs struct {
+    // (required) The new settings.
+    Settings *BuildSettings
+    // (optional) Project ID or project name
+    Project *string
+}
+
 // [Preview API] Get a list of source providers and their capabilities.
-// ctx
-// project (required): Project ID or project name
-func (client Client) ListSourceProviders(ctx context.Context, project *string) (*[]SourceProviderAttributes, error) {
+func (client Client) ListSourceProviders(ctx context.Context, args ListSourceProvidersArgs) (*[]SourceProviderAttributes, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     locationId, _ := uuid.Parse("3ce81729-954f-423d-a581-9fea01d25186")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -2047,41 +2436,39 @@ func (client Client) ListSourceProviders(ctx context.Context, project *string) (
     return &responseValue, err
 }
 
+// Arguments for the ListSourceProviders function
+type ListSourceProvidersArgs struct {
+    // (required) Project ID or project name
+    Project *string
+}
+
 // [Preview API] <p>Gets the build status for a definition, optionally scoped to a specific branch, stage, job, and configuration.</p> <p>If there are more than one, then it is required to pass in a stageName value when specifying a jobName, and the same rule then applies for both if passing a configuration parameter.</p>
-// ctx
-// project (required): Project ID or project name
-// definition (required): Either the definition name with optional leading folder path, or the definition id.
-// branchName (optional): Only consider the most recent build for this branch.
-// stageName (optional): Use this stage within the pipeline to render the status.
-// jobName (optional): Use this job within a stage of the pipeline to render the status.
-// configuration (optional): Use this job configuration to render the status
-// label (optional): Replaces the default text on the left side of the badge.
-func (client Client) GetStatusBadge(ctx context.Context, project *string, definition *string, branchName *string, stageName *string, jobName *string, configuration *string, label *string) (*string, error) {
+func (client Client) GetStatusBadge(ctx context.Context, args GetStatusBadgeArgs) (*string, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if definition == nil || *definition == "" {
+    routeValues["project"] = *args.Project
+    if args.Definition == nil || *args.Definition == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "definition"} 
     }
-    routeValues["definition"] = *definition
+    routeValues["definition"] = *args.Definition
 
     queryParams := url.Values{}
-    if branchName != nil {
-        queryParams.Add("branchName", *branchName)
+    if args.BranchName != nil {
+        queryParams.Add("branchName", *args.BranchName)
     }
-    if stageName != nil {
-        queryParams.Add("stageName", *stageName)
+    if args.StageName != nil {
+        queryParams.Add("stageName", *args.StageName)
     }
-    if jobName != nil {
-        queryParams.Add("jobName", *jobName)
+    if args.JobName != nil {
+        queryParams.Add("jobName", *args.JobName)
     }
-    if configuration != nil {
-        queryParams.Add("configuration", *configuration)
+    if args.Configuration != nil {
+        queryParams.Add("configuration", *args.Configuration)
     }
-    if label != nil {
-        queryParams.Add("label", *label)
+    if args.Label != nil {
+        queryParams.Add("label", *args.Label)
     }
     locationId, _ := uuid.Parse("07acfdce-4757-4439-b422-ddd13a2fcc10")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -2094,25 +2481,39 @@ func (client Client) GetStatusBadge(ctx context.Context, project *string, defini
     return &responseValue, err
 }
 
+// Arguments for the GetStatusBadge function
+type GetStatusBadgeArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Either the definition name with optional leading folder path, or the definition id.
+    Definition *string
+    // (optional) Only consider the most recent build for this branch.
+    BranchName *string
+    // (optional) Use this stage within the pipeline to render the status.
+    StageName *string
+    // (optional) Use this job within a stage of the pipeline to render the status.
+    JobName *string
+    // (optional) Use this job configuration to render the status
+    Configuration *string
+    // (optional) Replaces the default text on the left side of the badge.
+    Label *string
+}
+
 // Adds a tag to a build.
-// ctx
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-// tag (required): The tag to add.
-func (client Client) AddBuildTag(ctx context.Context, project *string, buildId *int, tag *string) (*[]string, error) {
+func (client Client) AddBuildTag(ctx context.Context, args AddBuildTagArgs) (*[]string, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
-    if tag == nil || *tag == "" {
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
+    if args.Tag == nil || *args.Tag == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "tag"} 
     }
-    routeValues["tag"] = *tag
+    routeValues["tag"] = *args.Tag
 
     locationId, _ := uuid.Parse("6e6114b2-8161-44c8-8f6c-c5505782427f")
     resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -2125,26 +2526,32 @@ func (client Client) AddBuildTag(ctx context.Context, project *string, buildId *
     return &responseValue, err
 }
 
+// Arguments for the AddBuildTag function
+type AddBuildTagArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+    // (required) The tag to add.
+    Tag *string
+}
+
 // Adds tags to a build.
-// ctx
-// tags (required): The tags to add.
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-func (client Client) AddBuildTags(ctx context.Context, tags *[]string, project *string, buildId *int) (*[]string, error) {
-    if tags == nil {
+func (client Client) AddBuildTags(ctx context.Context, args AddBuildTagsArgs) (*[]string, error) {
+    if args.Tags == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "tags"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
-    body, marshalErr := json.Marshal(*tags)
+    body, marshalErr := json.Marshal(*args.Tags)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -2159,25 +2566,31 @@ func (client Client) AddBuildTags(ctx context.Context, tags *[]string, project *
     return &responseValue, err
 }
 
+// Arguments for the AddBuildTags function
+type AddBuildTagsArgs struct {
+    // (required) The tags to add.
+    Tags *[]string
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+}
+
 // Removes a tag from a build.
-// ctx
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-// tag (required): The tag to remove.
-func (client Client) DeleteBuildTag(ctx context.Context, project *string, buildId *int, tag *string) (*[]string, error) {
+func (client Client) DeleteBuildTag(ctx context.Context, args DeleteBuildTagArgs) (*[]string, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
-    if tag == nil || *tag == "" {
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
+    if args.Tag == nil || *args.Tag == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "tag"} 
     }
-    routeValues["tag"] = *tag
+    routeValues["tag"] = *args.Tag
 
     locationId, _ := uuid.Parse("6e6114b2-8161-44c8-8f6c-c5505782427f")
     resp, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -2190,20 +2603,27 @@ func (client Client) DeleteBuildTag(ctx context.Context, project *string, buildI
     return &responseValue, err
 }
 
+// Arguments for the DeleteBuildTag function
+type DeleteBuildTagArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+    // (required) The tag to remove.
+    Tag *string
+}
+
 // Gets the tags for a build.
-// ctx
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-func (client Client) GetBuildTags(ctx context.Context, project *string, buildId *int) (*[]string, error) {
+func (client Client) GetBuildTags(ctx context.Context, args GetBuildTagsArgs) (*[]string, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
     locationId, _ := uuid.Parse("6e6114b2-8161-44c8-8f6c-c5505782427f")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -2216,15 +2636,21 @@ func (client Client) GetBuildTags(ctx context.Context, project *string, buildId 
     return &responseValue, err
 }
 
+// Arguments for the GetBuildTags function
+type GetBuildTagsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+}
+
 // Gets a list of all build and definition tags in the project.
-// ctx
-// project (required): Project ID or project name
-func (client Client) GetTags(ctx context.Context, project *string) (*[]string, error) {
+func (client Client) GetTags(ctx context.Context, args GetTagsArgs) (*[]string, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     locationId, _ := uuid.Parse("d84ac5c6-edc7-43d5-adc9-1b34be5dea09")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -2237,25 +2663,27 @@ func (client Client) GetTags(ctx context.Context, project *string) (*[]string, e
     return &responseValue, err
 }
 
+// Arguments for the GetTags function
+type GetTagsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+}
+
 // [Preview API] Adds a tag to a definition
-// ctx
-// project (required): Project ID or project name
-// definitionId (required): The ID of the definition.
-// tag (required): The tag to add.
-func (client Client) AddDefinitionTag(ctx context.Context, project *string, definitionId *int, tag *string) (*[]string, error) {
+func (client Client) AddDefinitionTag(ctx context.Context, args AddDefinitionTagArgs) (*[]string, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if definitionId == nil {
+    routeValues["project"] = *args.Project
+    if args.DefinitionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
     }
-    routeValues["definitionId"] = strconv.Itoa(*definitionId)
-    if tag == nil || *tag == "" {
+    routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
+    if args.Tag == nil || *args.Tag == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "tag"} 
     }
-    routeValues["tag"] = *tag
+    routeValues["tag"] = *args.Tag
 
     locationId, _ := uuid.Parse("cb894432-134a-4d31-a839-83beceaace4b")
     resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/json", nil)
@@ -2268,26 +2696,32 @@ func (client Client) AddDefinitionTag(ctx context.Context, project *string, defi
     return &responseValue, err
 }
 
+// Arguments for the AddDefinitionTag function
+type AddDefinitionTagArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the definition.
+    DefinitionId *int
+    // (required) The tag to add.
+    Tag *string
+}
+
 // [Preview API] Adds multiple tags to a definition.
-// ctx
-// tags (required): The tags to add.
-// project (required): Project ID or project name
-// definitionId (required): The ID of the definition.
-func (client Client) AddDefinitionTags(ctx context.Context, tags *[]string, project *string, definitionId *int) (*[]string, error) {
-    if tags == nil {
+func (client Client) AddDefinitionTags(ctx context.Context, args AddDefinitionTagsArgs) (*[]string, error) {
+    if args.Tags == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "tags"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if definitionId == nil {
+    routeValues["project"] = *args.Project
+    if args.DefinitionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
     }
-    routeValues["definitionId"] = strconv.Itoa(*definitionId)
+    routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
-    body, marshalErr := json.Marshal(*tags)
+    body, marshalErr := json.Marshal(*args.Tags)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -2302,25 +2736,31 @@ func (client Client) AddDefinitionTags(ctx context.Context, tags *[]string, proj
     return &responseValue, err
 }
 
+// Arguments for the AddDefinitionTags function
+type AddDefinitionTagsArgs struct {
+    // (required) The tags to add.
+    Tags *[]string
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the definition.
+    DefinitionId *int
+}
+
 // [Preview API] Removes a tag from a definition.
-// ctx
-// project (required): Project ID or project name
-// definitionId (required): The ID of the definition.
-// tag (required): The tag to remove.
-func (client Client) DeleteDefinitionTag(ctx context.Context, project *string, definitionId *int, tag *string) (*[]string, error) {
+func (client Client) DeleteDefinitionTag(ctx context.Context, args DeleteDefinitionTagArgs) (*[]string, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if definitionId == nil {
+    routeValues["project"] = *args.Project
+    if args.DefinitionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
     }
-    routeValues["definitionId"] = strconv.Itoa(*definitionId)
-    if tag == nil || *tag == "" {
+    routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
+    if args.Tag == nil || *args.Tag == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "tag"} 
     }
-    routeValues["tag"] = *tag
+    routeValues["tag"] = *args.Tag
 
     locationId, _ := uuid.Parse("cb894432-134a-4d31-a839-83beceaace4b")
     resp, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/json", nil)
@@ -2333,25 +2773,31 @@ func (client Client) DeleteDefinitionTag(ctx context.Context, project *string, d
     return &responseValue, err
 }
 
+// Arguments for the DeleteDefinitionTag function
+type DeleteDefinitionTagArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the definition.
+    DefinitionId *int
+    // (required) The tag to remove.
+    Tag *string
+}
+
 // [Preview API] Gets the tags for a definition.
-// ctx
-// project (required): Project ID or project name
-// definitionId (required): The ID of the definition.
-// revision (optional): The definition revision number. If not specified, uses the latest revision of the definition.
-func (client Client) GetDefinitionTags(ctx context.Context, project *string, definitionId *int, revision *int) (*[]string, error) {
+func (client Client) GetDefinitionTags(ctx context.Context, args GetDefinitionTagsArgs) (*[]string, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if definitionId == nil {
+    routeValues["project"] = *args.Project
+    if args.DefinitionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
     }
-    routeValues["definitionId"] = strconv.Itoa(*definitionId)
+    routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
     queryParams := url.Values{}
-    if revision != nil {
-        queryParams.Add("revision", strconv.Itoa(*revision))
+    if args.Revision != nil {
+        queryParams.Add("revision", strconv.Itoa(*args.Revision))
     }
     locationId, _ := uuid.Parse("cb894432-134a-4d31-a839-83beceaace4b")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -2364,20 +2810,27 @@ func (client Client) GetDefinitionTags(ctx context.Context, project *string, def
     return &responseValue, err
 }
 
+// Arguments for the GetDefinitionTags function
+type GetDefinitionTagsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the definition.
+    DefinitionId *int
+    // (optional) The definition revision number. If not specified, uses the latest revision of the definition.
+    Revision *int
+}
+
 // Deletes a build definition template.
-// ctx
-// project (required): Project ID or project name
-// templateId (required): The ID of the template.
-func (client Client) DeleteTemplate(ctx context.Context, project *string, templateId *string) error {
+func (client Client) DeleteTemplate(ctx context.Context, args DeleteTemplateArgs) error {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if templateId == nil || *templateId == "" {
+    routeValues["project"] = *args.Project
+    if args.TemplateId == nil || *args.TemplateId == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "templateId"} 
     }
-    routeValues["templateId"] = *templateId
+    routeValues["templateId"] = *args.TemplateId
 
     locationId, _ := uuid.Parse("e884571e-7f92-4d6a-9274-3f5649900835")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -2388,20 +2841,25 @@ func (client Client) DeleteTemplate(ctx context.Context, project *string, templa
     return nil
 }
 
+// Arguments for the DeleteTemplate function
+type DeleteTemplateArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the template.
+    TemplateId *string
+}
+
 // Gets a specific build definition template.
-// ctx
-// project (required): Project ID or project name
-// templateId (required): The ID of the requested template.
-func (client Client) GetTemplate(ctx context.Context, project *string, templateId *string) (*BuildDefinitionTemplate, error) {
+func (client Client) GetTemplate(ctx context.Context, args GetTemplateArgs) (*BuildDefinitionTemplate, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if templateId == nil || *templateId == "" {
+    routeValues["project"] = *args.Project
+    if args.TemplateId == nil || *args.TemplateId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "templateId"} 
     }
-    routeValues["templateId"] = *templateId
+    routeValues["templateId"] = *args.TemplateId
 
     locationId, _ := uuid.Parse("e884571e-7f92-4d6a-9274-3f5649900835")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -2414,15 +2872,21 @@ func (client Client) GetTemplate(ctx context.Context, project *string, templateI
     return &responseValue, err
 }
 
+// Arguments for the GetTemplate function
+type GetTemplateArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the requested template.
+    TemplateId *string
+}
+
 // Gets all definition templates.
-// ctx
-// project (required): Project ID or project name
-func (client Client) GetTemplates(ctx context.Context, project *string) (*[]BuildDefinitionTemplate, error) {
+func (client Client) GetTemplates(ctx context.Context, args GetTemplatesArgs) (*[]BuildDefinitionTemplate, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     locationId, _ := uuid.Parse("e884571e-7f92-4d6a-9274-3f5649900835")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -2435,26 +2899,28 @@ func (client Client) GetTemplates(ctx context.Context, project *string) (*[]Buil
     return &responseValue, err
 }
 
+// Arguments for the GetTemplates function
+type GetTemplatesArgs struct {
+    // (required) Project ID or project name
+    Project *string
+}
+
 // Updates an existing build definition template.
-// ctx
-// template (required): The new version of the template.
-// project (required): Project ID or project name
-// templateId (required): The ID of the template.
-func (client Client) SaveTemplate(ctx context.Context, template *BuildDefinitionTemplate, project *string, templateId *string) (*BuildDefinitionTemplate, error) {
-    if template == nil {
+func (client Client) SaveTemplate(ctx context.Context, args SaveTemplateArgs) (*BuildDefinitionTemplate, error) {
+    if args.Template == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "template"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if templateId == nil || *templateId == "" {
+    routeValues["project"] = *args.Project
+    if args.TemplateId == nil || *args.TemplateId == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "templateId"} 
     }
-    routeValues["templateId"] = *templateId
+    routeValues["templateId"] = *args.TemplateId
 
-    body, marshalErr := json.Marshal(*template)
+    body, marshalErr := json.Marshal(*args.Template)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -2469,33 +2935,37 @@ func (client Client) SaveTemplate(ctx context.Context, template *BuildDefinition
     return &responseValue, err
 }
 
+// Arguments for the SaveTemplate function
+type SaveTemplateArgs struct {
+    // (required) The new version of the template.
+    Template *BuildDefinitionTemplate
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the template.
+    TemplateId *string
+}
+
 // Gets details for a build
-// ctx
-// project (required): Project ID or project name
-// buildId (required)
-// timelineId (optional)
-// changeId (optional)
-// planId (optional)
-func (client Client) GetBuildTimeline(ctx context.Context, project *string, buildId *int, timelineId *uuid.UUID, changeId *int, planId *uuid.UUID) (*Timeline, error) {
+func (client Client) GetBuildTimeline(ctx context.Context, args GetBuildTimelineArgs) (*Timeline, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
-    if timelineId != nil {
-        routeValues["timelineId"] = (*timelineId).String()
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
+    if args.TimelineId != nil {
+        routeValues["timelineId"] = (*args.TimelineId).String()
     }
 
     queryParams := url.Values{}
-    if changeId != nil {
-        queryParams.Add("changeId", strconv.Itoa(*changeId))
+    if args.ChangeId != nil {
+        queryParams.Add("changeId", strconv.Itoa(*args.ChangeId))
     }
-    if planId != nil {
-        queryParams.Add("planId", (*planId).String())
+    if args.PlanId != nil {
+        queryParams.Add("planId", (*args.PlanId).String())
     }
     locationId, _ := uuid.Parse("8baac422-4c6e-4de5-8532-db96d92acffa")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -2508,35 +2978,43 @@ func (client Client) GetBuildTimeline(ctx context.Context, project *string, buil
     return &responseValue, err
 }
 
+// Arguments for the GetBuildTimeline function
+type GetBuildTimelineArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required)
+    BuildId *int
+    // (optional)
+    TimelineId *uuid.UUID
+    // (optional)
+    ChangeId *int
+    // (optional)
+    PlanId *uuid.UUID
+}
+
 // [Preview API] Recreates the webhooks for the specified triggers in the given source code repository.
-// ctx
-// triggerTypes (required): The types of triggers to restore webhooks for.
-// project (required): Project ID or project name
-// providerName (required): The name of the source provider.
-// serviceEndpointId (optional): If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TFVC or TFGit.
-// repository (optional): If specified, the vendor-specific identifier or the name of the repository to get webhooks. Can only be omitted for providers that do not support multiple repositories.
-func (client Client) RestoreWebhooks(ctx context.Context, triggerTypes *[]DefinitionTriggerType, project *string, providerName *string, serviceEndpointId *uuid.UUID, repository *string) error {
-    if triggerTypes == nil {
+func (client Client) RestoreWebhooks(ctx context.Context, args RestoreWebhooksArgs) error {
+    if args.TriggerTypes == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "triggerTypes"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if providerName == nil || *providerName == "" {
+    routeValues["project"] = *args.Project
+    if args.ProviderName == nil || *args.ProviderName == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "providerName"} 
     }
-    routeValues["providerName"] = *providerName
+    routeValues["providerName"] = *args.ProviderName
 
     queryParams := url.Values{}
-    if serviceEndpointId != nil {
-        queryParams.Add("serviceEndpointId", (*serviceEndpointId).String())
+    if args.ServiceEndpointId != nil {
+        queryParams.Add("serviceEndpointId", (*args.ServiceEndpointId).String())
     }
-    if repository != nil {
-        queryParams.Add("repository", *repository)
+    if args.Repository != nil {
+        queryParams.Add("repository", *args.Repository)
     }
-    body, marshalErr := json.Marshal(*triggerTypes)
+    body, marshalErr := json.Marshal(*args.TriggerTypes)
     if marshalErr != nil {
         return marshalErr
     }
@@ -2549,29 +3027,38 @@ func (client Client) RestoreWebhooks(ctx context.Context, triggerTypes *[]Defini
     return nil
 }
 
+// Arguments for the RestoreWebhooks function
+type RestoreWebhooksArgs struct {
+    // (required) The types of triggers to restore webhooks for.
+    TriggerTypes *[]DefinitionTriggerType
+    // (required) Project ID or project name
+    Project *string
+    // (required) The name of the source provider.
+    ProviderName *string
+    // (optional) If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TFVC or TFGit.
+    ServiceEndpointId *uuid.UUID
+    // (optional) If specified, the vendor-specific identifier or the name of the repository to get webhooks. Can only be omitted for providers that do not support multiple repositories.
+    Repository *string
+}
+
 // [Preview API] Gets a list of webhooks installed in the given source code repository.
-// ctx
-// project (required): Project ID or project name
-// providerName (required): The name of the source provider.
-// serviceEndpointId (optional): If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TFVC or TFGit.
-// repository (optional): If specified, the vendor-specific identifier or the name of the repository to get webhooks. Can only be omitted for providers that do not support multiple repositories.
-func (client Client) ListWebhooks(ctx context.Context, project *string, providerName *string, serviceEndpointId *uuid.UUID, repository *string) (*[]RepositoryWebhook, error) {
+func (client Client) ListWebhooks(ctx context.Context, args ListWebhooksArgs) (*[]RepositoryWebhook, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if providerName == nil || *providerName == "" {
+    routeValues["project"] = *args.Project
+    if args.ProviderName == nil || *args.ProviderName == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "providerName"} 
     }
-    routeValues["providerName"] = *providerName
+    routeValues["providerName"] = *args.ProviderName
 
     queryParams := url.Values{}
-    if serviceEndpointId != nil {
-        queryParams.Add("serviceEndpointId", (*serviceEndpointId).String())
+    if args.ServiceEndpointId != nil {
+        queryParams.Add("serviceEndpointId", (*args.ServiceEndpointId).String())
     }
-    if repository != nil {
-        queryParams.Add("repository", *repository)
+    if args.Repository != nil {
+        queryParams.Add("repository", *args.Repository)
     }
     locationId, _ := uuid.Parse("8f20ff82-9498-4812-9f6e-9c01bdc50e99")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -2584,25 +3071,33 @@ func (client Client) ListWebhooks(ctx context.Context, project *string, provider
     return &responseValue, err
 }
 
+// Arguments for the ListWebhooks function
+type ListWebhooksArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The name of the source provider.
+    ProviderName *string
+    // (optional) If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TFVC or TFGit.
+    ServiceEndpointId *uuid.UUID
+    // (optional) If specified, the vendor-specific identifier or the name of the repository to get webhooks. Can only be omitted for providers that do not support multiple repositories.
+    Repository *string
+}
+
 // Gets the work items associated with a build.
-// ctx
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-// top (optional): The maximum number of work items to return.
-func (client Client) GetBuildWorkItemsRefs(ctx context.Context, project *string, buildId *int, top *int) (*[]ResourceRef, error) {
+func (client Client) GetBuildWorkItemsRefs(ctx context.Context, args GetBuildWorkItemsRefsArgs) (*[]ResourceRef, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
     queryParams := url.Values{}
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
     locationId, _ := uuid.Parse("5a21f5d2-5642-47e4-a0bd-1356e6731bee")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -2615,31 +3110,36 @@ func (client Client) GetBuildWorkItemsRefs(ctx context.Context, project *string,
     return &responseValue, err
 }
 
+// Arguments for the GetBuildWorkItemsRefs function
+type GetBuildWorkItemsRefsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+    // (optional) The maximum number of work items to return.
+    Top *int
+}
+
 // Gets the work items associated with a build, filtered to specific commits.
-// ctx
-// commitIds (required): A comma-delimited list of commit IDs.
-// project (required): Project ID or project name
-// buildId (required): The ID of the build.
-// top (optional): The maximum number of work items to return, or the number of commits to consider if no commit IDs are specified.
-func (client Client) GetBuildWorkItemsRefsFromCommits(ctx context.Context, commitIds *[]string, project *string, buildId *int, top *int) (*[]ResourceRef, error) {
-    if commitIds == nil {
+func (client Client) GetBuildWorkItemsRefsFromCommits(ctx context.Context, args GetBuildWorkItemsRefsFromCommitsArgs) (*[]ResourceRef, error) {
+    if args.CommitIds == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "commitIds"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if buildId == nil {
+    routeValues["project"] = *args.Project
+    if args.BuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "buildId"} 
     }
-    routeValues["buildId"] = strconv.Itoa(*buildId)
+    routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
     queryParams := url.Values{}
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    body, marshalErr := json.Marshal(*commitIds)
+    body, marshalErr := json.Marshal(*args.CommitIds)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -2654,30 +3154,37 @@ func (client Client) GetBuildWorkItemsRefsFromCommits(ctx context.Context, commi
     return &responseValue, err
 }
 
+// Arguments for the GetBuildWorkItemsRefsFromCommits function
+type GetBuildWorkItemsRefsFromCommitsArgs struct {
+    // (required) A comma-delimited list of commit IDs.
+    CommitIds *[]string
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the build.
+    BuildId *int
+    // (optional) The maximum number of work items to return, or the number of commits to consider if no commit IDs are specified.
+    Top *int
+}
+
 // [Preview API] Gets all the work items between two builds.
-// ctx
-// project (required): Project ID or project name
-// fromBuildId (required): The ID of the first build.
-// toBuildId (required): The ID of the last build.
-// top (optional): The maximum number of work items to return.
-func (client Client) GetWorkItemsBetweenBuilds(ctx context.Context, project *string, fromBuildId *int, toBuildId *int, top *int) (*[]ResourceRef, error) {
+func (client Client) GetWorkItemsBetweenBuilds(ctx context.Context, args GetWorkItemsBetweenBuildsArgs) (*[]ResourceRef, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if fromBuildId == nil {
+    if args.FromBuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "fromBuildId"}
     }
-    queryParams.Add("fromBuildId", strconv.Itoa(*fromBuildId))
-    if toBuildId == nil {
+    queryParams.Add("fromBuildId", strconv.Itoa(*args.FromBuildId))
+    if args.ToBuildId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "toBuildId"}
     }
-    queryParams.Add("toBuildId", strconv.Itoa(*toBuildId))
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    queryParams.Add("toBuildId", strconv.Itoa(*args.ToBuildId))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
     locationId, _ := uuid.Parse("52ba8915-5518-42e3-a4bb-b0182d159e2d")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -2688,5 +3195,17 @@ func (client Client) GetWorkItemsBetweenBuilds(ctx context.Context, project *str
     var responseValue []ResourceRef
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the GetWorkItemsBetweenBuilds function
+type GetWorkItemsBetweenBuildsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The ID of the first build.
+    FromBuildId *int
+    // (required) The ID of the last build.
+    ToBuildId *int
+    // (optional) The maximum number of work items to return.
+    Top *int
 }
 

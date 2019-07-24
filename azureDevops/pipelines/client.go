@@ -31,34 +31,28 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) *Client {
 }
 
 // [Preview API]
-// ctx
-// project (required): Project ID or project name
-// pipelineId (required)
-// runId (required)
-// logId (required)
-// expand (optional)
-func (client Client) GetLog(ctx context.Context, project *string, pipelineId *int, runId *int, logId *int, expand *GetLogExpandOptions) (*Log, error) {
+func (client Client) GetLog(ctx context.Context, args GetLogArgs) (*Log, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if pipelineId == nil {
+    routeValues["project"] = *args.Project
+    if args.PipelineId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "pipelineId"} 
     }
-    routeValues["pipelineId"] = strconv.Itoa(*pipelineId)
-    if runId == nil {
+    routeValues["pipelineId"] = strconv.Itoa(*args.PipelineId)
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
-    if logId == nil {
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
+    if args.LogId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "logId"} 
     }
-    routeValues["logId"] = strconv.Itoa(*logId)
+    routeValues["logId"] = strconv.Itoa(*args.LogId)
 
     queryParams := url.Values{}
-    if expand != nil {
-        queryParams.Add("$expand", string(*expand))
+    if args.Expand != nil {
+        queryParams.Add("$expand", string(*args.Expand))
     }
     locationId, _ := uuid.Parse("fb1b6d27-3957-43d5-a14b-a2d70403e545")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -71,30 +65,39 @@ func (client Client) GetLog(ctx context.Context, project *string, pipelineId *in
     return &responseValue, err
 }
 
+// Arguments for the GetLog function
+type GetLogArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required)
+    PipelineId *int
+    // (required)
+    RunId *int
+    // (required)
+    LogId *int
+    // (optional)
+    Expand *GetLogExpandOptions
+}
+
 // [Preview API]
-// ctx
-// project (required): Project ID or project name
-// pipelineId (required)
-// runId (required)
-// expand (optional)
-func (client Client) ListLogs(ctx context.Context, project *string, pipelineId *int, runId *int, expand *GetLogExpandOptions) (*LogCollection, error) {
+func (client Client) ListLogs(ctx context.Context, args ListLogsArgs) (*LogCollection, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if pipelineId == nil {
+    routeValues["project"] = *args.Project
+    if args.PipelineId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "pipelineId"} 
     }
-    routeValues["pipelineId"] = strconv.Itoa(*pipelineId)
-    if runId == nil {
+    routeValues["pipelineId"] = strconv.Itoa(*args.PipelineId)
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
 
     queryParams := url.Values{}
-    if expand != nil {
-        queryParams.Add("$expand", string(*expand))
+    if args.Expand != nil {
+        queryParams.Add("$expand", string(*args.Expand))
     }
     locationId, _ := uuid.Parse("fb1b6d27-3957-43d5-a14b-a2d70403e545")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -107,21 +110,30 @@ func (client Client) ListLogs(ctx context.Context, project *string, pipelineId *
     return &responseValue, err
 }
 
+// Arguments for the ListLogs function
+type ListLogsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required)
+    PipelineId *int
+    // (required)
+    RunId *int
+    // (optional)
+    Expand *GetLogExpandOptions
+}
+
 // [Preview API]
-// ctx
-// inputParameters (required)
-// project (required): Project ID or project name
-func (client Client) CreatePipeline(ctx context.Context, inputParameters *CreatePipelineParameters, project *string) (*Pipeline, error) {
-    if inputParameters == nil {
+func (client Client) CreatePipeline(ctx context.Context, args CreatePipelineArgs) (*Pipeline, error) {
+    if args.InputParameters == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "inputParameters"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
-    body, marshalErr := json.Marshal(*inputParameters)
+    body, marshalErr := json.Marshal(*args.InputParameters)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -136,25 +148,29 @@ func (client Client) CreatePipeline(ctx context.Context, inputParameters *Create
     return &responseValue, err
 }
 
+// Arguments for the CreatePipeline function
+type CreatePipelineArgs struct {
+    // (required)
+    InputParameters *CreatePipelineParameters
+    // (required) Project ID or project name
+    Project *string
+}
+
 // [Preview API] Gets a pipeline, optionally at the specified version
-// ctx
-// project (required): Project ID or project name
-// pipelineId (required): The pipeline id
-// pipelineVersion (optional): The pipeline version
-func (client Client) GetPipeline(ctx context.Context, project *string, pipelineId *int, pipelineVersion *int) (*Pipeline, error) {
+func (client Client) GetPipeline(ctx context.Context, args GetPipelineArgs) (*Pipeline, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if pipelineId == nil {
+    routeValues["project"] = *args.Project
+    if args.PipelineId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "pipelineId"} 
     }
-    routeValues["pipelineId"] = strconv.Itoa(*pipelineId)
+    routeValues["pipelineId"] = strconv.Itoa(*args.PipelineId)
 
     queryParams := url.Values{}
-    if pipelineVersion != nil {
-        queryParams.Add("pipelineVersion", strconv.Itoa(*pipelineVersion))
+    if args.PipelineVersion != nil {
+        queryParams.Add("pipelineVersion", strconv.Itoa(*args.PipelineVersion))
     }
     locationId, _ := uuid.Parse("28e1305e-2afe-47bf-abaf-cbb0e6a91988")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -167,28 +183,33 @@ func (client Client) GetPipeline(ctx context.Context, project *string, pipelineI
     return &responseValue, err
 }
 
+// Arguments for the GetPipeline function
+type GetPipelineArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The pipeline id
+    PipelineId *int
+    // (optional) The pipeline version
+    PipelineVersion *int
+}
+
 // [Preview API] Gets a list of pipelines.
-// ctx
-// project (required): Project ID or project name
-// orderBy (optional): A sort expression. Defaults to "name asc"
-// top (optional): The maximum number of pipelines to return
-// continuationToken (optional): A continuation token from a previous request, to retrieve the next page of results
-func (client Client) ListPipelines(ctx context.Context, project *string, orderBy *string, top *int, continuationToken *string) (*[]Pipeline, error) {
+func (client Client) ListPipelines(ctx context.Context, args ListPipelinesArgs) (*[]Pipeline, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if orderBy != nil {
-        queryParams.Add("orderBy", *orderBy)
+    if args.OrderBy != nil {
+        queryParams.Add("orderBy", *args.OrderBy)
     }
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    if continuationToken != nil {
-        queryParams.Add("continuationToken", *continuationToken)
+    if args.ContinuationToken != nil {
+        queryParams.Add("continuationToken", *args.ContinuationToken)
     }
     locationId, _ := uuid.Parse("28e1305e-2afe-47bf-abaf-cbb0e6a91988")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -201,25 +222,33 @@ func (client Client) ListPipelines(ctx context.Context, project *string, orderBy
     return &responseValue, err
 }
 
+// Arguments for the ListPipelines function
+type ListPipelinesArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (optional) A sort expression. Defaults to "name asc"
+    OrderBy *string
+    // (optional) The maximum number of pipelines to return
+    Top *int
+    // (optional) A continuation token from a previous request, to retrieve the next page of results
+    ContinuationToken *string
+}
+
 // [Preview API] Gets a run for a particular pipeline.
-// ctx
-// project (required): Project ID or project name
-// pipelineId (required): The pipeline id
-// runId (required): The run id
-func (client Client) GetRun(ctx context.Context, project *string, pipelineId *int, runId *int) (*Run, error) {
+func (client Client) GetRun(ctx context.Context, args GetRunArgs) (*Run, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if pipelineId == nil {
+    routeValues["project"] = *args.Project
+    if args.PipelineId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "pipelineId"} 
     }
-    routeValues["pipelineId"] = strconv.Itoa(*pipelineId)
-    if runId == nil {
+    routeValues["pipelineId"] = strconv.Itoa(*args.PipelineId)
+    if args.RunId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runId"} 
     }
-    routeValues["runId"] = strconv.Itoa(*runId)
+    routeValues["runId"] = strconv.Itoa(*args.RunId)
 
     locationId, _ := uuid.Parse("7859261e-d2e9-4a68-b820-a5d84cc5bb3d")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -232,20 +261,27 @@ func (client Client) GetRun(ctx context.Context, project *string, pipelineId *in
     return &responseValue, err
 }
 
+// Arguments for the GetRun function
+type GetRunArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The pipeline id
+    PipelineId *int
+    // (required) The run id
+    RunId *int
+}
+
 // [Preview API] Gets top 10000 runs for a particular pipeline.
-// ctx
-// project (required): Project ID or project name
-// pipelineId (required): The pipeline id
-func (client Client) ListRuns(ctx context.Context, project *string, pipelineId *int) (*[]Run, error) {
+func (client Client) ListRuns(ctx context.Context, args ListRunsArgs) (*[]Run, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if pipelineId == nil {
+    routeValues["project"] = *args.Project
+    if args.PipelineId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "pipelineId"} 
     }
-    routeValues["pipelineId"] = strconv.Itoa(*pipelineId)
+    routeValues["pipelineId"] = strconv.Itoa(*args.PipelineId)
 
     locationId, _ := uuid.Parse("7859261e-d2e9-4a68-b820-a5d84cc5bb3d")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -258,31 +294,34 @@ func (client Client) ListRuns(ctx context.Context, project *string, pipelineId *
     return &responseValue, err
 }
 
+// Arguments for the ListRuns function
+type ListRunsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) The pipeline id
+    PipelineId *int
+}
+
 // [Preview API] Runs a pipeline.
-// ctx
-// runParameters (required): Optional.
-// project (required): Project ID or project name
-// pipelineId (required): The pipeline id
-// pipelineVersion (optional): The pipeline version
-func (client Client) RunPipeline(ctx context.Context, runParameters *RunPipelineParameters, project *string, pipelineId *int, pipelineVersion *int) (*Run, error) {
-    if runParameters == nil {
+func (client Client) RunPipeline(ctx context.Context, args RunPipelineArgs) (*Run, error) {
+    if args.RunParameters == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "runParameters"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if pipelineId == nil {
+    routeValues["project"] = *args.Project
+    if args.PipelineId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "pipelineId"} 
     }
-    routeValues["pipelineId"] = strconv.Itoa(*pipelineId)
+    routeValues["pipelineId"] = strconv.Itoa(*args.PipelineId)
 
     queryParams := url.Values{}
-    if pipelineVersion != nil {
-        queryParams.Add("pipelineVersion", strconv.Itoa(*pipelineVersion))
+    if args.PipelineVersion != nil {
+        queryParams.Add("pipelineVersion", strconv.Itoa(*args.PipelineVersion))
     }
-    body, marshalErr := json.Marshal(*runParameters)
+    body, marshalErr := json.Marshal(*args.RunParameters)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -295,5 +334,17 @@ func (client Client) RunPipeline(ctx context.Context, runParameters *RunPipeline
     var responseValue Run
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the RunPipeline function
+type RunPipelineArgs struct {
+    // (required) Optional.
+    RunParameters *RunPipelineParameters
+    // (required) Project ID or project name
+    Project *string
+    // (required) The pipeline id
+    PipelineId *int
+    // (optional) The pipeline version
+    PipelineVersion *int
 }
 

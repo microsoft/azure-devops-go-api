@@ -39,52 +39,42 @@ func NewClient(ctx context.Context, connection azureDevops.Connection) (*Client,
 }
 
 // Get a list of approvals
-// ctx
-// project (required): Project ID or project name
-// assignedToFilter (optional): Approvals assigned to this user.
-// statusFilter (optional): Approvals with this status. Default is 'pending'.
-// releaseIdsFilter (optional): Approvals for release id(s) mentioned in the filter. Multiple releases can be mentioned by separating them with ',' e.g. releaseIdsFilter=1,2,3,4.
-// typeFilter (optional): Approval with this type.
-// top (optional): Number of approvals to get. Default is 50.
-// continuationToken (optional): Gets the approvals after the continuation token provided.
-// queryOrder (optional): Gets the results in the defined order of created approvals. Default is 'descending'.
-// includeMyGroupApprovals (optional): 'true' to include my group approvals. Default is 'false'.
-func (client Client) GetApprovals(ctx context.Context, project *string, assignedToFilter *string, statusFilter *ApprovalStatus, releaseIdsFilter *[]int, typeFilter *ApprovalType, top *int, continuationToken *int, queryOrder *ReleaseQueryOrder, includeMyGroupApprovals *bool) (*[]ReleaseApproval, error) {
+func (client Client) GetApprovals(ctx context.Context, args GetApprovalsArgs) (*[]ReleaseApproval, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if assignedToFilter != nil {
-        queryParams.Add("assignedToFilter", *assignedToFilter)
+    if args.AssignedToFilter != nil {
+        queryParams.Add("assignedToFilter", *args.AssignedToFilter)
     }
-    if statusFilter != nil {
-        queryParams.Add("statusFilter", string(*statusFilter))
+    if args.StatusFilter != nil {
+        queryParams.Add("statusFilter", string(*args.StatusFilter))
     }
-    if releaseIdsFilter != nil {
+    if args.ReleaseIdsFilter != nil {
         var stringList []string
-        for _, item := range *releaseIdsFilter {
+        for _, item := range *args.ReleaseIdsFilter {
             stringList = append(stringList, strconv.Itoa(item))
         }
         listAsString := strings.Join((stringList)[:], ",")
         queryParams.Add("definitions", listAsString)
     }
-    if typeFilter != nil {
-        queryParams.Add("typeFilter", string(*typeFilter))
+    if args.TypeFilter != nil {
+        queryParams.Add("typeFilter", string(*args.TypeFilter))
     }
-    if top != nil {
-        queryParams.Add("top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("top", strconv.Itoa(*args.Top))
     }
-    if continuationToken != nil {
-        queryParams.Add("continuationToken", strconv.Itoa(*continuationToken))
+    if args.ContinuationToken != nil {
+        queryParams.Add("continuationToken", strconv.Itoa(*args.ContinuationToken))
     }
-    if queryOrder != nil {
-        queryParams.Add("queryOrder", string(*queryOrder))
+    if args.QueryOrder != nil {
+        queryParams.Add("queryOrder", string(*args.QueryOrder))
     }
-    if includeMyGroupApprovals != nil {
-        queryParams.Add("includeMyGroupApprovals", strconv.FormatBool(*includeMyGroupApprovals))
+    if args.IncludeMyGroupApprovals != nil {
+        queryParams.Add("includeMyGroupApprovals", strconv.FormatBool(*args.IncludeMyGroupApprovals))
     }
     locationId, _ := uuid.Parse("b47c6458-e73b-47cb-a770-4df1e8813a91")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -97,26 +87,44 @@ func (client Client) GetApprovals(ctx context.Context, project *string, assigned
     return &responseValue, err
 }
 
+// Arguments for the GetApprovals function
+type GetApprovalsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (optional) Approvals assigned to this user.
+    AssignedToFilter *string
+    // (optional) Approvals with this status. Default is 'pending'.
+    StatusFilter *ApprovalStatus
+    // (optional) Approvals for release id(s) mentioned in the filter. Multiple releases can be mentioned by separating them with ',' e.g. releaseIdsFilter=1,2,3,4.
+    ReleaseIdsFilter *[]int
+    // (optional) Approval with this type.
+    TypeFilter *ApprovalType
+    // (optional) Number of approvals to get. Default is 50.
+    Top *int
+    // (optional) Gets the approvals after the continuation token provided.
+    ContinuationToken *int
+    // (optional) Gets the results in the defined order of created approvals. Default is 'descending'.
+    QueryOrder *ReleaseQueryOrder
+    // (optional) 'true' to include my group approvals. Default is 'false'.
+    IncludeMyGroupApprovals *bool
+}
+
 // Update status of an approval
-// ctx
-// approval (required): ReleaseApproval object having status, approver and comments.
-// project (required): Project ID or project name
-// approvalId (required): Id of the approval.
-func (client Client) UpdateReleaseApproval(ctx context.Context, approval *ReleaseApproval, project *string, approvalId *int) (*ReleaseApproval, error) {
-    if approval == nil {
+func (client Client) UpdateReleaseApproval(ctx context.Context, args UpdateReleaseApprovalArgs) (*ReleaseApproval, error) {
+    if args.Approval == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "approval"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if approvalId == nil {
+    routeValues["project"] = *args.Project
+    if args.ApprovalId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "approvalId"} 
     }
-    routeValues["approvalId"] = strconv.Itoa(*approvalId)
+    routeValues["approvalId"] = strconv.Itoa(*args.ApprovalId)
 
-    body, marshalErr := json.Marshal(*approval)
+    body, marshalErr := json.Marshal(*args.Approval)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -131,55 +139,55 @@ func (client Client) UpdateReleaseApproval(ctx context.Context, approval *Releas
     return &responseValue, err
 }
 
+// Arguments for the UpdateReleaseApproval function
+type UpdateReleaseApprovalArgs struct {
+    // (required) ReleaseApproval object having status, approver and comments.
+    Approval *ReleaseApproval
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the approval.
+    ApprovalId *int
+}
+
 // [Preview API] Get a release task attachment.
-// ctx
-// project (required): Project ID or project name
-// releaseId (required): Id of the release.
-// environmentId (required): Id of the release environment.
-// attemptId (required): Attempt number of deployment.
-// planId (required): Plan Id of the deploy phase.
-// timelineId (required): Timeline Id of the task.
-// recordId (required): Record Id of attachment.
-// type_ (required): Type of the attachment.
-// name (required): Name of the attachment.
-func (client Client) GetReleaseTaskAttachmentContent(ctx context.Context, project *string, releaseId *int, environmentId *int, attemptId *int, planId *uuid.UUID, timelineId *uuid.UUID, recordId *uuid.UUID, type_ *string, name *string) (io.ReadCloser, error) {
+func (client Client) GetReleaseTaskAttachmentContent(ctx context.Context, args GetReleaseTaskAttachmentContentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if releaseId == nil {
+    routeValues["project"] = *args.Project
+    if args.ReleaseId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
     }
-    routeValues["releaseId"] = strconv.Itoa(*releaseId)
-    if environmentId == nil {
+    routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
+    if args.EnvironmentId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "environmentId"} 
     }
-    routeValues["environmentId"] = strconv.Itoa(*environmentId)
-    if attemptId == nil {
+    routeValues["environmentId"] = strconv.Itoa(*args.EnvironmentId)
+    if args.AttemptId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "attemptId"} 
     }
-    routeValues["attemptId"] = strconv.Itoa(*attemptId)
-    if planId == nil {
+    routeValues["attemptId"] = strconv.Itoa(*args.AttemptId)
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = (*planId).String()
-    if timelineId == nil {
+    routeValues["planId"] = (*args.PlanId).String()
+    if args.TimelineId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "timelineId"} 
     }
-    routeValues["timelineId"] = (*timelineId).String()
-    if recordId == nil {
+    routeValues["timelineId"] = (*args.TimelineId).String()
+    if args.RecordId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "recordId"} 
     }
-    routeValues["recordId"] = (*recordId).String()
-    if type_ == nil || *type_ == "" {
+    routeValues["recordId"] = (*args.RecordId).String()
+    if args.Type_ == nil || *args.Type_ == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
-    routeValues["type_"] = *type_
-    if name == nil || *name == "" {
+    routeValues["type_"] = *args.Type_
+    if args.Name == nil || *args.Name == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "name"} 
     }
-    routeValues["name"] = *name
+    routeValues["name"] = *args.Name
 
     locationId, _ := uuid.Parse("60b86efb-7b8c-4853-8f9f-aa142b77b479")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/octet-stream", nil)
@@ -190,40 +198,55 @@ func (client Client) GetReleaseTaskAttachmentContent(ctx context.Context, projec
     return resp.Body, err
 }
 
+// Arguments for the GetReleaseTaskAttachmentContent function
+type GetReleaseTaskAttachmentContentArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the release.
+    ReleaseId *int
+    // (required) Id of the release environment.
+    EnvironmentId *int
+    // (required) Attempt number of deployment.
+    AttemptId *int
+    // (required) Plan Id of the deploy phase.
+    PlanId *uuid.UUID
+    // (required) Timeline Id of the task.
+    TimelineId *uuid.UUID
+    // (required) Record Id of attachment.
+    RecordId *uuid.UUID
+    // (required) Type of the attachment.
+    Type_ *string
+    // (required) Name of the attachment.
+    Name *string
+}
+
 // [Preview API] Get the release task attachments.
-// ctx
-// project (required): Project ID or project name
-// releaseId (required): Id of the release.
-// environmentId (required): Id of the release environment.
-// attemptId (required): Attempt number of deployment.
-// planId (required): Plan Id of the deploy phase.
-// type_ (required): Type of the attachment.
-func (client Client) GetReleaseTaskAttachments(ctx context.Context, project *string, releaseId *int, environmentId *int, attemptId *int, planId *uuid.UUID, type_ *string) (*[]ReleaseTaskAttachment, error) {
+func (client Client) GetReleaseTaskAttachments(ctx context.Context, args GetReleaseTaskAttachmentsArgs) (*[]ReleaseTaskAttachment, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if releaseId == nil {
+    routeValues["project"] = *args.Project
+    if args.ReleaseId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
     }
-    routeValues["releaseId"] = strconv.Itoa(*releaseId)
-    if environmentId == nil {
+    routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
+    if args.EnvironmentId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "environmentId"} 
     }
-    routeValues["environmentId"] = strconv.Itoa(*environmentId)
-    if attemptId == nil {
+    routeValues["environmentId"] = strconv.Itoa(*args.EnvironmentId)
+    if args.AttemptId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "attemptId"} 
     }
-    routeValues["attemptId"] = strconv.Itoa(*attemptId)
-    if planId == nil {
+    routeValues["attemptId"] = strconv.Itoa(*args.AttemptId)
+    if args.PlanId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "planId"} 
     }
-    routeValues["planId"] = (*planId).String()
-    if type_ == nil || *type_ == "" {
+    routeValues["planId"] = (*args.PlanId).String()
+    if args.Type_ == nil || *args.Type_ == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "type_"} 
     }
-    routeValues["type_"] = *type_
+    routeValues["type_"] = *args.Type_
 
     locationId, _ := uuid.Parse("a4d06688-0dfa-4895-82a5-f43ec9452306")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -236,21 +259,34 @@ func (client Client) GetReleaseTaskAttachments(ctx context.Context, project *str
     return &responseValue, err
 }
 
+// Arguments for the GetReleaseTaskAttachments function
+type GetReleaseTaskAttachmentsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the release.
+    ReleaseId *int
+    // (required) Id of the release environment.
+    EnvironmentId *int
+    // (required) Attempt number of deployment.
+    AttemptId *int
+    // (required) Plan Id of the deploy phase.
+    PlanId *uuid.UUID
+    // (required) Type of the attachment.
+    Type_ *string
+}
+
 // Create a release definition
-// ctx
-// releaseDefinition (required): release definition object to create.
-// project (required): Project ID or project name
-func (client Client) CreateReleaseDefinition(ctx context.Context, releaseDefinition *ReleaseDefinition, project *string) (*ReleaseDefinition, error) {
-    if releaseDefinition == nil {
+func (client Client) CreateReleaseDefinition(ctx context.Context, args CreateReleaseDefinitionArgs) (*ReleaseDefinition, error) {
+    if args.ReleaseDefinition == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseDefinition"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
-    body, marshalErr := json.Marshal(*releaseDefinition)
+    body, marshalErr := json.Marshal(*args.ReleaseDefinition)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -265,29 +301,32 @@ func (client Client) CreateReleaseDefinition(ctx context.Context, releaseDefinit
     return &responseValue, err
 }
 
+// Arguments for the CreateReleaseDefinition function
+type CreateReleaseDefinitionArgs struct {
+    // (required) release definition object to create.
+    ReleaseDefinition *ReleaseDefinition
+    // (required) Project ID or project name
+    Project *string
+}
+
 // Delete a release definition.
-// ctx
-// project (required): Project ID or project name
-// definitionId (required): Id of the release definition.
-// comment (optional): Comment for deleting a release definition.
-// forceDelete (optional): 'true' to automatically cancel any in-progress release deployments and proceed with release definition deletion . Default is 'false'.
-func (client Client) DeleteReleaseDefinition(ctx context.Context, project *string, definitionId *int, comment *string, forceDelete *bool) error {
+func (client Client) DeleteReleaseDefinition(ctx context.Context, args DeleteReleaseDefinitionArgs) error {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if definitionId == nil {
+    routeValues["project"] = *args.Project
+    if args.DefinitionId == nil {
         return &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
     }
-    routeValues["definitionId"] = strconv.Itoa(*definitionId)
+    routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
     queryParams := url.Values{}
-    if comment != nil {
-        queryParams.Add("comment", *comment)
+    if args.Comment != nil {
+        queryParams.Add("comment", *args.Comment)
     }
-    if forceDelete != nil {
-        queryParams.Add("forceDelete", strconv.FormatBool(*forceDelete))
+    if args.ForceDelete != nil {
+        queryParams.Add("forceDelete", strconv.FormatBool(*args.ForceDelete))
     }
     locationId, _ := uuid.Parse("d8f96f24-8ea7-4cb6-baab-2df8fc515665")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -298,25 +337,33 @@ func (client Client) DeleteReleaseDefinition(ctx context.Context, project *strin
     return nil
 }
 
+// Arguments for the DeleteReleaseDefinition function
+type DeleteReleaseDefinitionArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the release definition.
+    DefinitionId *int
+    // (optional) Comment for deleting a release definition.
+    Comment *string
+    // (optional) 'true' to automatically cancel any in-progress release deployments and proceed with release definition deletion . Default is 'false'.
+    ForceDelete *bool
+}
+
 // Get a release definition.
-// ctx
-// project (required): Project ID or project name
-// definitionId (required): Id of the release definition.
-// propertyFilters (optional): A comma-delimited list of extended properties to be retrieved. If set, the returned Release Definition will contain values for the specified property Ids (if they exist). If not set, properties will not be included.
-func (client Client) GetReleaseDefinition(ctx context.Context, project *string, definitionId *int, propertyFilters *[]string) (*ReleaseDefinition, error) {
+func (client Client) GetReleaseDefinition(ctx context.Context, args GetReleaseDefinitionArgs) (*ReleaseDefinition, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if definitionId == nil {
+    routeValues["project"] = *args.Project
+    if args.DefinitionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
     }
-    routeValues["definitionId"] = strconv.Itoa(*definitionId)
+    routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
     queryParams := url.Values{}
-    if propertyFilters != nil {
-        listAsString := strings.Join((*propertyFilters)[:], ",")
+    if args.PropertyFilters != nil {
+        listAsString := strings.Join((*args.PropertyFilters)[:], ",")
         queryParams.Add("propertyFilters", listAsString)
     }
     locationId, _ := uuid.Parse("d8f96f24-8ea7-4cb6-baab-2df8fc515665")
@@ -330,75 +377,69 @@ func (client Client) GetReleaseDefinition(ctx context.Context, project *string, 
     return &responseValue, err
 }
 
+// Arguments for the GetReleaseDefinition function
+type GetReleaseDefinitionArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the release definition.
+    DefinitionId *int
+    // (optional) A comma-delimited list of extended properties to be retrieved. If set, the returned Release Definition will contain values for the specified property Ids (if they exist). If not set, properties will not be included.
+    PropertyFilters *[]string
+}
+
 // Get a list of release definitions.
-// ctx
-// project (required): Project ID or project name
-// searchText (optional): Get release definitions with names containing searchText.
-// expand (optional): The properties that should be expanded in the list of Release definitions.
-// artifactType (optional): Release definitions with given artifactType will be returned. Values can be Build, Jenkins, GitHub, Nuget, Team Build (external), ExternalTFSBuild, Git, TFVC, ExternalTfsXamlBuild.
-// artifactSourceId (optional): Release definitions with given artifactSourceId will be returned. e.g. For build it would be {projectGuid}:{BuildDefinitionId}, for Jenkins it would be {JenkinsConnectionId}:{JenkinsDefinitionId}, for TfsOnPrem it would be {TfsOnPremConnectionId}:{ProjectName}:{TfsOnPremDefinitionId}. For third-party artifacts e.g. TeamCity, BitBucket you may refer 'uniqueSourceIdentifier' inside vss-extension.json at https://github.com/Microsoft/vsts-rm-extensions/blob/master/Extensions.
-// top (optional): Number of release definitions to get.
-// continuationToken (optional): Gets the release definitions after the continuation token provided.
-// queryOrder (optional): Gets the results in the defined order. Default is 'IdAscending'.
-// path (optional): Gets the release definitions under the specified path.
-// isExactNameMatch (optional): 'true'to gets the release definitions with exact match as specified in searchText. Default is 'false'.
-// tagFilter (optional): A comma-delimited list of tags. Only release definitions with these tags will be returned.
-// propertyFilters (optional): A comma-delimited list of extended properties to be retrieved. If set, the returned Release Definitions will contain values for the specified property Ids (if they exist). If not set, properties will not be included. Note that this will not filter out any Release Definition from results irrespective of whether it has property set or not.
-// definitionIdFilter (optional): A comma-delimited list of release definitions to retrieve.
-// isDeleted (optional): 'true' to get release definitions that has been deleted. Default is 'false'
-// searchTextContainsFolderName (optional): 'true' to get the release definitions under the folder with name as specified in searchText. Default is 'false'.
-func (client Client) GetReleaseDefinitions(ctx context.Context, project *string, searchText *string, expand *ReleaseDefinitionExpands, artifactType *string, artifactSourceId *string, top *int, continuationToken *string, queryOrder *ReleaseDefinitionQueryOrder, path *string, isExactNameMatch *bool, tagFilter *[]string, propertyFilters *[]string, definitionIdFilter *[]string, isDeleted *bool, searchTextContainsFolderName *bool) (*[]ReleaseDefinition, error) {
+func (client Client) GetReleaseDefinitions(ctx context.Context, args GetReleaseDefinitionsArgs) (*[]ReleaseDefinition, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if searchText != nil {
-        queryParams.Add("searchText", *searchText)
+    if args.SearchText != nil {
+        queryParams.Add("searchText", *args.SearchText)
     }
-    if expand != nil {
-        queryParams.Add("$expand", string(*expand))
+    if args.Expand != nil {
+        queryParams.Add("$expand", string(*args.Expand))
     }
-    if artifactType != nil {
-        queryParams.Add("artifactType", *artifactType)
+    if args.ArtifactType != nil {
+        queryParams.Add("artifactType", *args.ArtifactType)
     }
-    if artifactSourceId != nil {
-        queryParams.Add("artifactSourceId", *artifactSourceId)
+    if args.ArtifactSourceId != nil {
+        queryParams.Add("artifactSourceId", *args.ArtifactSourceId)
     }
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    if continuationToken != nil {
-        queryParams.Add("continuationToken", *continuationToken)
+    if args.ContinuationToken != nil {
+        queryParams.Add("continuationToken", *args.ContinuationToken)
     }
-    if queryOrder != nil {
-        queryParams.Add("queryOrder", string(*queryOrder))
+    if args.QueryOrder != nil {
+        queryParams.Add("queryOrder", string(*args.QueryOrder))
     }
-    if path != nil {
-        queryParams.Add("path", *path)
+    if args.Path != nil {
+        queryParams.Add("path", *args.Path)
     }
-    if isExactNameMatch != nil {
-        queryParams.Add("isExactNameMatch", strconv.FormatBool(*isExactNameMatch))
+    if args.IsExactNameMatch != nil {
+        queryParams.Add("isExactNameMatch", strconv.FormatBool(*args.IsExactNameMatch))
     }
-    if tagFilter != nil {
-        listAsString := strings.Join((*tagFilter)[:], ",")
+    if args.TagFilter != nil {
+        listAsString := strings.Join((*args.TagFilter)[:], ",")
         queryParams.Add("tagFilter", listAsString)
     }
-    if propertyFilters != nil {
-        listAsString := strings.Join((*propertyFilters)[:], ",")
+    if args.PropertyFilters != nil {
+        listAsString := strings.Join((*args.PropertyFilters)[:], ",")
         queryParams.Add("propertyFilters", listAsString)
     }
-    if definitionIdFilter != nil {
-        listAsString := strings.Join((*definitionIdFilter)[:], ",")
+    if args.DefinitionIdFilter != nil {
+        listAsString := strings.Join((*args.DefinitionIdFilter)[:], ",")
         queryParams.Add("definitionIdFilter", listAsString)
     }
-    if isDeleted != nil {
-        queryParams.Add("isDeleted", strconv.FormatBool(*isDeleted))
+    if args.IsDeleted != nil {
+        queryParams.Add("isDeleted", strconv.FormatBool(*args.IsDeleted))
     }
-    if searchTextContainsFolderName != nil {
-        queryParams.Add("searchTextContainsFolderName", strconv.FormatBool(*searchTextContainsFolderName))
+    if args.SearchTextContainsFolderName != nil {
+        queryParams.Add("searchTextContainsFolderName", strconv.FormatBool(*args.SearchTextContainsFolderName))
     }
     locationId, _ := uuid.Parse("d8f96f24-8ea7-4cb6-baab-2df8fc515665")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -411,21 +452,52 @@ func (client Client) GetReleaseDefinitions(ctx context.Context, project *string,
     return &responseValue, err
 }
 
+// Arguments for the GetReleaseDefinitions function
+type GetReleaseDefinitionsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (optional) Get release definitions with names containing searchText.
+    SearchText *string
+    // (optional) The properties that should be expanded in the list of Release definitions.
+    Expand *ReleaseDefinitionExpands
+    // (optional) Release definitions with given artifactType will be returned. Values can be Build, Jenkins, GitHub, Nuget, Team Build (external), ExternalTFSBuild, Git, TFVC, ExternalTfsXamlBuild.
+    ArtifactType *string
+    // (optional) Release definitions with given artifactSourceId will be returned. e.g. For build it would be {projectGuid}:{BuildDefinitionId}, for Jenkins it would be {JenkinsConnectionId}:{JenkinsDefinitionId}, for TfsOnPrem it would be {TfsOnPremConnectionId}:{ProjectName}:{TfsOnPremDefinitionId}. For third-party artifacts e.g. TeamCity, BitBucket you may refer 'uniqueSourceIdentifier' inside vss-extension.json at https://github.com/Microsoft/vsts-rm-extensions/blob/master/Extensions.
+    ArtifactSourceId *string
+    // (optional) Number of release definitions to get.
+    Top *int
+    // (optional) Gets the release definitions after the continuation token provided.
+    ContinuationToken *string
+    // (optional) Gets the results in the defined order. Default is 'IdAscending'.
+    QueryOrder *ReleaseDefinitionQueryOrder
+    // (optional) Gets the release definitions under the specified path.
+    Path *string
+    // (optional) 'true'to gets the release definitions with exact match as specified in searchText. Default is 'false'.
+    IsExactNameMatch *bool
+    // (optional) A comma-delimited list of tags. Only release definitions with these tags will be returned.
+    TagFilter *[]string
+    // (optional) A comma-delimited list of extended properties to be retrieved. If set, the returned Release Definitions will contain values for the specified property Ids (if they exist). If not set, properties will not be included. Note that this will not filter out any Release Definition from results irrespective of whether it has property set or not.
+    PropertyFilters *[]string
+    // (optional) A comma-delimited list of release definitions to retrieve.
+    DefinitionIdFilter *[]string
+    // (optional) 'true' to get release definitions that has been deleted. Default is 'false'
+    IsDeleted *bool
+    // (optional) 'true' to get the release definitions under the folder with name as specified in searchText. Default is 'false'.
+    SearchTextContainsFolderName *bool
+}
+
 // Update a release definition.
-// ctx
-// releaseDefinition (required): Release definition object to update.
-// project (required): Project ID or project name
-func (client Client) UpdateReleaseDefinition(ctx context.Context, releaseDefinition *ReleaseDefinition, project *string) (*ReleaseDefinition, error) {
-    if releaseDefinition == nil {
+func (client Client) UpdateReleaseDefinition(ctx context.Context, args UpdateReleaseDefinitionArgs) (*ReleaseDefinition, error) {
+    if args.ReleaseDefinition == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseDefinition"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
-    body, marshalErr := json.Marshal(*releaseDefinition)
+    body, marshalErr := json.Marshal(*args.ReleaseDefinition)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -440,75 +512,66 @@ func (client Client) UpdateReleaseDefinition(ctx context.Context, releaseDefinit
     return &responseValue, err
 }
 
-// ctx
-// project (required): Project ID or project name
-// definitionId (optional)
-// definitionEnvironmentId (optional)
-// createdBy (optional)
-// minModifiedTime (optional)
-// maxModifiedTime (optional)
-// deploymentStatus (optional)
-// operationStatus (optional)
-// latestAttemptsOnly (optional)
-// queryOrder (optional)
-// top (optional)
-// continuationToken (optional)
-// createdFor (optional)
-// minStartedTime (optional)
-// maxStartedTime (optional)
-// sourceBranch (optional)
-func (client Client) GetDeployments(ctx context.Context, project *string, definitionId *int, definitionEnvironmentId *int, createdBy *string, minModifiedTime *time.Time, maxModifiedTime *time.Time, deploymentStatus *DeploymentStatus, operationStatus *DeploymentOperationStatus, latestAttemptsOnly *bool, queryOrder *ReleaseQueryOrder, top *int, continuationToken *int, createdFor *string, minStartedTime *time.Time, maxStartedTime *time.Time, sourceBranch *string) (*[]Deployment, error) {
+// Arguments for the UpdateReleaseDefinition function
+type UpdateReleaseDefinitionArgs struct {
+    // (required) Release definition object to update.
+    ReleaseDefinition *ReleaseDefinition
+    // (required) Project ID or project name
+    Project *string
+}
+
+func (client Client) GetDeployments(ctx context.Context, args GetDeploymentsArgs) (*[]Deployment, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
     queryParams := url.Values{}
-    if definitionId != nil {
-        queryParams.Add("definitionId", strconv.Itoa(*definitionId))
+    if args.DefinitionId != nil {
+        queryParams.Add("definitionId", strconv.Itoa(*args.DefinitionId))
     }
-    if definitionEnvironmentId != nil {
-        queryParams.Add("definitionEnvironmentId", strconv.Itoa(*definitionEnvironmentId))
+    if args.DefinitionEnvironmentId != nil {
+        queryParams.Add("definitionEnvironmentId", strconv.Itoa(*args.DefinitionEnvironmentId))
     }
-    if createdBy != nil {
-        queryParams.Add("createdBy", *createdBy)
+    if args.CreatedBy != nil {
+        queryParams.Add("createdBy", *args.CreatedBy)
     }
-    if minModifiedTime != nil {
-        queryParams.Add("minModifiedTime", (*minModifiedTime).String())
+    if args.MinModifiedTime != nil {
+        queryParams.Add("minModifiedTime", (*args.MinModifiedTime).String())
     }
-    if maxModifiedTime != nil {
-        queryParams.Add("maxModifiedTime", (*maxModifiedTime).String())
+    if args.MaxModifiedTime != nil {
+        queryParams.Add("maxModifiedTime", (*args.MaxModifiedTime).String())
     }
-    if deploymentStatus != nil {
-        queryParams.Add("deploymentStatus", string(*deploymentStatus))
+    if args.DeploymentStatus != nil {
+        queryParams.Add("deploymentStatus", string(*args.DeploymentStatus))
     }
-    if operationStatus != nil {
-        queryParams.Add("operationStatus", string(*operationStatus))
+    if args.OperationStatus != nil {
+        queryParams.Add("operationStatus", string(*args.OperationStatus))
     }
-    if latestAttemptsOnly != nil {
-        queryParams.Add("latestAttemptsOnly", strconv.FormatBool(*latestAttemptsOnly))
+    if args.LatestAttemptsOnly != nil {
+        queryParams.Add("latestAttemptsOnly", strconv.FormatBool(*args.LatestAttemptsOnly))
     }
-    if queryOrder != nil {
-        queryParams.Add("queryOrder", string(*queryOrder))
+    if args.QueryOrder != nil {
+        queryParams.Add("queryOrder", string(*args.QueryOrder))
     }
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    if continuationToken != nil {
-        queryParams.Add("continuationToken", strconv.Itoa(*continuationToken))
+    if args.ContinuationToken != nil {
+        queryParams.Add("continuationToken", strconv.Itoa(*args.ContinuationToken))
     }
-    if createdFor != nil {
-        queryParams.Add("createdFor", *createdFor)
+    if args.CreatedFor != nil {
+        queryParams.Add("createdFor", *args.CreatedFor)
     }
-    if minStartedTime != nil {
-        queryParams.Add("minStartedTime", (*minStartedTime).String())
+    if args.MinStartedTime != nil {
+        queryParams.Add("minStartedTime", (*args.MinStartedTime).String())
     }
-    if maxStartedTime != nil {
-        queryParams.Add("maxStartedTime", (*maxStartedTime).String())
+    if args.MaxStartedTime != nil {
+        queryParams.Add("maxStartedTime", (*args.MaxStartedTime).String())
     }
-    if sourceBranch != nil {
-        queryParams.Add("sourceBranch", *sourceBranch)
+    if args.SourceBranch != nil {
+        queryParams.Add("sourceBranch", *args.SourceBranch)
     }
     locationId, _ := uuid.Parse("b005ef73-cddc-448e-9ba2-5193bf36b19f")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -521,25 +584,57 @@ func (client Client) GetDeployments(ctx context.Context, project *string, defini
     return &responseValue, err
 }
 
+// Arguments for the GetDeployments function
+type GetDeploymentsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (optional)
+    DefinitionId *int
+    // (optional)
+    DefinitionEnvironmentId *int
+    // (optional)
+    CreatedBy *string
+    // (optional)
+    MinModifiedTime *time.Time
+    // (optional)
+    MaxModifiedTime *time.Time
+    // (optional)
+    DeploymentStatus *DeploymentStatus
+    // (optional)
+    OperationStatus *DeploymentOperationStatus
+    // (optional)
+    LatestAttemptsOnly *bool
+    // (optional)
+    QueryOrder *ReleaseQueryOrder
+    // (optional)
+    Top *int
+    // (optional)
+    ContinuationToken *int
+    // (optional)
+    CreatedFor *string
+    // (optional)
+    MinStartedTime *time.Time
+    // (optional)
+    MaxStartedTime *time.Time
+    // (optional)
+    SourceBranch *string
+}
+
 // [Preview API] Get a release environment.
-// ctx
-// project (required): Project ID or project name
-// releaseId (required): Id of the release.
-// environmentId (required): Id of the release environment.
-func (client Client) GetReleaseEnvironment(ctx context.Context, project *string, releaseId *int, environmentId *int) (*ReleaseEnvironment, error) {
+func (client Client) GetReleaseEnvironment(ctx context.Context, args GetReleaseEnvironmentArgs) (*ReleaseEnvironment, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if releaseId == nil {
+    routeValues["project"] = *args.Project
+    if args.ReleaseId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
     }
-    routeValues["releaseId"] = strconv.Itoa(*releaseId)
-    if environmentId == nil {
+    routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
+    if args.EnvironmentId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "environmentId"} 
     }
-    routeValues["environmentId"] = strconv.Itoa(*environmentId)
+    routeValues["environmentId"] = strconv.Itoa(*args.EnvironmentId)
 
     locationId, _ := uuid.Parse("a7e426b1-03dc-48af-9dfe-c98bac612dcb")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.6", routeValues, nil, nil, "", "application/json", nil)
@@ -552,31 +647,36 @@ func (client Client) GetReleaseEnvironment(ctx context.Context, project *string,
     return &responseValue, err
 }
 
+// Arguments for the GetReleaseEnvironment function
+type GetReleaseEnvironmentArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the release.
+    ReleaseId *int
+    // (required) Id of the release environment.
+    EnvironmentId *int
+}
+
 // [Preview API] Update the status of a release environment
-// ctx
-// environmentUpdateData (required): Environment update meta data.
-// project (required): Project ID or project name
-// releaseId (required): Id of the release.
-// environmentId (required): Id of release environment.
-func (client Client) UpdateReleaseEnvironment(ctx context.Context, environmentUpdateData *ReleaseEnvironmentUpdateMetadata, project *string, releaseId *int, environmentId *int) (*ReleaseEnvironment, error) {
-    if environmentUpdateData == nil {
+func (client Client) UpdateReleaseEnvironment(ctx context.Context, args UpdateReleaseEnvironmentArgs) (*ReleaseEnvironment, error) {
+    if args.EnvironmentUpdateData == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "environmentUpdateData"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if releaseId == nil {
+    routeValues["project"] = *args.Project
+    if args.ReleaseId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
     }
-    routeValues["releaseId"] = strconv.Itoa(*releaseId)
-    if environmentId == nil {
+    routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
+    if args.EnvironmentId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "environmentId"} 
     }
-    routeValues["environmentId"] = strconv.Itoa(*environmentId)
+    routeValues["environmentId"] = strconv.Itoa(*args.EnvironmentId)
 
-    body, marshalErr := json.Marshal(*environmentUpdateData)
+    body, marshalErr := json.Marshal(*args.EnvironmentUpdateData)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -591,20 +691,29 @@ func (client Client) UpdateReleaseEnvironment(ctx context.Context, environmentUp
     return &responseValue, err
 }
 
+// Arguments for the UpdateReleaseEnvironment function
+type UpdateReleaseEnvironmentArgs struct {
+    // (required) Environment update meta data.
+    EnvironmentUpdateData *ReleaseEnvironmentUpdateMetadata
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the release.
+    ReleaseId *int
+    // (required) Id of release environment.
+    EnvironmentId *int
+}
+
 // [Preview API] Deletes a definition folder for given folder name and path and all it's existing definitions.
-// ctx
-// project (required): Project ID or project name
-// path (required): Path of the folder to delete.
-func (client Client) DeleteFolder(ctx context.Context, project *string, path *string) error {
+func (client Client) DeleteFolder(ctx context.Context, args DeleteFolderArgs) error {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if path == nil || *path == "" {
+    routeValues["project"] = *args.Project
+    if args.Path == nil || *args.Path == "" {
         return &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "path"} 
     }
-    routeValues["path"] = *path
+    routeValues["path"] = *args.Path
 
     locationId, _ := uuid.Parse("f7ddf76d-ce0c-4d68-94ff-becaec5d9dea")
     _, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/json", nil)
@@ -615,24 +724,28 @@ func (client Client) DeleteFolder(ctx context.Context, project *string, path *st
     return nil
 }
 
+// Arguments for the DeleteFolder function
+type DeleteFolderArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Path of the folder to delete.
+    Path *string
+}
+
 // [Preview API] Gets folders.
-// ctx
-// project (required): Project ID or project name
-// path (optional): Path of the folder.
-// queryOrder (optional): Gets the results in the defined order. Default is 'None'.
-func (client Client) GetFolders(ctx context.Context, project *string, path *string, queryOrder *FolderPathQueryOrder) (*[]Folder, error) {
+func (client Client) GetFolders(ctx context.Context, args GetFoldersArgs) (*[]Folder, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if path != nil && *path != "" {
-        routeValues["path"] = *path
+    routeValues["project"] = *args.Project
+    if args.Path != nil && *args.Path != "" {
+        routeValues["path"] = *args.Path
     }
 
     queryParams := url.Values{}
-    if queryOrder != nil {
-        queryParams.Add("queryOrder", string(*queryOrder))
+    if args.QueryOrder != nil {
+        queryParams.Add("queryOrder", string(*args.QueryOrder))
     }
     locationId, _ := uuid.Parse("f7ddf76d-ce0c-4d68-94ff-becaec5d9dea")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -645,26 +758,32 @@ func (client Client) GetFolders(ctx context.Context, project *string, path *stri
     return &responseValue, err
 }
 
+// Arguments for the GetFolders function
+type GetFoldersArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (optional) Path of the folder.
+    Path *string
+    // (optional) Gets the results in the defined order. Default is 'None'.
+    QueryOrder *FolderPathQueryOrder
+}
+
 // [Preview API] Updates an existing folder at given existing path.
-// ctx
-// folder (required): folder.
-// project (required): Project ID or project name
-// path (required): Path of the folder to update.
-func (client Client) UpdateFolder(ctx context.Context, folder *Folder, project *string, path *string) (*Folder, error) {
-    if folder == nil {
+func (client Client) UpdateFolder(ctx context.Context, args UpdateFolderArgs) (*Folder, error) {
+    if args.Folder == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "folder"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if path == nil || *path == "" {
+    routeValues["project"] = *args.Project
+    if args.Path == nil || *args.Path == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "path"} 
     }
-    routeValues["path"] = *path
+    routeValues["path"] = *args.Path
 
-    body, marshalErr := json.Marshal(*folder)
+    body, marshalErr := json.Marshal(*args.Folder)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -679,26 +798,32 @@ func (client Client) UpdateFolder(ctx context.Context, folder *Folder, project *
     return &responseValue, err
 }
 
+// Arguments for the UpdateFolder function
+type UpdateFolderArgs struct {
+    // (required) folder.
+    Folder *Folder
+    // (required) Project ID or project name
+    Project *string
+    // (required) Path of the folder to update.
+    Path *string
+}
+
 // [Preview API] Updates the gate for a deployment.
-// ctx
-// gateUpdateMetadata (required): Metadata to patch the Release Gates.
-// project (required): Project ID or project name
-// gateStepId (required): Gate step Id.
-func (client Client) UpdateGates(ctx context.Context, gateUpdateMetadata *GateUpdateMetadata, project *string, gateStepId *int) (*ReleaseGates, error) {
-    if gateUpdateMetadata == nil {
+func (client Client) UpdateGates(ctx context.Context, args UpdateGatesArgs) (*ReleaseGates, error) {
+    if args.GateUpdateMetadata == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "gateUpdateMetadata"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if gateStepId == nil {
+    routeValues["project"] = *args.Project
+    if args.GateStepId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "gateStepId"} 
     }
-    routeValues["gateStepId"] = strconv.Itoa(*gateStepId)
+    routeValues["gateStepId"] = strconv.Itoa(*args.GateStepId)
 
-    body, marshalErr := json.Marshal(*gateUpdateMetadata)
+    body, marshalErr := json.Marshal(*args.GateUpdateMetadata)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -713,20 +838,27 @@ func (client Client) UpdateGates(ctx context.Context, gateUpdateMetadata *GateUp
     return &responseValue, err
 }
 
+// Arguments for the UpdateGates function
+type UpdateGatesArgs struct {
+    // (required) Metadata to patch the Release Gates.
+    GateUpdateMetadata *GateUpdateMetadata
+    // (required) Project ID or project name
+    Project *string
+    // (required) Gate step Id.
+    GateStepId *int
+}
+
 // [Preview API] Get logs for a release Id.
-// ctx
-// project (required): Project ID or project name
-// releaseId (required): Id of the release.
-func (client Client) GetLogs(ctx context.Context, project *string, releaseId *int) (io.ReadCloser, error) {
+func (client Client) GetLogs(ctx context.Context, args GetLogsArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if releaseId == nil {
+    routeValues["project"] = *args.Project
+    if args.ReleaseId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
     }
-    routeValues["releaseId"] = strconv.Itoa(*releaseId)
+    routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
 
     locationId, _ := uuid.Parse("c37fbab5-214b-48e4-a55b-cb6b4f6e4038")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/zip", nil)
@@ -737,44 +869,44 @@ func (client Client) GetLogs(ctx context.Context, project *string, releaseId *in
     return resp.Body, err
 }
 
+// Arguments for the GetLogs function
+type GetLogsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the release.
+    ReleaseId *int
+}
+
 // [Preview API] Gets the task log of a release as a plain text file.
-// ctx
-// project (required): Project ID or project name
-// releaseId (required): Id of the release.
-// environmentId (required): Id of release environment.
-// releaseDeployPhaseId (required): Release deploy phase Id.
-// taskId (required): ReleaseTask Id for the log.
-// startLine (optional): Starting line number for logs
-// endLine (optional): Ending line number for logs
-func (client Client) GetTaskLog(ctx context.Context, project *string, releaseId *int, environmentId *int, releaseDeployPhaseId *int, taskId *int, startLine *uint64, endLine *uint64) (io.ReadCloser, error) {
+func (client Client) GetTaskLog(ctx context.Context, args GetTaskLogArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if releaseId == nil {
+    routeValues["project"] = *args.Project
+    if args.ReleaseId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
     }
-    routeValues["releaseId"] = strconv.Itoa(*releaseId)
-    if environmentId == nil {
+    routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
+    if args.EnvironmentId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "environmentId"} 
     }
-    routeValues["environmentId"] = strconv.Itoa(*environmentId)
-    if releaseDeployPhaseId == nil {
+    routeValues["environmentId"] = strconv.Itoa(*args.EnvironmentId)
+    if args.ReleaseDeployPhaseId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseDeployPhaseId"} 
     }
-    routeValues["releaseDeployPhaseId"] = strconv.Itoa(*releaseDeployPhaseId)
-    if taskId == nil {
+    routeValues["releaseDeployPhaseId"] = strconv.Itoa(*args.ReleaseDeployPhaseId)
+    if args.TaskId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "taskId"} 
     }
-    routeValues["taskId"] = strconv.Itoa(*taskId)
+    routeValues["taskId"] = strconv.Itoa(*args.TaskId)
 
     queryParams := url.Values{}
-    if startLine != nil {
-        queryParams.Add("startLine", strconv.FormatUint(*startLine, 10))
+    if args.StartLine != nil {
+        queryParams.Add("startLine", strconv.FormatUint(*args.StartLine, 10))
     }
-    if endLine != nil {
-        queryParams.Add("endLine", strconv.FormatUint(*endLine, 10))
+    if args.EndLine != nil {
+        queryParams.Add("endLine", strconv.FormatUint(*args.EndLine, 10))
     }
     locationId, _ := uuid.Parse("17c91af7-09fd-4256-bff1-c24ee4f73bc0")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "text/plain", nil)
@@ -785,25 +917,39 @@ func (client Client) GetTaskLog(ctx context.Context, project *string, releaseId 
     return resp.Body, err
 }
 
+// Arguments for the GetTaskLog function
+type GetTaskLogArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the release.
+    ReleaseId *int
+    // (required) Id of release environment.
+    EnvironmentId *int
+    // (required) Release deploy phase Id.
+    ReleaseDeployPhaseId *int
+    // (required) ReleaseTask Id for the log.
+    TaskId *int
+    // (optional) Starting line number for logs
+    StartLine *uint64
+    // (optional) Ending line number for logs
+    EndLine *uint64
+}
+
 // Get manual intervention for a given release and manual intervention id.
-// ctx
-// project (required): Project ID or project name
-// releaseId (required): Id of the release.
-// manualInterventionId (required): Id of the manual intervention.
-func (client Client) GetManualIntervention(ctx context.Context, project *string, releaseId *int, manualInterventionId *int) (*ManualIntervention, error) {
+func (client Client) GetManualIntervention(ctx context.Context, args GetManualInterventionArgs) (*ManualIntervention, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if releaseId == nil {
+    routeValues["project"] = *args.Project
+    if args.ReleaseId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
     }
-    routeValues["releaseId"] = strconv.Itoa(*releaseId)
-    if manualInterventionId == nil {
+    routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
+    if args.ManualInterventionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "manualInterventionId"} 
     }
-    routeValues["manualInterventionId"] = strconv.Itoa(*manualInterventionId)
+    routeValues["manualInterventionId"] = strconv.Itoa(*args.ManualInterventionId)
 
     locationId, _ := uuid.Parse("616c46e4-f370-4456-adaa-fbaf79c7b79e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -816,20 +962,27 @@ func (client Client) GetManualIntervention(ctx context.Context, project *string,
     return &responseValue, err
 }
 
+// Arguments for the GetManualIntervention function
+type GetManualInterventionArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the release.
+    ReleaseId *int
+    // (required) Id of the manual intervention.
+    ManualInterventionId *int
+}
+
 // List all manual interventions for a given release.
-// ctx
-// project (required): Project ID or project name
-// releaseId (required): Id of the release.
-func (client Client) GetManualInterventions(ctx context.Context, project *string, releaseId *int) (*[]ManualIntervention, error) {
+func (client Client) GetManualInterventions(ctx context.Context, args GetManualInterventionsArgs) (*[]ManualIntervention, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if releaseId == nil {
+    routeValues["project"] = *args.Project
+    if args.ReleaseId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
     }
-    routeValues["releaseId"] = strconv.Itoa(*releaseId)
+    routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
 
     locationId, _ := uuid.Parse("616c46e4-f370-4456-adaa-fbaf79c7b79e")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -842,31 +995,34 @@ func (client Client) GetManualInterventions(ctx context.Context, project *string
     return &responseValue, err
 }
 
+// Arguments for the GetManualInterventions function
+type GetManualInterventionsArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the release.
+    ReleaseId *int
+}
+
 // Update manual intervention.
-// ctx
-// manualInterventionUpdateMetadata (required): Meta data to update manual intervention.
-// project (required): Project ID or project name
-// releaseId (required): Id of the release.
-// manualInterventionId (required): Id of the manual intervention.
-func (client Client) UpdateManualIntervention(ctx context.Context, manualInterventionUpdateMetadata *ManualInterventionUpdateMetadata, project *string, releaseId *int, manualInterventionId *int) (*ManualIntervention, error) {
-    if manualInterventionUpdateMetadata == nil {
+func (client Client) UpdateManualIntervention(ctx context.Context, args UpdateManualInterventionArgs) (*ManualIntervention, error) {
+    if args.ManualInterventionUpdateMetadata == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "manualInterventionUpdateMetadata"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if releaseId == nil {
+    routeValues["project"] = *args.Project
+    if args.ReleaseId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
     }
-    routeValues["releaseId"] = strconv.Itoa(*releaseId)
-    if manualInterventionId == nil {
+    routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
+    if args.ManualInterventionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "manualInterventionId"} 
     }
-    routeValues["manualInterventionId"] = strconv.Itoa(*manualInterventionId)
+    routeValues["manualInterventionId"] = strconv.Itoa(*args.ManualInterventionId)
 
-    body, marshalErr := json.Marshal(*manualInterventionUpdateMetadata)
+    body, marshalErr := json.Marshal(*args.ManualInterventionUpdateMetadata)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -881,106 +1037,95 @@ func (client Client) UpdateManualIntervention(ctx context.Context, manualInterve
     return &responseValue, err
 }
 
+// Arguments for the UpdateManualIntervention function
+type UpdateManualInterventionArgs struct {
+    // (required) Meta data to update manual intervention.
+    ManualInterventionUpdateMetadata *ManualInterventionUpdateMetadata
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the release.
+    ReleaseId *int
+    // (required) Id of the manual intervention.
+    ManualInterventionId *int
+}
+
 // Get a list of releases
-// ctx
-// project (optional): Project ID or project name
-// definitionId (optional): Releases from this release definition Id.
-// definitionEnvironmentId (optional)
-// searchText (optional): Releases with names containing searchText.
-// createdBy (optional): Releases created by this user.
-// statusFilter (optional): Releases that have this status.
-// environmentStatusFilter (optional)
-// minCreatedTime (optional): Releases that were created after this time.
-// maxCreatedTime (optional): Releases that were created before this time.
-// queryOrder (optional): Gets the results in the defined order of created date for releases. Default is descending.
-// top (optional): Number of releases to get. Default is 50.
-// continuationToken (optional): Gets the releases after the continuation token provided.
-// expand (optional): The property that should be expanded in the list of releases.
-// artifactTypeId (optional): Releases with given artifactTypeId will be returned. Values can be Build, Jenkins, GitHub, Nuget, Team Build (external), ExternalTFSBuild, Git, TFVC, ExternalTfsXamlBuild.
-// sourceId (optional): Unique identifier of the artifact used. e.g. For build it would be {projectGuid}:{BuildDefinitionId}, for Jenkins it would be {JenkinsConnectionId}:{JenkinsDefinitionId}, for TfsOnPrem it would be {TfsOnPremConnectionId}:{ProjectName}:{TfsOnPremDefinitionId}. For third-party artifacts e.g. TeamCity, BitBucket you may refer 'uniqueSourceIdentifier' inside vss-extension.json https://github.com/Microsoft/vsts-rm-extensions/blob/master/Extensions.
-// artifactVersionId (optional): Releases with given artifactVersionId will be returned. E.g. in case of Build artifactType, it is buildId.
-// sourceBranchFilter (optional): Releases with given sourceBranchFilter will be returned.
-// isDeleted (optional): Gets the soft deleted releases, if true.
-// tagFilter (optional): A comma-delimited list of tags. Only releases with these tags will be returned.
-// propertyFilters (optional): A comma-delimited list of extended properties to be retrieved. If set, the returned Releases will contain values for the specified property Ids (if they exist). If not set, properties will not be included. Note that this will not filter out any Release from results irrespective of whether it has property set or not.
-// releaseIdFilter (optional): A comma-delimited list of releases Ids. Only releases with these Ids will be returned.
-// path (optional): Releases under this folder path will be returned
-func (client Client) GetReleases(ctx context.Context, project *string, definitionId *int, definitionEnvironmentId *int, searchText *string, createdBy *string, statusFilter *ReleaseStatus, environmentStatusFilter *int, minCreatedTime *time.Time, maxCreatedTime *time.Time, queryOrder *ReleaseQueryOrder, top *int, continuationToken *int, expand *ReleaseExpands, artifactTypeId *string, sourceId *string, artifactVersionId *string, sourceBranchFilter *string, isDeleted *bool, tagFilter *[]string, propertyFilters *[]string, releaseIdFilter *[]int, path *string) (*[]Release, error) {
+func (client Client) GetReleases(ctx context.Context, args GetReleasesArgs) (*[]Release, error) {
     routeValues := make(map[string]string)
-    if project != nil && *project != "" {
-        routeValues["project"] = *project
+    if args.Project != nil && *args.Project != "" {
+        routeValues["project"] = *args.Project
     }
 
     queryParams := url.Values{}
-    if definitionId != nil {
-        queryParams.Add("definitionId", strconv.Itoa(*definitionId))
+    if args.DefinitionId != nil {
+        queryParams.Add("definitionId", strconv.Itoa(*args.DefinitionId))
     }
-    if definitionEnvironmentId != nil {
-        queryParams.Add("definitionEnvironmentId", strconv.Itoa(*definitionEnvironmentId))
+    if args.DefinitionEnvironmentId != nil {
+        queryParams.Add("definitionEnvironmentId", strconv.Itoa(*args.DefinitionEnvironmentId))
     }
-    if searchText != nil {
-        queryParams.Add("searchText", *searchText)
+    if args.SearchText != nil {
+        queryParams.Add("searchText", *args.SearchText)
     }
-    if createdBy != nil {
-        queryParams.Add("createdBy", *createdBy)
+    if args.CreatedBy != nil {
+        queryParams.Add("createdBy", *args.CreatedBy)
     }
-    if statusFilter != nil {
-        queryParams.Add("statusFilter", string(*statusFilter))
+    if args.StatusFilter != nil {
+        queryParams.Add("statusFilter", string(*args.StatusFilter))
     }
-    if environmentStatusFilter != nil {
-        queryParams.Add("environmentStatusFilter", strconv.Itoa(*environmentStatusFilter))
+    if args.EnvironmentStatusFilter != nil {
+        queryParams.Add("environmentStatusFilter", strconv.Itoa(*args.EnvironmentStatusFilter))
     }
-    if minCreatedTime != nil {
-        queryParams.Add("minCreatedTime", (*minCreatedTime).String())
+    if args.MinCreatedTime != nil {
+        queryParams.Add("minCreatedTime", (*args.MinCreatedTime).String())
     }
-    if maxCreatedTime != nil {
-        queryParams.Add("maxCreatedTime", (*maxCreatedTime).String())
+    if args.MaxCreatedTime != nil {
+        queryParams.Add("maxCreatedTime", (*args.MaxCreatedTime).String())
     }
-    if queryOrder != nil {
-        queryParams.Add("queryOrder", string(*queryOrder))
+    if args.QueryOrder != nil {
+        queryParams.Add("queryOrder", string(*args.QueryOrder))
     }
-    if top != nil {
-        queryParams.Add("$top", strconv.Itoa(*top))
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
     }
-    if continuationToken != nil {
-        queryParams.Add("continuationToken", strconv.Itoa(*continuationToken))
+    if args.ContinuationToken != nil {
+        queryParams.Add("continuationToken", strconv.Itoa(*args.ContinuationToken))
     }
-    if expand != nil {
-        queryParams.Add("$expand", string(*expand))
+    if args.Expand != nil {
+        queryParams.Add("$expand", string(*args.Expand))
     }
-    if artifactTypeId != nil {
-        queryParams.Add("artifactTypeId", *artifactTypeId)
+    if args.ArtifactTypeId != nil {
+        queryParams.Add("artifactTypeId", *args.ArtifactTypeId)
     }
-    if sourceId != nil {
-        queryParams.Add("sourceId", *sourceId)
+    if args.SourceId != nil {
+        queryParams.Add("sourceId", *args.SourceId)
     }
-    if artifactVersionId != nil {
-        queryParams.Add("artifactVersionId", *artifactVersionId)
+    if args.ArtifactVersionId != nil {
+        queryParams.Add("artifactVersionId", *args.ArtifactVersionId)
     }
-    if sourceBranchFilter != nil {
-        queryParams.Add("sourceBranchFilter", *sourceBranchFilter)
+    if args.SourceBranchFilter != nil {
+        queryParams.Add("sourceBranchFilter", *args.SourceBranchFilter)
     }
-    if isDeleted != nil {
-        queryParams.Add("isDeleted", strconv.FormatBool(*isDeleted))
+    if args.IsDeleted != nil {
+        queryParams.Add("isDeleted", strconv.FormatBool(*args.IsDeleted))
     }
-    if tagFilter != nil {
-        listAsString := strings.Join((*tagFilter)[:], ",")
+    if args.TagFilter != nil {
+        listAsString := strings.Join((*args.TagFilter)[:], ",")
         queryParams.Add("tagFilter", listAsString)
     }
-    if propertyFilters != nil {
-        listAsString := strings.Join((*propertyFilters)[:], ",")
+    if args.PropertyFilters != nil {
+        listAsString := strings.Join((*args.PropertyFilters)[:], ",")
         queryParams.Add("propertyFilters", listAsString)
     }
-    if releaseIdFilter != nil {
+    if args.ReleaseIdFilter != nil {
         var stringList []string
-        for _, item := range *releaseIdFilter {
+        for _, item := range *args.ReleaseIdFilter {
             stringList = append(stringList, strconv.Itoa(item))
         }
         listAsString := strings.Join((stringList)[:], ",")
         queryParams.Add("definitions", listAsString)
     }
-    if path != nil {
-        queryParams.Add("path", *path)
+    if args.Path != nil {
+        queryParams.Add("path", *args.Path)
     }
     locationId, _ := uuid.Parse("a166fde7-27ad-408e-ba75-703c2cc9d500")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -993,21 +1138,66 @@ func (client Client) GetReleases(ctx context.Context, project *string, definitio
     return &responseValue, err
 }
 
+// Arguments for the GetReleases function
+type GetReleasesArgs struct {
+    // (optional) Project ID or project name
+    Project *string
+    // (optional) Releases from this release definition Id.
+    DefinitionId *int
+    // (optional)
+    DefinitionEnvironmentId *int
+    // (optional) Releases with names containing searchText.
+    SearchText *string
+    // (optional) Releases created by this user.
+    CreatedBy *string
+    // (optional) Releases that have this status.
+    StatusFilter *ReleaseStatus
+    // (optional)
+    EnvironmentStatusFilter *int
+    // (optional) Releases that were created after this time.
+    MinCreatedTime *time.Time
+    // (optional) Releases that were created before this time.
+    MaxCreatedTime *time.Time
+    // (optional) Gets the results in the defined order of created date for releases. Default is descending.
+    QueryOrder *ReleaseQueryOrder
+    // (optional) Number of releases to get. Default is 50.
+    Top *int
+    // (optional) Gets the releases after the continuation token provided.
+    ContinuationToken *int
+    // (optional) The property that should be expanded in the list of releases.
+    Expand *ReleaseExpands
+    // (optional) Releases with given artifactTypeId will be returned. Values can be Build, Jenkins, GitHub, Nuget, Team Build (external), ExternalTFSBuild, Git, TFVC, ExternalTfsXamlBuild.
+    ArtifactTypeId *string
+    // (optional) Unique identifier of the artifact used. e.g. For build it would be {projectGuid}:{BuildDefinitionId}, for Jenkins it would be {JenkinsConnectionId}:{JenkinsDefinitionId}, for TfsOnPrem it would be {TfsOnPremConnectionId}:{ProjectName}:{TfsOnPremDefinitionId}. For third-party artifacts e.g. TeamCity, BitBucket you may refer 'uniqueSourceIdentifier' inside vss-extension.json https://github.com/Microsoft/vsts-rm-extensions/blob/master/Extensions.
+    SourceId *string
+    // (optional) Releases with given artifactVersionId will be returned. E.g. in case of Build artifactType, it is buildId.
+    ArtifactVersionId *string
+    // (optional) Releases with given sourceBranchFilter will be returned.
+    SourceBranchFilter *string
+    // (optional) Gets the soft deleted releases, if true.
+    IsDeleted *bool
+    // (optional) A comma-delimited list of tags. Only releases with these tags will be returned.
+    TagFilter *[]string
+    // (optional) A comma-delimited list of extended properties to be retrieved. If set, the returned Releases will contain values for the specified property Ids (if they exist). If not set, properties will not be included. Note that this will not filter out any Release from results irrespective of whether it has property set or not.
+    PropertyFilters *[]string
+    // (optional) A comma-delimited list of releases Ids. Only releases with these Ids will be returned.
+    ReleaseIdFilter *[]int
+    // (optional) Releases under this folder path will be returned
+    Path *string
+}
+
 // Create a release.
-// ctx
-// releaseStartMetadata (required): Metadata to create a release.
-// project (required): Project ID or project name
-func (client Client) CreateRelease(ctx context.Context, releaseStartMetadata *ReleaseStartMetadata, project *string) (*Release, error) {
-    if releaseStartMetadata == nil {
+func (client Client) CreateRelease(ctx context.Context, args CreateReleaseArgs) (*Release, error) {
+    if args.ReleaseStartMetadata == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseStartMetadata"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
+    routeValues["project"] = *args.Project
 
-    body, marshalErr := json.Marshal(*releaseStartMetadata)
+    body, marshalErr := json.Marshal(*args.ReleaseStartMetadata)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1022,38 +1212,39 @@ func (client Client) CreateRelease(ctx context.Context, releaseStartMetadata *Re
     return &responseValue, err
 }
 
+// Arguments for the CreateRelease function
+type CreateReleaseArgs struct {
+    // (required) Metadata to create a release.
+    ReleaseStartMetadata *ReleaseStartMetadata
+    // (required) Project ID or project name
+    Project *string
+}
+
 // Get a Release
-// ctx
-// project (required): Project ID or project name
-// releaseId (required): Id of the release.
-// approvalFilters (optional): A filter which would allow fetching approval steps selectively based on whether it is automated, or manual. This would also decide whether we should fetch pre and post approval snapshots. Assumes All by default
-// propertyFilters (optional): A comma-delimited list of extended properties to be retrieved. If set, the returned Release will contain values for the specified property Ids (if they exist). If not set, properties will not be included.
-// expand (optional): A property that should be expanded in the release.
-// topGateRecords (optional): Number of release gate records to get. Default is 5.
-func (client Client) GetRelease(ctx context.Context, project *string, releaseId *int, approvalFilters *ApprovalFilters, propertyFilters *[]string, expand *SingleReleaseExpands, topGateRecords *int) (*Release, error) {
+func (client Client) GetRelease(ctx context.Context, args GetReleaseArgs) (*Release, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if releaseId == nil {
+    routeValues["project"] = *args.Project
+    if args.ReleaseId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
     }
-    routeValues["releaseId"] = strconv.Itoa(*releaseId)
+    routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
 
     queryParams := url.Values{}
-    if approvalFilters != nil {
-        queryParams.Add("approvalFilters", string(*approvalFilters))
+    if args.ApprovalFilters != nil {
+        queryParams.Add("approvalFilters", string(*args.ApprovalFilters))
     }
-    if propertyFilters != nil {
-        listAsString := strings.Join((*propertyFilters)[:], ",")
+    if args.PropertyFilters != nil {
+        listAsString := strings.Join((*args.PropertyFilters)[:], ",")
         queryParams.Add("propertyFilters", listAsString)
     }
-    if expand != nil {
-        queryParams.Add("$expand", string(*expand))
+    if args.Expand != nil {
+        queryParams.Add("$expand", string(*args.Expand))
     }
-    if topGateRecords != nil {
-        queryParams.Add("$topGateRecords", strconv.Itoa(*topGateRecords))
+    if args.TopGateRecords != nil {
+        queryParams.Add("$topGateRecords", strconv.Itoa(*args.TopGateRecords))
     }
     locationId, _ := uuid.Parse("a166fde7-27ad-408e-ba75-703c2cc9d500")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1066,27 +1257,39 @@ func (client Client) GetRelease(ctx context.Context, project *string, releaseId 
     return &responseValue, err
 }
 
+// Arguments for the GetRelease function
+type GetReleaseArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the release.
+    ReleaseId *int
+    // (optional) A filter which would allow fetching approval steps selectively based on whether it is automated, or manual. This would also decide whether we should fetch pre and post approval snapshots. Assumes All by default
+    ApprovalFilters *ApprovalFilters
+    // (optional) A comma-delimited list of extended properties to be retrieved. If set, the returned Release will contain values for the specified property Ids (if they exist). If not set, properties will not be included.
+    PropertyFilters *[]string
+    // (optional) A property that should be expanded in the release.
+    Expand *SingleReleaseExpands
+    // (optional) Number of release gate records to get. Default is 5.
+    TopGateRecords *int
+}
+
 // Get release for a given revision number.
-// ctx
-// project (required): Project ID or project name
-// releaseId (required): Id of the release.
-// definitionSnapshotRevision (required): Definition snapshot revision number.
-func (client Client) GetReleaseRevision(ctx context.Context, project *string, releaseId *int, definitionSnapshotRevision *int) (io.ReadCloser, error) {
+func (client Client) GetReleaseRevision(ctx context.Context, args GetReleaseRevisionArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if releaseId == nil {
+    routeValues["project"] = *args.Project
+    if args.ReleaseId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
     }
-    routeValues["releaseId"] = strconv.Itoa(*releaseId)
+    routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
 
     queryParams := url.Values{}
-    if definitionSnapshotRevision == nil {
+    if args.DefinitionSnapshotRevision == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionSnapshotRevision"}
     }
-    queryParams.Add("definitionSnapshotRevision", strconv.Itoa(*definitionSnapshotRevision))
+    queryParams.Add("definitionSnapshotRevision", strconv.Itoa(*args.DefinitionSnapshotRevision))
     locationId, _ := uuid.Parse("a166fde7-27ad-408e-ba75-703c2cc9d500")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "text/plain", nil)
     if err != nil {
@@ -1096,26 +1299,32 @@ func (client Client) GetReleaseRevision(ctx context.Context, project *string, re
     return resp.Body, err
 }
 
+// Arguments for the GetReleaseRevision function
+type GetReleaseRevisionArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the release.
+    ReleaseId *int
+    // (required) Definition snapshot revision number.
+    DefinitionSnapshotRevision *int
+}
+
 // Update a complete release object.
-// ctx
-// release (required): Release object for update.
-// project (required): Project ID or project name
-// releaseId (required): Id of the release to update.
-func (client Client) UpdateRelease(ctx context.Context, release *Release, project *string, releaseId *int) (*Release, error) {
-    if release == nil {
+func (client Client) UpdateRelease(ctx context.Context, args UpdateReleaseArgs) (*Release, error) {
+    if args.Release == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "release"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if releaseId == nil {
+    routeValues["project"] = *args.Project
+    if args.ReleaseId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
     }
-    routeValues["releaseId"] = strconv.Itoa(*releaseId)
+    routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
 
-    body, marshalErr := json.Marshal(*release)
+    body, marshalErr := json.Marshal(*args.Release)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1130,26 +1339,32 @@ func (client Client) UpdateRelease(ctx context.Context, release *Release, projec
     return &responseValue, err
 }
 
+// Arguments for the UpdateRelease function
+type UpdateReleaseArgs struct {
+    // (required) Release object for update.
+    Release *Release
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the release to update.
+    ReleaseId *int
+}
+
 // Update few properties of a release.
-// ctx
-// releaseUpdateMetadata (required): Properties of release to update.
-// project (required): Project ID or project name
-// releaseId (required): Id of the release to update.
-func (client Client) UpdateReleaseResource(ctx context.Context, releaseUpdateMetadata *ReleaseUpdateMetadata, project *string, releaseId *int) (*Release, error) {
-    if releaseUpdateMetadata == nil {
+func (client Client) UpdateReleaseResource(ctx context.Context, args UpdateReleaseResourceArgs) (*Release, error) {
+    if args.ReleaseUpdateMetadata == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseUpdateMetadata"}
     }
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if releaseId == nil {
+    routeValues["project"] = *args.Project
+    if args.ReleaseId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "releaseId"} 
     }
-    routeValues["releaseId"] = strconv.Itoa(*releaseId)
+    routeValues["releaseId"] = strconv.Itoa(*args.ReleaseId)
 
-    body, marshalErr := json.Marshal(*releaseUpdateMetadata)
+    body, marshalErr := json.Marshal(*args.ReleaseUpdateMetadata)
     if marshalErr != nil {
         return nil, marshalErr
     }
@@ -1164,25 +1379,31 @@ func (client Client) UpdateReleaseResource(ctx context.Context, releaseUpdateMet
     return &responseValue, err
 }
 
+// Arguments for the UpdateReleaseResource function
+type UpdateReleaseResourceArgs struct {
+    // (required) Properties of release to update.
+    ReleaseUpdateMetadata *ReleaseUpdateMetadata
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the release to update.
+    ReleaseId *int
+}
+
 // [Preview API] Get release definition for a given definitionId and revision
-// ctx
-// project (required): Project ID or project name
-// definitionId (required): Id of the definition.
-// revision (required): Id of the revision.
-func (client Client) GetDefinitionRevision(ctx context.Context, project *string, definitionId *int, revision *int) (io.ReadCloser, error) {
+func (client Client) GetDefinitionRevision(ctx context.Context, args GetDefinitionRevisionArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if definitionId == nil {
+    routeValues["project"] = *args.Project
+    if args.DefinitionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
     }
-    routeValues["definitionId"] = strconv.Itoa(*definitionId)
-    if revision == nil {
+    routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
+    if args.Revision == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "revision"} 
     }
-    routeValues["revision"] = strconv.Itoa(*revision)
+    routeValues["revision"] = strconv.Itoa(*args.Revision)
 
     locationId, _ := uuid.Parse("258b82e0-9d41-43f3-86d6-fef14ddd44bc")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "text/plain", nil)
@@ -1193,20 +1414,27 @@ func (client Client) GetDefinitionRevision(ctx context.Context, project *string,
     return resp.Body, err
 }
 
+// Arguments for the GetDefinitionRevision function
+type GetDefinitionRevisionArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the definition.
+    DefinitionId *int
+    // (required) Id of the revision.
+    Revision *int
+}
+
 // [Preview API] Get revision history for a release definition
-// ctx
-// project (required): Project ID or project name
-// definitionId (required): Id of the definition.
-func (client Client) GetReleaseDefinitionHistory(ctx context.Context, project *string, definitionId *int) (*[]ReleaseDefinitionRevision, error) {
+func (client Client) GetReleaseDefinitionHistory(ctx context.Context, args GetReleaseDefinitionHistoryArgs) (*[]ReleaseDefinitionRevision, error) {
     routeValues := make(map[string]string)
-    if project == nil || *project == "" {
+    if args.Project == nil || *args.Project == "" {
         return nil, &azureDevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
-    routeValues["project"] = *project
-    if definitionId == nil {
+    routeValues["project"] = *args.Project
+    if args.DefinitionId == nil {
         return nil, &azureDevops.ArgumentNilError{ArgumentName: "definitionId"} 
     }
-    routeValues["definitionId"] = strconv.Itoa(*definitionId)
+    routeValues["definitionId"] = strconv.Itoa(*args.DefinitionId)
 
     locationId, _ := uuid.Parse("258b82e0-9d41-43f3-86d6-fef14ddd44bc")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -1217,5 +1445,13 @@ func (client Client) GetReleaseDefinitionHistory(ctx context.Context, project *s
     var responseValue []ReleaseDefinitionRevision
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
+}
+
+// Arguments for the GetReleaseDefinitionHistory function
+type GetReleaseDefinitionHistoryArgs struct {
+    // (required) Project ID or project name
+    Project *string
+    // (required) Id of the definition.
+    DefinitionId *int
 }
 
