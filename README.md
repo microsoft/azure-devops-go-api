@@ -1,4 +1,4 @@
-[![Azure Pipelines](https://dev.azure.com/mseng/_apis/public/build/definitions/698eacea-9ea2-4eb8-80a4-d06170edf6bc/9110/badge)]()
+[![Build Status](https://dev.azure.com/mseng/vsts-cli/_apis/build/status/microsoft.azure-devops-go-api?branchName=dev)](https://dev.azure.com/mseng/vsts-cli/_build/latest?definitionId=9110&branchName=dev)
 # Azure DevOps Go API
 This repository contains Go APIs for interacting with and managing Azure DevOps.
 
