@@ -121,7 +121,7 @@ type DecoratedAuditLogEntry struct {
     Category *AuditActionCategory `json:"category,omitempty"`
     // DisplayName of the category
     CategoryDisplayName *string `json:"categoryDisplayName,omitempty"`
-    // This allows related audit entries to be grouped together. Generally this occurs when a single action cases a cascade of audit entries. For example, project creation.
+    // This allows related audit entries to be grouped together. Generally this occurs when a single action causes a cascade of audit entries. For example, project creation.
     CorrelationId *uuid.UUID `json:"correlationId,omitempty"`
     // External data such as CUIDs, item names, etc.
     Data *map[string]interface{} `json:"data,omitempty"`
