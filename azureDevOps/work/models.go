@@ -10,6 +10,8 @@ package work
 
 import (
     "github.com/google/uuid"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/workItemTracking"
     "time"
 )
 
@@ -22,7 +24,7 @@ type attribute struct {
 }
 
 type BacklogColumn struct {
-    ColumnFieldReference *WorkItemFieldReference `json:"columnFieldReference,omitempty"`
+    ColumnFieldReference *workItemTracking.WorkItemFieldReference `json:"columnFieldReference,omitempty"`
     Width *int `json:"width,omitempty"`
 }
 
@@ -65,13 +67,13 @@ type BacklogLevel struct {
 
 type BacklogLevelConfiguration struct {
     // List of fields to include in Add Panel
-    AddPanelFields *[]WorkItemFieldReference `json:"addPanelFields,omitempty"`
+    AddPanelFields *[]workItemTracking.WorkItemFieldReference `json:"addPanelFields,omitempty"`
     // Color for the backlog level
     Color *string `json:"color,omitempty"`
     // Default list of columns for the backlog
     ColumnFields *[]BacklogColumn `json:"columnFields,omitempty"`
     // Default Work Item Type for the backlog
-    DefaultWorkItemType *WorkItemTypeReference `json:"defaultWorkItemType,omitempty"`
+    DefaultWorkItemType *workItemTracking.WorkItemTypeReference `json:"defaultWorkItemType,omitempty"`
     // Backlog Id (for Legacy Backlog Level from process config it can be categoryref name)
     Id *string `json:"id,omitempty"`
     // Indicates whether the backlog level is hidden
@@ -85,13 +87,13 @@ type BacklogLevelConfiguration struct {
     // Max number of work items to show in the given backlog
     WorkItemCountLimit *int `json:"workItemCountLimit,omitempty"`
     // Work Item types participating in this backlog as known by the project/Process, can be overridden by team settings for bugs
-    WorkItemTypes *[]WorkItemTypeReference `json:"workItemTypes,omitempty"`
+    WorkItemTypes *[]workItemTracking.WorkItemTypeReference `json:"workItemTypes,omitempty"`
 }
 
 // Represents work items in a backlog level
 type BacklogLevelWorkItems struct {
     // A list of work items within a backlog level
-    WorkItems *[]WorkItemLink `json:"workItems,omitempty"`
+    WorkItems *[]workItemTracking.WorkItemLink `json:"workItems,omitempty"`
 }
 
 // Definition of the type of backlog level
@@ -119,7 +121,7 @@ type Board struct {
     Name *string `json:"name,omitempty"`
     // Full http link to the resource
     Url *string `json:"url,omitempty"`
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     AllowedMappings *map[string]map[string][]string `json:"allowedMappings,omitempty"`
     CanEdit *bool `json:"canEdit,omitempty"`
     Columns *[]BoardColumn `json:"columns,omitempty"`
@@ -156,7 +158,7 @@ var BoardBadgeColumnOptionsValues = boardBadgeColumnOptionsValuesType{
 }
 
 type BoardCardRuleSettings struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     Rules *map[string][]Rule `json:"rules,omitempty"`
     Url *string `json:"url,omitempty"`
 }
@@ -171,7 +173,7 @@ type BoardChart struct {
     // Full http link to the resource
     Url *string `json:"url,omitempty"`
     // The links for the resource
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The settings for the resource
     Settings *map[string]interface{} `json:"settings,omitempty"`
 }
@@ -252,7 +254,7 @@ var BugsBehaviorValues = bugsBehaviorValuesType{
 
 type CapacityContractBase struct {
     // Collection of links relevant to resource
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Full http link to the resource
     Url *string `json:"url,omitempty"`
     // Collection of capacities associated with the team member
@@ -300,7 +302,7 @@ type CategoryConfiguration struct {
     // Category Reference Name
     ReferenceName *string `json:"referenceName,omitempty"`
     // Work item types for the backlog category
-    WorkItemTypes *[]WorkItemTypeReference `json:"workItemTypes,omitempty"`
+    WorkItemTypes *[]workItemTracking.WorkItemTypeReference `json:"workItemTypes,omitempty"`
 }
 
 type CreatePlan struct {
@@ -410,17 +412,6 @@ type FilterGroup struct {
     Start *int `json:"start,omitempty"`
 }
 
-type GraphSubjectBase struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-}
-
 // Enum for the various modes of identity picker
 type IdentityDisplayFormat string
 
@@ -439,51 +430,14 @@ var IdentityDisplayFormatValues = identityDisplayFormatValuesType{
     AvatarAndFullName: "avatarAndFullName",
 }
 
-type IdentityRef struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph user referenced in the "self" entry of the IdentityRef "_links" dictionary
-    DirectoryAlias *string `json:"directoryAlias,omitempty"`
-    Id *string `json:"id,omitempty"`
-    // Deprecated - Available in the "avatar" entry of the IdentityRef "_links" dictionary
-    ImageUrl *string `json:"imageUrl,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph membership state referenced in the "membershipState" entry of the GraphUser "_links" dictionary
-    Inactive *bool `json:"inactive,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsAadUserType/Descriptor.IsAadGroupType)
-    IsAadIdentity *bool `json:"isAadIdentity,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsGroupType)
-    IsContainer *bool `json:"isContainer,omitempty"`
-    IsDeletedInOrigin *bool `json:"isDeletedInOrigin,omitempty"`
-    // Deprecated - not in use in most preexisting implementations of ToIdentityRef
-    ProfileUrl *string `json:"profileUrl,omitempty"`
-    // Deprecated - use Domain+PrincipalName instead
-    UniqueName *string `json:"uniqueName,omitempty"`
-}
-
 // Represents work items in an iteration backlog
 type IterationWorkItems struct {
     // Collection of links relevant to resource
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Full http link to the resource
     Url *string `json:"url,omitempty"`
     // Work item relations
-    WorkItemRelations *[]WorkItemLink `json:"workItemRelations,omitempty"`
-}
-
-// Link description.
-type Link struct {
-    // Collection of link attributes.
-    Attributes *map[string]interface{} `json:"attributes,omitempty"`
-    // Relation type.
-    Rel *string `json:"rel,omitempty"`
-    // Link url.
-    Url *string `json:"url,omitempty"`
+    WorkItemRelations *[]workItemTracking.WorkItemLink `json:"workItemRelations,omitempty"`
 }
 
 // Client serialization contract for Delivery Timeline Markers.
@@ -513,7 +467,7 @@ type ParentChildWIMap struct {
 // Data contract for the plan definition
 type Plan struct {
     // Identity that created this plan. Defaults to null for records before upgrading to ScaledAgileViewComponent4.
-    CreatedByIdentity *IdentityRef `json:"createdByIdentity,omitempty"`
+    CreatedByIdentity *webApi.IdentityRef `json:"createdByIdentity,omitempty"`
     // Date when the plan was created
     CreatedDate *time.Time `json:"createdDate,omitempty"`
     // Description of the plan
@@ -521,7 +475,7 @@ type Plan struct {
     // Id of the plan
     Id *uuid.UUID `json:"id,omitempty"`
     // Identity that last modified this plan. Defaults to null for records before upgrading to ScaledAgileViewComponent4.
-    ModifiedByIdentity *IdentityRef `json:"modifiedByIdentity,omitempty"`
+    ModifiedByIdentity *webApi.IdentityRef `json:"modifiedByIdentity,omitempty"`
     // Date when the plan was last modified. Default to CreatedDate when the plan is first created.
     ModifiedDate *time.Time `json:"modifiedDate,omitempty"`
     // Name of the plan
@@ -541,7 +495,7 @@ type Plan struct {
 // Metadata about a plan definition that is stored in favorites service
 type PlanMetadata struct {
     // Identity of the creator of the plan
-    CreatedByIdentity *IdentityRef `json:"createdByIdentity,omitempty"`
+    CreatedByIdentity *webApi.IdentityRef `json:"createdByIdentity,omitempty"`
     // Description of plan
     Description *string `json:"description,omitempty"`
     // Last modified date of the plan
@@ -561,7 +515,7 @@ var PlanTypeValues = planTypeValuesType{
     DeliveryTimelineView: "deliveryTimelineView",
 }
 
-// Flag for permissions a user can have for this plan.
+// [Flags] Flag for permissions a user can have for this plan.
 type PlanUserPermissions string
 
 type planUserPermissionsValuesType struct {
@@ -603,7 +557,7 @@ type PredefinedQuery struct {
     // Localized name of the query
     Name *string `json:"name,omitempty"`
     // The results of the query.  This will be a set of WorkItem objects with only the 'id' set.  The client is responsible for paging in the data as needed.
-    Results *[]WorkItem `json:"results,omitempty"`
+    Results *[]workItemTracking.WorkItem `json:"results,omitempty"`
     // REST API Url to use to retrieve results for this query
     Url *string `json:"url,omitempty"`
     // Url to use to display a page in the browser with the results of this query
@@ -621,14 +575,8 @@ type ProcessConfiguration struct {
     // Details of task backlog
     TaskBacklog *CategoryConfiguration `json:"taskBacklog,omitempty"`
     // Type fields for the process configuration
-    TypeFields *map[string]WorkItemFieldReference `json:"typeFields,omitempty"`
+    TypeFields *map[string]workItemTracking.WorkItemFieldReference `json:"typeFields,omitempty"`
     Url *string `json:"url,omitempty"`
-}
-
-// The class to represent a collection of REST reference links.
-type ReferenceLinks struct {
-    // The readonly view of the links.  Because Reference links are readonly, we only want to expose them as read only.
-    Links *map[string]interface{} `json:"links,omitempty"`
 }
 
 // Represents a reorder request for one or more work items.
@@ -667,18 +615,6 @@ type TeamBacklogMapping struct {
     TeamId *uuid.UUID `json:"teamId,omitempty"`
 }
 
-// The Team Context for an operation.
-type TeamContext struct {
-    // The team project Id or name.  Ignored if ProjectId is set.
-    Project *string `json:"project,omitempty"`
-    // The Team Project ID.  Required if Project is not set.
-    ProjectId *uuid.UUID `json:"projectId,omitempty"`
-    // The Team Id or name.  Ignored if TeamId is set.
-    Team *string `json:"team,omitempty"`
-    // The Team Id
-    TeamId *uuid.UUID `json:"teamId,omitempty"`
-}
-
 // Represents a single TeamFieldValue
 type TeamFieldValue struct {
     IncludeChildren *bool `json:"includeChildren,omitempty"`
@@ -688,7 +624,7 @@ type TeamFieldValue struct {
 // Essentially a collection of team field values
 type TeamFieldValues struct {
     // Collection of links relevant to resource
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Full http link to the resource
     Url *string `json:"url,omitempty"`
     // The default team field value
@@ -717,7 +653,7 @@ type TeamIterationAttributes struct {
 // Represents capacity for a specific team member
 type TeamMemberCapacity struct {
     // Collection of links relevant to resource
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Full http link to the resource
     Url *string `json:"url,omitempty"`
     // Collection of capacities associated with the team member
@@ -731,7 +667,7 @@ type TeamMemberCapacity struct {
 // Represents capacity for a specific team member
 type TeamMemberCapacityIdentityRef struct {
     // Collection of links relevant to resource
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Full http link to the resource
     Url *string `json:"url,omitempty"`
     // Collection of capacities associated with the team member
@@ -739,13 +675,13 @@ type TeamMemberCapacityIdentityRef struct {
     // The days off associated with the team member
     DaysOff *[]DateRange `json:"daysOff,omitempty"`
     // Identity ref of the associated team member
-    TeamMember *IdentityRef `json:"teamMember,omitempty"`
+    TeamMember *webApi.IdentityRef `json:"teamMember,omitempty"`
 }
 
 // Data contract for TeamSettings
 type TeamSetting struct {
     // Collection of links relevant to resource
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Full http link to the resource
     Url *string `json:"url,omitempty"`
     // Backlog Iteration
@@ -765,14 +701,14 @@ type TeamSetting struct {
 // Base class for TeamSettings data contracts. Anything common goes here.
 type TeamSettingsDataContractBase struct {
     // Collection of links relevant to resource
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Full http link to the resource
     Url *string `json:"url,omitempty"`
 }
 
 type TeamSettingsDaysOff struct {
     // Collection of links relevant to resource
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Full http link to the resource
     Url *string `json:"url,omitempty"`
     DaysOff *[]DateRange `json:"daysOff,omitempty"`
@@ -785,7 +721,7 @@ type TeamSettingsDaysOffPatch struct {
 // Represents a shallow ref for a single iteration.
 type TeamSettingsIteration struct {
     // Collection of links relevant to resource
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Full http link to the resource
     Url *string `json:"url,omitempty"`
     // Attributes of the iteration such as start and end date.
@@ -960,99 +896,11 @@ type UpdatePlan struct {
     Type *PlanType `json:"type,omitempty"`
 }
 
-// Describes a work item.
-type WorkItem struct {
-    Url *string `json:"url,omitempty"`
-    // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // Reference to a specific version of the comment added/edited/deleted in this revision.
-    CommentVersionRef *WorkItemCommentVersionRef `json:"commentVersionRef,omitempty"`
-    // Map of field and values for the work item.
-    Fields *map[string]interface{} `json:"fields,omitempty"`
-    // The work item ID.
-    Id *int `json:"id,omitempty"`
-    // Relations of the work item.
-    Relations *[]WorkItemRelation `json:"relations,omitempty"`
-    // Revision number of the work item.
-    Rev *int `json:"rev,omitempty"`
-}
-
 // Work item color and icon.
 type WorkItemColor struct {
     Icon *string `json:"icon,omitempty"`
     PrimaryColor *string `json:"primaryColor,omitempty"`
     WorkItemTypeName *string `json:"workItemTypeName,omitempty"`
-}
-
-// Represents the reference to a specific version of a comment on a Work Item.
-type WorkItemCommentVersionRef struct {
-    Url *string `json:"url,omitempty"`
-    // The id assigned to the comment.
-    CommentId *int `json:"commentId,omitempty"`
-    // [Internal] The work item revision where this comment was originally added.
-    CreatedInRevision *int `json:"createdInRevision,omitempty"`
-    // [Internal] Specifies whether comment was deleted.
-    IsDeleted *bool `json:"isDeleted,omitempty"`
-    // [Internal] The text of the comment.
-    Text *string `json:"text,omitempty"`
-    // The version number.
-    Version *int `json:"version,omitempty"`
-}
-
-// Reference to a field in a work item
-type WorkItemFieldReference struct {
-    // The friendly name of the field.
-    Name *string `json:"name,omitempty"`
-    // The reference name of the field.
-    ReferenceName *string `json:"referenceName,omitempty"`
-    // The REST URL of the resource.
-    Url *string `json:"url,omitempty"`
-}
-
-// A link between two work items.
-type WorkItemLink struct {
-    // The type of link.
-    Rel *string `json:"rel,omitempty"`
-    // The source work item.
-    Source *WorkItemReference `json:"source,omitempty"`
-    // The target work item.
-    Target *WorkItemReference `json:"target,omitempty"`
-}
-
-// Contains reference to a work item.
-type WorkItemReference struct {
-    // Work item ID.
-    Id *int `json:"id,omitempty"`
-    // REST API URL of the resource
-    Url *string `json:"url,omitempty"`
-}
-
-type WorkItemRelation struct {
-    // Collection of link attributes.
-    Attributes *map[string]interface{} `json:"attributes,omitempty"`
-    // Relation type.
-    Rel *string `json:"rel,omitempty"`
-    // Link url.
-    Url *string `json:"url,omitempty"`
-}
-
-// Base class for WIT REST resources.
-type WorkItemTrackingResource struct {
-    Url *string `json:"url,omitempty"`
-    // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-}
-
-// Base class for work item tracking resource references.
-type WorkItemTrackingResourceReference struct {
-    Url *string `json:"url,omitempty"`
-}
-
-// Reference to a work item type.
-type WorkItemTypeReference struct {
-    Url *string `json:"url,omitempty"`
-    // Name of the work item type.
-    Name *string `json:"name,omitempty"`
 }
 
 type WorkItemTypeStateInfo struct {

@@ -10,12 +10,17 @@ package build
 
 import (
     "github.com/google/uuid"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/core"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/distributedTaskCommon"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/git"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/test"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "time"
 )
 
 // Represents a queue for running builds.
 type AgentPoolQueue struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The ID of the queue.
     Id *int `json:"id,omitempty"`
     // The name of the queue.
@@ -78,47 +83,8 @@ type AgentTargetExecutionOptions struct {
     Type *int `json:"type,omitempty"`
 }
 
-type AggregatedResultsAnalysis struct {
-    Duration interface{} `json:"duration,omitempty"`
-    NotReportedResultsByOutcome *map[TestOutcome]AggregatedResultsByOutcome `json:"notReportedResultsByOutcome,omitempty"`
-    PreviousContext *TestResultsContext `json:"previousContext,omitempty"`
-    ResultsByOutcome *map[TestOutcome]AggregatedResultsByOutcome `json:"resultsByOutcome,omitempty"`
-    ResultsDifference *AggregatedResultsDifference `json:"resultsDifference,omitempty"`
-    RunSummaryByOutcome *map[TestRunOutcome]AggregatedRunsByOutcome `json:"runSummaryByOutcome,omitempty"`
-    RunSummaryByState *map[TestRunState]AggregatedRunsByState `json:"runSummaryByState,omitempty"`
-    TotalTests *int `json:"totalTests,omitempty"`
-}
-
-type AggregatedResultsByOutcome struct {
-    Count *int `json:"count,omitempty"`
-    Duration interface{} `json:"duration,omitempty"`
-    GroupByField *string `json:"groupByField,omitempty"`
-    GroupByValue interface{} `json:"groupByValue,omitempty"`
-    Outcome *TestOutcome `json:"outcome,omitempty"`
-    RerunResultCount *int `json:"rerunResultCount,omitempty"`
-}
-
-type AggregatedResultsDifference struct {
-    IncreaseInDuration interface{} `json:"increaseInDuration,omitempty"`
-    IncreaseInFailures *int `json:"increaseInFailures,omitempty"`
-    IncreaseInOtherTests *int `json:"increaseInOtherTests,omitempty"`
-    IncreaseInPassedTests *int `json:"increaseInPassedTests,omitempty"`
-    IncreaseInTotalTests *int `json:"increaseInTotalTests,omitempty"`
-}
-
-type AggregatedRunsByOutcome struct {
-    Outcome *TestRunOutcome `json:"outcome,omitempty"`
-    RunsCount *int `json:"runsCount,omitempty"`
-}
-
-type AggregatedRunsByState struct {
-    ResultsByOutcome *map[TestOutcome]AggregatedResultsByOutcome `json:"resultsByOutcome,omitempty"`
-    RunsCount *int `json:"runsCount,omitempty"`
-    State *TestRunState `json:"state,omitempty"`
-}
-
 type ArtifactResource struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Type-specific data about the artifact.
     Data *string `json:"data,omitempty"`
     // A link to download the resource.
@@ -131,21 +97,9 @@ type ArtifactResource struct {
     Url *string `json:"url,omitempty"`
 }
 
-type AssociatedWorkItem struct {
-    AssignedTo *string `json:"assignedTo,omitempty"`
-    // Id of associated the work item.
-    Id *int `json:"id,omitempty"`
-    State *string `json:"state,omitempty"`
-    Title *string `json:"title,omitempty"`
-    // REST Url of the work item.
-    Url *string `json:"url,omitempty"`
-    WebUrl *string `json:"webUrl,omitempty"`
-    WorkItemType *string `json:"workItemType,omitempty"`
-}
-
 // Represents an attachment to a build.
 type Attachment struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The name of the attachment.
     Name *string `json:"name,omitempty"`
 }
@@ -164,14 +118,9 @@ var AuditActionValues = auditActionValuesType{
     Delete: "delete",
 }
 
-type AuthorizationHeader struct {
-    Name *string `json:"name,omitempty"`
-    Value *string `json:"value,omitempty"`
-}
-
 // Data representation of a build.
 type Build struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The agent specification for the build.
     AgentSpecification *AgentSpecification `json:"agentSpecification,omitempty"`
     // The build number/name of the build.
@@ -185,7 +134,7 @@ type Build struct {
     // Indicates whether the build has been deleted.
     Deleted *bool `json:"deleted,omitempty"`
     // The identity of the process or person that deleted the build.
-    DeletedBy *IdentityRef `json:"deletedBy,omitempty"`
+    DeletedBy *webApi.IdentityRef `json:"deletedBy,omitempty"`
     // The date the build was deleted.
     DeletedDate *time.Time `json:"deletedDate,omitempty"`
     // The description of how the build was deleted.
@@ -199,7 +148,7 @@ type Build struct {
     // Indicates whether the build should be skipped by retention policies.
     KeepForever *bool `json:"keepForever,omitempty"`
     // The identity representing the process or person that last changed the build.
-    LastChangedBy *IdentityRef `json:"lastChangedBy,omitempty"`
+    LastChangedBy *webApi.IdentityRef `json:"lastChangedBy,omitempty"`
     // The date the build was last changed.
     LastChangedDate *time.Time `json:"lastChangedDate,omitempty"`
     // Information about the build logs.
@@ -213,7 +162,7 @@ type Build struct {
     // The build's priority.
     Priority *QueuePriority `json:"priority,omitempty"`
     // The team project.
-    Project *TeamProjectReference `json:"project,omitempty"`
+    Project *core.TeamProjectReference `json:"project,omitempty"`
     Properties interface{} `json:"properties,omitempty"`
     // The quality of the xaml build (good, bad, etc.)
     Quality *string `json:"quality,omitempty"`
@@ -230,9 +179,9 @@ type Build struct {
     // The repository.
     Repository *BuildRepository `json:"repository,omitempty"`
     // The identity that queued the build.
-    RequestedBy *IdentityRef `json:"requestedBy,omitempty"`
+    RequestedBy *webApi.IdentityRef `json:"requestedBy,omitempty"`
     // The identity on whose behalf the build was queued.
-    RequestedFor *IdentityRef `json:"requestedFor,omitempty"`
+    RequestedFor *webApi.IdentityRef `json:"requestedFor,omitempty"`
     // The build result.
     Result *BuildResult `json:"result,omitempty"`
     // Indicates whether the build is retained by a release.
@@ -327,11 +276,11 @@ type BuildCompletedEvent struct {
     // Pull request for the build used for build notifications
     PullRequest *PullRequest `json:"pullRequest,omitempty"`
     // Test results associated with a build used for build notifications
-    TestResults *AggregatedResultsAnalysis `json:"testResults,omitempty"`
+    TestResults *test.AggregatedResultsAnalysis `json:"testResults,omitempty"`
     // Timeline records associated with a build used for build notifications
     TimelineRecords *[]TimelineRecord `json:"timelineRecords,omitempty"`
     // Work items associated with a build used for build notifications
-    WorkItems *[]AssociatedWorkItem `json:"workItems,omitempty"`
+    WorkItems *[]git.AssociatedWorkItem `json:"workItems,omitempty"`
 }
 
 // Represents a build completion trigger.
@@ -349,7 +298,7 @@ type BuildController struct {
     Name *string `json:"name,omitempty"`
     // Full http link to the resource
     Url *string `json:"url,omitempty"`
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The date the controller was created.
     CreatedDate *time.Time `json:"createdDate,omitempty"`
     // The description of the controller.
@@ -375,7 +324,7 @@ type BuildDefinition struct {
     // The folder path of the definition.
     Path *string `json:"path,omitempty"`
     // A reference to the project.
-    Project *TeamProjectReference `json:"project,omitempty"`
+    Project *core.TeamProjectReference `json:"project,omitempty"`
     // A value that indicates whether builds can be queued against this definition.
     QueueStatus *DefinitionQueueStatus `json:"queueStatus,omitempty"`
     // The definition revision number.
@@ -386,9 +335,9 @@ type BuildDefinition struct {
     Uri *string `json:"uri,omitempty"`
     // The REST URL of the definition.
     Url *string `json:"url,omitempty"`
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The author of the definition.
-    AuthoredBy *IdentityRef `json:"authoredBy,omitempty"`
+    AuthoredBy *webApi.IdentityRef `json:"authoredBy,omitempty"`
     // A reference to the definition that this definition is a draft of, if this is a draft definition.
     DraftOf *DefinitionReference `json:"draftOf,omitempty"`
     // The list of drafts associated with this definition, if this is not a draft definition.
@@ -421,7 +370,7 @@ type BuildDefinition struct {
     // The build process.
     Process interface{} `json:"process,omitempty"`
     // The process parameters for this definition.
-    ProcessParameters *ProcessParameters `json:"processParameters,omitempty"`
+    ProcessParameters *distributedTaskCommon.ProcessParameters `json:"processParameters,omitempty"`
     Properties interface{} `json:"properties,omitempty"`
     // The repository.
     Repository *BuildRepository `json:"repository,omitempty"`
@@ -443,7 +392,7 @@ type BuildDefinition3_2 struct {
     // The folder path of the definition.
     Path *string `json:"path,omitempty"`
     // A reference to the project.
-    Project *TeamProjectReference `json:"project,omitempty"`
+    Project *core.TeamProjectReference `json:"project,omitempty"`
     // A value that indicates whether builds can be queued against this definition.
     QueueStatus *DefinitionQueueStatus `json:"queueStatus,omitempty"`
     // The definition revision number.
@@ -454,9 +403,9 @@ type BuildDefinition3_2 struct {
     Uri *string `json:"uri,omitempty"`
     // The REST URL of the definition.
     Url *string `json:"url,omitempty"`
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The author of the definition.
-    AuthoredBy *IdentityRef `json:"authoredBy,omitempty"`
+    AuthoredBy *webApi.IdentityRef `json:"authoredBy,omitempty"`
     // A reference to the definition that this definition is a draft of, if this is a draft definition.
     DraftOf *DefinitionReference `json:"draftOf,omitempty"`
     // The list of drafts associated with this definition, if this is not a draft definition.
@@ -488,7 +437,7 @@ type BuildDefinition3_2 struct {
     LatestCompletedBuild *Build `json:"latestCompletedBuild,omitempty"`
     Options *[]BuildOption `json:"options,omitempty"`
     // Process Parameters
-    ProcessParameters *ProcessParameters `json:"processParameters,omitempty"`
+    ProcessParameters *distributedTaskCommon.ProcessParameters `json:"processParameters,omitempty"`
     Properties interface{} `json:"properties,omitempty"`
     // The repository
     Repository *BuildRepository `json:"repository,omitempty"`
@@ -509,7 +458,7 @@ type BuildDefinitionReference struct {
     // The folder path of the definition.
     Path *string `json:"path,omitempty"`
     // A reference to the project.
-    Project *TeamProjectReference `json:"project,omitempty"`
+    Project *core.TeamProjectReference `json:"project,omitempty"`
     // A value that indicates whether builds can be queued against this definition.
     QueueStatus *DefinitionQueueStatus `json:"queueStatus,omitempty"`
     // The definition revision number.
@@ -520,9 +469,9 @@ type BuildDefinitionReference struct {
     Uri *string `json:"uri,omitempty"`
     // The REST URL of the definition.
     Url *string `json:"url,omitempty"`
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The author of the definition.
-    AuthoredBy *IdentityRef `json:"authoredBy,omitempty"`
+    AuthoredBy *webApi.IdentityRef `json:"authoredBy,omitempty"`
     // A reference to the definition that this definition is a draft of, if this is a draft definition.
     DraftOf *DefinitionReference `json:"draftOf,omitempty"`
     // The list of drafts associated with this definition, if this is not a draft definition.
@@ -547,7 +496,7 @@ type BuildDefinitionReference3_2 struct {
     // The folder path of the definition.
     Path *string `json:"path,omitempty"`
     // A reference to the project.
-    Project *TeamProjectReference `json:"project,omitempty"`
+    Project *core.TeamProjectReference `json:"project,omitempty"`
     // A value that indicates whether builds can be queued against this definition.
     QueueStatus *DefinitionQueueStatus `json:"queueStatus,omitempty"`
     // The definition revision number.
@@ -558,9 +507,9 @@ type BuildDefinitionReference3_2 struct {
     Uri *string `json:"uri,omitempty"`
     // The REST URL of the definition.
     Url *string `json:"url,omitempty"`
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The author of the definition.
-    AuthoredBy *IdentityRef `json:"authoredBy,omitempty"`
+    AuthoredBy *webApi.IdentityRef `json:"authoredBy,omitempty"`
     // A reference to the definition that this definition is a draft of, if this is a draft definition.
     DraftOf *DefinitionReference `json:"draftOf,omitempty"`
     // The list of drafts associated with this definition, if this is not a draft definition.
@@ -575,7 +524,7 @@ type BuildDefinitionReference3_2 struct {
 // Represents a revision of a build definition.
 type BuildDefinitionRevision struct {
     // The identity of the person or process that changed the definition.
-    ChangedBy *IdentityRef `json:"changedBy,omitempty"`
+    ChangedBy *webApi.IdentityRef `json:"changedBy,omitempty"`
     // The date and time that the definition was changed.
     ChangedDate *time.Time `json:"changedDate,omitempty"`
     // The change type (add, edit, delete).
@@ -926,7 +875,7 @@ var BuildReasonValues = buildReasonValuesType{
 
 // Represents a reference to a build.
 type BuildReference struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The build number.
     BuildNumber *string `json:"buildNumber,omitempty"`
     // Indicates whether the build has been deleted.
@@ -938,7 +887,7 @@ type BuildReference struct {
     // The time that the build was queued.
     QueueTime *time.Time `json:"queueTime,omitempty"`
     // The identity on whose behalf the build was queued.
-    RequestedFor *IdentityRef `json:"requestedFor,omitempty"`
+    RequestedFor *webApi.IdentityRef `json:"requestedFor,omitempty"`
     // The build result.
     Result *BuildResult `json:"result,omitempty"`
     // The time that the build was started.
@@ -1098,7 +1047,7 @@ type BuildSummary struct {
     KeepForever *bool `json:"keepForever,omitempty"`
     Quality *string `json:"quality,omitempty"`
     Reason *BuildReason `json:"reason,omitempty"`
-    RequestedFor *IdentityRef `json:"requestedFor,omitempty"`
+    RequestedFor *webApi.IdentityRef `json:"requestedFor,omitempty"`
     StartTime *time.Time `json:"startTime,omitempty"`
     Status *BuildStatus `json:"status,omitempty"`
 }
@@ -1123,7 +1072,7 @@ type BuildWorkspace struct {
 // Represents a change associated with a build.
 type Change struct {
     // The author of the change.
-    Author *IdentityRef `json:"author,omitempty"`
+    Author *webApi.IdentityRef `json:"author,omitempty"`
     // The location of a user-friendly representation of the resource.
     DisplayUri *string `json:"displayUri,omitempty"`
     // The identifier for the change. For a commit, this would be the SHA1. For a TFVC changeset, this would be the changeset ID.
@@ -1152,12 +1101,12 @@ type ConsoleLogEvent struct {
 
 type ContinuousDeploymentDefinition struct {
     // The connected service associated with the continuous deployment
-    ConnectedService *WebApiConnectedServiceRef `json:"connectedService,omitempty"`
+    ConnectedService *core.WebApiConnectedServiceRef `json:"connectedService,omitempty"`
     // The definition associated with the continuous deployment
     Definition *XamlDefinitionReference `json:"definition,omitempty"`
     GitBranch *string `json:"gitBranch,omitempty"`
     HostedServiceName *string `json:"hostedServiceName,omitempty"`
-    Project *TeamProjectReference `json:"project,omitempty"`
+    Project *core.TeamProjectReference `json:"project,omitempty"`
     RepositoryId *string `json:"repositoryId,omitempty"`
     StorageAccountName *string `json:"storageAccountName,omitempty"`
     SubscriptionId *string `json:"subscriptionId,omitempty"`
@@ -1195,36 +1144,6 @@ var ControllerStatusValues = controllerStatusValuesType{
     Available: "available",
     // Indicates that the build controller has taken itself offline.
     Offline: "offline",
-}
-
-// Represents binding of data source for the service endpoint request.
-type DataSourceBindingBase struct {
-    // Pagination format supported by this data source(ContinuationToken/SkipTop).
-    CallbackContextTemplate *string `json:"callbackContextTemplate,omitempty"`
-    // Subsequent calls needed?
-    CallbackRequiredTemplate *string `json:"callbackRequiredTemplate,omitempty"`
-    // Gets or sets the name of the data source.
-    DataSourceName *string `json:"dataSourceName,omitempty"`
-    // Gets or sets the endpoint Id.
-    EndpointId *string `json:"endpointId,omitempty"`
-    // Gets or sets the url of the service endpoint.
-    EndpointUrl *string `json:"endpointUrl,omitempty"`
-    // Gets or sets the authorization headers.
-    Headers *[]AuthorizationHeader `json:"headers,omitempty"`
-    // Defines the initial value of the query params
-    InitialContextTemplate *string `json:"initialContextTemplate,omitempty"`
-    // Gets or sets the parameters for the data source.
-    Parameters *map[string]string `json:"parameters,omitempty"`
-    // Gets or sets http request body
-    RequestContent *string `json:"requestContent,omitempty"`
-    // Gets or sets http request verb
-    RequestVerb *string `json:"requestVerb,omitempty"`
-    // Gets or sets the result selector.
-    ResultSelector *string `json:"resultSelector,omitempty"`
-    // Gets or sets the result template.
-    ResultTemplate *string `json:"resultTemplate,omitempty"`
-    // Gets or sets the target of the data source.
-    Target *string `json:"target,omitempty"`
 }
 
 type DefinitionQuality string
@@ -1291,7 +1210,7 @@ type DefinitionReference struct {
     // The folder path of the definition.
     Path *string `json:"path,omitempty"`
     // A reference to the project.
-    Project *TeamProjectReference `json:"project,omitempty"`
+    Project *core.TeamProjectReference `json:"project,omitempty"`
     // A value that indicates whether builds can be queued against this definition.
     QueueStatus *DefinitionQueueStatus `json:"queueStatus,omitempty"`
     // The definition revision number.
@@ -1448,19 +1367,19 @@ type DockerProcessTarget struct {
 // Represents a folder that contains build definitions.
 type Folder struct {
     // The process or person who created the folder.
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     // The date the folder was created.
     CreatedOn *time.Time `json:"createdOn,omitempty"`
     // The description.
     Description *string `json:"description,omitempty"`
     // The process or person that last changed the folder.
-    LastChangedBy *IdentityRef `json:"lastChangedBy,omitempty"`
+    LastChangedBy *webApi.IdentityRef `json:"lastChangedBy,omitempty"`
     // The date the folder was last changed.
     LastChangedDate *time.Time `json:"lastChangedDate,omitempty"`
     // The full path.
     Path *string `json:"path,omitempty"`
     // The project.
-    Project *TeamProjectReference `json:"project,omitempty"`
+    Project *core.TeamProjectReference `json:"project,omitempty"`
 }
 
 // Specifies the desired ordering of folders.
@@ -1515,44 +1434,6 @@ var GetOptionValues = getOptionValuesType{
     Custom: "custom",
 }
 
-type GraphSubjectBase struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-}
-
-type IdentityRef struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph user referenced in the "self" entry of the IdentityRef "_links" dictionary
-    DirectoryAlias *string `json:"directoryAlias,omitempty"`
-    Id *string `json:"id,omitempty"`
-    // Deprecated - Available in the "avatar" entry of the IdentityRef "_links" dictionary
-    ImageUrl *string `json:"imageUrl,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph membership state referenced in the "membershipState" entry of the GraphUser "_links" dictionary
-    Inactive *bool `json:"inactive,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsAadUserType/Descriptor.IsAadGroupType)
-    IsAadIdentity *bool `json:"isAadIdentity,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsGroupType)
-    IsContainer *bool `json:"isContainer,omitempty"`
-    IsDeletedInOrigin *bool `json:"isDeletedInOrigin,omitempty"`
-    // Deprecated - not in use in most preexisting implementations of ToIdentityRef
-    ProfileUrl *string `json:"profileUrl,omitempty"`
-    // Deprecated - use Domain+PrincipalName instead
-    UniqueName *string `json:"uniqueName,omitempty"`
-}
-
 // Data representation of an information node associated with a build
 type InformationNode struct {
     // Fields of the information node
@@ -1592,18 +1473,6 @@ var IssueTypeValues = issueTypeValuesType{
     Warning: "warning",
 }
 
-// The JSON model for a JSON Patch operation
-type JsonPatchOperation struct {
-    // The path to copy from for the Move/Copy operation.
-    From *string `json:"from,omitempty"`
-    // The patch operation
-    Op *Operation `json:"op,omitempty"`
-    // The path for the operation. In the case of an array, a zero based index can be used to specify the position in the array (e.g. /biscuits/0/name). The "-" character can be used instead of an index to insert at the end of the array (e.g. /biscuits/-).
-    Path *string `json:"path,omitempty"`
-    // The value for the operation. This is either a primitive or a JToken.
-    Value interface{} `json:"value,omitempty"`
-}
-
 type JustInTimeProcess struct {
 }
 
@@ -1625,26 +1494,6 @@ type MultipleAgentExecutionOptions struct {
     ContinueOnError *bool `json:"continueOnError,omitempty"`
     // The maximum number of agents to use simultaneously.
     MaxConcurrency *int `json:"maxConcurrency,omitempty"`
-}
-
-type Operation string
-
-type operationValuesType struct {
-    Add Operation
-    Remove Operation
-    Replace Operation
-    Move Operation
-    Copy Operation
-    Test Operation
-}
-
-var OperationValues = operationValuesType{
-    Add: "add",
-    Remove: "remove",
-    Replace: "replace",
-    Move: "move",
-    Copy: "copy",
-    Test: "test",
 }
 
 // Represents a phase of a build definition.
@@ -1674,12 +1523,6 @@ type PhaseTarget struct {
     Type *int `json:"type,omitempty"`
 }
 
-type ProcessParameters struct {
-    DataSourceBindings *[]DataSourceBindingBase `json:"dataSourceBindings,omitempty"`
-    Inputs *[]TaskInputDefinitionBase `json:"inputs,omitempty"`
-    SourceDefinitions *[]TaskSourceDefinitionBase `json:"sourceDefinitions,omitempty"`
-}
-
 type ProcessTemplateType string
 
 type processTemplateTypeValuesType struct {
@@ -1697,55 +1540,12 @@ var ProcessTemplateTypeValues = processTemplateTypeValuesType{
     Upgrade: "upgrade",
 }
 
-type ProjectState string
-
-type projectStateValuesType struct {
-    Deleting ProjectState
-    New ProjectState
-    WellFormed ProjectState
-    CreatePending ProjectState
-    All ProjectState
-    Unchanged ProjectState
-    Deleted ProjectState
-}
-
-var ProjectStateValues = projectStateValuesType{
-    // Project is in the process of being deleted.
-    Deleting: "deleting",
-    // Project is in the process of being created.
-    New: "new",
-    // Project is completely created and ready to use.
-    WellFormed: "wellFormed",
-    // Project has been queued for creation, but the process has not yet started.
-    CreatePending: "createPending",
-    // All projects regardless of state.
-    All: "all",
-    // Project has not been changed.
-    Unchanged: "unchanged",
-    // Project has been deleted.
-    Deleted: "deleted",
-}
-
-type ProjectVisibility string
-
-type projectVisibilityValuesType struct {
-    Private ProjectVisibility
-    Public ProjectVisibility
-}
-
-var ProjectVisibilityValues = projectVisibilityValuesType{
-    // The project is only visible to users with explicit access.
-    Private: "private",
-    // The project is visible to all.
-    Public: "public",
-}
-
 // Represents a pull request object.  These are retrieved from Source Providers.
 type PullRequest struct {
     // The links to other objects related to this object.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Author of the pull request.
-    Author *IdentityRef `json:"author,omitempty"`
+    Author *webApi.IdentityRef `json:"author,omitempty"`
     // Current state of the pull request, e.g. open, merged, closed, conflicts, etc.
     CurrentState *string `json:"currentState,omitempty"`
     // Description for the pull request.
@@ -1795,6 +1595,7 @@ var QueryDeletedOptionValues = queryDeletedOptionValuesType{
     OnlyDeleted: "onlyDeleted",
 }
 
+// [Flags]
 type QueueOptions string
 
 type queueOptionsValuesType struct {
@@ -1836,36 +1637,6 @@ type RealtimeBuildEvent struct {
     BuildId *int `json:"buildId,omitempty"`
 }
 
-// The class to represent a collection of REST reference links.
-type ReferenceLinks struct {
-    // The readonly view of the links.  Because Reference links are readonly, we only want to expose them as read only.
-    Links *map[string]interface{} `json:"links,omitempty"`
-}
-
-// Reference to a release.
-type ReleaseReference struct {
-    // Number of Release Attempt.
-    Attempt *int `json:"attempt,omitempty"`
-    // Release Creation Date.
-    CreationDate *time.Time `json:"creationDate,omitempty"`
-    // Release definition ID.
-    DefinitionId *int `json:"definitionId,omitempty"`
-    // Environment creation Date.
-    EnvironmentCreationDate *time.Time `json:"environmentCreationDate,omitempty"`
-    // Release environment definition ID.
-    EnvironmentDefinitionId *int `json:"environmentDefinitionId,omitempty"`
-    // Release environment definition name.
-    EnvironmentDefinitionName *string `json:"environmentDefinitionName,omitempty"`
-    // Release environment ID.
-    EnvironmentId *int `json:"environmentId,omitempty"`
-    // Release environment name.
-    EnvironmentName *string `json:"environmentName,omitempty"`
-    // Release ID.
-    Id *int `json:"id,omitempty"`
-    // Release name.
-    Name *string `json:"name,omitempty"`
-}
-
 type RepositoryCleanOptions string
 
 type repositoryCleanOptionsValuesType struct {
@@ -1890,11 +1661,6 @@ type RepositoryWebhook struct {
     Name *string `json:"name,omitempty"`
     Types *[]DefinitionTriggerType `json:"types,omitempty"`
     // The URL of the repository.
-    Url *string `json:"url,omitempty"`
-}
-
-type ResourceRef struct {
-    Id *string `json:"id,omitempty"`
     Url *string `json:"url,omitempty"`
 }
 
@@ -2061,9 +1827,9 @@ var SourceProviderAvailabilityValues = sourceProviderAvailabilityValuesType{
 
 // Represents a work item related to some source item. These are retrieved from Source Providers.
 type SourceRelatedWorkItem struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Identity ref for the person that the work item is assigned to.
-    AssignedTo *IdentityRef `json:"assignedTo,omitempty"`
+    AssignedTo *webApi.IdentityRef `json:"assignedTo,omitempty"`
     // Current state of the work item, e.g. Active, Resolved, Closed, etc.
     CurrentState *string `json:"currentState,omitempty"`
     // Long description for the work item.
@@ -2186,28 +1952,6 @@ type TaskDefinitionReference struct {
     VersionSpec *string `json:"versionSpec,omitempty"`
 }
 
-type TaskInputDefinitionBase struct {
-    Aliases *[]string `json:"aliases,omitempty"`
-    DefaultValue *string `json:"defaultValue,omitempty"`
-    GroupName *string `json:"groupName,omitempty"`
-    HelpMarkDown *string `json:"helpMarkDown,omitempty"`
-    Label *string `json:"label,omitempty"`
-    Name *string `json:"name,omitempty"`
-    Options *map[string]string `json:"options,omitempty"`
-    Properties *map[string]string `json:"properties,omitempty"`
-    Required *bool `json:"required,omitempty"`
-    Type *string `json:"type,omitempty"`
-    Validation *TaskInputValidation `json:"validation,omitempty"`
-    VisibleRule *string `json:"visibleRule,omitempty"`
-}
-
-type TaskInputValidation struct {
-    // Conditional expression
-    Expression *string `json:"expression,omitempty"`
-    // Message explaining how user can correct if validation fails
-    Message *string `json:"message,omitempty"`
-}
-
 // Represents a reference to a plan group.
 type TaskOrchestrationPlanGroupReference struct {
     // The name of the plan group.
@@ -2258,161 +2002,6 @@ var TaskResultValues = taskResultValuesType{
     Abandoned: "abandoned",
 }
 
-type TaskSourceDefinitionBase struct {
-    AuthKey *string `json:"authKey,omitempty"`
-    Endpoint *string `json:"endpoint,omitempty"`
-    KeySelector *string `json:"keySelector,omitempty"`
-    Selector *string `json:"selector,omitempty"`
-    Target *string `json:"target,omitempty"`
-}
-
-// Represents a shallow reference to a TeamProject.
-type TeamProjectReference struct {
-    // Project abbreviation.
-    Abbreviation *string `json:"abbreviation,omitempty"`
-    // Url to default team identity image.
-    DefaultTeamImageUrl *string `json:"defaultTeamImageUrl,omitempty"`
-    // The project's description (if any).
-    Description *string `json:"description,omitempty"`
-    // Project identifier.
-    Id *uuid.UUID `json:"id,omitempty"`
-    // Project last update time.
-    LastUpdateTime *time.Time `json:"lastUpdateTime,omitempty"`
-    // Project name.
-    Name *string `json:"name,omitempty"`
-    // Project revision.
-    Revision *uint64 `json:"revision,omitempty"`
-    // Project state.
-    State *ProjectState `json:"state,omitempty"`
-    // Url to the full version of the object.
-    Url *string `json:"url,omitempty"`
-    // Project visibility.
-    Visibility *ProjectVisibility `json:"visibility,omitempty"`
-}
-
-// Valid TestOutcome values.
-type TestOutcome string
-
-type testOutcomeValuesType struct {
-    Unspecified TestOutcome
-    None TestOutcome
-    Passed TestOutcome
-    Failed TestOutcome
-    Inconclusive TestOutcome
-    Timeout TestOutcome
-    Aborted TestOutcome
-    Blocked TestOutcome
-    NotExecuted TestOutcome
-    Warning TestOutcome
-    Error TestOutcome
-    NotApplicable TestOutcome
-    Paused TestOutcome
-    InProgress TestOutcome
-    NotImpacted TestOutcome
-}
-
-var TestOutcomeValues = testOutcomeValuesType{
-    // Only used during an update to preserve the existing value.
-    Unspecified: "unspecified",
-    // Test has not been completed, or the test type does not report pass/failure.
-    None: "none",
-    // Test was executed w/o any issues.
-    Passed: "passed",
-    // Test was executed, but there were issues. Issues may involve exceptions or failed assertions.
-    Failed: "failed",
-    // Test has completed, but we can't say if it passed or failed. May be used for aborted tests...
-    Inconclusive: "inconclusive",
-    // The test timed out
-    Timeout: "timeout",
-    // Test was aborted. This was not caused by a user gesture, but rather by a framework decision.
-    Aborted: "aborted",
-    // Test had it chance for been executed but was not, as ITestElement.IsRunnable == false.
-    Blocked: "blocked",
-    // Test was not executed. This was caused by a user gesture - e.g. user hit stop button.
-    NotExecuted: "notExecuted",
-    // To be used by Run level results. This is not a failure.
-    Warning: "warning",
-    // There was a system error while we were trying to execute a test.
-    Error: "error",
-    // Test is Not Applicable for execution.
-    NotApplicable: "notApplicable",
-    // Test is paused.
-    Paused: "paused",
-    // Test is currently executing. Added this for TCM charts
-    InProgress: "inProgress",
-    // Test is not impacted. Added fot TIA.
-    NotImpacted: "notImpacted",
-}
-
-type TestResultsContext struct {
-    Build *BuildReference `json:"build,omitempty"`
-    ContextType *TestResultsContextType `json:"contextType,omitempty"`
-    Release *ReleaseReference `json:"release,omitempty"`
-}
-
-type TestResultsContextType string
-
-type testResultsContextTypeValuesType struct {
-    Build TestResultsContextType
-    Release TestResultsContextType
-}
-
-var TestResultsContextTypeValues = testResultsContextTypeValuesType{
-    Build: "build",
-    Release: "release",
-}
-
-// The types of outcomes for test run.
-type TestRunOutcome string
-
-type testRunOutcomeValuesType struct {
-    Passed TestRunOutcome
-    Failed TestRunOutcome
-    NotImpacted TestRunOutcome
-    Others TestRunOutcome
-}
-
-var TestRunOutcomeValues = testRunOutcomeValuesType{
-    // Run with zero failed tests and has at least one impacted test
-    Passed: "passed",
-    // Run with at-least one failed test.
-    Failed: "failed",
-    // Run with no impacted tests.
-    NotImpacted: "notImpacted",
-    // Runs with All tests in other category.
-    Others: "others",
-}
-
-// The types of states for test run.
-type TestRunState string
-
-type testRunStateValuesType struct {
-    Unspecified TestRunState
-    NotStarted TestRunState
-    InProgress TestRunState
-    Completed TestRunState
-    Aborted TestRunState
-    Waiting TestRunState
-    NeedsInvestigation TestRunState
-}
-
-var TestRunStateValues = testRunStateValuesType{
-    // Only used during an update to preserve the existing value.
-    Unspecified: "unspecified",
-    // The run is still being created.  No tests have started yet.
-    NotStarted: "notStarted",
-    // Tests are running.
-    InProgress: "inProgress",
-    // All tests have completed or been skipped.
-    Completed: "completed",
-    // Run is stopped and remaining tests have been aborted
-    Aborted: "aborted",
-    // Run is currently initializing This is a legacy state and should not be used any more
-    Waiting: "waiting",
-    // Run requires investigation because of a test point failure This is a legacy state and should not be used any more
-    NeedsInvestigation: "needsInvestigation",
-}
-
 // Represents the timeline of a build.
 type Timeline struct {
     // The change ID.
@@ -2439,7 +2028,7 @@ type TimelineAttempt struct {
 
 // Represents an entry in a build's timeline.
 type TimelineRecord struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Attempt number of record.
     Attempt *int `json:"attempt,omitempty"`
     // The change ID.
@@ -2578,11 +2167,6 @@ type VariableMultipliersServerExecutionOptions struct {
     Multipliers *[]string `json:"multipliers,omitempty"`
 }
 
-type WebApiConnectedServiceRef struct {
-    Id *string `json:"id,omitempty"`
-    Url *string `json:"url,omitempty"`
-}
-
 // Mapping for a workspace
 type WorkspaceMapping struct {
     // Uri of the associated definition
@@ -2645,7 +2229,7 @@ type XamlBuildDefinition struct {
     // The folder path of the definition.
     Path *string `json:"path,omitempty"`
     // A reference to the project.
-    Project *TeamProjectReference `json:"project,omitempty"`
+    Project *core.TeamProjectReference `json:"project,omitempty"`
     // A value that indicates whether builds can be queued against this definition.
     QueueStatus *DefinitionQueueStatus `json:"queueStatus,omitempty"`
     // The definition revision number.
@@ -2656,7 +2240,7 @@ type XamlBuildDefinition struct {
     Uri *string `json:"uri,omitempty"`
     // The REST URL of the definition.
     Url *string `json:"url,omitempty"`
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Batch size of the definition
     BatchSize *int `json:"batchSize,omitempty"`
     BuildArgs *string `json:"buildArgs,omitempty"`

@@ -37,35 +37,6 @@ var AuditActionCategoryValues = auditActionCategoryValuesType{
     Access: "access",
 }
 
-type AuditLogEntry struct {
-    // The action if for the event, i.e Git.CreateRepo, Project.RenameProject
-    ActionId *string `json:"actionId,omitempty"`
-    // ActivityId
-    ActivityId *uuid.UUID `json:"activityId,omitempty"`
-    // The Actor's CUID
-    ActorCUID *uuid.UUID `json:"actorCUID,omitempty"`
-    // The Actor's User Id
-    ActorUserId *uuid.UUID `json:"actorUserId,omitempty"`
-    // Type of authentication used by the author
-    AuthenticationMechanism *string `json:"authenticationMechanism,omitempty"`
-    // This allows us to group things together, like one user action that caused a cascade of event entries (project creation).
-    CorrelationId *uuid.UUID `json:"correlationId,omitempty"`
-    // External data such as CUIDs, item names, etc.
-    Data *map[string]interface{} `json:"data,omitempty"`
-    // EventId, should be unique
-    Id *uuid.UUID `json:"id,omitempty"`
-    // IP Address where the event was originated
-    IpAddress *string `json:"ipAddress,omitempty"`
-    // The org, collection or project Id
-    ScopeId *uuid.UUID `json:"scopeId,omitempty"`
-    // The type of the scope, Enterprise, Organization or Project
-    ScopeType *AuditScopeType `json:"scopeType,omitempty"`
-    // The time when the event occurred in UTC
-    Timestamp *time.Time `json:"timestamp,omitempty"`
-    // The user agent from the request
-    UserAgent *string `json:"userAgent,omitempty"`
-}
-
 // The object returned when the audit log is queried. It contains the log and the information needed to query more audit entries.
 type AuditLogQueryResult struct {
     // The continuation token to pass to get the next set of results
@@ -74,30 +45,6 @@ type AuditLogQueryResult struct {
     DecoratedAuditLogEntries *[]DecoratedAuditLogEntry `json:"decoratedAuditLogEntries,omitempty"`
     // True when there are more matching results to be fetched, false otherwise.
     HasMore *bool `json:"hasMore,omitempty"`
-}
-
-// The type of scope from where the event is originated
-type AuditScopeType string
-
-type auditScopeTypeValuesType struct {
-    Unknown AuditScopeType
-    Deployment AuditScopeType
-    Enterprise AuditScopeType
-    Organization AuditScopeType
-    Project AuditScopeType
-}
-
-var AuditScopeTypeValues = auditScopeTypeValuesType{
-    // The scope is not known or has not been set
-    Unknown: "unknown",
-    // Deployment
-    Deployment: "deployment",
-    // Enterprise
-    Enterprise: "enterprise",
-    // Organization
-    Organization: "organization",
-    // Project
-    Project: "project",
 }
 
 type DecoratedAuditLogEntry struct {
@@ -136,7 +83,7 @@ type DecoratedAuditLogEntry struct {
     // The organization or project Id
     ScopeId *uuid.UUID `json:"scopeId,omitempty"`
     // The type of the scope, Organization or Project
-    ScopeType *AuditScopeType `json:"scopeType,omitempty"`
+    ScopeType *string `json:"scopeType,omitempty"`
     // The time when the event occurred in UTC
     Timestamp *time.Time `json:"timestamp,omitempty"`
     // The user agent from the request

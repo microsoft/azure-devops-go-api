@@ -10,161 +10,9 @@ package wiki
 
 import (
     "github.com/google/uuid"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/git"
     "time"
 )
-
-type GitRepository struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    DefaultBranch *string `json:"defaultBranch,omitempty"`
-    Id *uuid.UUID `json:"id,omitempty"`
-    // True if the repository was created as a fork
-    IsFork *bool `json:"isFork,omitempty"`
-    Name *string `json:"name,omitempty"`
-    ParentRepository *GitRepositoryRef `json:"parentRepository,omitempty"`
-    Project *TeamProjectReference `json:"project,omitempty"`
-    RemoteUrl *string `json:"remoteUrl,omitempty"`
-    // Compressed size (bytes) of the repository.
-    Size *uint64 `json:"size,omitempty"`
-    SshUrl *string `json:"sshUrl,omitempty"`
-    Url *string `json:"url,omitempty"`
-    ValidRemoteUrls *[]string `json:"validRemoteUrls,omitempty"`
-    WebUrl *string `json:"webUrl,omitempty"`
-}
-
-type GitRepositoryRef struct {
-    // Team Project Collection where this Fork resides
-    Collection *TeamProjectCollectionReference `json:"collection,omitempty"`
-    Id *uuid.UUID `json:"id,omitempty"`
-    // True if the repository was created as a fork
-    IsFork *bool `json:"isFork,omitempty"`
-    Name *string `json:"name,omitempty"`
-    Project *TeamProjectReference `json:"project,omitempty"`
-    RemoteUrl *string `json:"remoteUrl,omitempty"`
-    SshUrl *string `json:"sshUrl,omitempty"`
-    Url *string `json:"url,omitempty"`
-}
-
-type GitVersionDescriptor struct {
-    // Version string identifier (name of tag/branch, SHA1 of commit)
-    Version *string `json:"version,omitempty"`
-    // Version options - Specify additional modifiers to version (e.g Previous)
-    VersionOptions *GitVersionOptions `json:"versionOptions,omitempty"`
-    // Version type (branch, tag, or commit). Determines how Id is interpreted
-    VersionType *GitVersionType `json:"versionType,omitempty"`
-}
-
-// Accepted types of version options
-type GitVersionOptions string
-
-type gitVersionOptionsValuesType struct {
-    None GitVersionOptions
-    PreviousChange GitVersionOptions
-    FirstParent GitVersionOptions
-}
-
-var GitVersionOptionsValues = gitVersionOptionsValuesType{
-    // Not specified
-    None: "none",
-    // Commit that changed item prior to the current version
-    PreviousChange: "previousChange",
-    // First parent of commit (HEAD^)
-    FirstParent: "firstParent",
-}
-
-// Accepted types of version
-type GitVersionType string
-
-type gitVersionTypeValuesType struct {
-    Branch GitVersionType
-    Tag GitVersionType
-    Commit GitVersionType
-}
-
-var GitVersionTypeValues = gitVersionTypeValuesType{
-    // Interpret the version as a branch name
-    Branch: "branch",
-    // Interpret the version as a tag name
-    Tag: "tag",
-    // Interpret the version as a commit ID (SHA1)
-    Commit: "commit",
-}
-
-type ProjectState string
-
-type projectStateValuesType struct {
-    Deleting ProjectState
-    New ProjectState
-    WellFormed ProjectState
-    CreatePending ProjectState
-    All ProjectState
-    Unchanged ProjectState
-    Deleted ProjectState
-}
-
-var ProjectStateValues = projectStateValuesType{
-    Deleting: "deleting",
-    New: "new",
-    WellFormed: "wellFormed",
-    CreatePending: "createPending",
-    All: "all",
-    Unchanged: "unchanged",
-    Deleted: "deleted",
-}
-
-type ProjectVisibility string
-
-type projectVisibilityValuesType struct {
-    Private ProjectVisibility
-    Public ProjectVisibility
-}
-
-var ProjectVisibilityValues = projectVisibilityValuesType{
-    Private: "private",
-    Public: "public",
-}
-
-type ReferenceLinks struct {
-    Links *map[string]interface{} `json:"links,omitempty"`
-}
-
-type TeamProjectCollectionReference struct {
-    Id *uuid.UUID `json:"id,omitempty"`
-    Name *string `json:"name,omitempty"`
-    Url *string `json:"url,omitempty"`
-}
-
-type TeamProjectReference struct {
-    Abbreviation *string `json:"abbreviation,omitempty"`
-    DefaultTeamImageUrl *string `json:"defaultTeamImageUrl,omitempty"`
-    Description *string `json:"description,omitempty"`
-    Id *uuid.UUID `json:"id,omitempty"`
-    LastUpdateTime *time.Time `json:"lastUpdateTime,omitempty"`
-    Name *string `json:"name,omitempty"`
-    Revision *uint64 `json:"revision,omitempty"`
-    State *ProjectState `json:"state,omitempty"`
-    Url *string `json:"url,omitempty"`
-    Visibility *ProjectVisibility `json:"visibility,omitempty"`
-}
-
-type VersionControlRecursionType string
-
-type versionControlRecursionTypeValuesType struct {
-    None VersionControlRecursionType
-    OneLevel VersionControlRecursionType
-    OneLevelPlusNestedEmptyFolders VersionControlRecursionType
-    Full VersionControlRecursionType
-}
-
-var VersionControlRecursionTypeValues = versionControlRecursionTypeValuesType{
-    // Only return the specified item.
-    None: "none",
-    // Return the specified item and its direct children.
-    OneLevel: "oneLevel",
-    // Return the specified item and its direct children, as well as recursive chains of nested child folders that only contain a single folder.
-    OneLevelPlusNestedEmptyFolders: "oneLevelPlusNestedEmptyFolders",
-    // Return specified item and all descendants
-    Full: "full",
-}
 
 // Defines a wiki repository which encapsulates the git repository backing the wiki.
 type Wiki struct {
@@ -177,7 +25,7 @@ type Wiki struct {
     // The ID of the wiki which is same as the ID of the Git repository that it is backed by.
     Id *uuid.UUID `json:"id,omitempty"`
     // The git repository that backs up the wiki.
-    Repository *GitRepository `json:"repository,omitempty"`
+    Repository *git.GitRepository `json:"repository,omitempty"`
 }
 
 // Defines properties for wiki attachment file.
@@ -231,7 +79,7 @@ type WikiCreateParametersV2 struct {
     // Type of the wiki.
     Type *WikiType `json:"type,omitempty"`
     // Version of the wiki. Not required for ProjectWiki type.
-    Version *GitVersionDescriptor `json:"version,omitempty"`
+    Version *git.GitVersionDescriptor `json:"version,omitempty"`
 }
 
 // Defines a page in a wiki.
@@ -341,7 +189,7 @@ type WikiUpdateParameters struct {
     // Name for wiki.
     Name *string `json:"name,omitempty"`
     // Versions of the wiki.
-    Versions *[]GitVersionDescriptor `json:"versions,omitempty"`
+    Versions *[]git.GitVersionDescriptor `json:"versions,omitempty"`
 }
 
 // Defines a wiki resource.
@@ -365,5 +213,5 @@ type WikiV2 struct {
     // REST url for this wiki.
     Url *string `json:"url,omitempty"`
     // Versions of the wiki.
-    Versions *[]GitVersionDescriptor `json:"versions,omitempty"`
+    Versions *[]git.GitVersionDescriptor `json:"versions,omitempty"`
 }

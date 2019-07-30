@@ -11,7 +11,8 @@ package taskAgent
 import (
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevOps"
-    "math/big"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/formInput"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "time"
 )
 
@@ -223,62 +224,6 @@ type DataSource struct {
 }
 
 type DataSourceBinding struct {
-    // Pagination format supported by this data source(ContinuationToken/SkipTop).
-    CallbackContextTemplate *string `json:"callbackContextTemplate,omitempty"`
-    // Subsequent calls needed?
-    CallbackRequiredTemplate *string `json:"callbackRequiredTemplate,omitempty"`
-    // Gets or sets the name of the data source.
-    DataSourceName *string `json:"dataSourceName,omitempty"`
-    // Gets or sets the endpoint Id.
-    EndpointId *string `json:"endpointId,omitempty"`
-    // Gets or sets the url of the service endpoint.
-    EndpointUrl *string `json:"endpointUrl,omitempty"`
-    // Gets or sets the authorization headers.
-    Headers *[]AuthorizationHeader `json:"headers,omitempty"`
-    // Defines the initial value of the query params
-    InitialContextTemplate *string `json:"initialContextTemplate,omitempty"`
-    // Gets or sets the parameters for the data source.
-    Parameters *map[string]string `json:"parameters,omitempty"`
-    // Gets or sets http request body
-    RequestContent *string `json:"requestContent,omitempty"`
-    // Gets or sets http request verb
-    RequestVerb *string `json:"requestVerb,omitempty"`
-    // Gets or sets the result selector.
-    ResultSelector *string `json:"resultSelector,omitempty"`
-    // Gets or sets the result template.
-    ResultTemplate *string `json:"resultTemplate,omitempty"`
-    // Gets or sets the target of the data source.
-    Target *string `json:"target,omitempty"`
-}
-
-// Represents binding of data source for the service endpoint request.
-type DataSourceBindingBase struct {
-    // Pagination format supported by this data source(ContinuationToken/SkipTop).
-    CallbackContextTemplate *string `json:"callbackContextTemplate,omitempty"`
-    // Subsequent calls needed?
-    CallbackRequiredTemplate *string `json:"callbackRequiredTemplate,omitempty"`
-    // Gets or sets the name of the data source.
-    DataSourceName *string `json:"dataSourceName,omitempty"`
-    // Gets or sets the endpoint Id.
-    EndpointId *string `json:"endpointId,omitempty"`
-    // Gets or sets the url of the service endpoint.
-    EndpointUrl *string `json:"endpointUrl,omitempty"`
-    // Gets or sets the authorization headers.
-    Headers *[]AuthorizationHeader `json:"headers,omitempty"`
-    // Defines the initial value of the query params
-    InitialContextTemplate *string `json:"initialContextTemplate,omitempty"`
-    // Gets or sets the parameters for the data source.
-    Parameters *map[string]string `json:"parameters,omitempty"`
-    // Gets or sets http request body
-    RequestContent *string `json:"requestContent,omitempty"`
-    // Gets or sets http request verb
-    RequestVerb *string `json:"requestVerb,omitempty"`
-    // Gets or sets the result selector.
-    ResultSelector *string `json:"resultSelector,omitempty"`
-    // Gets or sets the result template.
-    ResultTemplate *string `json:"resultTemplate,omitempty"`
-    // Gets or sets the target of the data source.
-    Target *string `json:"target,omitempty"`
 }
 
 type DataSourceDetails struct {
@@ -338,7 +283,7 @@ type DeploymentGroup struct {
     MachineTags *[]string `json:"machineTags,omitempty"`
 }
 
-// This is useful in getting a list of deployment groups, filtered for which caller has permissions to take a particular action.
+// [Flags] This is useful in getting a list of deployment groups, filtered for which caller has permissions to take a particular action.
 type DeploymentGroupActionFilter string
 
 type deploymentGroupActionFilterValuesType struct {
@@ -372,7 +317,7 @@ type DeploymentGroupCreateParameterPoolProperty struct {
     Id *int `json:"id,omitempty"`
 }
 
-// Properties to be included or expanded in deployment group objects. This is useful when getting a single or list of deployment grouops.
+// [Flags] Properties to be included or expanded in deployment group objects. This is useful when getting a single or list of deployment grouops.
 type DeploymentGroupExpands string
 
 type deploymentGroupExpandsValuesType struct {
@@ -445,6 +390,7 @@ type DeploymentMachineChangedData struct {
     DeletedTags *[]string `json:"deletedTags,omitempty"`
 }
 
+// [Flags]
 type DeploymentMachineExpands string
 
 type deploymentMachineExpandsValuesType struct {
@@ -494,7 +440,7 @@ type DeploymentPoolSummary struct {
     Resource *EnvironmentResourceReference `json:"resource,omitempty"`
 }
 
-// Properties to be included or expanded in deployment pool summary objects. This is useful when getting a single or list of deployment pool summaries.
+// [Flags] Properties to be included or expanded in deployment pool summary objects. This is useful when getting a single or list of deployment pool summaries.
 type DeploymentPoolSummaryExpands string
 
 type deploymentPoolSummaryExpandsValuesType struct {
@@ -512,7 +458,7 @@ var DeploymentPoolSummaryExpandsValues = deploymentPoolSummaryExpandsValuesType{
     Resource: "resource",
 }
 
-// Properties to be included or expanded in deployment target objects. This is useful when getting a single or list of deployment targets.
+// [Flags] Properties to be included or expanded in deployment target objects. This is useful when getting a single or list of deployment targets.
 type DeploymentTargetExpands string
 
 type deploymentTargetExpandsValuesType struct {
@@ -570,7 +516,7 @@ type EndpointUrl struct {
     Value *string `json:"value,omitempty"`
 }
 
-// This is useful in getting a list of Environments, filtered for which caller has permissions to take a particular action.
+// [Flags] This is useful in getting a list of Environments, filtered for which caller has permissions to take a particular action.
 type EnvironmentActionFilter string
 
 type environmentActionFilterValuesType struct {
@@ -636,7 +582,7 @@ type EnvironmentDeploymentExecutionRecord struct {
     StartTime *time.Time `json:"startTime,omitempty"`
 }
 
-// Properties to be included or expanded in environment objects. This is useful when getting a single environment.
+// [Flags] Properties to be included or expanded in environment objects. This is useful when getting a single environment.
 type EnvironmentExpands string
 
 type environmentExpandsValuesType struct {
@@ -654,7 +600,7 @@ var EnvironmentExpandsValues = environmentExpandsValuesType{
 // Environment.
 type EnvironmentInstance struct {
     // Identity reference of the user who created the Environment.
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     // Creation time of the Environment
     CreatedOn *time.Time `json:"createdOn,omitempty"`
     // Description of the Environment.
@@ -662,7 +608,7 @@ type EnvironmentInstance struct {
     // Id of the Environment
     Id *int `json:"id,omitempty"`
     // Identity reference of the user who last modified the Environment.
-    LastModifiedBy *IdentityRef `json:"lastModifiedBy,omitempty"`
+    LastModifiedBy *webApi.IdentityRef `json:"lastModifiedBy,omitempty"`
     // Last modified time of the Environment
     LastModifiedOn *time.Time `json:"lastModifiedOn,omitempty"`
     // Name of the Environment.
@@ -684,11 +630,11 @@ type EnvironmentReference struct {
 }
 
 type EnvironmentResource struct {
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     CreatedOn *time.Time `json:"createdOn,omitempty"`
     EnvironmentReference *EnvironmentReference `json:"environmentReference,omitempty"`
     Id *int `json:"id,omitempty"`
-    LastModifiedBy *IdentityRef `json:"lastModifiedBy,omitempty"`
+    LastModifiedBy *webApi.IdentityRef `json:"lastModifiedBy,omitempty"`
     LastModifiedOn *time.Time `json:"lastModifiedOn,omitempty"`
     Name *string `json:"name,omitempty"`
     // Environment resource type
@@ -705,7 +651,7 @@ type EnvironmentResourceReference struct {
     Type *EnvironmentResourceType `json:"type,omitempty"`
 }
 
-// EnvironmentResourceType.
+// [Flags] EnvironmentResourceType.
 type EnvironmentResourceType string
 
 type environmentResourceTypeValuesType struct {
@@ -747,161 +693,14 @@ type ExpressionValidationItem struct {
     Value *string `json:"value,omitempty"`
 }
 
-type GraphSubjectBase struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-}
-
 type HelpLink struct {
     Text *string `json:"text,omitempty"`
     Url *string `json:"url,omitempty"`
 }
 
-type IdentityRef struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph user referenced in the "self" entry of the IdentityRef "_links" dictionary
-    DirectoryAlias *string `json:"directoryAlias,omitempty"`
-    Id *string `json:"id,omitempty"`
-    // Deprecated - Available in the "avatar" entry of the IdentityRef "_links" dictionary
-    ImageUrl *string `json:"imageUrl,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph membership state referenced in the "membershipState" entry of the GraphUser "_links" dictionary
-    Inactive *bool `json:"inactive,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsAadUserType/Descriptor.IsAadGroupType)
-    IsAadIdentity *bool `json:"isAadIdentity,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsGroupType)
-    IsContainer *bool `json:"isContainer,omitempty"`
-    IsDeletedInOrigin *bool `json:"isDeletedInOrigin,omitempty"`
-    // Deprecated - not in use in most preexisting implementations of ToIdentityRef
-    ProfileUrl *string `json:"profileUrl,omitempty"`
-    // Deprecated - use Domain+PrincipalName instead
-    UniqueName *string `json:"uniqueName,omitempty"`
-}
-
 type InputBindingContext struct {
     // Value of the input
     Value *string `json:"value,omitempty"`
-}
-
-// Enumerates data types that are supported as subscription input values.
-type InputDataType string
-
-type inputDataTypeValuesType struct {
-    None InputDataType
-    String InputDataType
-    Number InputDataType
-    Boolean InputDataType
-    Guid InputDataType
-    Uri InputDataType
-}
-
-var InputDataTypeValues = inputDataTypeValuesType{
-    // No data type is specified.
-    None: "none",
-    // Represents a textual value.
-    String: "string",
-    // Represents a numeric value.
-    Number: "number",
-    // Represents a value of true or false.
-    Boolean: "boolean",
-    // Represents a Guid.
-    Guid: "guid",
-    // Represents a URI.
-    Uri: "uri",
-}
-
-// Describes an input for subscriptions.
-type InputDescriptor struct {
-    // The ids of all inputs that the value of this input is dependent on.
-    DependencyInputIds *[]string `json:"dependencyInputIds,omitempty"`
-    // Description of what this input is used for
-    Description *string `json:"description,omitempty"`
-    // The group localized name to which this input belongs and can be shown as a header for the container that will include all the inputs in the group.
-    GroupName *string `json:"groupName,omitempty"`
-    // If true, the value information for this input is dynamic and should be fetched when the value of dependency inputs change.
-    HasDynamicValueInformation *bool `json:"hasDynamicValueInformation,omitempty"`
-    // Identifier for the subscription input
-    Id *string `json:"id,omitempty"`
-    // Mode in which the value of this input should be entered
-    InputMode *InputMode `json:"inputMode,omitempty"`
-    // Gets whether this input is confidential, such as for a password or application key
-    IsConfidential *bool `json:"isConfidential,omitempty"`
-    // Localized name which can be shown as a label for the subscription input
-    Name *string `json:"name,omitempty"`
-    // Custom properties for the input which can be used by the service provider
-    Properties *map[string]interface{} `json:"properties,omitempty"`
-    // Underlying data type for the input value. When this value is specified, InputMode, Validation and Values are optional.
-    Type *string `json:"type,omitempty"`
-    // Gets whether this input is included in the default generated action description.
-    UseInDefaultDescription *bool `json:"useInDefaultDescription,omitempty"`
-    // Information to use to validate this input's value
-    Validation *InputValidation `json:"validation,omitempty"`
-    // A hint for input value. It can be used in the UI as the input placeholder.
-    ValueHint *string `json:"valueHint,omitempty"`
-    // Information about possible values for this input
-    Values *InputValues `json:"values,omitempty"`
-}
-
-// Mode in which a subscription input should be entered (in a UI)
-type InputMode string
-
-type inputModeValuesType struct {
-    None InputMode
-    TextBox InputMode
-    PasswordBox InputMode
-    Combo InputMode
-    RadioButtons InputMode
-    CheckBox InputMode
-    TextArea InputMode
-}
-
-var InputModeValues = inputModeValuesType{
-    // This input should not be shown in the UI
-    None: "none",
-    // An input text box should be shown
-    TextBox: "textBox",
-    // An password input box should be shown
-    PasswordBox: "passwordBox",
-    // A select/combo control should be shown
-    Combo: "combo",
-    // Radio buttons should be shown
-    RadioButtons: "radioButtons",
-    // Checkbox should be shown(for true/false values)
-    CheckBox: "checkBox",
-    // A multi-line text area should be shown
-    TextArea: "textArea",
-}
-
-// Describes what values are valid for a subscription input
-type InputValidation struct {
-    // Gets or sets the data data type to validate.
-    DataType *InputDataType `json:"dataType,omitempty"`
-    // Gets or sets if this is a required field.
-    IsRequired *bool `json:"isRequired,omitempty"`
-    // Gets or sets the maximum length of this descriptor.
-    MaxLength *int `json:"maxLength,omitempty"`
-    // Gets or sets the minimum value for this descriptor.
-    MaxValue *big.Float `json:"maxValue,omitempty"`
-    // Gets or sets the minimum length of this descriptor.
-    MinLength *int `json:"minLength,omitempty"`
-    // Gets or sets the minimum value for this descriptor.
-    MinValue *big.Float `json:"minValue,omitempty"`
-    // Gets or sets the pattern to validate.
-    Pattern *string `json:"pattern,omitempty"`
-    // Gets or sets the error on pattern mismatch.
-    PatternMismatchErrorMessage *string `json:"patternMismatchErrorMessage,omitempty"`
 }
 
 type InputValidationItem struct {
@@ -919,40 +718,6 @@ type InputValidationItem struct {
 
 type InputValidationRequest struct {
     Inputs *map[string]ValidationItem `json:"inputs,omitempty"`
-}
-
-// Information about a single value for an input
-type InputValue struct {
-    // Any other data about this input
-    Data *map[string]interface{} `json:"data,omitempty"`
-    // The text to show for the display of this value
-    DisplayValue *string `json:"displayValue,omitempty"`
-    // The value to store for this input
-    Value *string `json:"value,omitempty"`
-}
-
-// Information about the possible/allowed values for a given subscription input
-type InputValues struct {
-    // The default value to use for this input
-    DefaultValue *string `json:"defaultValue,omitempty"`
-    // Errors encountered while computing dynamic values.
-    Error *InputValuesError `json:"error,omitempty"`
-    // The id of the input
-    InputId *string `json:"inputId,omitempty"`
-    // Should this input be disabled
-    IsDisabled *bool `json:"isDisabled,omitempty"`
-    // Should the value be restricted to one of the values in the PossibleValues (True) or are the values in PossibleValues just a suggestion (False)
-    IsLimitedToPossibleValues *bool `json:"isLimitedToPossibleValues,omitempty"`
-    // Should this input be made read-only
-    IsReadOnly *bool `json:"isReadOnly,omitempty"`
-    // Possible values that this input can take
-    PossibleValues *[]InputValue `json:"possibleValues,omitempty"`
-}
-
-// Error information related to a subscription input value.
-type InputValuesError struct {
-    // The error message.
-    Message *string `json:"message,omitempty"`
 }
 
 type Issue struct {
@@ -1041,11 +806,11 @@ type JobStartedEvent struct {
 }
 
 type KubernetesResource struct {
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     CreatedOn *time.Time `json:"createdOn,omitempty"`
     EnvironmentReference *EnvironmentReference `json:"environmentReference,omitempty"`
     Id *int `json:"id,omitempty"`
-    LastModifiedBy *IdentityRef `json:"lastModifiedBy,omitempty"`
+    LastModifiedBy *webApi.IdentityRef `json:"lastModifiedBy,omitempty"`
     LastModifiedOn *time.Time `json:"lastModifiedOn,omitempty"`
     Name *string `json:"name,omitempty"`
     // Environment resource type
@@ -1062,6 +827,7 @@ type KubernetesResourceCreateParameters struct {
     ServiceEndpointId *uuid.UUID `json:"serviceEndpointId,omitempty"`
 }
 
+// [Flags]
 type MachineGroupActionFilter string
 
 type machineGroupActionFilterValuesType struct {
@@ -1159,6 +925,7 @@ type PlanEnvironment struct {
     Variables *map[string]string `json:"variables,omitempty"`
 }
 
+// [Flags]
 type PlanGroupStatus string
 
 type planGroupStatusValuesType struct {
@@ -1173,6 +940,7 @@ var PlanGroupStatusValues = planGroupStatusValuesType{
     All: "all",
 }
 
+// [Flags]
 type PlanGroupStatusFilter string
 
 type planGroupStatusFilterValuesType struct {
@@ -1200,14 +968,8 @@ type PublishTaskGroupMetadata struct {
     TaskGroupRevision *int `json:"taskGroupRevision,omitempty"`
 }
 
-// The class to represent a collection of REST reference links.
-type ReferenceLinks struct {
-    // The readonly view of the links.  Because Reference links are readonly, we only want to expose them as read only.
-    Links *map[string]interface{} `json:"links,omitempty"`
-}
-
 type ResourceFilterOptions struct {
-    Identities *[]IdentityRef `json:"identities,omitempty"`
+    Identities *[]webApi.IdentityRef `json:"identities,omitempty"`
     ResourceTypes *[]string `json:"resourceTypes,omitempty"`
 }
 
@@ -1220,7 +982,7 @@ type ResourceFilters struct {
 // Resources include Service Connections, Variable Groups and Secure Files.
 type ResourceItem struct {
     // Gets or sets the identity who created the resource.
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     // Gets or sets description of the resource.
     Description *string `json:"description,omitempty"`
     // Gets or sets icon url of the resource.
@@ -1267,16 +1029,17 @@ type ResultTransformationDetails struct {
 }
 
 type SecureFile struct {
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     CreatedOn *time.Time `json:"createdOn,omitempty"`
     Id *uuid.UUID `json:"id,omitempty"`
-    ModifiedBy *IdentityRef `json:"modifiedBy,omitempty"`
+    ModifiedBy *webApi.IdentityRef `json:"modifiedBy,omitempty"`
     ModifiedOn *time.Time `json:"modifiedOn,omitempty"`
     Name *string `json:"name,omitempty"`
     Properties *map[string]string `json:"properties,omitempty"`
     Ticket *string `json:"ticket,omitempty"`
 }
 
+// [Flags]
 type SecureFileActionFilter string
 
 type secureFileActionFilterValuesType struct {
@@ -1322,11 +1085,11 @@ type ServerTaskRequestMessage struct {
 // Represents an endpoint which may be used by an orchestration job.
 type ServiceEndpoint struct {
     // Gets or sets the identity reference for the administrators group of the service endpoint.
-    AdministratorsGroup *IdentityRef `json:"administratorsGroup,omitempty"`
+    AdministratorsGroup *webApi.IdentityRef `json:"administratorsGroup,omitempty"`
     // Gets or sets the authorization data for talking to the endpoint.
     Authorization *EndpointAuthorization `json:"authorization,omitempty"`
     // Gets or sets the identity reference for the user who created the Service endpoint.
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     Data *map[string]string `json:"data,omitempty"`
     // Gets or sets the description of endpoint.
     Description *string `json:"description,omitempty"`
@@ -1344,7 +1107,7 @@ type ServiceEndpoint struct {
     // Gets or sets the owner of the endpoint.
     Owner *string `json:"owner,omitempty"`
     // Gets or sets the identity reference for the readers group of the service endpoint.
-    ReadersGroup *IdentityRef `json:"readersGroup,omitempty"`
+    ReadersGroup *webApi.IdentityRef `json:"readersGroup,omitempty"`
     // Gets or sets the type of the endpoint.
     Type *string `json:"type,omitempty"`
     // Gets or sets the url of the endpoint.
@@ -1359,7 +1122,7 @@ type ServiceEndpointAuthenticationScheme struct {
     // Gets or sets the display name for the service endpoint authentication scheme.
     DisplayName *string `json:"displayName,omitempty"`
     // Gets or sets the input descriptors for the service endpoint authentication scheme.
-    InputDescriptors *[]InputDescriptor `json:"inputDescriptors,omitempty"`
+    InputDescriptors *[]formInput.InputDescriptor `json:"inputDescriptors,omitempty"`
     // Gets or sets the scheme for service endpoint authentication.
     Scheme *string `json:"scheme,omitempty"`
 }
@@ -1433,7 +1196,7 @@ type ServiceEndpointType struct {
     // Gets or sets the icon url of service endpoint type.
     IconUrl *string `json:"iconUrl,omitempty"`
     // Input descriptor of service endpoint type.
-    InputDescriptors *[]InputDescriptor `json:"inputDescriptors,omitempty"`
+    InputDescriptors *[]formInput.InputDescriptor `json:"inputDescriptors,omitempty"`
     // Gets or sets the name of service endpoint type.
     Name *string `json:"name,omitempty"`
     // Trusted hosts of a service endpoint type.
@@ -1444,7 +1207,7 @@ type ServiceEndpointType struct {
 
 // A task agent.
 type TaskAgent struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // This agent's access point.
     AccessPoint *string `json:"accessPoint,omitempty"`
     // Whether or not this agent should run jobs.
@@ -1528,7 +1291,7 @@ type TaskAgentCloudType struct {
     // Gets or sets the display name of agent cloud type.
     DisplayName *string `json:"displayName,omitempty"`
     // Gets or sets the input descriptors
-    InputDescriptors *[]InputDescriptor `json:"inputDescriptors,omitempty"`
+    InputDescriptors *[]formInput.InputDescriptor `json:"inputDescriptors,omitempty"`
     // Gets or sets the name of agent cloud type.
     Name *string `json:"name,omitempty"`
 }
@@ -1602,7 +1365,7 @@ type TaskAgentJobRequest struct {
     UserDelayed *bool `json:"userDelayed,omitempty"`
 }
 
-// This is useful in getting a list of deployment targets, filtered by the result of their last job.
+// [Flags] This is useful in getting a list of deployment targets, filtered by the result of their last job.
 type TaskAgentJobResultFilter string
 
 type taskAgentJobResultFilterValuesType struct {
@@ -1703,17 +1466,17 @@ type TaskAgentPool struct {
     // Whether or not the pool should autosize itself based on the Agent Cloud Provider settings.
     AutoSize *bool `json:"autoSize,omitempty"`
     // Creator of the pool. The creator of the pool is automatically added into the administrators group for the pool on creation.
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     // The date/time of the pool creation.
     CreatedOn *time.Time `json:"createdOn,omitempty"`
     // Owner or administrator of the pool.
-    Owner *IdentityRef `json:"owner,omitempty"`
+    Owner *webApi.IdentityRef `json:"owner,omitempty"`
     Properties interface{} `json:"properties,omitempty"`
     // Target parallelism.
     TargetSize *int `json:"targetSize,omitempty"`
 }
 
-// Filters pools based on whether the calling user has permission to use or manage the pool.
+// [Flags] Filters pools based on whether the calling user has permission to use or manage the pool.
 type TaskAgentPoolActionFilter string
 
 type taskAgentPoolActionFilterValuesType struct {
@@ -1762,7 +1525,7 @@ type TaskAgentPoolMaintenanceJob struct {
     // Time that the maintenance job was queued
     QueueTime *time.Time `json:"queueTime,omitempty"`
     // The identity that queued the maintenance job
-    RequestedBy *IdentityRef `json:"requestedBy,omitempty"`
+    RequestedBy *webApi.IdentityRef `json:"requestedBy,omitempty"`
     // The maintenance job result
     Result *TaskAgentPoolMaintenanceJobResult `json:"result,omitempty"`
     // Time that the maintenance job was started
@@ -1946,7 +1709,7 @@ type TaskAgentQueue struct {
     ProjectId *uuid.UUID `json:"projectId,omitempty"`
 }
 
-// Filters queues based on whether the calling user has permission to use or manage the queue.
+// [Flags] Filters queues based on whether the calling user has permission to use or manage the queue.
 type TaskAgentQueueActionFilter string
 
 type taskAgentQueueActionFilterValuesType struct {
@@ -1963,7 +1726,7 @@ var TaskAgentQueueActionFilterValues = taskAgentQueueActionFilterValuesType{
 
 // A reference to an agent.
 type TaskAgentReference struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // This agent's access point.
     AccessPoint *string `json:"accessPoint,omitempty"`
     // Whether or not this agent should run jobs.
@@ -2015,7 +1778,7 @@ var TaskAgentStatusValues = taskAgentStatusValuesType{
     Online: "online",
 }
 
-// This is useful in getting a list of deployment targets, filtered by the deployment agent status.
+// [Flags] This is useful in getting a list of deployment targets, filtered by the deployment agent status.
 type TaskAgentStatusFilter string
 
 type taskAgentStatusFilterValuesType struct {
@@ -2040,7 +1803,7 @@ type TaskAgentUpdate struct {
     // Reason for this update.
     Reason *TaskAgentUpdateReason `json:"reason,omitempty"`
     // Identity which requested this update.
-    RequestedBy *IdentityRef `json:"requestedBy,omitempty"`
+    RequestedBy *webApi.IdentityRef `json:"requestedBy,omitempty"`
     // Date on which this update was requested.
     RequestTime *time.Time `json:"requestTime,omitempty"`
     // Source agent version of the update.
@@ -2072,7 +1835,7 @@ type TaskAssignedEvent struct {
 }
 
 type TaskAttachment struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     CreatedOn *time.Time `json:"createdOn,omitempty"`
     LastChangedBy *uuid.UUID `json:"lastChangedBy,omitempty"`
     LastChangedOn *time.Time `json:"lastChangedOn,omitempty"`
@@ -2240,13 +2003,13 @@ type TaskGroup struct {
     // Gets or sets comment.
     Comment *string `json:"comment,omitempty"`
     // Gets or sets the identity who created.
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     // Gets or sets date on which it got created.
     CreatedOn *time.Time `json:"createdOn,omitempty"`
     // Gets or sets as 'true' to indicate as deleted, 'false' otherwise.
     Deleted *bool `json:"deleted,omitempty"`
     // Gets or sets the identity who modified.
-    ModifiedBy *IdentityRef `json:"modifiedBy,omitempty"`
+    ModifiedBy *webApi.IdentityRef `json:"modifiedBy,omitempty"`
     // Gets or sets date on which it got modified.
     ModifiedOn *time.Time `json:"modifiedOn,omitempty"`
     // Gets or sets the owner.
@@ -2294,6 +2057,7 @@ type TaskGroupDefinition struct {
     VisibleRule *string `json:"visibleRule,omitempty"`
 }
 
+// [Flags]
 type TaskGroupExpands string
 
 type taskGroupExpandsValuesType struct {
@@ -2322,7 +2086,7 @@ var TaskGroupQueryOrderValues = taskGroupQueryOrderValuesType{
 }
 
 type TaskGroupRevision struct {
-    ChangedBy *IdentityRef `json:"changedBy,omitempty"`
+    ChangedBy *webApi.IdentityRef `json:"changedBy,omitempty"`
     ChangedDate *time.Time `json:"changedDate,omitempty"`
     ChangeType *AuditAction `json:"changeType,omitempty"`
     Comment *string `json:"comment,omitempty"`
@@ -2408,40 +2172,6 @@ type TaskHubLicenseDetails struct {
 }
 
 type TaskInputDefinition struct {
-    Aliases *[]string `json:"aliases,omitempty"`
-    DefaultValue *string `json:"defaultValue,omitempty"`
-    GroupName *string `json:"groupName,omitempty"`
-    HelpMarkDown *string `json:"helpMarkDown,omitempty"`
-    Label *string `json:"label,omitempty"`
-    Name *string `json:"name,omitempty"`
-    Options *map[string]string `json:"options,omitempty"`
-    Properties *map[string]string `json:"properties,omitempty"`
-    Required *bool `json:"required,omitempty"`
-    Type *string `json:"type,omitempty"`
-    Validation *TaskInputValidation `json:"validation,omitempty"`
-    VisibleRule *string `json:"visibleRule,omitempty"`
-}
-
-type TaskInputDefinitionBase struct {
-    Aliases *[]string `json:"aliases,omitempty"`
-    DefaultValue *string `json:"defaultValue,omitempty"`
-    GroupName *string `json:"groupName,omitempty"`
-    HelpMarkDown *string `json:"helpMarkDown,omitempty"`
-    Label *string `json:"label,omitempty"`
-    Name *string `json:"name,omitempty"`
-    Options *map[string]string `json:"options,omitempty"`
-    Properties *map[string]string `json:"properties,omitempty"`
-    Required *bool `json:"required,omitempty"`
-    Type *string `json:"type,omitempty"`
-    Validation *TaskInputValidation `json:"validation,omitempty"`
-    VisibleRule *string `json:"visibleRule,omitempty"`
-}
-
-type TaskInputValidation struct {
-    // Conditional expression
-    Expression *string `json:"expression,omitempty"`
-    // Message explaining how user can correct if validation fails
-    Message *string `json:"message,omitempty"`
 }
 
 type TaskInstance struct {
@@ -2504,7 +2234,7 @@ var TaskOrchestrationItemTypeValues = taskOrchestrationItemTypeValuesType{
 type TaskOrchestrationJob struct {
     ItemType *TaskOrchestrationItemType `json:"itemType,omitempty"`
     Demands *[]interface{} `json:"demands,omitempty"`
-    ExecuteAs *IdentityRef `json:"executeAs,omitempty"`
+    ExecuteAs *webApi.IdentityRef `json:"executeAs,omitempty"`
     ExecutionMode *string `json:"executionMode,omitempty"`
     ExecutionTimeout interface{} `json:"executionTimeout,omitempty"`
     InstanceId *uuid.UUID `json:"instanceId,omitempty"`
@@ -2515,7 +2245,7 @@ type TaskOrchestrationJob struct {
 }
 
 type TaskOrchestrationOwner struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     Id *int `json:"id,omitempty"`
     Name *string `json:"name,omitempty"`
 }
@@ -2645,19 +2375,6 @@ var TaskResultValues = taskResultValuesType{
 }
 
 type TaskSourceDefinition struct {
-    AuthKey *string `json:"authKey,omitempty"`
-    Endpoint *string `json:"endpoint,omitempty"`
-    KeySelector *string `json:"keySelector,omitempty"`
-    Selector *string `json:"selector,omitempty"`
-    Target *string `json:"target,omitempty"`
-}
-
-type TaskSourceDefinitionBase struct {
-    AuthKey *string `json:"authKey,omitempty"`
-    Endpoint *string `json:"endpoint,omitempty"`
-    KeySelector *string `json:"keySelector,omitempty"`
-    Selector *string `json:"selector,omitempty"`
-    Target *string `json:"target,omitempty"`
 }
 
 type TaskStartedEvent struct {
@@ -2763,7 +2480,7 @@ type ValidationItem struct {
 // A variable group is a collection of related variables.
 type VariableGroup struct {
     // Gets or sets the identity who created the variable group.
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     // Gets or sets the time when variable group was created.
     CreatedOn *time.Time `json:"createdOn,omitempty"`
     // Gets or sets description of the variable group.
@@ -2773,7 +2490,7 @@ type VariableGroup struct {
     // Indicates whether variable group is shared with other projects or not.
     IsShared *bool `json:"isShared,omitempty"`
     // Gets or sets the identity who modified the variable group.
-    ModifiedBy *IdentityRef `json:"modifiedBy,omitempty"`
+    ModifiedBy *webApi.IdentityRef `json:"modifiedBy,omitempty"`
     // Gets or sets the time when variable group was modified
     ModifiedOn *time.Time `json:"modifiedOn,omitempty"`
     // Gets or sets name of the variable group.
@@ -2786,6 +2503,7 @@ type VariableGroup struct {
     Variables *map[string]VariableValue `json:"variables,omitempty"`
 }
 
+// [Flags]
 type VariableGroupActionFilter string
 
 type variableGroupActionFilterValuesType struct {
@@ -2844,11 +2562,11 @@ type VirtualMachine struct {
 }
 
 type VirtualMachineGroup struct {
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     CreatedOn *time.Time `json:"createdOn,omitempty"`
     EnvironmentReference *EnvironmentReference `json:"environmentReference,omitempty"`
     Id *int `json:"id,omitempty"`
-    LastModifiedBy *IdentityRef `json:"lastModifiedBy,omitempty"`
+    LastModifiedBy *webApi.IdentityRef `json:"lastModifiedBy,omitempty"`
     LastModifiedOn *time.Time `json:"lastModifiedOn,omitempty"`
     Name *string `json:"name,omitempty"`
     // Environment resource type

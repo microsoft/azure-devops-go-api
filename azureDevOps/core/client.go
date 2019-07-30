@@ -14,6 +14,8 @@ import (
     "encoding/json"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevOps"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/operations"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "net/http"
     "net/url"
     "strconv"
@@ -188,7 +190,7 @@ type GetConnectedServicesArgs struct {
 }
 
 // Get a list of members for a specific team.
-func (client Client) GetTeamMembersWithExtendedProperties(ctx context.Context, args GetTeamMembersWithExtendedPropertiesArgs) (*[]TeamMember, error) {
+func (client Client) GetTeamMembersWithExtendedProperties(ctx context.Context, args GetTeamMembersWithExtendedPropertiesArgs) (*[]webApi.TeamMember, error) {
     routeValues := make(map[string]string)
     if args.ProjectId == nil || *args.ProjectId == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "projectId"} 
@@ -212,7 +214,7 @@ func (client Client) GetTeamMembersWithExtendedProperties(ctx context.Context, a
         return nil, err
     }
 
-    var responseValue []TeamMember
+    var responseValue []webApi.TeamMember
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -404,7 +406,7 @@ type GetProjectsArgs struct {
 }
 
 // Queues a project to be created. Use the [GetOperation](../../operations/operations/get) to periodically check for create project status.
-func (client Client) QueueCreateProject(ctx context.Context, args QueueCreateProjectArgs) (*OperationReference, error) {
+func (client Client) QueueCreateProject(ctx context.Context, args QueueCreateProjectArgs) (*operations.OperationReference, error) {
     if args.ProjectToCreate == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "projectToCreate"}
     }
@@ -418,7 +420,7 @@ func (client Client) QueueCreateProject(ctx context.Context, args QueueCreatePro
         return nil, err
     }
 
-    var responseValue OperationReference
+    var responseValue operations.OperationReference
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -430,7 +432,7 @@ type QueueCreateProjectArgs struct {
 }
 
 // Queues a project to be deleted. Use the [GetOperation](../../operations/operations/get) to periodically check for delete project status.
-func (client Client) QueueDeleteProject(ctx context.Context, args QueueDeleteProjectArgs) (*OperationReference, error) {
+func (client Client) QueueDeleteProject(ctx context.Context, args QueueDeleteProjectArgs) (*operations.OperationReference, error) {
     routeValues := make(map[string]string)
     if args.ProjectId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "projectId"} 
@@ -443,7 +445,7 @@ func (client Client) QueueDeleteProject(ctx context.Context, args QueueDeletePro
         return nil, err
     }
 
-    var responseValue OperationReference
+    var responseValue operations.OperationReference
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -455,7 +457,7 @@ type QueueDeleteProjectArgs struct {
 }
 
 // Update an existing project's name, abbreviation, description, or restore a project.
-func (client Client) UpdateProject(ctx context.Context, args UpdateProjectArgs) (*OperationReference, error) {
+func (client Client) UpdateProject(ctx context.Context, args UpdateProjectArgs) (*operations.OperationReference, error) {
     if args.ProjectUpdate == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "projectUpdate"}
     }
@@ -475,7 +477,7 @@ func (client Client) UpdateProject(ctx context.Context, args UpdateProjectArgs) 
         return nil, err
     }
 
-    var responseValue OperationReference
+    var responseValue operations.OperationReference
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -549,7 +551,7 @@ type SetProjectPropertiesArgs struct {
     // (required) The team project ID.
     ProjectId *uuid.UUID
     // (required) A JSON Patch document that represents an array of property operations. See RFC 6902 for more details on JSON Patch. The accepted operation verbs are Add and Remove, where Add is used for both creating and updating properties. The path consists of a forward slash and a property name.
-    PatchDocument *[]JsonPatchOperation
+    PatchDocument *[]webApi.JsonPatchOperation
 }
 
 // [Preview API]

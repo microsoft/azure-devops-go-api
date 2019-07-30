@@ -10,6 +10,7 @@ package workItemTracking
 
 import (
     "github.com/google/uuid"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "time"
 )
 
@@ -65,7 +66,7 @@ type AccountRecentActivityWorkItemModel2 struct {
     // Type of Work Item
     WorkItemType *string `json:"workItemType,omitempty"`
     // Assigned To
-    AssignedTo *IdentityRef `json:"assignedTo,omitempty"`
+    AssignedTo *webApi.IdentityRef `json:"assignedTo,omitempty"`
 }
 
 // Represents Work Item Recent Activity
@@ -152,15 +153,15 @@ var ClassificationNodesErrorPolicyValues = classificationNodesErrorPolicyValuesT
 type Comment struct {
     Url *string `json:"url,omitempty"`
     // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // IdentityRef of the creator of the comment.
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     // The creation date of the comment.
     CreatedDate *time.Time `json:"createdDate,omitempty"`
     // Effective Date/time value for adding the comment. Can be optionally different from CreatedDate.
     CreatedOnBehalfDate *time.Time `json:"createdOnBehalfDate,omitempty"`
     // Identity on whose behalf this comment has been added. Can be optionally different from CreatedBy.
-    CreatedOnBehalfOf *IdentityRef `json:"createdOnBehalfOf,omitempty"`
+    CreatedOnBehalfOf *webApi.IdentityRef `json:"createdOnBehalfOf,omitempty"`
     // The id assigned to the comment.
     Id *int `json:"id,omitempty"`
     // Indicates if the comment has been deleted.
@@ -168,7 +169,7 @@ type Comment struct {
     // The mentions of the comment.
     Mentions *[]CommentMention `json:"mentions,omitempty"`
     // IdentityRef of the user who last modified the comment.
-    ModifiedBy *IdentityRef `json:"modifiedBy,omitempty"`
+    ModifiedBy *webApi.IdentityRef `json:"modifiedBy,omitempty"`
     // The last modification date of the comment.
     ModifiedDate *time.Time `json:"modifiedDate,omitempty"`
     // The reactions of the comment.
@@ -187,7 +188,7 @@ type CommentCreate struct {
     Text *string `json:"text,omitempty"`
 }
 
-// Specifies the additional data retrieval options for work item comments.
+// [Flags] Specifies the additional data retrieval options for work item comments.
 type CommentExpandOptions string
 
 type commentExpandOptionsValuesType struct {
@@ -216,7 +217,7 @@ var CommentExpandOptionsValues = commentExpandOptionsValuesType{
 type CommentList struct {
     Url *string `json:"url,omitempty"`
     // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // List of comments in the current batch.
     Comments *[]Comment `json:"comments,omitempty"`
     // A string token that can be used to retrieving next page of comments if available. Otherwise null.
@@ -232,7 +233,7 @@ type CommentList struct {
 type CommentMention struct {
     Url *string `json:"url,omitempty"`
     // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The artifact portion of the parsed text. (i.e. the work item's id)
     ArtifactId *string `json:"artifactId,omitempty"`
     // The type the parser assigned to the mention. (i.e. person, work item, etc)
@@ -247,7 +248,7 @@ type CommentMention struct {
 type CommentReaction struct {
     Url *string `json:"url,omitempty"`
     // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The id of the comment this reaction belongs to.
     CommentId *int `json:"commentId,omitempty"`
     // Total number of reactions for the CommentReactionType.
@@ -303,21 +304,21 @@ type CommentUpdate struct {
 type CommentVersion struct {
     Url *string `json:"url,omitempty"`
     // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // IdentityRef of the creator of the comment.
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     // The creation date of the comment.
     CreatedDate *time.Time `json:"createdDate,omitempty"`
     // Effective Date/time value for adding the comment. Can be optionally different from CreatedDate.
     CreatedOnBehalfDate *time.Time `json:"createdOnBehalfDate,omitempty"`
     // Identity on whose behalf this comment has been added. Can be optionally different from CreatedBy.
-    CreatedOnBehalfOf *IdentityRef `json:"createdOnBehalfOf,omitempty"`
+    CreatedOnBehalfOf *webApi.IdentityRef `json:"createdOnBehalfOf,omitempty"`
     // The id assigned to the comment.
     Id *int `json:"id,omitempty"`
     // Indicates if the comment has been deleted at this version.
     IsDeleted *bool `json:"isDeleted,omitempty"`
     // IdentityRef of the user who modified the comment at this version.
-    ModifiedBy *IdentityRef `json:"modifiedBy,omitempty"`
+    ModifiedBy *webApi.IdentityRef `json:"modifiedBy,omitempty"`
     // The modification date of the comment for this version.
     ModifiedDate *time.Time `json:"modifiedDate,omitempty"`
     // The rendered content of the comment at this version.
@@ -332,7 +333,7 @@ type CommentVersion struct {
 type FieldDependentRule struct {
     Url *string `json:"url,omitempty"`
     // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The dependent fields.
     DependentFields *[]WorkItemFieldReference `json:"dependentFields,omitempty"`
 }
@@ -439,84 +440,11 @@ var GetFieldsExpandValues = getFieldsExpandValuesType{
     ExtensionFields: "extensionFields",
 }
 
-type GraphSubjectBase struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-}
-
-type IdentityRef struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph user referenced in the "self" entry of the IdentityRef "_links" dictionary
-    DirectoryAlias *string `json:"directoryAlias,omitempty"`
-    Id *string `json:"id,omitempty"`
-    // Deprecated - Available in the "avatar" entry of the IdentityRef "_links" dictionary
-    ImageUrl *string `json:"imageUrl,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph membership state referenced in the "membershipState" entry of the GraphUser "_links" dictionary
-    Inactive *bool `json:"inactive,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsAadUserType/Descriptor.IsAadGroupType)
-    IsAadIdentity *bool `json:"isAadIdentity,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsGroupType)
-    IsContainer *bool `json:"isContainer,omitempty"`
-    IsDeletedInOrigin *bool `json:"isDeletedInOrigin,omitempty"`
-    // Deprecated - not in use in most preexisting implementations of ToIdentityRef
-    ProfileUrl *string `json:"profileUrl,omitempty"`
-    // Deprecated - use Domain+PrincipalName instead
-    UniqueName *string `json:"uniqueName,omitempty"`
-}
-
 // Describes a reference to an identity.
 type IdentityReference struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph user referenced in the "self" entry of the IdentityRef "_links" dictionary
-    DirectoryAlias *string `json:"directoryAlias,omitempty"`
-    // Deprecated - Available in the "avatar" entry of the IdentityRef "_links" dictionary
-    ImageUrl *string `json:"imageUrl,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph membership state referenced in the "membershipState" entry of the GraphUser "_links" dictionary
-    Inactive *bool `json:"inactive,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsAadUserType/Descriptor.IsAadGroupType)
-    IsAadIdentity *bool `json:"isAadIdentity,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsGroupType)
-    IsContainer *bool `json:"isContainer,omitempty"`
-    IsDeletedInOrigin *bool `json:"isDeletedInOrigin,omitempty"`
-    // Deprecated - not in use in most preexisting implementations of ToIdentityRef
-    ProfileUrl *string `json:"profileUrl,omitempty"`
-    // Deprecated - use Domain+PrincipalName instead
-    UniqueName *string `json:"uniqueName,omitempty"`
     Id *uuid.UUID `json:"id,omitempty"`
     // Legacy back-compat property. This has been the WIT specific value from Constants. Will be hidden (but exists) on the client unless they are targeting the newest version
     Name *string `json:"name,omitempty"`
-}
-
-// The JSON model for a JSON Patch operation
-type JsonPatchOperation struct {
-    // The path to copy from for the Move/Copy operation.
-    From *string `json:"from,omitempty"`
-    // The patch operation
-    Op *Operation `json:"op,omitempty"`
-    // The path for the operation. In the case of an array, a zero based index can be used to specify the position in the array (e.g. /biscuits/0/name). The "-" character can be used instead of an index to insert at the end of the array (e.g. /biscuits/-).
-    Path *string `json:"path,omitempty"`
-    // The value for the operation. This is either a primitive or a JToken.
-    Value interface{} `json:"value,omitempty"`
 }
 
 // Link description.
@@ -569,26 +497,6 @@ var LogicalOperationValues = logicalOperationValuesType{
     None: "none",
     And: "and",
     Or: "or",
-}
-
-type Operation string
-
-type operationValuesType struct {
-    Add Operation
-    Remove Operation
-    Replace Operation
-    Move Operation
-    Copy Operation
-    Test Operation
-}
-
-var OperationValues = operationValuesType{
-    Add: "add",
-    Remove: "remove",
-    Replace: "replace",
-    Move: "move",
-    Copy: "copy",
-    Test: "test",
 }
 
 // Project work item type state colors
@@ -669,7 +577,7 @@ var QueryExpandValues = queryExpandValuesType{
 type QueryHierarchyItem struct {
     Url *string `json:"url,omitempty"`
     // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The child query items inside a query folder.
     Children *[]QueryHierarchyItem `json:"children,omitempty"`
     // The clauses for a flat query.
@@ -793,12 +701,6 @@ var QueryTypeValues = queryTypeValuesType{
     OneHop: "oneHop",
 }
 
-// The class to represent a collection of REST reference links.
-type ReferenceLinks struct {
-    // The readonly view of the links.  Because Reference links are readonly, we only want to expose them as read only.
-    Links *map[string]interface{} `json:"links,omitempty"`
-}
-
 // The reporting revision expand level.
 type ReportingRevisionsExpand string
 
@@ -846,18 +748,6 @@ type StreamedBatch struct {
     NextLink *string `json:"nextLink,omitempty"`
     // Values such as rel, sourceId, TargetId, ChangedDate, isActive.
     Values *[]interface{} `json:"values,omitempty"`
-}
-
-// The Team Context for an operation.
-type TeamContext struct {
-    // The team project Id or name.  Ignored if ProjectId is set.
-    Project *string `json:"project,omitempty"`
-    // The Team Project ID.  Required if Project is not set.
-    ProjectId *uuid.UUID `json:"projectId,omitempty"`
-    // The Team Id or name.  Ignored if TeamId is set.
-    Team *string `json:"team,omitempty"`
-    // The Team Id
-    TeamId *uuid.UUID `json:"teamId,omitempty"`
 }
 
 // Enumerates types of supported xml templates used for customization.
@@ -921,7 +811,7 @@ type WorkArtifactLink struct {
 type WorkItem struct {
     Url *string `json:"url,omitempty"`
     // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Reference to a specific version of the comment added/edited/deleted in this revision.
     CommentVersionRef *WorkItemCommentVersionRef `json:"commentVersionRef,omitempty"`
     // Map of field and values for the work item.
@@ -952,7 +842,7 @@ type WorkItemBatchGetRequest struct {
 type WorkItemClassificationNode struct {
     Url *string `json:"url,omitempty"`
     // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Dictionary that has node attributes like start/finish date for iteration nodes.
     Attributes *map[string]interface{} `json:"attributes,omitempty"`
     // List of child nodes fetched.
@@ -975,7 +865,7 @@ type WorkItemClassificationNode struct {
 type WorkItemComment struct {
     Url *string `json:"url,omitempty"`
     // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Identity of user who added the comment.
     RevisedBy *IdentityReference `json:"revisedBy,omitempty"`
     // The date of comment.
@@ -990,7 +880,7 @@ type WorkItemComment struct {
 type WorkItemComments struct {
     Url *string `json:"url,omitempty"`
     // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Comments collection.
     Comments *[]WorkItemComment `json:"comments,omitempty"`
     // The count of comments.
@@ -1119,7 +1009,7 @@ var WorkItemExpandValues = workItemExpandValuesType{
 type WorkItemField struct {
     Url *string `json:"url,omitempty"`
     // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Indicates whether the field is sortable in server queries.
     CanSortBy *bool `json:"canSortBy,omitempty"`
     // The description of the field.
@@ -1177,7 +1067,7 @@ type WorkItemFieldUpdate struct {
 type WorkItemHistory struct {
     Url *string `json:"url,omitempty"`
     // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     Rev *int `json:"rev,omitempty"`
     RevisedBy *IdentityReference `json:"revisedBy,omitempty"`
     RevisedDate *time.Time `json:"revisedDate,omitempty"`
@@ -1296,7 +1186,7 @@ type WorkItemRelation struct {
 type WorkItemRelationType struct {
     Url *string `json:"url,omitempty"`
     // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The name.
     Name *string `json:"name,omitempty"`
     // The reference name.
@@ -1337,7 +1227,7 @@ type WorkItemStateTransition struct {
 type WorkItemTemplate struct {
     Url *string `json:"url,omitempty"`
     // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The description of the work item template.
     Description *string `json:"description,omitempty"`
     // The identifier of the work item template.
@@ -1354,7 +1244,7 @@ type WorkItemTemplate struct {
 type WorkItemTemplateReference struct {
     Url *string `json:"url,omitempty"`
     // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The description of the work item template.
     Description *string `json:"description,omitempty"`
     // The identifier of the work item template.
@@ -1368,7 +1258,7 @@ type WorkItemTemplateReference struct {
 type WorkItemTrackingReference struct {
     Url *string `json:"url,omitempty"`
     // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The name.
     Name *string `json:"name,omitempty"`
     // The reference name.
@@ -1379,7 +1269,7 @@ type WorkItemTrackingReference struct {
 type WorkItemTrackingResource struct {
     Url *string `json:"url,omitempty"`
     // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
 }
 
 // Base class for work item tracking resource references.
@@ -1391,7 +1281,7 @@ type WorkItemTrackingResourceReference struct {
 type WorkItemType struct {
     Url *string `json:"url,omitempty"`
     // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The color.
     Color *string `json:"color,omitempty"`
     // The description of the work item type.
@@ -1420,7 +1310,7 @@ type WorkItemType struct {
 type WorkItemTypeCategory struct {
     Url *string `json:"url,omitempty"`
     // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Gets or sets the default type of the work item.
     DefaultWorkItemType *WorkItemTypeReference `json:"defaultWorkItemType,omitempty"`
     // The name of the category.
@@ -1565,7 +1455,7 @@ type WorkItemTypeTemplateUpdateModel struct {
 type WorkItemUpdate struct {
     Url *string `json:"url,omitempty"`
     // Link references to related REST resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // List of updates to fields.
     Fields *map[string]WorkItemFieldUpdate `json:"fields,omitempty"`
     // ID of update.

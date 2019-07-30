@@ -14,6 +14,8 @@ import (
     "encoding/json"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevOps"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/licensingRule"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "net/http"
     "net/url"
     "strconv"
@@ -64,7 +66,7 @@ type AddGroupEntitlementArgs struct {
     // (required) GroupEntitlement object specifying License Rule, Extensions Rule for the group. Based on the rules the members of the group will be given licenses and extensions. The Group Entitlement can be used to add the group to another project level groups
     GroupEntitlement *GroupEntitlement
     // (optional) RuleOption [ApplyGroupRule/TestApplyGroupRule] - specifies if the rules defined in group entitlement should be created and applied to it’s members (default option) or just be tested
-    RuleOption *RuleOption
+    RuleOption *licensingRule.RuleOption
 }
 
 // [Preview API] Delete a group entitlement.
@@ -98,7 +100,7 @@ type DeleteGroupEntitlementArgs struct {
     // (required) ID of the group to delete.
     GroupId *uuid.UUID
     // (optional) RuleOption [ApplyGroupRule/TestApplyGroupRule] - specifies if the rules defined in group entitlement should be deleted and the changes are applied to it’s members (default option) or just be tested
-    RuleOption *RuleOption
+    RuleOption *licensingRule.RuleOption
     // (optional) Optional parameter that specifies whether the group with the given ID should be removed from all other groups
     RemoveGroupMembership *bool
 }
@@ -178,11 +180,11 @@ func (client Client) UpdateGroupEntitlement(ctx context.Context, args UpdateGrou
 // Arguments for the UpdateGroupEntitlement function
 type UpdateGroupEntitlementArgs struct {
     // (required) JsonPatchDocument containing the operations to perform on the group.
-    Document *[]JsonPatchOperation
+    Document *[]webApi.JsonPatchOperation
     // (required) ID of the group.
     GroupId *uuid.UUID
     // (optional) RuleOption [ApplyGroupRule/TestApplyGroupRule] - specifies if the rules defined in group entitlement should be updated and the changes are applied to it’s members (default option) or just be tested
-    RuleOption *RuleOption
+    RuleOption *licensingRule.RuleOption
 }
 
 // [Preview API] Add a member to a Group.
@@ -370,7 +372,7 @@ func (client Client) UpdateUserEntitlements(ctx context.Context, args UpdateUser
 // Arguments for the UpdateUserEntitlements function
 type UpdateUserEntitlementsArgs struct {
     // (required) JsonPatchDocument containing the operations to perform.
-    Document *[]JsonPatchOperation
+    Document *[]webApi.JsonPatchOperation
     // (optional) Whether to send email invites to new users or not
     DoNotSendInviteForNewUsers *bool
 }
@@ -452,7 +454,7 @@ func (client Client) UpdateUserEntitlement(ctx context.Context, args UpdateUserE
 // Arguments for the UpdateUserEntitlement function
 type UpdateUserEntitlementArgs struct {
     // (required) JsonPatchDocument containing the operations to perform on the user.
-    Document *[]JsonPatchOperation
+    Document *[]webApi.JsonPatchOperation
     // (required) ID of the user.
     UserId *uuid.UUID
 }

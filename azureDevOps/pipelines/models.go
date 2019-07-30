@@ -9,6 +9,7 @@
 package pipelines
 
 import (
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "time"
 )
 
@@ -40,7 +41,7 @@ type CreatePipelineParameters struct {
     Name *string `json:"name,omitempty"`
 }
 
-// $expand options for GetLog and ListLogs.
+// [Flags] $expand options for GetLog and ListLogs.
 type GetLogExpandOptions string
 
 type getLogExpandOptionsValuesType struct {
@@ -62,13 +63,13 @@ type Log struct {
     LastChangedOn *time.Time `json:"lastChangedOn,omitempty"`
     // The number of lines in the log.
     LineCount *uint64 `json:"lineCount,omitempty"`
-    SignedContent *SignedUrl `json:"signedContent,omitempty"`
+    SignedContent *webApi.SignedUrl `json:"signedContent,omitempty"`
     Url *string `json:"url,omitempty"`
 }
 
 type LogCollection struct {
     Logs *[]Log `json:"logs,omitempty"`
-    SignedContent *SignedUrl `json:"signedContent,omitempty"`
+    SignedContent *webApi.SignedUrl `json:"signedContent,omitempty"`
     Url *string `json:"url,omitempty"`
 }
 
@@ -77,7 +78,7 @@ type Pipeline struct {
     Id *int `json:"id,omitempty"`
     Name *string `json:"name,omitempty"`
     Revision *int `json:"revision,omitempty"`
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     Configuration *PipelineConfiguration `json:"configuration,omitempty"`
     Url *string `json:"url,omitempty"`
 }
@@ -100,12 +101,6 @@ type PipelineReference struct {
     Name *string `json:"name,omitempty"`
     Revision *int `json:"revision,omitempty"`
     Url *string `json:"url,omitempty"`
-}
-
-// The class to represent a collection of REST reference links.
-type ReferenceLinks struct {
-    // The readonly view of the links.  Because Reference links are readonly, we only want to expose them as read only.
-    Links *map[string]interface{} `json:"links,omitempty"`
 }
 
 type Repository struct {
@@ -146,7 +141,7 @@ var RepositoryTypeValues = repositoryTypeValuesType{
 type Run struct {
     Id *int `json:"id,omitempty"`
     Name *string `json:"name,omitempty"`
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     CreatedDate *time.Time `json:"createdDate,omitempty"`
     FinishedDate *time.Time `json:"finishedDate,omitempty"`
     Pipeline *PipelineReference `json:"pipeline,omitempty"`
@@ -209,12 +204,6 @@ var RunStateValues = runStateValuesType{
     InProgress: "inProgress",
     Canceling: "canceling",
     Completed: "completed",
-}
-
-// A signed url allowing limited-time anonymous access to private resources.
-type SignedUrl struct {
-    SignatureExpires *time.Time `json:"signatureExpires,omitempty"`
-    Url *string `json:"url,omitempty"`
 }
 
 type Variable struct {

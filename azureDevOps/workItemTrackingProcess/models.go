@@ -217,7 +217,7 @@ var GetBehaviorsExpandValues = getBehaviorsExpandValuesType{
     CombinedFields: "combinedFields",
 }
 
-// The expand level of returned processes.
+// [Flags] The expand level of returned processes.
 type GetProcessExpandLevel string
 
 type getProcessExpandLevelValuesType struct {
@@ -232,7 +232,7 @@ var GetProcessExpandLevelValues = getProcessExpandLevelValuesType{
     Projects: "projects",
 }
 
-// Flag to define what properties to return in get work item type response.
+// [Flags] Flag to define what properties to return in get work item type response.
 type GetWorkItemTypeExpand string
 
 type getWorkItemTypeExpandValuesType struct {

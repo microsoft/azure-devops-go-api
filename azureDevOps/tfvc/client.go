@@ -14,6 +14,7 @@ import (
     "encoding/json"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevOps"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/git"
     "io"
     "net/http"
     "net/url"
@@ -37,7 +38,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // Get a single branch hierarchy at the given path with parents or children as specified.
-func (client Client) GetBranch(ctx context.Context, args GetBranchArgs) (*TfvcBranch, error) {
+func (client Client) GetBranch(ctx context.Context, args GetBranchArgs) (*git.TfvcBranch, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -60,7 +61,7 @@ func (client Client) GetBranch(ctx context.Context, args GetBranchArgs) (*TfvcBr
         return nil, err
     }
 
-    var responseValue TfvcBranch
+    var responseValue git.TfvcBranch
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -78,7 +79,7 @@ type GetBranchArgs struct {
 }
 
 // Get a collection of branch roots -- first-level children, branches with no parents.
-func (client Client) GetBranches(ctx context.Context, args GetBranchesArgs) (*[]TfvcBranch, error) {
+func (client Client) GetBranches(ctx context.Context, args GetBranchesArgs) (*[]git.TfvcBranch, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -103,7 +104,7 @@ func (client Client) GetBranches(ctx context.Context, args GetBranchesArgs) (*[]
         return nil, err
     }
 
-    var responseValue []TfvcBranch
+    var responseValue []git.TfvcBranch
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -123,7 +124,7 @@ type GetBranchesArgs struct {
 }
 
 // Get branch hierarchies below the specified scopePath
-func (client Client) GetBranchRefs(ctx context.Context, args GetBranchRefsArgs) (*[]TfvcBranchRef, error) {
+func (client Client) GetBranchRefs(ctx context.Context, args GetBranchRefsArgs) (*[]git.TfvcBranchRef, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -146,7 +147,7 @@ func (client Client) GetBranchRefs(ctx context.Context, args GetBranchRefsArgs) 
         return nil, err
     }
 
-    var responseValue []TfvcBranchRef
+    var responseValue []git.TfvcBranchRef
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -164,7 +165,7 @@ type GetBranchRefsArgs struct {
 }
 
 // Retrieve Tfvc changes for a given changeset.
-func (client Client) GetChangesetChanges(ctx context.Context, args GetChangesetChangesArgs) (*[]TfvcChange, error) {
+func (client Client) GetChangesetChanges(ctx context.Context, args GetChangesetChangesArgs) (*[]git.TfvcChange, error) {
     routeValues := make(map[string]string)
     if args.Id != nil {
         routeValues["id"] = strconv.Itoa(*args.Id)
@@ -183,7 +184,7 @@ func (client Client) GetChangesetChanges(ctx context.Context, args GetChangesetC
         return nil, err
     }
 
-    var responseValue []TfvcChange
+    var responseValue []git.TfvcChange
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -199,7 +200,7 @@ type GetChangesetChangesArgs struct {
 }
 
 // Create a new changeset.
-func (client Client) CreateChangeset(ctx context.Context, args CreateChangesetArgs) (*TfvcChangesetRef, error) {
+func (client Client) CreateChangeset(ctx context.Context, args CreateChangesetArgs) (*git.TfvcChangesetRef, error) {
     if args.Changeset == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "changeset"}
     }
@@ -218,7 +219,7 @@ func (client Client) CreateChangeset(ctx context.Context, args CreateChangesetAr
         return nil, err
     }
 
-    var responseValue TfvcChangesetRef
+    var responseValue git.TfvcChangesetRef
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -226,13 +227,13 @@ func (client Client) CreateChangeset(ctx context.Context, args CreateChangesetAr
 // Arguments for the CreateChangeset function
 type CreateChangesetArgs struct {
     // (required)
-    Changeset *TfvcChangeset
+    Changeset *git.TfvcChangeset
     // (optional) Project ID or project name
     Project *string
 }
 
 // Retrieve a Tfvc Changeset
-func (client Client) GetChangeset(ctx context.Context, args GetChangesetArgs) (*TfvcChangeset, error) {
+func (client Client) GetChangeset(ctx context.Context, args GetChangesetArgs) (*git.TfvcChangeset, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -299,7 +300,7 @@ func (client Client) GetChangeset(ctx context.Context, args GetChangesetArgs) (*
         return nil, err
     }
 
-    var responseValue TfvcChangeset
+    var responseValue git.TfvcChangeset
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -327,11 +328,11 @@ type GetChangesetArgs struct {
     // (optional) Results are sorted by ID in descending order by default. Use id asc to sort by ID in ascending order.
     Orderby *string
     // (optional) Following criteria available (.itemPath, .version, .versionType, .versionOption, .author, .fromId, .toId, .fromDate, .toDate) Default: null
-    SearchCriteria *TfvcChangesetSearchCriteria
+    SearchCriteria *git.TfvcChangesetSearchCriteria
 }
 
 // Retrieve Tfvc Changesets
-func (client Client) GetChangesets(ctx context.Context, args GetChangesetsArgs) (*[]TfvcChangesetRef, error) {
+func (client Client) GetChangesets(ctx context.Context, args GetChangesetsArgs) (*[]git.TfvcChangesetRef, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -382,7 +383,7 @@ func (client Client) GetChangesets(ctx context.Context, args GetChangesetsArgs) 
         return nil, err
     }
 
-    var responseValue []TfvcChangesetRef
+    var responseValue []git.TfvcChangesetRef
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -400,11 +401,11 @@ type GetChangesetsArgs struct {
     // (optional) Results are sorted by ID in descending order by default. Use id asc to sort by ID in ascending order.
     Orderby *string
     // (optional) Following criteria available (.itemPath, .version, .versionType, .versionOption, .author, .fromId, .toId, .fromDate, .toDate) Default: null
-    SearchCriteria *TfvcChangesetSearchCriteria
+    SearchCriteria *git.TfvcChangesetSearchCriteria
 }
 
 // Returns changesets for a given list of changeset Ids.
-func (client Client) GetBatchedChangesets(ctx context.Context, args GetBatchedChangesetsArgs) (*[]TfvcChangesetRef, error) {
+func (client Client) GetBatchedChangesets(ctx context.Context, args GetBatchedChangesetsArgs) (*[]git.TfvcChangesetRef, error) {
     if args.ChangesetsRequestData == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "changesetsRequestData"}
     }
@@ -418,7 +419,7 @@ func (client Client) GetBatchedChangesets(ctx context.Context, args GetBatchedCh
         return nil, err
     }
 
-    var responseValue []TfvcChangesetRef
+    var responseValue []git.TfvcChangesetRef
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -426,11 +427,11 @@ func (client Client) GetBatchedChangesets(ctx context.Context, args GetBatchedCh
 // Arguments for the GetBatchedChangesets function
 type GetBatchedChangesetsArgs struct {
     // (required) List of changeset IDs.
-    ChangesetsRequestData *TfvcChangesetsRequestData
+    ChangesetsRequestData *git.TfvcChangesetsRequestData
 }
 
 // Retrieves the work items associated with a particular changeset.
-func (client Client) GetChangesetWorkItems(ctx context.Context, args GetChangesetWorkItemsArgs) (*[]AssociatedWorkItem, error) {
+func (client Client) GetChangesetWorkItems(ctx context.Context, args GetChangesetWorkItemsArgs) (*[]git.AssociatedWorkItem, error) {
     routeValues := make(map[string]string)
     if args.Id != nil {
         routeValues["id"] = strconv.Itoa(*args.Id)
@@ -442,7 +443,7 @@ func (client Client) GetChangesetWorkItems(ctx context.Context, args GetChangese
         return nil, err
     }
 
-    var responseValue []AssociatedWorkItem
+    var responseValue []git.AssociatedWorkItem
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -454,7 +455,7 @@ type GetChangesetWorkItemsArgs struct {
 }
 
 // Post for retrieving a set of items given a list of paths or a long path. Allows for specifying the recursionLevel and version descriptors for each path.
-func (client Client) GetItemsBatch(ctx context.Context, args GetItemsBatchArgs) (*[][]TfvcItem, error) {
+func (client Client) GetItemsBatch(ctx context.Context, args GetItemsBatchArgs) (*[][]git.TfvcItem, error) {
     if args.ItemRequestData == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "itemRequestData"}
     }
@@ -473,7 +474,7 @@ func (client Client) GetItemsBatch(ctx context.Context, args GetItemsBatchArgs) 
         return nil, err
     }
 
-    var responseValue [][]TfvcItem
+    var responseValue [][]git.TfvcItem
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -481,7 +482,7 @@ func (client Client) GetItemsBatch(ctx context.Context, args GetItemsBatchArgs) 
 // Arguments for the GetItemsBatch function
 type GetItemsBatchArgs struct {
     // (required)
-    ItemRequestData *TfvcItemRequestData
+    ItemRequestData *git.TfvcItemRequestData
     // (optional) Project ID or project name
     Project *string
 }
@@ -512,13 +513,13 @@ func (client Client) GetItemsBatchZip(ctx context.Context, args GetItemsBatchZip
 // Arguments for the GetItemsBatchZip function
 type GetItemsBatchZipArgs struct {
     // (required)
-    ItemRequestData *TfvcItemRequestData
+    ItemRequestData *git.TfvcItemRequestData
     // (optional) Project ID or project name
     Project *string
 }
 
 // Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content which is always returned as a download.
-func (client Client) GetItem(ctx context.Context, args GetItemArgs) (*TfvcItem, error) {
+func (client Client) GetItem(ctx context.Context, args GetItemArgs) (*git.TfvcItem, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -561,7 +562,7 @@ func (client Client) GetItem(ctx context.Context, args GetItemArgs) (*TfvcItem, 
         return nil, err
     }
 
-    var responseValue TfvcItem
+    var responseValue git.TfvcItem
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -579,9 +580,9 @@ type GetItemArgs struct {
     // (optional) Version control path of a folder to return multiple items.
     ScopePath *string
     // (optional) None (just the item), or OneLevel (contents of a folder).
-    RecursionLevel *VersionControlRecursionType
+    RecursionLevel *git.VersionControlRecursionType
     // (optional) Version descriptor.  Default is null.
-    VersionDescriptor *TfvcVersionDescriptor
+    VersionDescriptor *git.TfvcVersionDescriptor
     // (optional) Set to true to include item content when requesting json.  Default is false.
     IncludeContent *bool
 }
@@ -646,15 +647,15 @@ type GetItemContentArgs struct {
     // (optional) Version control path of a folder to return multiple items.
     ScopePath *string
     // (optional) None (just the item), or OneLevel (contents of a folder).
-    RecursionLevel *VersionControlRecursionType
+    RecursionLevel *git.VersionControlRecursionType
     // (optional) Version descriptor.  Default is null.
-    VersionDescriptor *TfvcVersionDescriptor
+    VersionDescriptor *git.TfvcVersionDescriptor
     // (optional) Set to true to include item content when requesting json.  Default is false.
     IncludeContent *bool
 }
 
 // Get a list of Tfvc items
-func (client Client) GetItems(ctx context.Context, args GetItemsArgs) (*[]TfvcItem, error) {
+func (client Client) GetItems(ctx context.Context, args GetItemsArgs) (*[]git.TfvcItem, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -687,7 +688,7 @@ func (client Client) GetItems(ctx context.Context, args GetItemsArgs) (*[]TfvcIt
         return nil, err
     }
 
-    var responseValue []TfvcItem
+    var responseValue []git.TfvcItem
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -699,11 +700,11 @@ type GetItemsArgs struct {
     // (optional) Version control path of a folder to return multiple items.
     ScopePath *string
     // (optional) None (just the item), or OneLevel (contents of a folder).
-    RecursionLevel *VersionControlRecursionType
+    RecursionLevel *git.VersionControlRecursionType
     // (optional) True to include links.
     IncludeLinks *bool
     // (optional)
-    VersionDescriptor *TfvcVersionDescriptor
+    VersionDescriptor *git.TfvcVersionDescriptor
 }
 
 // Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content which is always returned as a download.
@@ -766,9 +767,9 @@ type GetItemTextArgs struct {
     // (optional) Version control path of a folder to return multiple items.
     ScopePath *string
     // (optional) None (just the item), or OneLevel (contents of a folder).
-    RecursionLevel *VersionControlRecursionType
+    RecursionLevel *git.VersionControlRecursionType
     // (optional) Version descriptor.  Default is null.
-    VersionDescriptor *TfvcVersionDescriptor
+    VersionDescriptor *git.TfvcVersionDescriptor
     // (optional) Set to true to include item content when requesting json.  Default is false.
     IncludeContent *bool
 }
@@ -833,15 +834,15 @@ type GetItemZipArgs struct {
     // (optional) Version control path of a folder to return multiple items.
     ScopePath *string
     // (optional) None (just the item), or OneLevel (contents of a folder).
-    RecursionLevel *VersionControlRecursionType
+    RecursionLevel *git.VersionControlRecursionType
     // (optional) Version descriptor.  Default is null.
-    VersionDescriptor *TfvcVersionDescriptor
+    VersionDescriptor *git.TfvcVersionDescriptor
     // (optional) Set to true to include item content when requesting json.  Default is false.
     IncludeContent *bool
 }
 
 // Get items under a label.
-func (client Client) GetLabelItems(ctx context.Context, args GetLabelItemsArgs) (*[]TfvcItem, error) {
+func (client Client) GetLabelItems(ctx context.Context, args GetLabelItemsArgs) (*[]git.TfvcItem, error) {
     routeValues := make(map[string]string)
     if args.LabelId == nil || *args.LabelId == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "labelId"} 
@@ -861,7 +862,7 @@ func (client Client) GetLabelItems(ctx context.Context, args GetLabelItemsArgs) 
         return nil, err
     }
 
-    var responseValue []TfvcItem
+    var responseValue []git.TfvcItem
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -877,7 +878,7 @@ type GetLabelItemsArgs struct {
 }
 
 // Get a single deep label.
-func (client Client) GetLabel(ctx context.Context, args GetLabelArgs) (*TfvcLabel, error) {
+func (client Client) GetLabel(ctx context.Context, args GetLabelArgs) (*git.TfvcLabel, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -915,7 +916,7 @@ func (client Client) GetLabel(ctx context.Context, args GetLabelArgs) (*TfvcLabe
         return nil, err
     }
 
-    var responseValue TfvcLabel
+    var responseValue git.TfvcLabel
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -925,13 +926,13 @@ type GetLabelArgs struct {
     // (required) Unique identifier of label
     LabelId *string
     // (required) maxItemCount
-    RequestData *TfvcLabelRequestData
+    RequestData *git.TfvcLabelRequestData
     // (optional) Project ID or project name
     Project *string
 }
 
 // Get a collection of shallow label references.
-func (client Client) GetLabels(ctx context.Context, args GetLabelsArgs) (*[]TfvcLabelRef, error) {
+func (client Client) GetLabels(ctx context.Context, args GetLabelsArgs) (*[]git.TfvcLabelRef, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -971,7 +972,7 @@ func (client Client) GetLabels(ctx context.Context, args GetLabelsArgs) (*[]Tfvc
         return nil, err
     }
 
-    var responseValue []TfvcLabelRef
+    var responseValue []git.TfvcLabelRef
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -979,7 +980,7 @@ func (client Client) GetLabels(ctx context.Context, args GetLabelsArgs) (*[]Tfvc
 // Arguments for the GetLabels function
 type GetLabelsArgs struct {
     // (required) labelScope, name, owner, and itemLabelFilter
-    RequestData *TfvcLabelRequestData
+    RequestData *git.TfvcLabelRequestData
     // (optional) Project ID or project name
     Project *string
     // (optional) Max number of labels to return
@@ -989,7 +990,7 @@ type GetLabelsArgs struct {
 }
 
 // Get changes included in a shelveset.
-func (client Client) GetShelvesetChanges(ctx context.Context, args GetShelvesetChangesArgs) (*[]TfvcChange, error) {
+func (client Client) GetShelvesetChanges(ctx context.Context, args GetShelvesetChangesArgs) (*[]git.TfvcChange, error) {
     queryParams := url.Values{}
     if args.ShelvesetId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "shelvesetId"}
@@ -1007,7 +1008,7 @@ func (client Client) GetShelvesetChanges(ctx context.Context, args GetShelvesetC
         return nil, err
     }
 
-    var responseValue []TfvcChange
+    var responseValue []git.TfvcChange
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -1023,7 +1024,7 @@ type GetShelvesetChangesArgs struct {
 }
 
 // Get a single deep shelveset.
-func (client Client) GetShelveset(ctx context.Context, args GetShelvesetArgs) (*TfvcShelveset, error) {
+func (client Client) GetShelveset(ctx context.Context, args GetShelvesetArgs) (*git.TfvcShelveset, error) {
     queryParams := url.Values{}
     if args.ShelvesetId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "shelvesetId"}
@@ -1058,7 +1059,7 @@ func (client Client) GetShelveset(ctx context.Context, args GetShelvesetArgs) (*
         return nil, err
     }
 
-    var responseValue TfvcShelveset
+    var responseValue git.TfvcShelveset
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -1068,11 +1069,11 @@ type GetShelvesetArgs struct {
     // (required) Shelveset's unique ID
     ShelvesetId *string
     // (optional) includeDetails, includeWorkItems, maxChangeCount, and maxCommentLength
-    RequestData *TfvcShelvesetRequestData
+    RequestData *git.TfvcShelvesetRequestData
 }
 
 // Return a collection of shallow shelveset references.
-func (client Client) GetShelvesets(ctx context.Context, args GetShelvesetsArgs) (*[]TfvcShelvesetRef, error) {
+func (client Client) GetShelvesets(ctx context.Context, args GetShelvesetsArgs) (*[]git.TfvcShelvesetRef, error) {
     queryParams := url.Values{}
     if args.RequestData != nil {
         if args.RequestData.Name != nil {
@@ -1109,7 +1110,7 @@ func (client Client) GetShelvesets(ctx context.Context, args GetShelvesetsArgs) 
         return nil, err
     }
 
-    var responseValue []TfvcShelvesetRef
+    var responseValue []git.TfvcShelvesetRef
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -1117,7 +1118,7 @@ func (client Client) GetShelvesets(ctx context.Context, args GetShelvesetsArgs) 
 // Arguments for the GetShelvesets function
 type GetShelvesetsArgs struct {
     // (optional) name, owner, and maxCommentLength
-    RequestData *TfvcShelvesetRequestData
+    RequestData *git.TfvcShelvesetRequestData
     // (optional) Max number of shelvesets to return
     Top *int
     // (optional) Number of shelvesets to skip
@@ -1125,7 +1126,7 @@ type GetShelvesetsArgs struct {
 }
 
 // Get work items associated with a shelveset.
-func (client Client) GetShelvesetWorkItems(ctx context.Context, args GetShelvesetWorkItemsArgs) (*[]AssociatedWorkItem, error) {
+func (client Client) GetShelvesetWorkItems(ctx context.Context, args GetShelvesetWorkItemsArgs) (*[]git.AssociatedWorkItem, error) {
     queryParams := url.Values{}
     if args.ShelvesetId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "shelvesetId"}
@@ -1137,7 +1138,7 @@ func (client Client) GetShelvesetWorkItems(ctx context.Context, args GetShelvese
         return nil, err
     }
 
-    var responseValue []AssociatedWorkItem
+    var responseValue []git.AssociatedWorkItem
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }

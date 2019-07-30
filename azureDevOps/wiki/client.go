@@ -14,6 +14,7 @@ import (
     "encoding/json"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevOps"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/git"
     "io"
     "net/http"
     "net/url"
@@ -98,7 +99,7 @@ type CreateAttachmentArgs struct {
     // (required) Wiki attachment name.
     Name *string
     // (optional) GitVersionDescriptor for the page. (Optional in case of ProjectWiki).
-    VersionDescriptor *GitVersionDescriptor
+    VersionDescriptor *git.GitVersionDescriptor
 }
 
 // Creates a page move operation that updates the path and order of the page as provided in the parameters.
@@ -166,7 +167,7 @@ type CreatePageMoveArgs struct {
     // (optional) Comment that is to be associated with this page move.
     Comment *string
     // (optional) GitVersionDescriptor for the page. (Optional in case of ProjectWiki).
-    VersionDescriptor *GitVersionDescriptor
+    VersionDescriptor *git.GitVersionDescriptor
 }
 
 // [Preview API] Deletes a wiki page.
@@ -273,7 +274,7 @@ type GetPageByIdArgs struct {
     // (required) Wiki page id.
     Id *int
     // (optional) Recursion level for subpages retrieval. Defaults to `None` (Optional).
-    RecursionLevel *VersionControlRecursionType
+    RecursionLevel *git.VersionControlRecursionType
     // (optional) True to include the content of the page in the response for Json content type. Defaults to false (Optional)
     IncludeContent *bool
 }
@@ -319,7 +320,7 @@ type GetPageByIdTextArgs struct {
     // (required) Wiki page id.
     Id *int
     // (optional) Recursion level for subpages retrieval. Defaults to `None` (Optional).
-    RecursionLevel *VersionControlRecursionType
+    RecursionLevel *git.VersionControlRecursionType
     // (optional) True to include the content of the page in the response for Json content type. Defaults to false (Optional)
     IncludeContent *bool
 }
@@ -365,7 +366,7 @@ type GetPageByIdZipArgs struct {
     // (required) Wiki page id.
     Id *int
     // (optional) Recursion level for subpages retrieval. Defaults to `None` (Optional).
-    RecursionLevel *VersionControlRecursionType
+    RecursionLevel *git.VersionControlRecursionType
     // (optional) True to include the content of the page in the response for Json content type. Defaults to false (Optional)
     IncludeContent *bool
 }
@@ -514,7 +515,7 @@ type CreateOrUpdatePageArgs struct {
     // (optional) Comment to be associated with the page operation.
     Comment *string
     // (optional) GitVersionDescriptor for the page. (Optional in case of ProjectWiki).
-    VersionDescriptor *GitVersionDescriptor
+    VersionDescriptor *git.GitVersionDescriptor
 }
 
 // Deletes a wiki page.
@@ -579,7 +580,7 @@ type DeletePageArgs struct {
     // (optional) Comment to be associated with this page delete.
     Comment *string
     // (optional) GitVersionDescriptor for the page. (Optional in case of ProjectWiki).
-    VersionDescriptor *GitVersionDescriptor
+    VersionDescriptor *git.GitVersionDescriptor
 }
 
 // Gets metadata or content of the wiki page for the provided path. Content negotiation is done based on the `Accept` header sent in the request.
@@ -644,9 +645,9 @@ type GetPageArgs struct {
     // (optional) Wiki page path.
     Path *string
     // (optional) Recursion level for subpages retrieval. Defaults to `None` (Optional).
-    RecursionLevel *VersionControlRecursionType
+    RecursionLevel *git.VersionControlRecursionType
     // (optional) GitVersionDescriptor for the page. Defaults to the default branch (Optional).
-    VersionDescriptor *GitVersionDescriptor
+    VersionDescriptor *git.GitVersionDescriptor
     // (optional) True to include the content of the page in the response for Json content type. Defaults to false (Optional)
     IncludeContent *bool
 }
@@ -702,9 +703,9 @@ type GetPageTextArgs struct {
     // (optional) Wiki page path.
     Path *string
     // (optional) Recursion level for subpages retrieval. Defaults to `None` (Optional).
-    RecursionLevel *VersionControlRecursionType
+    RecursionLevel *git.VersionControlRecursionType
     // (optional) GitVersionDescriptor for the page. Defaults to the default branch (Optional).
-    VersionDescriptor *GitVersionDescriptor
+    VersionDescriptor *git.GitVersionDescriptor
     // (optional) True to include the content of the page in the response for Json content type. Defaults to false (Optional)
     IncludeContent *bool
 }
@@ -760,9 +761,9 @@ type GetPageZipArgs struct {
     // (optional) Wiki page path.
     Path *string
     // (optional) Recursion level for subpages retrieval. Defaults to `None` (Optional).
-    RecursionLevel *VersionControlRecursionType
+    RecursionLevel *git.VersionControlRecursionType
     // (optional) GitVersionDescriptor for the page. Defaults to the default branch (Optional).
-    VersionDescriptor *GitVersionDescriptor
+    VersionDescriptor *git.GitVersionDescriptor
     // (optional) True to include the content of the page in the response for Json content type. Defaults to false (Optional)
     IncludeContent *bool
 }

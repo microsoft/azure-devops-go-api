@@ -14,6 +14,7 @@ import (
     "encoding/json"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevOps"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/searchShared"
     "net/http"
 )
 
@@ -61,7 +62,7 @@ func (client Client) FetchScrollCodeSearchResults(ctx context.Context, args Fetc
 // Arguments for the FetchScrollCodeSearchResults function
 type FetchScrollCodeSearchResultsArgs struct {
     // (required) The Code Search Request.
-    Request *ScrollSearchRequest
+    Request *searchShared.ScrollSearchRequest
     // (optional) Project ID or project name
     Project *string
 }
@@ -100,7 +101,7 @@ type FetchCodeSearchResultsArgs struct {
 }
 
 // [Preview API] Provides a set of results for the search text.
-func (client Client) FetchPackageSearchResults(ctx context.Context, args FetchPackageSearchResultsArgs) (*PackageSearchResponse, error) {
+func (client Client) FetchPackageSearchResults(ctx context.Context, args FetchPackageSearchResultsArgs) (*searchShared.PackageSearchResponse, error) {
     if args.Request == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "request"}
     }
@@ -114,12 +115,12 @@ func (client Client) FetchPackageSearchResults(ctx context.Context, args FetchPa
         return nil, err
     }
 
-    var responseBodyValue PackageSearchResponseContent
+    var responseBodyValue searchShared.PackageSearchResponseContent
     err = client.Client.UnmarshalBody(resp, &responseBodyValue)
 
-    var responseValue *PackageSearchResponse
+    var responseValue *searchShared.PackageSearchResponse
     if err == nil {
-        responseValue = &PackageSearchResponse {
+        responseValue = &searchShared.PackageSearchResponse {
             Content: &responseBodyValue,
             ActivityId: &[]string{ resp.Header.Get("ActivityId") },
         }
@@ -131,11 +132,11 @@ func (client Client) FetchPackageSearchResults(ctx context.Context, args FetchPa
 // Arguments for the FetchPackageSearchResults function
 type FetchPackageSearchResultsArgs struct {
     // (required) The Package Search Request.
-    Request *PackageSearchRequest
+    Request *searchShared.PackageSearchRequest
 }
 
 // [Preview API] Provides a set of results for the search request.
-func (client Client) FetchWikiSearchResults(ctx context.Context, args FetchWikiSearchResultsArgs) (*WikiSearchResponse, error) {
+func (client Client) FetchWikiSearchResults(ctx context.Context, args FetchWikiSearchResultsArgs) (*searchShared.WikiSearchResponse, error) {
     if args.Request == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "request"}
     }
@@ -154,7 +155,7 @@ func (client Client) FetchWikiSearchResults(ctx context.Context, args FetchWikiS
         return nil, err
     }
 
-    var responseValue WikiSearchResponse
+    var responseValue searchShared.WikiSearchResponse
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -162,7 +163,7 @@ func (client Client) FetchWikiSearchResults(ctx context.Context, args FetchWikiS
 // Arguments for the FetchWikiSearchResults function
 type FetchWikiSearchResultsArgs struct {
     // (required) The Wiki Search Request.
-    Request *WikiSearchRequest
+    Request *searchShared.WikiSearchRequest
     // (optional) Project ID or project name
     Project *string
 }

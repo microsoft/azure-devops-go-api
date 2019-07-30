@@ -14,6 +14,9 @@ import (
     "encoding/json"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevOps"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/core"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/policy"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "io"
     "net/http"
     "net/url"
@@ -1867,7 +1870,7 @@ func (client Client) GetPolicyConfigurations(ctx context.Context, args GetPolicy
         return nil, err
     }
 
-    var responseBodyValue []PolicyConfiguration
+    var responseBodyValue []policy.PolicyConfiguration
     err = client.Client.UnmarshalBody(resp, &responseBodyValue)
 
     var responseValue *GitPolicyConfigurationResponse
@@ -2194,7 +2197,7 @@ type DeleteLikeArgs struct {
 }
 
 // [Preview API] Get likes for a comment.
-func (client Client) GetLikes(ctx context.Context, args GetLikesArgs) (*[]IdentityRef, error) {
+func (client Client) GetLikes(ctx context.Context, args GetLikesArgs) (*[]webApi.IdentityRef, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2222,7 +2225,7 @@ func (client Client) GetLikes(ctx context.Context, args GetLikesArgs) (*[]Identi
         return nil, err
     }
 
-    var responseValue []IdentityRef
+    var responseValue []webApi.IdentityRef
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -2697,7 +2700,7 @@ func (client Client) UpdatePullRequestIterationStatuses(ctx context.Context, arg
 // Arguments for the UpdatePullRequestIterationStatuses function
 type UpdatePullRequestIterationStatusesArgs struct {
     // (required) Operations to apply to the pull request statuses in JSON Patch format.
-    PatchDocument *[]JsonPatchOperation
+    PatchDocument *[]webApi.JsonPatchOperation
     // (required) The repository ID of the pull request’s target branch.
     RepositoryId *string
     // (required) ID of the pull request.
@@ -2709,7 +2712,7 @@ type UpdatePullRequestIterationStatusesArgs struct {
 }
 
 // [Preview API] Create a label for a specified pull request. The only required field is the name of the new label.
-func (client Client) CreatePullRequestLabel(ctx context.Context, args CreatePullRequestLabelArgs) (*WebApiTagDefinition, error) {
+func (client Client) CreatePullRequestLabel(ctx context.Context, args CreatePullRequestLabelArgs) (*core.WebApiTagDefinition, error) {
     if args.Label == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "label"}
     }
@@ -2740,7 +2743,7 @@ func (client Client) CreatePullRequestLabel(ctx context.Context, args CreatePull
         return nil, err
     }
 
-    var responseValue WebApiTagDefinition
+    var responseValue core.WebApiTagDefinition
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -2748,7 +2751,7 @@ func (client Client) CreatePullRequestLabel(ctx context.Context, args CreatePull
 // Arguments for the CreatePullRequestLabel function
 type CreatePullRequestLabelArgs struct {
     // (required) Label to assign to the pull request.
-    Label *WebApiCreateTagRequestData
+    Label *core.WebApiCreateTagRequestData
     // (required) The repository ID of the pull request’s target branch.
     RepositoryId *string
     // (required) ID of the pull request.
@@ -2806,7 +2809,7 @@ type DeletePullRequestLabelsArgs struct {
 }
 
 // [Preview API] Retrieves a single label that has been assigned to a pull request.
-func (client Client) GetPullRequestLabel(ctx context.Context, args GetPullRequestLabelArgs) (*WebApiTagDefinition, error) {
+func (client Client) GetPullRequestLabel(ctx context.Context, args GetPullRequestLabelArgs) (*core.WebApiTagDefinition, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2834,7 +2837,7 @@ func (client Client) GetPullRequestLabel(ctx context.Context, args GetPullReques
         return nil, err
     }
 
-    var responseValue WebApiTagDefinition
+    var responseValue core.WebApiTagDefinition
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -2854,7 +2857,7 @@ type GetPullRequestLabelArgs struct {
 }
 
 // [Preview API] Get all the labels assigned to a pull request.
-func (client Client) GetPullRequestLabels(ctx context.Context, args GetPullRequestLabelsArgs) (*[]WebApiTagDefinition, error) {
+func (client Client) GetPullRequestLabels(ctx context.Context, args GetPullRequestLabelsArgs) (*[]core.WebApiTagDefinition, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2878,7 +2881,7 @@ func (client Client) GetPullRequestLabels(ctx context.Context, args GetPullReque
         return nil, err
     }
 
-    var responseValue []WebApiTagDefinition
+    var responseValue []core.WebApiTagDefinition
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -2967,7 +2970,7 @@ func (client Client) UpdatePullRequestProperties(ctx context.Context, args Updat
 // Arguments for the UpdatePullRequestProperties function
 type UpdatePullRequestPropertiesArgs struct {
     // (required) Properties to add, replace or remove in JSON Patch format.
-    PatchDocument *[]JsonPatchOperation
+    PatchDocument *[]webApi.JsonPatchOperation
     // (required) The repository ID of the pull request’s target branch.
     RepositoryId *string
     // (required) ID of the pull request.
@@ -3102,7 +3105,7 @@ func (client Client) CreatePullRequestReviewers(ctx context.Context, args Create
 // Arguments for the CreatePullRequestReviewers function
 type CreatePullRequestReviewersArgs struct {
     // (required) Reviewers to add to the pull request.
-    Reviewers *[]IdentityRef
+    Reviewers *[]webApi.IdentityRef
     // (required) The repository ID of the pull request’s target branch.
     RepositoryId *string
     // (required) ID of the pull request.
@@ -3839,7 +3842,7 @@ func (client Client) UpdatePullRequestStatuses(ctx context.Context, args UpdateP
 // Arguments for the UpdatePullRequestStatuses function
 type UpdatePullRequestStatusesArgs struct {
     // (required) Operations to apply to the pull request statuses in JSON Patch format.
-    PatchDocument *[]JsonPatchOperation
+    PatchDocument *[]webApi.JsonPatchOperation
     // (required) The repository ID of the pull request’s target branch.
     RepositoryId *string
     // (required) ID of the pull request.
@@ -4289,7 +4292,7 @@ type UpdateThreadArgs struct {
 }
 
 // Retrieve a list of work items associated with a pull request.
-func (client Client) GetPullRequestWorkItemRefs(ctx context.Context, args GetPullRequestWorkItemRefsArgs) (*[]ResourceRef, error) {
+func (client Client) GetPullRequestWorkItemRefs(ctx context.Context, args GetPullRequestWorkItemRefsArgs) (*[]webApi.ResourceRef, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -4309,7 +4312,7 @@ func (client Client) GetPullRequestWorkItemRefs(ctx context.Context, args GetPul
         return nil, err
     }
 
-    var responseValue []ResourceRef
+    var responseValue []webApi.ResourceRef
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }

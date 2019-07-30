@@ -14,6 +14,8 @@ import (
     "encoding/json"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevOps"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/profile"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "net/http"
     "net/url"
     "strconv"
@@ -60,7 +62,7 @@ type DeleteAvatarArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetAvatar(ctx context.Context, args GetAvatarArgs) (*Avatar, error) {
+func (client Client) GetAvatar(ctx context.Context, args GetAvatarArgs) (*profile.Avatar, error) {
     routeValues := make(map[string]string)
     if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"} 
@@ -80,7 +82,7 @@ func (client Client) GetAvatar(ctx context.Context, args GetAvatarArgs) (*Avatar
         return nil, err
     }
 
-    var responseValue Avatar
+    var responseValue profile.Avatar
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -90,7 +92,7 @@ type GetAvatarArgs struct {
     // (required)
     SubjectDescriptor *string
     // (optional)
-    Size *AvatarSize
+    Size *profile.AvatarSize
     // (optional)
     Format *string
 }
@@ -122,7 +124,7 @@ func (client Client) SetAvatar(ctx context.Context, args SetAvatarArgs) error {
 // Arguments for the SetAvatar function
 type SetAvatarArgs struct {
     // (required)
-    Avatar *Avatar
+    Avatar *profile.Avatar
     // (required)
     SubjectDescriptor *string
 }
@@ -312,7 +314,7 @@ type UpdateGroupArgs struct {
     // (required) The descriptor of the group to modify.
     GroupDescriptor *string
     // (required) The JSON+Patch document containing the fields to alter.
-    PatchDocument *[]JsonPatchOperation
+    PatchDocument *[]webApi.JsonPatchOperation
 }
 
 // [Preview API] Create a new membership between a container and subject.

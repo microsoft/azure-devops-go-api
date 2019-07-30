@@ -14,6 +14,8 @@ import (
     "encoding/json"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevOps"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/formInput"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/notification"
     "net/http"
     "net/url"
     "strconv"
@@ -153,7 +155,7 @@ type ListConsumersArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetSubscriptionDiagnostics(ctx context.Context, args GetSubscriptionDiagnosticsArgs) (*SubscriptionDiagnostics, error) {
+func (client Client) GetSubscriptionDiagnostics(ctx context.Context, args GetSubscriptionDiagnosticsArgs) (*notification.SubscriptionDiagnostics, error) {
     routeValues := make(map[string]string)
     if args.SubscriptionId == nil || *args.SubscriptionId == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "subscriptionId"} 
@@ -166,7 +168,7 @@ func (client Client) GetSubscriptionDiagnostics(ctx context.Context, args GetSub
         return nil, err
     }
 
-    var responseValue SubscriptionDiagnostics
+    var responseValue notification.SubscriptionDiagnostics
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -178,7 +180,7 @@ type GetSubscriptionDiagnosticsArgs struct {
 }
 
 // [Preview API]
-func (client Client) UpdateSubscriptionDiagnostics(ctx context.Context, args UpdateSubscriptionDiagnosticsArgs) (*SubscriptionDiagnostics, error) {
+func (client Client) UpdateSubscriptionDiagnostics(ctx context.Context, args UpdateSubscriptionDiagnosticsArgs) (*notification.SubscriptionDiagnostics, error) {
     if args.UpdateParameters == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "updateParameters"}
     }
@@ -198,7 +200,7 @@ func (client Client) UpdateSubscriptionDiagnostics(ctx context.Context, args Upd
         return nil, err
     }
 
-    var responseValue SubscriptionDiagnostics
+    var responseValue notification.SubscriptionDiagnostics
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -206,7 +208,7 @@ func (client Client) UpdateSubscriptionDiagnostics(ctx context.Context, args Upd
 // Arguments for the UpdateSubscriptionDiagnostics function
 type UpdateSubscriptionDiagnosticsArgs struct {
     // (required)
-    UpdateParameters *UpdateSubscripitonDiagnosticsParameters
+    UpdateParameters *notification.UpdateSubscripitonDiagnosticsParameters
     // (required)
     SubscriptionId *string
 }
@@ -365,7 +367,7 @@ type QueryNotificationsArgs struct {
     Query *NotificationsQuery
 }
 
-func (client Client) QueryInputValues(ctx context.Context, args QueryInputValuesArgs) (*InputValuesQuery, error) {
+func (client Client) QueryInputValues(ctx context.Context, args QueryInputValuesArgs) (*formInput.InputValuesQuery, error) {
     if args.InputValuesQuery == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "inputValuesQuery"}
     }
@@ -385,7 +387,7 @@ func (client Client) QueryInputValues(ctx context.Context, args QueryInputValues
         return nil, err
     }
 
-    var responseValue InputValuesQuery
+    var responseValue formInput.InputValuesQuery
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -393,7 +395,7 @@ func (client Client) QueryInputValues(ctx context.Context, args QueryInputValues
 // Arguments for the QueryInputValues function
 type QueryInputValuesArgs struct {
     // (required)
-    InputValuesQuery *InputValuesQuery
+    InputValuesQuery *formInput.InputValuesQuery
     // (required)
     PublisherId *string
 }

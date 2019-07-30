@@ -10,7 +10,9 @@ package release
 
 import (
     "github.com/google/uuid"
-    "math/big"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/distributedTaskCommon"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/formInput"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "time"
 )
 
@@ -100,20 +102,13 @@ type AgentDeploymentInput struct {
     ParallelExecution *ExecutionInput `json:"parallelExecution,omitempty"`
 }
 
-// Represents a reference to an agent queue.
-type AgentPoolQueueReference struct {
-    // An alias to be used when referencing the resource.
-    Alias *string `json:"alias,omitempty"`
-    // The ID of the queue.
-    Id *int `json:"id,omitempty"`
-}
-
 // Specification of the agent defined by the pool provider.
 type AgentSpecification struct {
     // Agent specification unique identifier.
     Identifier *string `json:"identifier,omitempty"`
 }
 
+// [Flags]
 type ApprovalExecutionOrder string
 
 type approvalExecutionOrderValuesType struct {
@@ -131,6 +126,7 @@ var ApprovalExecutionOrderValues = approvalExecutionOrderValuesType{
     AfterGatesAlways: "afterGatesAlways",
 }
 
+// [Flags]
 type ApprovalFilters string
 
 type approvalFiltersValuesType struct {
@@ -242,7 +238,7 @@ type ArtifactContributionDefinition struct {
     DisplayName *string `json:"displayName,omitempty"`
     DownloadTaskId *string `json:"downloadTaskId,omitempty"`
     EndpointTypeId *string `json:"endpointTypeId,omitempty"`
-    InputDescriptors *[]InputDescriptor `json:"inputDescriptors,omitempty"`
+    InputDescriptors *[]formInput.InputDescriptor `json:"inputDescriptors,omitempty"`
     IsCommitsTraceabilitySupported *bool `json:"isCommitsTraceabilitySupported,omitempty"`
     IsWorkitemsTraceabilitySupported *bool `json:"isWorkitemsTraceabilitySupported,omitempty"`
     Name *string `json:"name,omitempty"`
@@ -351,7 +347,7 @@ type ArtifactTypeDefinition struct {
     // Gets or sets the endpoint type id of artifact type definition.
     EndpointTypeId *string `json:"endpointTypeId,omitempty"`
     // Gets or sets the input descriptors of artifact type definition.
-    InputDescriptors *[]InputDescriptor `json:"inputDescriptors,omitempty"`
+    InputDescriptors *[]formInput.InputDescriptor `json:"inputDescriptors,omitempty"`
     // Gets or sets the name of artifact type definition.
     Name *string `json:"name,omitempty"`
     // Gets or sets the unique source identifier of artifact type definition.
@@ -394,11 +390,6 @@ var AuditActionValues = auditActionValuesType{
     Delete: "delete",
     // Indicates the audit undelete.
     Undelete: "undelete",
-}
-
-type AuthorizationHeader struct {
-    Name *string `json:"name,omitempty"`
-    Value *string `json:"value,omitempty"`
 }
 
 type AuthorizationHeaderFor string
@@ -493,7 +484,7 @@ type BuildVersion struct {
 // Represents a change associated with a build.
 type Change struct {
     // The author of the change.
-    Author *IdentityRef `json:"author,omitempty"`
+    Author *webApi.IdentityRef `json:"author,omitempty"`
     // The type of source. "TfsVersionControl", "TfsGit", etc.
     ChangeType *string `json:"changeType,omitempty"`
     // The location of a user-friendly representation of the resource.
@@ -505,7 +496,7 @@ type Change struct {
     // A description of the change. This might be a commit message or changeset description.
     Message *string `json:"message,omitempty"`
     // The person or process that pushed the change.
-    PushedBy *IdentityRef `json:"pushedBy,omitempty"`
+    PushedBy *webApi.IdentityRef `json:"pushedBy,omitempty"`
     // Deprecated: Use PushedBy instead
     Pusher *string `json:"pusher,omitempty"`
     // A timestamp for the change.
@@ -637,36 +628,6 @@ type DataSourceBinding struct {
     Target *string `json:"target,omitempty"`
 }
 
-// Represents binding of data source for the service endpoint request.
-type DataSourceBindingBase struct {
-    // Pagination format supported by this data source(ContinuationToken/SkipTop).
-    CallbackContextTemplate *string `json:"callbackContextTemplate,omitempty"`
-    // Subsequent calls needed?
-    CallbackRequiredTemplate *string `json:"callbackRequiredTemplate,omitempty"`
-    // Gets or sets the name of the data source.
-    DataSourceName *string `json:"dataSourceName,omitempty"`
-    // Gets or sets the endpoint Id.
-    EndpointId *string `json:"endpointId,omitempty"`
-    // Gets or sets the url of the service endpoint.
-    EndpointUrl *string `json:"endpointUrl,omitempty"`
-    // Gets or sets the authorization headers.
-    Headers *[]AuthorizationHeader `json:"headers,omitempty"`
-    // Defines the initial value of the query params
-    InitialContextTemplate *string `json:"initialContextTemplate,omitempty"`
-    // Gets or sets the parameters for the data source.
-    Parameters *map[string]string `json:"parameters,omitempty"`
-    // Gets or sets http request body
-    RequestContent *string `json:"requestContent,omitempty"`
-    // Gets or sets http request verb
-    RequestVerb *string `json:"requestVerb,omitempty"`
-    // Gets or sets the result selector.
-    ResultSelector *string `json:"resultSelector,omitempty"`
-    // Gets or sets the result template.
-    ResultTemplate *string `json:"resultTemplate,omitempty"`
-    // Gets or sets the target of the data source.
-    Target *string `json:"target,omitempty"`
-}
-
 type DefinitionEnvironmentReference struct {
     // Definition environment ID.
     DefinitionEnvironmentId *int `json:"definitionEnvironmentId,omitempty"`
@@ -680,7 +641,7 @@ type DefinitionEnvironmentReference struct {
 
 type Deployment struct {
     // Deprecated: Use ReleaseReference instead.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Gets attempt number.
     Attempt *int `json:"attempt,omitempty"`
     // Gets the date on which deployment is complete.
@@ -694,7 +655,7 @@ type Deployment struct {
     // Gets the unique identifier for deployment.
     Id *int `json:"id,omitempty"`
     // Gets the identity who last modified the deployment.
-    LastModifiedBy *IdentityRef `json:"lastModifiedBy,omitempty"`
+    LastModifiedBy *webApi.IdentityRef `json:"lastModifiedBy,omitempty"`
     // Gets the date on which deployment is last modified.
     LastModifiedOn *time.Time `json:"lastModifiedOn,omitempty"`
     // Gets operation status of deployment.
@@ -716,9 +677,9 @@ type Deployment struct {
     // Gets releaseEnvironmentReference which specifies the reference of the release environment to which the deployment is associated.
     ReleaseEnvironment *ReleaseEnvironmentShallowReference `json:"releaseEnvironment,omitempty"`
     // Gets the identity who requested.
-    RequestedBy *IdentityRef `json:"requestedBy,omitempty"`
+    RequestedBy *webApi.IdentityRef `json:"requestedBy,omitempty"`
     // Gets the identity for whom deployment is requested.
-    RequestedFor *IdentityRef `json:"requestedFor,omitempty"`
+    RequestedFor *webApi.IdentityRef `json:"requestedFor,omitempty"`
     // Gets the date on which deployment is scheduled.
     ScheduledDeploymentTime *time.Time `json:"scheduledDeploymentTime,omitempty"`
     // Gets the date on which deployment is started.
@@ -759,7 +720,7 @@ type DeploymentAttempt struct {
     // Deprecated: Use ReleaseDeployPhase.DeploymentJobs.Job instead.
     Job *ReleaseTask `json:"job,omitempty"`
     // Identity who last modified this deployment.
-    LastModifiedBy *IdentityRef `json:"lastModifiedBy,omitempty"`
+    LastModifiedBy *webApi.IdentityRef `json:"lastModifiedBy,omitempty"`
     // Time when this deployment last modified.
     LastModifiedOn *time.Time `json:"lastModifiedOn,omitempty"`
     // Deployment operation status.
@@ -775,9 +736,9 @@ type DeploymentAttempt struct {
     // List of release deployphases executed in this deployment.
     ReleaseDeployPhases *[]ReleaseDeployPhase `json:"releaseDeployPhases,omitempty"`
     // Identity who requested this deployment.
-    RequestedBy *IdentityRef `json:"requestedBy,omitempty"`
+    RequestedBy *webApi.IdentityRef `json:"requestedBy,omitempty"`
     // Identity for this deployment requested.
-    RequestedFor *IdentityRef `json:"requestedFor,omitempty"`
+    RequestedFor *webApi.IdentityRef `json:"requestedFor,omitempty"`
     // Deprecated: Use ReleaseDeployPhase.RunPlanId instead.
     RunPlanId *uuid.UUID `json:"runPlanId,omitempty"`
     // status of the deployment.
@@ -819,6 +780,7 @@ type DeploymentCompletedEvent struct {
     Project *ProjectReference `json:"project,omitempty"`
 }
 
+// [Flags]
 type DeploymentExpands string
 
 type deploymentExpandsValuesType struct {
@@ -866,12 +828,13 @@ type DeploymentJob struct {
 type DeploymentManualInterventionPendingEvent struct {
     Deployment *Deployment `json:"deployment,omitempty"`
     EmailRecipients *[]uuid.UUID `json:"emailRecipients,omitempty"`
-    EnvironmentOwner *IdentityRef `json:"environmentOwner,omitempty"`
+    EnvironmentOwner *webApi.IdentityRef `json:"environmentOwner,omitempty"`
     ManualIntervention *ManualIntervention `json:"manualIntervention,omitempty"`
     Project *ProjectReference `json:"project,omitempty"`
     Release *Release `json:"release,omitempty"`
 }
 
+// [Flags]
 type DeploymentOperationStatus string
 
 type deploymentOperationStatusValuesType struct {
@@ -975,6 +938,7 @@ type DeploymentQueryParameters struct {
     SourceBranch *string `json:"sourceBranch,omitempty"`
 }
 
+// [Flags]
 type DeploymentReason string
 
 type deploymentReasonValuesType struct {
@@ -1016,6 +980,7 @@ type DeploymentStartedEvent struct {
     Release *Release `json:"release,omitempty"`
 }
 
+// [Flags]
 type DeploymentStatus string
 
 type deploymentStatusValuesType struct {
@@ -1045,6 +1010,7 @@ var DeploymentStatusValues = deploymentStatusValuesType{
     All: "all",
 }
 
+// [Flags]
 type DeployPhaseStatus string
 
 type deployPhaseStatusValuesType struct {
@@ -1080,6 +1046,7 @@ var DeployPhaseStatusValues = deployPhaseStatusValuesType{
     Cancelling: "cancelling",
 }
 
+// [Flags]
 type DeployPhaseTypes string
 
 type deployPhaseTypesValuesType struct {
@@ -1148,6 +1115,7 @@ type EnvironmentRetentionPolicy struct {
     RetainBuild *bool `json:"retainBuild,omitempty"`
 }
 
+// [Flags]
 type EnvironmentStatus string
 
 type environmentStatusValuesType struct {
@@ -1237,13 +1205,13 @@ type FavoriteItem struct {
 
 type Folder struct {
     // Identity who created this folder.
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     // Time when this folder created.
     CreatedOn *time.Time `json:"createdOn,omitempty"`
     // Description of the folder.
     Description *string `json:"description,omitempty"`
     // Identity who last changed this folder.
-    LastChangedBy *IdentityRef `json:"lastChangedBy,omitempty"`
+    LastChangedBy *webApi.IdentityRef `json:"lastChangedBy,omitempty"`
     // Time when this folder last changed.
     LastChangedDate *time.Time `json:"lastChangedDate,omitempty"`
     // path of the folder.
@@ -1289,6 +1257,7 @@ type GatesDeployPhase struct {
     DeploymentInput *GatesDeploymentInput `json:"deploymentInput,omitempty"`
 }
 
+// [Flags]
 type GateStatus string
 
 type gateStatusValuesType struct {
@@ -1344,200 +1313,11 @@ type GitHubArtifactDownloadInput struct {
     ArtifactType *string `json:"artifactType,omitempty"`
 }
 
-type GraphSubjectBase struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-}
-
-type IdentityRef struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph user referenced in the "self" entry of the IdentityRef "_links" dictionary
-    DirectoryAlias *string `json:"directoryAlias,omitempty"`
-    Id *string `json:"id,omitempty"`
-    // Deprecated - Available in the "avatar" entry of the IdentityRef "_links" dictionary
-    ImageUrl *string `json:"imageUrl,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph membership state referenced in the "membershipState" entry of the GraphUser "_links" dictionary
-    Inactive *bool `json:"inactive,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsAadUserType/Descriptor.IsAadGroupType)
-    IsAadIdentity *bool `json:"isAadIdentity,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsGroupType)
-    IsContainer *bool `json:"isContainer,omitempty"`
-    IsDeletedInOrigin *bool `json:"isDeletedInOrigin,omitempty"`
-    // Deprecated - not in use in most preexisting implementations of ToIdentityRef
-    ProfileUrl *string `json:"profileUrl,omitempty"`
-    // Deprecated - use Domain+PrincipalName instead
-    UniqueName *string `json:"uniqueName,omitempty"`
-}
-
 type IgnoredGate struct {
     // Gets the date on which gate is last ignored.
     LastModifiedOn *time.Time `json:"lastModifiedOn,omitempty"`
     // Name of gate ignored.
     Name *string `json:"name,omitempty"`
-}
-
-// Enumerates data types that are supported as subscription input values.
-type InputDataType string
-
-type inputDataTypeValuesType struct {
-    None InputDataType
-    String InputDataType
-    Number InputDataType
-    Boolean InputDataType
-    Guid InputDataType
-    Uri InputDataType
-}
-
-var InputDataTypeValues = inputDataTypeValuesType{
-    // No data type is specified.
-    None: "none",
-    // Represents a textual value.
-    String: "string",
-    // Represents a numeric value.
-    Number: "number",
-    // Represents a value of true or false.
-    Boolean: "boolean",
-    // Represents a Guid.
-    Guid: "guid",
-    // Represents a URI.
-    Uri: "uri",
-}
-
-// Describes an input for subscriptions.
-type InputDescriptor struct {
-    // The ids of all inputs that the value of this input is dependent on.
-    DependencyInputIds *[]string `json:"dependencyInputIds,omitempty"`
-    // Description of what this input is used for
-    Description *string `json:"description,omitempty"`
-    // The group localized name to which this input belongs and can be shown as a header for the container that will include all the inputs in the group.
-    GroupName *string `json:"groupName,omitempty"`
-    // If true, the value information for this input is dynamic and should be fetched when the value of dependency inputs change.
-    HasDynamicValueInformation *bool `json:"hasDynamicValueInformation,omitempty"`
-    // Identifier for the subscription input
-    Id *string `json:"id,omitempty"`
-    // Mode in which the value of this input should be entered
-    InputMode *InputMode `json:"inputMode,omitempty"`
-    // Gets whether this input is confidential, such as for a password or application key
-    IsConfidential *bool `json:"isConfidential,omitempty"`
-    // Localized name which can be shown as a label for the subscription input
-    Name *string `json:"name,omitempty"`
-    // Custom properties for the input which can be used by the service provider
-    Properties *map[string]interface{} `json:"properties,omitempty"`
-    // Underlying data type for the input value. When this value is specified, InputMode, Validation and Values are optional.
-    Type *string `json:"type,omitempty"`
-    // Gets whether this input is included in the default generated action description.
-    UseInDefaultDescription *bool `json:"useInDefaultDescription,omitempty"`
-    // Information to use to validate this input's value
-    Validation *InputValidation `json:"validation,omitempty"`
-    // A hint for input value. It can be used in the UI as the input placeholder.
-    ValueHint *string `json:"valueHint,omitempty"`
-    // Information about possible values for this input
-    Values *InputValues `json:"values,omitempty"`
-}
-
-// Mode in which a subscription input should be entered (in a UI)
-type InputMode string
-
-type inputModeValuesType struct {
-    None InputMode
-    TextBox InputMode
-    PasswordBox InputMode
-    Combo InputMode
-    RadioButtons InputMode
-    CheckBox InputMode
-    TextArea InputMode
-}
-
-var InputModeValues = inputModeValuesType{
-    // This input should not be shown in the UI
-    None: "none",
-    // An input text box should be shown
-    TextBox: "textBox",
-    // An password input box should be shown
-    PasswordBox: "passwordBox",
-    // A select/combo control should be shown
-    Combo: "combo",
-    // Radio buttons should be shown
-    RadioButtons: "radioButtons",
-    // Checkbox should be shown(for true/false values)
-    CheckBox: "checkBox",
-    // A multi-line text area should be shown
-    TextArea: "textArea",
-}
-
-// Describes what values are valid for a subscription input
-type InputValidation struct {
-    // Gets or sets the data data type to validate.
-    DataType *InputDataType `json:"dataType,omitempty"`
-    // Gets or sets if this is a required field.
-    IsRequired *bool `json:"isRequired,omitempty"`
-    // Gets or sets the maximum length of this descriptor.
-    MaxLength *int `json:"maxLength,omitempty"`
-    // Gets or sets the minimum value for this descriptor.
-    MaxValue *big.Float `json:"maxValue,omitempty"`
-    // Gets or sets the minimum length of this descriptor.
-    MinLength *int `json:"minLength,omitempty"`
-    // Gets or sets the minimum value for this descriptor.
-    MinValue *big.Float `json:"minValue,omitempty"`
-    // Gets or sets the pattern to validate.
-    Pattern *string `json:"pattern,omitempty"`
-    // Gets or sets the error on pattern mismatch.
-    PatternMismatchErrorMessage *string `json:"patternMismatchErrorMessage,omitempty"`
-}
-
-// Information about a single value for an input
-type InputValue struct {
-    // Any other data about this input
-    Data *map[string]interface{} `json:"data,omitempty"`
-    // The text to show for the display of this value
-    DisplayValue *string `json:"displayValue,omitempty"`
-    // The value to store for this input
-    Value *string `json:"value,omitempty"`
-}
-
-// Information about the possible/allowed values for a given subscription input
-type InputValues struct {
-    // The default value to use for this input
-    DefaultValue *string `json:"defaultValue,omitempty"`
-    // Errors encountered while computing dynamic values.
-    Error *InputValuesError `json:"error,omitempty"`
-    // The id of the input
-    InputId *string `json:"inputId,omitempty"`
-    // Should this input be disabled
-    IsDisabled *bool `json:"isDisabled,omitempty"`
-    // Should the value be restricted to one of the values in the PossibleValues (True) or are the values in PossibleValues just a suggestion (False)
-    IsLimitedToPossibleValues *bool `json:"isLimitedToPossibleValues,omitempty"`
-    // Should this input be made read-only
-    IsReadOnly *bool `json:"isReadOnly,omitempty"`
-    // Possible values that this input can take
-    PossibleValues *[]InputValue `json:"possibleValues,omitempty"`
-}
-
-// Error information related to a subscription input value.
-type InputValuesError struct {
-    // The error message.
-    Message *string `json:"message,omitempty"`
-}
-
-type InputValuesQuery struct {
-    CurrentValues *map[string]string `json:"currentValues,omitempty"`
-    // The input values to return on input, and the result from the consumer on output.
-    InputValues *[]InputValues `json:"inputValues,omitempty"`
-    // Subscription containing information about the publisher/consumer and the current input values
-    Resource interface{} `json:"resource,omitempty"`
 }
 
 type Issue struct {
@@ -1651,7 +1431,7 @@ var MailSectionTypeValues = mailSectionTypeValuesType{
 
 type ManualIntervention struct {
     // Gets or sets the identity who should approve.
-    Approver *IdentityRef `json:"approver,omitempty"`
+    Approver *webApi.IdentityRef `json:"approver,omitempty"`
     // Gets or sets comments for approval.
     Comments *string `json:"comments,omitempty"`
     // Gets date on which it got created.
@@ -1678,7 +1458,7 @@ type ManualIntervention struct {
     Url *string `json:"url,omitempty"`
 }
 
-// Describes manual intervention status
+// [Flags] Describes manual intervention status
 type ManualInterventionStatus string
 
 type manualInterventionStatusValuesType struct {
@@ -1710,7 +1490,7 @@ type ManualInterventionUpdateMetadata struct {
 }
 
 type MappingDetails struct {
-    Mappings *map[string]InputValue `json:"mappings,omitempty"`
+    Mappings *map[string]formInput.InputValue `json:"mappings,omitempty"`
 }
 
 type Metric struct {
@@ -1754,6 +1534,7 @@ type ParallelExecutionInputBase struct {
     MaxNumberOfAgents *int `json:"maxNumberOfAgents,omitempty"`
 }
 
+// [Flags]
 type ParallelExecutionTypes string
 
 type parallelExecutionTypesValuesType struct {
@@ -1768,11 +1549,7 @@ var ParallelExecutionTypesValues = parallelExecutionTypesValuesType{
     MultiMachine: "multiMachine",
 }
 
-type PipelineProcess struct {
-    // Pipeline process type.
-    Type *PipelineProcessTypes `json:"type,omitempty"`
-}
-
+// [Flags]
 type PipelineProcessTypes string
 
 type pipelineProcessTypesValuesType struct {
@@ -1783,12 +1560,6 @@ type pipelineProcessTypesValuesType struct {
 var PipelineProcessTypesValues = pipelineProcessTypesValuesType{
     Designer: "designer",
     Yaml: "yaml",
-}
-
-type ProcessParameters struct {
-    DataSourceBindings *[]DataSourceBindingBase `json:"dataSourceBindings,omitempty"`
-    Inputs *[]TaskInputDefinitionBase `json:"inputs,omitempty"`
-    SourceDefinitions *[]TaskSourceDefinitionBase `json:"sourceDefinitions,omitempty"`
 }
 
 type ProjectReference struct {
@@ -1878,21 +1649,15 @@ type RealtimeReleaseEvent struct {
     ReleaseId *int `json:"releaseId,omitempty"`
 }
 
-// The class to represent a collection of REST reference links.
-type ReferenceLinks struct {
-    // The readonly view of the links.  Because Reference links are readonly, we only want to expose them as read only.
-    Links *map[string]interface{} `json:"links,omitempty"`
-}
-
 type Release struct {
     // Gets links to access the release.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Gets or sets the list of artifacts.
     Artifacts *[]Artifact `json:"artifacts,omitempty"`
     // Gets or sets comment.
     Comment *string `json:"comment,omitempty"`
     // Gets or sets the identity who created.
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     // Gets date on which it got created.
     CreatedOn *time.Time `json:"createdOn,omitempty"`
     // Gets revision number of definition snapshot.
@@ -1908,7 +1673,7 @@ type Release struct {
     // Gets logs container url.
     LogsContainerUrl *string `json:"logsContainerUrl,omitempty"`
     // Gets or sets the identity who modified.
-    ModifiedBy *IdentityRef `json:"modifiedBy,omitempty"`
+    ModifiedBy *webApi.IdentityRef `json:"modifiedBy,omitempty"`
     // Gets date on which it got modified.
     ModifiedOn *time.Time `json:"modifiedOn,omitempty"`
     // Gets name.
@@ -1948,9 +1713,9 @@ type ReleaseApproval struct {
     // Gets or sets the type of approval.
     ApprovalType *ApprovalType `json:"approvalType,omitempty"`
     // Gets the identity who approved.
-    ApprovedBy *IdentityRef `json:"approvedBy,omitempty"`
+    ApprovedBy *webApi.IdentityRef `json:"approvedBy,omitempty"`
     // Gets or sets the identity who should approve.
-    Approver *IdentityRef `json:"approver,omitempty"`
+    Approver *webApi.IdentityRef `json:"approver,omitempty"`
     // Gets or sets attempt which specifies as which deployment attempt it belongs.
     Attempt *int `json:"attempt,omitempty"`
     // Gets or sets comments for approval.
@@ -1987,9 +1752,9 @@ type ReleaseApproval struct {
 
 type ReleaseApprovalHistory struct {
     // Identity of the approver.
-    Approver *IdentityRef `json:"approver,omitempty"`
+    Approver *webApi.IdentityRef `json:"approver,omitempty"`
     // Identity of the object who changed approval.
-    ChangedBy *IdentityRef `json:"changedBy,omitempty"`
+    ChangedBy *webApi.IdentityRef `json:"changedBy,omitempty"`
     // Approval history comments.
     Comments *string `json:"comments,omitempty"`
     // Time when this approval created.
@@ -2054,7 +1819,7 @@ type ReleaseCreatedEvent struct {
 
 type ReleaseDefinition struct {
     // Gets the links to related resources, APIs, and views for the release definition.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Gets the unique identifier of release definition.
     Id *int `json:"id,omitempty"`
     // Gets or sets the name of the release definition.
@@ -2070,7 +1835,7 @@ type ReleaseDefinition struct {
     // Gets or sets comment.
     Comment *string `json:"comment,omitempty"`
     // Gets or sets the identity who created.
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     // Gets date on which it got created.
     CreatedOn *time.Time `json:"createdOn,omitempty"`
     // Gets or sets the description.
@@ -2082,7 +1847,7 @@ type ReleaseDefinition struct {
     // Gets the reference of last release.
     LastRelease *ReleaseReference `json:"lastRelease,omitempty"`
     // Gets or sets the identity who modified.
-    ModifiedBy *IdentityRef `json:"modifiedBy,omitempty"`
+    ModifiedBy *webApi.IdentityRef `json:"modifiedBy,omitempty"`
     // Gets date on which it got modified.
     ModifiedOn *time.Time `json:"modifiedOn,omitempty"`
     // Gets or sets properties.
@@ -2116,7 +1881,7 @@ type ReleaseDefinitionApprovalStep struct {
     // ID of the approval or deploy step.
     Id *int `json:"id,omitempty"`
     // Gets and sets the approver.
-    Approver *IdentityRef `json:"approver,omitempty"`
+    Approver *webApi.IdentityRef `json:"approver,omitempty"`
     // Indicates whether the approval automated.
     IsAutomated *bool `json:"isAutomated,omitempty"`
     // Indicates whether the approval notification set.
@@ -2156,7 +1921,7 @@ type ReleaseDefinitionEnvironment struct {
     // Gets and sets the name of the ReleaseDefinitionEnvironment.
     Name *string `json:"name,omitempty"`
     // Gets and sets the Owner of the ReleaseDefinitionEnvironment.
-    Owner *IdentityRef `json:"owner,omitempty"`
+    Owner *webApi.IdentityRef `json:"owner,omitempty"`
     // Gets or sets the post deployment approvals.
     PostDeployApprovals *ReleaseDefinitionApprovals `json:"postDeployApprovals,omitempty"`
     // Gets or sets the post deployment gates.
@@ -2166,7 +1931,7 @@ type ReleaseDefinitionEnvironment struct {
     // Gets or sets the pre deployment gates.
     PreDeploymentGates *ReleaseDefinitionGatesStep `json:"preDeploymentGates,omitempty"`
     // Gets or sets the environment process parameters.
-    ProcessParameters *ProcessParameters `json:"processParameters,omitempty"`
+    ProcessParameters *distributedTaskCommon.ProcessParameters `json:"processParameters,omitempty"`
     // Gets or sets the properties on environment.
     Properties interface{} `json:"properties,omitempty"`
     // Gets or sets the queue ID.
@@ -2220,6 +1985,7 @@ type ReleaseDefinitionEnvironmentTemplate struct {
     Name *string `json:"name,omitempty"`
 }
 
+// [Flags]
 type ReleaseDefinitionExpands string
 
 type releaseDefinitionExpandsValuesType struct {
@@ -2300,7 +2066,7 @@ type ReleaseDefinitionRevision struct {
     // Gets api-version for revision object.
     ApiVersion *string `json:"apiVersion,omitempty"`
     // Gets the identity who did change.
-    ChangedBy *IdentityRef `json:"changedBy,omitempty"`
+    ChangedBy *webApi.IdentityRef `json:"changedBy,omitempty"`
     // Gets date on which ReleaseDefinition changed.
     ChangedDate *time.Time `json:"changedDate,omitempty"`
     // Gets type of change.
@@ -2317,7 +2083,7 @@ type ReleaseDefinitionRevision struct {
 
 type ReleaseDefinitionShallowReference struct {
     // Gets the links to related resources, APIs, and views for the release definition.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Gets the unique identifier of release definition.
     Id *int `json:"id,omitempty"`
     // Gets or sets the name of the release definition.
@@ -2330,6 +2096,7 @@ type ReleaseDefinitionShallowReference struct {
     Url *string `json:"url,omitempty"`
 }
 
+// [Flags]
 type ReleaseDefinitionSource string
 
 type releaseDefinitionSourceValuesType struct {
@@ -2416,7 +2183,7 @@ type ReleaseEnvironment struct {
     // Gets next scheduled UTC time.
     NextScheduledUtcTime *time.Time `json:"nextScheduledUtcTime,omitempty"`
     // Gets the identity who is owner for release environment.
-    Owner *IdentityRef `json:"owner,omitempty"`
+    Owner *webApi.IdentityRef `json:"owner,omitempty"`
     // Gets list of post deploy approvals snapshot.
     PostApprovalsSnapshot *ReleaseDefinitionApprovals `json:"postApprovalsSnapshot,omitempty"`
     // Gets list of post deploy approvals.
@@ -2430,7 +2197,7 @@ type ReleaseEnvironment struct {
     // Pre deployment gates snapshot data.
     PreDeploymentGatesSnapshot *ReleaseDefinitionGatesStep `json:"preDeploymentGatesSnapshot,omitempty"`
     // Gets process parameters.
-    ProcessParameters *ProcessParameters `json:"processParameters,omitempty"`
+    ProcessParameters *distributedTaskCommon.ProcessParameters `json:"processParameters,omitempty"`
     // Deprecated: Use DeploymentInput.QueueId instead.
     QueueId *int `json:"queueId,omitempty"`
     // Gets rank.
@@ -2438,7 +2205,7 @@ type ReleaseEnvironment struct {
     // Gets release reference which specifies the reference of the release to which this release environment is associated.
     Release *ReleaseShallowReference `json:"release,omitempty"`
     // Gets the identity who created release.
-    ReleaseCreatedBy *IdentityRef `json:"releaseCreatedBy,omitempty"`
+    ReleaseCreatedBy *webApi.IdentityRef `json:"releaseCreatedBy,omitempty"`
     // Gets releaseDefinitionReference which specifies the reference of the release definition to which this release environment is associated.
     ReleaseDefinition *ReleaseDefinitionShallowReference `json:"releaseDefinition,omitempty"`
     // Deprecated: Use Release object Description instead.
@@ -2471,7 +2238,7 @@ type ReleaseEnvironmentCompletedEvent struct {
     EnvironmentId *int `json:"environmentId,omitempty"`
     ProjectName *string `json:"projectName,omitempty"`
     Reason *DeploymentReason `json:"reason,omitempty"`
-    ReleaseCreatedBy *IdentityRef `json:"releaseCreatedBy,omitempty"`
+    ReleaseCreatedBy *webApi.IdentityRef `json:"releaseCreatedBy,omitempty"`
     ReleaseLogsUri *string `json:"releaseLogsUri,omitempty"`
     ReleaseName *string `json:"releaseName,omitempty"`
     Status *string `json:"status,omitempty"`
@@ -2481,7 +2248,7 @@ type ReleaseEnvironmentCompletedEvent struct {
 
 type ReleaseEnvironmentShallowReference struct {
     // Gets the links to related resources, APIs, and views for the release environment.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Gets the unique identifier of release environment.
     Id *int `json:"id,omitempty"`
     // Gets or sets the name of the release environment.
@@ -2511,6 +2278,7 @@ type ReleaseEnvironmentUpdateMetadata struct {
     Variables *map[string]ConfigurationVariableValue `json:"variables,omitempty"`
 }
 
+// [Flags]
 type ReleaseExpands string
 
 type releaseExpandsValuesType struct {
@@ -2596,7 +2364,7 @@ type ReleaseNotCreatedEvent struct {
     DefinitionReference *ReleaseDefinitionShallowReference `json:"definitionReference,omitempty"`
     Message *string `json:"message,omitempty"`
     ReleaseReason *ReleaseReason `json:"releaseReason,omitempty"`
-    RequestedBy *IdentityRef `json:"requestedBy,omitempty"`
+    RequestedBy *webApi.IdentityRef `json:"requestedBy,omitempty"`
 }
 
 type ReleaseQueryOrder string
@@ -2638,11 +2406,11 @@ var ReleaseReasonValues = releaseReasonValuesType{
 
 type ReleaseReference struct {
     // Gets links to access the release.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Gets list of artifacts.
     Artifacts *[]Artifact `json:"artifacts,omitempty"`
     // Gets the identity who created release.
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     // Gets date on when this release created.
     CreatedOn *time.Time `json:"createdOn,omitempty"`
     // Gets description.
@@ -2650,7 +2418,7 @@ type ReleaseReference struct {
     // ID of the Release.
     Id *int `json:"id,omitempty"`
     // Gets the identity who modified release.
-    ModifiedBy *IdentityRef `json:"modifiedBy,omitempty"`
+    ModifiedBy *webApi.IdentityRef `json:"modifiedBy,omitempty"`
     // Gets name of release.
     Name *string `json:"name,omitempty"`
     // Gets reason for release.
@@ -2665,7 +2433,7 @@ type ReleaseReference struct {
 
 type ReleaseRevision struct {
     // Gets or sets the identity who changed.
-    ChangedBy *IdentityRef `json:"changedBy,omitempty"`
+    ChangedBy *webApi.IdentityRef `json:"changedBy,omitempty"`
     // Change date of the revision.
     ChangedDate *time.Time `json:"changedDate,omitempty"`
     // Change details of the revision.
@@ -2704,7 +2472,7 @@ type ReleaseSettings struct {
 
 type ReleaseShallowReference struct {
     // Gets the links to related resources, APIs, and views for the release.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Gets the unique identifier of release.
     Id *int `json:"id,omitempty"`
     // Gets or sets the name of the release.
@@ -2740,6 +2508,7 @@ type ReleaseStartMetadata struct {
     Variables *map[string]ConfigurationVariableValue `json:"variables,omitempty"`
 }
 
+// [Flags]
 type ReleaseStatus string
 
 type releaseStatusValuesType struct {
@@ -2797,11 +2566,11 @@ type ReleaseTask struct {
 
 type ReleaseTaskAttachment struct {
     // Reference links of task.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Data and time when it created.
     CreatedOn *time.Time `json:"createdOn,omitempty"`
     // Identity who modified.
-    ModifiedBy *IdentityRef `json:"modifiedBy,omitempty"`
+    ModifiedBy *webApi.IdentityRef `json:"modifiedBy,omitempty"`
     // Data and time when modified.
     ModifiedOn *time.Time `json:"modifiedOn,omitempty"`
     // Name of the task attachment.
@@ -2899,12 +2668,6 @@ type ReleaseWorkItemRef struct {
     Url *string `json:"url,omitempty"`
 }
 
-// Represents a reference to a resource.
-type ResourceReference struct {
-    // An alias to be used when referencing the resource.
-    Alias *string `json:"alias,omitempty"`
-}
-
 type RetentionPolicy struct {
     // Indicates the number of days to keep deployment.
     DaysToKeep *int `json:"daysToKeep,omitempty"`
@@ -2989,14 +2752,7 @@ type ServerDeploymentInput struct {
     ParallelExecution *ExecutionInput `json:"parallelExecution,omitempty"`
 }
 
-// Represents a reference to a service endpoint.
-type ServiceEndpointReference struct {
-    // An alias to be used when referencing the resource.
-    Alias *string `json:"alias,omitempty"`
-    // The ID of the service endpoint.
-    Id *uuid.UUID `json:"id,omitempty"`
-}
-
+// [Flags]
 type SingleReleaseExpands string
 
 type singleReleaseExpandsValuesType struct {
@@ -3055,28 +2811,6 @@ type TagFilter struct {
     Pattern *string `json:"pattern,omitempty"`
 }
 
-type TaskInputDefinitionBase struct {
-    Aliases *[]string `json:"aliases,omitempty"`
-    DefaultValue *string `json:"defaultValue,omitempty"`
-    GroupName *string `json:"groupName,omitempty"`
-    HelpMarkDown *string `json:"helpMarkDown,omitempty"`
-    Label *string `json:"label,omitempty"`
-    Name *string `json:"name,omitempty"`
-    Options *map[string]string `json:"options,omitempty"`
-    Properties *map[string]string `json:"properties,omitempty"`
-    Required *bool `json:"required,omitempty"`
-    Type *string `json:"type,omitempty"`
-    Validation *TaskInputValidation `json:"validation,omitempty"`
-    VisibleRule *string `json:"visibleRule,omitempty"`
-}
-
-type TaskInputValidation struct {
-    // Conditional expression
-    Expression *string `json:"expression,omitempty"`
-    // Message explaining how user can correct if validation fails
-    Message *string `json:"message,omitempty"`
-}
-
 type TaskOrchestrationPlanGroupReference struct {
     // Gets or sets the plan group.
     PlanGroup *string `json:"planGroup,omitempty"`
@@ -3086,14 +2820,6 @@ type TaskOrchestrationPlanGroupReference struct {
 
 type TaskOrchestrationPlanGroupsStartedEvent struct {
     PlanGroups *[]TaskOrchestrationPlanGroupReference `json:"planGroups,omitempty"`
-}
-
-type TaskSourceDefinitionBase struct {
-    AuthKey *string `json:"authKey,omitempty"`
-    Endpoint *string `json:"endpoint,omitempty"`
-    KeySelector *string `json:"keySelector,omitempty"`
-    Selector *string `json:"selector,omitempty"`
-    Target *string `json:"target,omitempty"`
 }
 
 type TaskStatus string
@@ -3161,7 +2887,7 @@ type TimeZoneList struct {
 
 type VariableGroup struct {
     // Gets or sets the identity who created.
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     // Gets date on which it got created.
     CreatedOn *time.Time `json:"createdOn,omitempty"`
     // Gets or sets description.
@@ -3171,7 +2897,7 @@ type VariableGroup struct {
     // Denotes if a variable group is shared with other project or not.
     IsShared *bool `json:"isShared,omitempty"`
     // Gets or sets the identity who modified.
-    ModifiedBy *IdentityRef `json:"modifiedBy,omitempty"`
+    ModifiedBy *webApi.IdentityRef `json:"modifiedBy,omitempty"`
     // Gets date on which it got modified.
     ModifiedOn *time.Time `json:"modifiedOn,omitempty"`
     // Gets or sets name.
@@ -3184,6 +2910,7 @@ type VariableGroup struct {
     Variables *map[string]VariableValue `json:"variables,omitempty"`
 }
 
+// [Flags]
 type VariableGroupActionFilter string
 
 type variableGroupActionFilterValuesType struct {
@@ -3246,12 +2973,7 @@ type WorkflowTaskReference struct {
     Version *string `json:"version,omitempty"`
 }
 
-type YamlFileSource struct {
-    // Gets or sets definition reference. e.g. {"project":{"id":"fed755ea-49c5-4399-acea-fd5b5aa90a6c","name":"myProject"},"definition":{"id":"1","name":"mybuildDefinition"},"connection":{"id":"1","name":"myConnection"}}
-    SourceReference *map[string]YamlSourceReference `json:"sourceReference,omitempty"`
-    Type *YamlFileSourceTypes `json:"type,omitempty"`
-}
-
+// [Flags]
 type YamlFileSourceTypes string
 
 type yamlFileSourceTypesValuesType struct {
@@ -3262,23 +2984,4 @@ type yamlFileSourceTypesValuesType struct {
 var YamlFileSourceTypesValues = yamlFileSourceTypesValuesType{
     None: "none",
     TfsGit: "tfsGit",
-}
-
-type YamlPipelineProcess struct {
-    // Pipeline process type.
-    Type *PipelineProcessTypes `json:"type,omitempty"`
-    Errors *[]string `json:"errors,omitempty"`
-    Filename *string `json:"filename,omitempty"`
-    FileSource *YamlFileSource `json:"fileSource,omitempty"`
-    Resources *YamlPipelineProcessResources `json:"resources,omitempty"`
-}
-
-type YamlPipelineProcessResources struct {
-    Endpoints *[]ServiceEndpointReference `json:"endpoints,omitempty"`
-    Queues *[]AgentPoolQueueReference `json:"queues,omitempty"`
-}
-
-type YamlSourceReference struct {
-    Id *string `json:"id,omitempty"`
-    Name *string `json:"name,omitempty"`
 }

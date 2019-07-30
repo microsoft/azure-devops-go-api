@@ -10,6 +10,8 @@ package location
 
 import (
     "github.com/google/uuid"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/identity"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "time"
 )
 
@@ -26,13 +28,13 @@ type AccessMapping struct {
 // Data transfer class that holds information needed to set up a connection with a VSS server.
 type ConnectionData struct {
     // The Id of the authenticated user who made this request. More information about the user can be obtained by passing this Id to the Identity service
-    AuthenticatedUser *Identity `json:"authenticatedUser,omitempty"`
+    AuthenticatedUser *identity.Identity `json:"authenticatedUser,omitempty"`
     // The Id of the authorized user who made this request. More information about the user can be obtained by passing this Id to the Identity service
-    AuthorizedUser *Identity `json:"authorizedUser,omitempty"`
+    AuthorizedUser *identity.Identity `json:"authorizedUser,omitempty"`
     // The id for the server.
     DeploymentId *uuid.UUID `json:"deploymentId,omitempty"`
     // The type for the server Hosted/OnPremises.
-    DeploymentType *DeploymentFlags `json:"deploymentType,omitempty"`
+    DeploymentType *webApi.DeploymentFlags `json:"deploymentType,omitempty"`
     // The instance id for this host.
     InstanceId *uuid.UUID `json:"instanceId,omitempty"`
     // The last user access for this instance.  Null if not requested specifically.
@@ -41,87 +43,6 @@ type ConnectionData struct {
     LocationServiceData *LocationServiceData `json:"locationServiceData,omitempty"`
     // The virtual directory of the host we are talking to.
     WebApplicationRelativeDirectory *string `json:"webApplicationRelativeDirectory,omitempty"`
-}
-
-// Enumeration of the options that can be passed in on Connect.
-type ConnectOptions string
-
-type connectOptionsValuesType struct {
-    None ConnectOptions
-    IncludeServices ConnectOptions
-    IncludeLastUserAccess ConnectOptions
-    IncludeInheritedDefinitionsOnly ConnectOptions
-    IncludeNonInheritedDefinitionsOnly ConnectOptions
-}
-
-var ConnectOptionsValues = connectOptionsValuesType{
-    // Retrieve no optional data.
-    None: "none",
-    // Includes information about AccessMappings and ServiceDefinitions.
-    IncludeServices: "includeServices",
-    // Includes the last user access for this host.
-    IncludeLastUserAccess: "includeLastUserAccess",
-    // This is only valid on the deployment host and when true. Will only return inherited definitions.
-    IncludeInheritedDefinitionsOnly: "includeInheritedDefinitionsOnly",
-    // When true will only return non inherited definitions. Only valid at non-deployment host.
-    IncludeNonInheritedDefinitionsOnly: "includeNonInheritedDefinitionsOnly",
-}
-
-type DeploymentFlags string
-
-type deploymentFlagsValuesType struct {
-    None DeploymentFlags
-    Hosted DeploymentFlags
-    OnPremises DeploymentFlags
-}
-
-var DeploymentFlagsValues = deploymentFlagsValuesType{
-    None: "none",
-    Hosted: "hosted",
-    OnPremises: "onPremises",
-}
-
-type Identity struct {
-    // The custom display name for the identity (if any). Setting this property to an empty string will clear the existing custom display name. Setting this property to null will not affect the existing persisted value (since null values do not get sent over the wire or to the database)
-    CustomDisplayName *string `json:"customDisplayName,omitempty"`
-    Descriptor *string `json:"descriptor,omitempty"`
-    Id *uuid.UUID `json:"id,omitempty"`
-    IsActive *bool `json:"isActive,omitempty"`
-    IsContainer *bool `json:"isContainer,omitempty"`
-    MasterId *uuid.UUID `json:"masterId,omitempty"`
-    MemberIds *[]uuid.UUID `json:"memberIds,omitempty"`
-    MemberOf *[]string `json:"memberOf,omitempty"`
-    Members *[]string `json:"members,omitempty"`
-    MetaTypeId *int `json:"metaTypeId,omitempty"`
-    Properties interface{} `json:"properties,omitempty"`
-    // The display name for the identity as specified by the source identity provider.
-    ProviderDisplayName *string `json:"providerDisplayName,omitempty"`
-    ResourceVersion *int `json:"resourceVersion,omitempty"`
-    SocialDescriptor *string `json:"socialDescriptor,omitempty"`
-    SubjectDescriptor *string `json:"subjectDescriptor,omitempty"`
-    UniqueUserId *int `json:"uniqueUserId,omitempty"`
-}
-
-// Base Identity class to allow "trimmed" identity class in the GetConnectionData API Makes sure that on-the-wire representations of the derived classes are compatible with each other (e.g. Server responds with PublicIdentity object while client deserializes it as Identity object) Derived classes should not have additional [DataMember] properties
-type IdentityBase struct {
-    // The custom display name for the identity (if any). Setting this property to an empty string will clear the existing custom display name. Setting this property to null will not affect the existing persisted value (since null values do not get sent over the wire or to the database)
-    CustomDisplayName *string `json:"customDisplayName,omitempty"`
-    Descriptor *string `json:"descriptor,omitempty"`
-    Id *uuid.UUID `json:"id,omitempty"`
-    IsActive *bool `json:"isActive,omitempty"`
-    IsContainer *bool `json:"isContainer,omitempty"`
-    MasterId *uuid.UUID `json:"masterId,omitempty"`
-    MemberIds *[]uuid.UUID `json:"memberIds,omitempty"`
-    MemberOf *[]string `json:"memberOf,omitempty"`
-    Members *[]string `json:"members,omitempty"`
-    MetaTypeId *int `json:"metaTypeId,omitempty"`
-    Properties interface{} `json:"properties,omitempty"`
-    // The display name for the identity as specified by the source identity provider.
-    ProviderDisplayName *string `json:"providerDisplayName,omitempty"`
-    ResourceVersion *int `json:"resourceVersion,omitempty"`
-    SocialDescriptor *string `json:"socialDescriptor,omitempty"`
-    SubjectDescriptor *string `json:"subjectDescriptor,omitempty"`
-    UniqueUserId *int `json:"uniqueUserId,omitempty"`
 }
 
 type InheritLevel string

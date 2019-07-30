@@ -10,7 +10,8 @@ package extensionManagement
 
 import (
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azureDevOps"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/gallery"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "time"
 )
 
@@ -255,7 +256,7 @@ type ContributionPropertyDescription struct {
     Type *ContributionPropertyType `json:"type,omitempty"`
 }
 
-// The type of value used for a property
+// [Flags] The type of value used for a property
 type ContributionPropertyType string
 
 type contributionPropertyTypeValuesType struct {
@@ -308,7 +309,7 @@ type ContributionProviderDetails struct {
     Version *string `json:"version,omitempty"`
 }
 
-// Options that control the contributions to include in a query
+// [Flags] Options that control the contributions to include in a query
 type ContributionQueryOptions string
 
 type contributionQueryOptionsValuesType struct {
@@ -430,18 +431,12 @@ type ExtensionAuditLogEntry struct {
     // Extra information about the change
     Comment *string `json:"comment,omitempty"`
     // Represents the user who made the change
-    UpdatedBy *IdentityRef `json:"updatedBy,omitempty"`
+    UpdatedBy *webApi.IdentityRef `json:"updatedBy,omitempty"`
 }
 
 type ExtensionAuthorization struct {
     Id *uuid.UUID `json:"id,omitempty"`
     Scopes *[]string `json:"scopes,omitempty"`
-}
-
-type ExtensionBadge struct {
-    Description *string `json:"description,omitempty"`
-    ImgUri *string `json:"imgUri,omitempty"`
-    Link *string `json:"link,omitempty"`
 }
 
 // Represents a single collection for extension data documents
@@ -462,25 +457,9 @@ type ExtensionDataCollectionQuery struct {
     Collections *[]ExtensionDataCollection `json:"collections,omitempty"`
 }
 
-type ExtensionDeploymentTechnology string
-
-type extensionDeploymentTechnologyValuesType struct {
-    Exe ExtensionDeploymentTechnology
-    Msi ExtensionDeploymentTechnology
-    Vsix ExtensionDeploymentTechnology
-    ReferralLink ExtensionDeploymentTechnology
-}
-
-var ExtensionDeploymentTechnologyValues = extensionDeploymentTechnologyValuesType{
-    Exe: "exe",
-    Msi: "msi",
-    Vsix: "vsix",
-    ReferralLink: "referralLink",
-}
-
 type ExtensionEvent struct {
     // The extension which has been updated
-    Extension *PublishedExtension `json:"extension,omitempty"`
+    Extension *gallery.PublishedExtension `json:"extension,omitempty"`
     // The current version of the extension that was updated
     ExtensionVersion *string `json:"extensionVersion,omitempty"`
     // Name of the collection for which the extension was requested
@@ -488,7 +467,7 @@ type ExtensionEvent struct {
     // Gallery host url
     Links *ExtensionEventUrls `json:"links,omitempty"`
     // Represents the user who initiated the update
-    ModifiedBy *IdentityRef `json:"modifiedBy,omitempty"`
+    ModifiedBy *webApi.IdentityRef `json:"modifiedBy,omitempty"`
     // The type of update that was made
     UpdateType *ExtensionUpdateType `json:"updateType,omitempty"`
 }
@@ -526,13 +505,7 @@ type ExtensionEventUrls struct {
     ManageExtensionsPage *string `json:"manageExtensionsPage,omitempty"`
 }
 
-type ExtensionFile struct {
-    AssetType *string `json:"assetType,omitempty"`
-    Language *string `json:"language,omitempty"`
-    Source *string `json:"source,omitempty"`
-}
-
-// Set of flags applied to extensions that are relevant to contribution consumers
+// [Flags] Set of flags applied to extensions that are relevant to contribution consumers
 type ExtensionFlags string
 
 type extensionFlagsValuesType struct {
@@ -550,14 +523,6 @@ var ExtensionFlagsValues = extensionFlagsValuesType{
 type ExtensionHost struct {
     Id *uuid.UUID `json:"id,omitempty"`
     Name *string `json:"name,omitempty"`
-}
-
-// Represents the component pieces of an extensions fully qualified name, along with the fully qualified name.
-type ExtensionIdentifier struct {
-    // The ExtensionName component part of the fully qualified ExtensionIdentifier
-    ExtensionName *string `json:"extensionName,omitempty"`
-    // The PublisherName component part of the fully qualified ExtensionIdentifier
-    PublisherName *string `json:"publisherName,omitempty"`
 }
 
 // How an extension should handle including contributions based on licensing
@@ -596,44 +561,6 @@ type ExtensionManifest struct {
     ServiceInstanceType *uuid.UUID `json:"serviceInstanceType,omitempty"`
 }
 
-// Policy with a set of permissions on extension operations
-type ExtensionPolicy struct {
-    // Permissions on 'Install' operation
-    Install *ExtensionPolicyFlags `json:"install,omitempty"`
-    // Permission on 'Request' operation
-    Request *ExtensionPolicyFlags `json:"request,omitempty"`
-}
-
-// Set of flags that can be associated with a given permission over an extension
-type ExtensionPolicyFlags string
-
-type extensionPolicyFlagsValuesType struct {
-    None ExtensionPolicyFlags
-    Private ExtensionPolicyFlags
-    Public ExtensionPolicyFlags
-    Preview ExtensionPolicyFlags
-    Released ExtensionPolicyFlags
-    FirstParty ExtensionPolicyFlags
-    All ExtensionPolicyFlags
-}
-
-var ExtensionPolicyFlagsValues = extensionPolicyFlagsValuesType{
-    // No permission
-    None: "none",
-    // Permission on private extensions
-    Private: "private",
-    // Permission on public extensions
-    Public: "public",
-    // Permission in extensions that are in preview
-    Preview: "preview",
-    // Permission in released extensions
-    Released: "released",
-    // Permission in 1st party extensions
-    FirstParty: "firstParty",
-    // Mask that defines all permissions
-    All: "all",
-}
-
 // A request for an extension (to be installed or have a license assigned)
 type ExtensionRequest struct {
     // Required message supplied if the request is rejected
@@ -641,7 +568,7 @@ type ExtensionRequest struct {
     // Date at which the request was made
     RequestDate *time.Time `json:"requestDate,omitempty"`
     // Represents the user who made the request
-    RequestedBy *IdentityRef `json:"requestedBy,omitempty"`
+    RequestedBy *webApi.IdentityRef `json:"requestedBy,omitempty"`
     // Optional message supplied by the requester justifying the request
     RequestMessage *string `json:"requestMessage,omitempty"`
     // Represents the state of the request
@@ -649,12 +576,12 @@ type ExtensionRequest struct {
     // Date at which the request was resolved
     ResolveDate *time.Time `json:"resolveDate,omitempty"`
     // Represents the user who resolved the request
-    ResolvedBy *IdentityRef `json:"resolvedBy,omitempty"`
+    ResolvedBy *webApi.IdentityRef `json:"resolvedBy,omitempty"`
 }
 
 type ExtensionRequestEvent struct {
     // The extension which has been requested
-    Extension *PublishedExtension `json:"extension,omitempty"`
+    Extension *gallery.PublishedExtension `json:"extension,omitempty"`
     // Information about the host for which this extension is requested
     Host *ExtensionHost `json:"host,omitempty"`
     // Name of the collection for which the extension was requested
@@ -669,7 +596,7 @@ type ExtensionRequestEvent struct {
 
 type ExtensionRequestsEvent struct {
     // The extension which has been requested
-    Extension *PublishedExtension `json:"extension,omitempty"`
+    Extension *gallery.PublishedExtension `json:"extension,omitempty"`
     // Information about the host for which this extension is requested
     Host *ExtensionHost `json:"host,omitempty"`
     // Gallery host url
@@ -723,13 +650,6 @@ type ExtensionRequestUrls struct {
     RequestPage *string `json:"requestPage,omitempty"`
 }
 
-type ExtensionShare struct {
-    Id *string `json:"id,omitempty"`
-    IsOrg *bool `json:"isOrg,omitempty"`
-    Name *string `json:"name,omitempty"`
-    Type *string `json:"type,omitempty"`
-}
-
 // The state of an extension
 type ExtensionState struct {
     // States of an installed extension
@@ -745,7 +665,7 @@ type ExtensionState struct {
     Version *string `json:"version,omitempty"`
 }
 
-// States of an extension Note:  If you add value to this enum, you need to do 2 other things.  First add the back compat enum in value src\Vssf\Sdk\Server\Contributions\InstalledExtensionMessage.cs.  Second, you can not send the new value on the message bus.  You need to remove it from the message bus event prior to being sent.
+// [Flags] States of an extension Note:  If you add value to this enum, you need to do 2 other things.  First add the back compat enum in value src\Vssf\Sdk\Server\Contributions\InstalledExtensionMessage.cs.  Second, you can not send the new value on the message bus.  You need to remove it from the message bus event prior to being sent.
 type ExtensionStateFlags string
 
 type extensionStateFlagsValuesType struct {
@@ -787,11 +707,6 @@ var ExtensionStateFlagsValues = extensionStateFlagsValuesType{
     Warning: "warning",
 }
 
-type ExtensionStatistic struct {
-    StatisticName *string `json:"statisticName,omitempty"`
-    Value *float64 `json:"value,omitempty"`
-}
-
 type ExtensionUpdateType string
 
 type extensionUpdateTypeValuesType struct {
@@ -819,77 +734,6 @@ type ExtensionUrls struct {
     ExtensionIcon *string `json:"extensionIcon,omitempty"`
     // Link to view the extension details page
     ExtensionPage *string `json:"extensionPage,omitempty"`
-}
-
-type ExtensionVersion struct {
-    AssetUri *string `json:"assetUri,omitempty"`
-    Badges *[]ExtensionBadge `json:"badges,omitempty"`
-    FallbackAssetUri *string `json:"fallbackAssetUri,omitempty"`
-    Files *[]ExtensionFile `json:"files,omitempty"`
-    Flags *ExtensionVersionFlags `json:"flags,omitempty"`
-    LastUpdated *time.Time `json:"lastUpdated,omitempty"`
-    Properties *[]azureDevOps.KeyValuePair `json:"properties,omitempty"`
-    ValidationResultMessage *string `json:"validationResultMessage,omitempty"`
-    Version *string `json:"version,omitempty"`
-    VersionDescription *string `json:"versionDescription,omitempty"`
-}
-
-// Set of flags that can be associated with a given extension version. These flags apply to a specific version of the extension.
-type ExtensionVersionFlags string
-
-type extensionVersionFlagsValuesType struct {
-    None ExtensionVersionFlags
-    Validated ExtensionVersionFlags
-}
-
-var ExtensionVersionFlagsValues = extensionVersionFlagsValuesType{
-    // No flags exist for this version.
-    None: "none",
-    // The Validated flag for a version means the extension version has passed validation and can be used..
-    Validated: "validated",
-}
-
-type GraphSubjectBase struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-}
-
-type IdentityRef struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph user referenced in the "self" entry of the IdentityRef "_links" dictionary
-    DirectoryAlias *string `json:"directoryAlias,omitempty"`
-    Id *string `json:"id,omitempty"`
-    // Deprecated - Available in the "avatar" entry of the IdentityRef "_links" dictionary
-    ImageUrl *string `json:"imageUrl,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph membership state referenced in the "membershipState" entry of the GraphUser "_links" dictionary
-    Inactive *bool `json:"inactive,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsAadUserType/Descriptor.IsAadGroupType)
-    IsAadIdentity *bool `json:"isAadIdentity,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsGroupType)
-    IsContainer *bool `json:"isContainer,omitempty"`
-    IsDeletedInOrigin *bool `json:"isDeletedInOrigin,omitempty"`
-    // Deprecated - not in use in most preexisting implementations of ToIdentityRef
-    ProfileUrl *string `json:"profileUrl,omitempty"`
-    // Deprecated - use Domain+PrincipalName instead
-    UniqueName *string `json:"uniqueName,omitempty"`
-}
-
-type InstallationTarget struct {
-    Target *string `json:"target,omitempty"`
-    TargetVersion *string `json:"targetVersion,omitempty"`
 }
 
 // Represents a VSTS extension along with its installation state
@@ -925,7 +769,7 @@ type InstalledExtension struct {
     // The display name of the extension.
     ExtensionName *string `json:"extensionName,omitempty"`
     // This is the set of files available from the extension.
-    Files *[]ExtensionFile `json:"files,omitempty"`
+    Files *[]gallery.ExtensionFile `json:"files,omitempty"`
     // Extension flags relevant to contribution consumers
     Flags *ExtensionFlags `json:"flags,omitempty"`
     // Information about this particular installation of the extension
@@ -944,7 +788,7 @@ type InstalledExtension struct {
 
 type InstalledExtensionQuery struct {
     AssetTypes *[]string `json:"assetTypes,omitempty"`
-    Monikers *[]ExtensionIdentifier `json:"monikers,omitempty"`
+    Monikers *[]gallery.ExtensionIdentifier `json:"monikers,omitempty"`
 }
 
 // The state of an installed extension
@@ -990,119 +834,6 @@ type LicensingOverride struct {
     Id *string `json:"id,omitempty"`
 }
 
-type PublishedExtension struct {
-    Categories *[]string `json:"categories,omitempty"`
-    DeploymentType *ExtensionDeploymentTechnology `json:"deploymentType,omitempty"`
-    DisplayName *string `json:"displayName,omitempty"`
-    ExtensionId *uuid.UUID `json:"extensionId,omitempty"`
-    ExtensionName *string `json:"extensionName,omitempty"`
-    Flags *PublishedExtensionFlags `json:"flags,omitempty"`
-    InstallationTargets *[]InstallationTarget `json:"installationTargets,omitempty"`
-    LastUpdated *time.Time `json:"lastUpdated,omitempty"`
-    LongDescription *string `json:"longDescription,omitempty"`
-    // Date on which the extension was first uploaded.
-    PublishedDate *time.Time `json:"publishedDate,omitempty"`
-    Publisher *PublisherFacts `json:"publisher,omitempty"`
-    // Date on which the extension first went public.
-    ReleaseDate *time.Time `json:"releaseDate,omitempty"`
-    SharedWith *[]ExtensionShare `json:"sharedWith,omitempty"`
-    ShortDescription *string `json:"shortDescription,omitempty"`
-    Statistics *[]ExtensionStatistic `json:"statistics,omitempty"`
-    Tags *[]string `json:"tags,omitempty"`
-    Versions *[]ExtensionVersion `json:"versions,omitempty"`
-}
-
-// Set of flags that can be associated with a given extension. These flags apply to all versions of the extension and not to a specific version.
-type PublishedExtensionFlags string
-
-type publishedExtensionFlagsValuesType struct {
-    None PublishedExtensionFlags
-    Disabled PublishedExtensionFlags
-    BuiltIn PublishedExtensionFlags
-    Validated PublishedExtensionFlags
-    Trusted PublishedExtensionFlags
-    Paid PublishedExtensionFlags
-    Public PublishedExtensionFlags
-    MultiVersion PublishedExtensionFlags
-    System PublishedExtensionFlags
-    Preview PublishedExtensionFlags
-    Unpublished PublishedExtensionFlags
-    Trial PublishedExtensionFlags
-    Locked PublishedExtensionFlags
-    Hidden PublishedExtensionFlags
-}
-
-var PublishedExtensionFlagsValues = publishedExtensionFlagsValuesType{
-    // No flags exist for this extension.
-    None: "none",
-    // The Disabled flag for an extension means the extension can't be changed and won't be used by consumers. The disabled flag is managed by the service and can't be supplied by the Extension Developers.
-    Disabled: "disabled",
-    // BuiltIn Extension are available to all Tenants. An explicit registration is not required. This attribute is reserved and can't be supplied by Extension Developers.  BuiltIn extensions are by definition Public. There is no need to set the public flag for extensions marked BuiltIn.
-    BuiltIn: "builtIn",
-    // This extension has been validated by the service. The extension meets the requirements specified. This attribute is reserved and can't be supplied by the Extension Developers. Validation is a process that ensures that all contributions are well formed. They meet the requirements defined by the contribution type they are extending. Note this attribute will be updated asynchronously as the extension is validated by the developer of the contribution type. There will be restricted access to the extension while this process is performed.
-    Validated: "validated",
-    // Trusted extensions are ones that are given special capabilities. These tend to come from Microsoft and can't be published by the general public.  Note: BuiltIn extensions are always trusted.
-    Trusted: "trusted",
-    // The Paid flag indicates that the commerce can be enabled for this extension. Publisher needs to setup Offer/Pricing plan in Azure. If Paid flag is set and a corresponding Offer is not available, the extension will automatically be marked as Preview. If the publisher intends to make the extension Paid in the future, it is mandatory to set the Preview flag. This is currently available only for VSTS extensions only.
-    Paid: "paid",
-    // This extension registration is public, making its visibility open to the public. This means all tenants have the ability to install this extension. Without this flag the extension will be private and will need to be shared with the tenants that can install it.
-    Public: "public",
-    // This extension has multiple versions active at one time and version discovery should be done using the defined "Version Discovery" protocol to determine the version available to a specific user or tenant.  @TODO: Link to Version Discovery Protocol.
-    MultiVersion: "multiVersion",
-    // The system flag is reserved, and cant be used by publishers.
-    System: "system",
-    // The Preview flag indicates that the extension is still under preview (not yet of "release" quality). These extensions may be decorated differently in the gallery and may have different policies applied to them.
-    Preview: "preview",
-    // The Unpublished flag indicates that the extension can't be installed/downloaded. Users who have installed such an extension can continue to use the extension.
-    Unpublished: "unpublished",
-    // The Trial flag indicates that the extension is in Trial version. The flag is right now being used only with respect to Visual Studio extensions.
-    Trial: "trial",
-    // The Locked flag indicates that extension has been locked from Marketplace. Further updates/acquisitions are not allowed on the extension until this is present. This should be used along with making the extension private/unpublished.
-    Locked: "locked",
-    // This flag is set for extensions we want to hide from Marketplace home and search pages. This will be used to override the exposure of builtIn flags.
-    Hidden: "hidden",
-}
-
-// High-level information about the publisher, like id's and names
-type PublisherFacts struct {
-    DisplayName *string `json:"displayName,omitempty"`
-    Flags *PublisherFlags `json:"flags,omitempty"`
-    PublisherId *uuid.UUID `json:"publisherId,omitempty"`
-    PublisherName *string `json:"publisherName,omitempty"`
-}
-
-type PublisherFlags string
-
-type publisherFlagsValuesType struct {
-    UnChanged PublisherFlags
-    None PublisherFlags
-    Disabled PublisherFlags
-    Verified PublisherFlags
-    Certified PublisherFlags
-    ServiceFlags PublisherFlags
-}
-
-var PublisherFlagsValues = publisherFlagsValuesType{
-    // This should never be returned, it is used to represent a publisher who's flags haven't changed during update calls.
-    UnChanged: "unChanged",
-    // No flags exist for this publisher.
-    None: "none",
-    // The Disabled flag for a publisher means the publisher can't be changed and won't be used by consumers, this extends to extensions owned by the publisher as well. The disabled flag is managed by the service and can't be supplied by the Extension Developers.
-    Disabled: "disabled",
-    // A verified publisher is one that Microsoft has done some review of and ensured the publisher meets a set of requirements. The requirements to become a verified publisher are not listed here.  They can be found in public documentation (TBD).
-    Verified: "verified",
-    // A Certified publisher is one that is Microsoft verified and in addition meets a set of requirements for its published extensions. The requirements to become a certified publisher are not listed here.  They can be found in public documentation (TBD).
-    Certified: "certified",
-    // This is the set of flags that can't be supplied by the developer and is managed by the service itself.
-    ServiceFlags: "serviceFlags",
-}
-
-// The class to represent a collection of REST reference links.
-type ReferenceLinks struct {
-    // The readonly view of the links.  Because Reference links are readonly, we only want to expose them as read only.
-    Links *map[string]interface{} `json:"links,omitempty"`
-}
-
 // A request for an extension (to be installed or have a license assigned)
 type RequestedExtension struct {
     // The unique name of the extension
@@ -1139,14 +870,4 @@ type SupportedExtension struct {
     Publisher *string `json:"publisher,omitempty"`
     // Supported version for this extension
     Version *string `json:"version,omitempty"`
-}
-
-// Represents the extension policy applied to a given user
-type UserExtensionPolicy struct {
-    // User display name that this policy refers to
-    DisplayName *string `json:"displayName,omitempty"`
-    // The extension policy applied to the user
-    Permissions *ExtensionPolicy `json:"permissions,omitempty"`
-    // User id that this policy refers to
-    UserId *string `json:"userId,omitempty"`
 }

@@ -10,6 +10,8 @@ package notification
 
 import (
     "github.com/google/uuid"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/formInput"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "time"
 )
 
@@ -23,7 +25,7 @@ type ActorFilter struct {
 
 type ActorNotificationReason struct {
     NotificationReasonType *NotificationReasonType `json:"notificationReasonType,omitempty"`
-    TargetIdentities *[]IdentityRef `json:"targetIdentities,omitempty"`
+    TargetIdentities *[]webApi.IdentityRef `json:"targetIdentities,omitempty"`
     MatchedRoles *[]string `json:"matchedRoles,omitempty"`
 }
 
@@ -138,14 +140,6 @@ var EvaluationOperationStatusValues = evaluationOperationStatusValuesType{
     NotFound: "notFound",
 }
 
-// Defines an "actor" for an event.
-type EventActor struct {
-    // Required: This is the identity of the user for the specified role.
-    Id *uuid.UUID `json:"id,omitempty"`
-    // Required: The event specific name of a role.
-    Role *string `json:"role,omitempty"`
-}
-
 type EventBacklogStatus struct {
     CaptureTime *time.Time `json:"captureTime,omitempty"`
     JobId *uuid.UUID `json:"jobId,omitempty"`
@@ -192,7 +186,7 @@ type EventProcessingLog struct {
     MatcherResults *[]MatcherResult `json:"matcherResults,omitempty"`
 }
 
-// Set of flags used to determine which set of information is retrieved when querying for event publishers
+// [Flags] Set of flags used to determine which set of information is retrieved when querying for event publishers
 type EventPublisherQueryFlags string
 
 type eventPublisherQueryFlagsValuesType struct {
@@ -204,16 +198,6 @@ var EventPublisherQueryFlagsValues = eventPublisherQueryFlagsValuesType{
     None: "none",
     // Include event types from the remote services too
     IncludeRemoteServices: "includeRemoteServices",
-}
-
-// Defines a scope for an event.
-type EventScope struct {
-    // Required: This is the identity of the scope for the type.
-    Id *uuid.UUID `json:"id,omitempty"`
-    // Optional: The display name of the scope
-    Name *string `json:"name,omitempty"`
-    // Required: The event specific type of a scope.
-    Type *string `json:"type,omitempty"`
 }
 
 // Encapsulates events result properties. It defines the total number of events used and the number of matched events.
@@ -244,7 +228,7 @@ type EventTransformResult struct {
     SystemInputs *map[string]string `json:"systemInputs,omitempty"`
 }
 
-// Set of flags used to determine which set of information is retrieved when querying for eventtypes
+// [Flags] Set of flags used to determine which set of information is retrieved when querying for eventtypes
 type EventTypeQueryFlags string
 
 type eventTypeQueryFlagsValuesType struct {
@@ -295,27 +279,10 @@ type ExpressionFilterModel struct {
 }
 
 type FieldInputValues struct {
-    // The default value to use for this input
-    DefaultValue *string `json:"defaultValue,omitempty"`
-    // Errors encountered while computing dynamic values.
-    Error *InputValuesError `json:"error,omitempty"`
-    // The id of the input
-    InputId *string `json:"inputId,omitempty"`
-    // Should this input be disabled
-    IsDisabled *bool `json:"isDisabled,omitempty"`
-    // Should the value be restricted to one of the values in the PossibleValues (True) or are the values in PossibleValues just a suggestion (False)
-    IsLimitedToPossibleValues *bool `json:"isLimitedToPossibleValues,omitempty"`
-    // Should this input be made read-only
-    IsReadOnly *bool `json:"isReadOnly,omitempty"`
-    // Possible values that this input can take
-    PossibleValues *[]InputValue `json:"possibleValues,omitempty"`
     Operators *[]byte `json:"operators,omitempty"`
 }
 
 type FieldValuesQuery struct {
-    CurrentValues *map[string]string `json:"currentValues,omitempty"`
-    // Subscription containing information about the publisher/consumer and the current input values
-    Resource interface{} `json:"resource,omitempty"`
     InputValues *[]FieldInputValues `json:"inputValues,omitempty"`
     Scope *string `json:"scope,omitempty"`
 }
@@ -324,48 +291,10 @@ type GeneratedNotification struct {
     Recipients *[]DiagnosticIdentity `json:"recipients,omitempty"`
 }
 
-type GraphSubjectBase struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-}
-
 type GroupSubscriptionChannel struct {
     Address *string `json:"address,omitempty"`
     UseCustomAddress *bool `json:"useCustomAddress,omitempty"`
     Type *string `json:"type,omitempty"`
-}
-
-type IdentityRef struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph user referenced in the "self" entry of the IdentityRef "_links" dictionary
-    DirectoryAlias *string `json:"directoryAlias,omitempty"`
-    Id *string `json:"id,omitempty"`
-    // Deprecated - Available in the "avatar" entry of the IdentityRef "_links" dictionary
-    ImageUrl *string `json:"imageUrl,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph membership state referenced in the "membershipState" entry of the GraphUser "_links" dictionary
-    Inactive *bool `json:"inactive,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsAadUserType/Descriptor.IsAadGroupType)
-    IsAadIdentity *bool `json:"isAadIdentity,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsGroupType)
-    IsContainer *bool `json:"isContainer,omitempty"`
-    IsDeletedInOrigin *bool `json:"isDeletedInOrigin,omitempty"`
-    // Deprecated - not in use in most preexisting implementations of ToIdentityRef
-    ProfileUrl *string `json:"profileUrl,omitempty"`
-    // Deprecated - use Domain+PrincipalName instead
-    UniqueName *string `json:"uniqueName,omitempty"`
 }
 
 // Abstraction interface for the diagnostic log.  Primarily for deserialization.
@@ -379,48 +308,6 @@ type INotificationDiagnosticLog struct {
     Properties *map[string]string `json:"properties,omitempty"`
     Source *uuid.UUID `json:"source,omitempty"`
     StartTime *time.Time `json:"startTime,omitempty"`
-}
-
-// Information about a single value for an input
-type InputValue struct {
-    // Any other data about this input
-    Data *map[string]interface{} `json:"data,omitempty"`
-    // The text to show for the display of this value
-    DisplayValue *string `json:"displayValue,omitempty"`
-    // The value to store for this input
-    Value *string `json:"value,omitempty"`
-}
-
-// Information about the possible/allowed values for a given subscription input
-type InputValues struct {
-    // The default value to use for this input
-    DefaultValue *string `json:"defaultValue,omitempty"`
-    // Errors encountered while computing dynamic values.
-    Error *InputValuesError `json:"error,omitempty"`
-    // The id of the input
-    InputId *string `json:"inputId,omitempty"`
-    // Should this input be disabled
-    IsDisabled *bool `json:"isDisabled,omitempty"`
-    // Should the value be restricted to one of the values in the PossibleValues (True) or are the values in PossibleValues just a suggestion (False)
-    IsLimitedToPossibleValues *bool `json:"isLimitedToPossibleValues,omitempty"`
-    // Should this input be made read-only
-    IsReadOnly *bool `json:"isReadOnly,omitempty"`
-    // Possible values that this input can take
-    PossibleValues *[]InputValue `json:"possibleValues,omitempty"`
-}
-
-// Error information related to a subscription input value.
-type InputValuesError struct {
-    // The error message.
-    Message *string `json:"message,omitempty"`
-}
-
-type InputValuesQuery struct {
-    CurrentValues *map[string]string `json:"currentValues,omitempty"`
-    // The input values to return on input, and the result from the consumer on output.
-    InputValues *[]InputValues `json:"inputValues,omitempty"`
-    // Subscription containing information about the publisher/consumer and the current input values
-    Resource interface{} `json:"resource,omitempty"`
 }
 
 type ISubscriptionChannel struct {
@@ -644,7 +531,7 @@ type NotificationQueryCondition struct {
 
 type NotificationReason struct {
     NotificationReasonType *NotificationReasonType `json:"notificationReasonType,omitempty"`
-    TargetIdentities *[]IdentityRef `json:"targetIdentities,omitempty"`
+    TargetIdentities *[]webApi.IdentityRef `json:"targetIdentities,omitempty"`
 }
 
 type NotificationReasonType string
@@ -690,7 +577,7 @@ type NotificationStatistic struct {
     HitCount *int `json:"hitCount,omitempty"`
     Path *string `json:"path,omitempty"`
     Type *NotificationStatisticType `json:"type,omitempty"`
-    User *IdentityRef `json:"user,omitempty"`
+    User *webApi.IdentityRef `json:"user,omitempty"`
 }
 
 type NotificationStatisticsQuery struct {
@@ -703,7 +590,7 @@ type NotificationStatisticsQueryConditions struct {
     Path *string `json:"path,omitempty"`
     StartDate *time.Time `json:"startDate,omitempty"`
     Type *NotificationStatisticType `json:"type,omitempty"`
-    User *IdentityRef `json:"user,omitempty"`
+    User *webApi.IdentityRef `json:"user,omitempty"`
 }
 
 type NotificationStatisticType string
@@ -812,7 +699,7 @@ type NotificationSubscriberUpdateParameters struct {
 // A subscription defines criteria for matching events and how the subscription's subscriber should be notified about those events.
 type NotificationSubscription struct {
     // Links to related resources, APIs, and views for the subscription.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Admin-managed settings for the subscription. Only applies when the subscriber is a group.
     AdminSettings *SubscriptionAdminSettings `json:"adminSettings,omitempty"`
     // Channel for delivering notifications triggered by the subscription.
@@ -830,7 +717,7 @@ type NotificationSubscription struct {
     // Subscription identifier.
     Id *string `json:"id,omitempty"`
     // User that last modified (or created) the subscription.
-    LastModifiedBy *IdentityRef `json:"lastModifiedBy,omitempty"`
+    LastModifiedBy *webApi.IdentityRef `json:"lastModifiedBy,omitempty"`
     // Date when the subscription was last modified. If the subscription has not been updated since it was created, this value will indicate when the subscription was created.
     ModifiedDate *time.Time `json:"modifiedDate,omitempty"`
     // The permissions the user have for this subscriptions.
@@ -842,7 +729,7 @@ type NotificationSubscription struct {
     // Message that provides more details about the status of the subscription.
     StatusMessage *string `json:"statusMessage,omitempty"`
     // User or group that will receive notifications for events matching the subscription's filter criteria.
-    Subscriber *IdentityRef `json:"subscriber,omitempty"`
+    Subscriber *webApi.IdentityRef `json:"subscriber,omitempty"`
     // REST API URL of the subscriotion.
     Url *string `json:"url,omitempty"`
     // User-managed settings for the subscription. Only applies when the subscriber is a group. Typically used to indicate whether the calling user is opted in or out of a group subscription.
@@ -860,7 +747,7 @@ type NotificationSubscriptionCreateParameters struct {
     // The container in which events must be published from in order to be matched by the new subscription. If not specified, defaults to the current host (typically an account or project collection). For example, a subscription scoped to project A will not produce notifications for events published from project B.
     Scope *SubscriptionScope `json:"scope,omitempty"`
     // User or group that will receive notifications for events matching the subscription's filter criteria. If not specified, defaults to the calling user.
-    Subscriber *IdentityRef `json:"subscriber,omitempty"`
+    Subscriber *webApi.IdentityRef `json:"subscriber,omitempty"`
 }
 
 type NotificationSubscriptionTemplate struct {
@@ -900,7 +787,7 @@ type OperatorConstraint struct {
 
 type ProcessedEvent struct {
     // All of the users that were associated with this event and their role.
-    Actors *[]EventActor `json:"actors,omitempty"`
+    Actors *[]webApi.EventActor `json:"actors,omitempty"`
     AllowedChannels *string `json:"allowedChannels,omitempty"`
     ArtifactUri *string `json:"artifactUri,omitempty"`
     DeliveryIdentities *ProcessingIdentities `json:"deliveryIdentities,omitempty"`
@@ -908,9 +795,9 @@ type ProcessedEvent struct {
     Evaluations *map[uuid.UUID]SubscriptionEvaluation `json:"evaluations,omitempty"`
     EventId *int `json:"eventId,omitempty"`
     // Which members were excluded from evaluation (only applies to ActorMatcher subscriptions)
-    Exclusions *[]EventActor `json:"exclusions,omitempty"`
+    Exclusions *[]webApi.EventActor `json:"exclusions,omitempty"`
     // Which members were included for evaluation (only applies to ActorMatcher subscriptions)
-    Inclusions *[]EventActor `json:"inclusions,omitempty"`
+    Inclusions *[]webApi.EventActor `json:"inclusions,omitempty"`
     Notifications *[]GeneratedNotification `json:"notifications,omitempty"`
 }
 
@@ -930,12 +817,6 @@ type ProcessingIdentities struct {
     Messages *[]NotificationDiagnosticLogMessage `json:"messages,omitempty"`
     MissingIdentities *[]uuid.UUID `json:"missingIdentities,omitempty"`
     Properties *map[string]string `json:"properties,omitempty"`
-}
-
-// The class to represent a collection of REST reference links.
-type ReferenceLinks struct {
-    // The readonly view of the links.  Because Reference links are readonly, we only want to expose them as read only.
-    Links *map[string]interface{} `json:"links,omitempty"`
 }
 
 type RoleBasedFilter struct {
@@ -960,6 +841,7 @@ type SoapSubscriptionChannel struct {
     Type *string `json:"type,omitempty"`
 }
 
+// [Flags]
 type SubscriberFlags string
 
 type subscriberFlagsValuesType struct {
@@ -1090,7 +972,7 @@ var SubscriptionFieldTypeValues = subscriptionFieldTypeValuesType{
     TeamProject: "teamProject",
 }
 
-// Read-only indicators that further describe the subscription.
+// [Flags] Read-only indicators that further describe the subscription.
 type SubscriptionFlags string
 
 type subscriptionFlagsValuesType struct {
@@ -1123,7 +1005,7 @@ type SubscriptionManagement struct {
     Url *string `json:"url,omitempty"`
 }
 
-// The permissions that a user has to a certain subscription
+// [Flags] The permissions that a user has to a certain subscription
 type SubscriptionPermissions string
 
 type subscriptionPermissionsValuesType struct {
@@ -1166,7 +1048,7 @@ type SubscriptionQueryCondition struct {
     SubscriptionId *string `json:"subscriptionId,omitempty"`
 }
 
-// Flags that influence the result set of a subscription query.
+// [Flags] Flags that influence the result set of a subscription query.
 type SubscriptionQueryFlags string
 
 type subscriptionQueryFlagsValuesType struct {
@@ -1194,12 +1076,6 @@ var SubscriptionQueryFlagsValues = subscriptionQueryFlagsValuesType{
 
 // A resource, typically an account or project, in which events are published from.
 type SubscriptionScope struct {
-    // Required: This is the identity of the scope for the type.
-    Id *uuid.UUID `json:"id,omitempty"`
-    // Optional: The display name of the scope
-    Name *string `json:"name,omitempty"`
-    // Required: The event specific type of a scope.
-    Type *string `json:"type,omitempty"`
 }
 
 // Subscription status values. A value greater than or equal to zero indicates the subscription is enabled. A negative value indicates the subscription is disabled.
@@ -1259,7 +1135,7 @@ var SubscriptionStatusValues = subscriptionStatusValuesType{
     EnabledOnProbation: "enabledOnProbation",
 }
 
-// Set of flags used to determine which set of templates is retrieved when querying for subscription templates
+// [Flags] Set of flags used to determine which set of templates is retrieved when querying for subscription templates
 type SubscriptionTemplateQueryFlags string
 
 type subscriptionTemplateQueryFlagsValuesType struct {
@@ -1422,31 +1298,9 @@ type UserSystemSubscriptionChannel struct {
 // Encapsulates the properties of a field value definition. It has the information needed to retrieve the list of possible values for a certain field and how to handle that field values in the UI. This information includes what type of object this value represents, which property to use for UI display and which property to use for saving the subscription
 type ValueDefinition struct {
     // Gets or sets the data source.
-    DataSource *[]InputValue `json:"dataSource,omitempty"`
+    DataSource *[]formInput.InputValue `json:"dataSource,omitempty"`
     // Gets or sets the rest end point.
     EndPoint *string `json:"endPoint,omitempty"`
     // Gets or sets the result template.
     ResultTemplate *string `json:"resultTemplate,omitempty"`
-}
-
-// This is the type used for firing notifications intended for the subsystem in the Notifications SDK. For components that can't take a dependency on the Notifications SDK directly, they can use ITeamFoundationEventService.PublishNotification and the Notifications SDK ISubscriber implementation will get it.
-type VssNotificationEvent struct {
-    // Optional: A list of actors which are additional identities with corresponding roles that are relevant to the event.
-    Actors *[]EventActor `json:"actors,omitempty"`
-    // Optional: A list of artifacts referenced or impacted by this event.
-    ArtifactUris *[]string `json:"artifactUris,omitempty"`
-    // Required: The event payload.  If Data is a string, it must be in Json or XML format.  Otherwise it must have a serialization format attribute.
-    Data interface{} `json:"data,omitempty"`
-    // Required: The name of the event.  This event must be registered in the context it is being fired.
-    EventType *string `json:"eventType,omitempty"`
-    // How long before the event expires and will be cleaned up.  The default is to use the system default.
-    ExpiresIn interface{} `json:"expiresIn,omitempty"`
-    // The id of the item, artifact, extension, project, etc.
-    ItemId *string `json:"itemId,omitempty"`
-    // How long to wait before processing this event.  The default is to process immediately.
-    ProcessDelay interface{} `json:"processDelay,omitempty"`
-    // Optional: A list of scopes which are are relevant to the event.
-    Scopes *[]EventScope `json:"scopes,omitempty"`
-    // This is the time the original source event for this VssNotificationEvent was created.  For example, for something like a build completion notification SourceEventCreatedTime should be the time the build finished not the time this event was raised.
-    SourceEventCreatedTime *time.Time `json:"sourceEventCreatedTime,omitempty"`
 }

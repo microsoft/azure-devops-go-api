@@ -14,6 +14,8 @@ import (
     "encoding/json"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevOps"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/delegatedAuthorization"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/tokenAdmin"
     "net/http"
     "net/url"
     "strconv"
@@ -62,13 +64,13 @@ func (client Client) ListIdentitiesWithGlobalAccessTokens(ctx context.Context, a
 // Arguments for the ListIdentitiesWithGlobalAccessTokens function
 type ListIdentitiesWithGlobalAccessTokensArgs struct {
     // (required) The list of identities containing the authorization IDs of the OAuth authorizations, such as session tokens retrieved by listed a users PATs, that should be checked for global access tokens.
-    Revocations *[]TokenAdminRevocation
+    Revocations *[]tokenAdmin.TokenAdminRevocation
     // (optional) Set to false for PAT tokens and true for SSH tokens.
     IsPublic *bool
 }
 
 // [Preview API] Lists of all the session token details of the personal access tokens (PATs) for a particular user.
-func (client Client) ListPersonalAccessTokens(ctx context.Context, args ListPersonalAccessTokensArgs) (*TokenAdminPagedSessionTokens, error) {
+func (client Client) ListPersonalAccessTokens(ctx context.Context, args ListPersonalAccessTokensArgs) (*tokenAdmin.TokenAdminPagedSessionTokens, error) {
     if args.Audience == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "audience"}
     }
@@ -98,7 +100,7 @@ func (client Client) ListPersonalAccessTokens(ctx context.Context, args ListPers
         return nil, err
     }
 
-    var responseValue TokenAdminPagedSessionTokens
+    var responseValue tokenAdmin.TokenAdminPagedSessionTokens
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -118,7 +120,7 @@ type ListPersonalAccessTokensArgs struct {
 }
 
 // [Preview API] Revokes the listed OAuth authorizations.
-func (client Client) RevokeAuthorizations(ctx context.Context, args RevokeAuthorizationsArgs) (*[]SessionToken, error) {
+func (client Client) RevokeAuthorizations(ctx context.Context, args RevokeAuthorizationsArgs) (*[]delegatedAuthorization.SessionToken, error) {
     if args.Revocations == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "revocations"}
     }
@@ -140,7 +142,7 @@ func (client Client) RevokeAuthorizations(ctx context.Context, args RevokeAuthor
         return nil, err
     }
 
-    var responseValue []SessionToken
+    var responseValue []delegatedAuthorization.SessionToken
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }

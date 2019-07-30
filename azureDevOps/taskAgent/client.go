@@ -1383,9 +1383,10 @@ func (client Client) UpdateTaskGroup(ctx context.Context, args UpdateTaskGroupAr
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
     }
     routeValues["project"] = *args.Project
-    if args.TaskGroupId != nil {
-        routeValues["taskGroupId"] = (*args.TaskGroupId).String()
+    if args.TaskGroupId == nil {
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "taskGroupId"} 
     }
+    routeValues["taskGroupId"] = (*args.TaskGroupId).String()
 
     body, marshalErr := json.Marshal(*args.TaskGroup)
     if marshalErr != nil {
@@ -1408,7 +1409,7 @@ type UpdateTaskGroupArgs struct {
     TaskGroup *TaskGroupUpdateParameter
     // (required) Project ID or project name
     Project *string
-    // (optional) Id of the task group to update.
+    // (required) Id of the task group to update.
     TaskGroupId *uuid.UUID
 }
 
