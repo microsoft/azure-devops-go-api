@@ -46,7 +46,7 @@ var ContainerItemTypeValues = containerItemTypeValuesType{
     File: "file",
 }
 
-// Options a container can have.
+// [Flags] Options a container can have.
 type ContainerOptions string
 
 type containerOptionsValuesType struct {

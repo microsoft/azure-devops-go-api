@@ -703,6 +703,40 @@ type UpdateReleaseEnvironmentArgs struct {
     EnvironmentId *int
 }
 
+// [Preview API] Creates a new folder.
+func (client Client) CreateFolder(ctx context.Context, args CreateFolderArgs) (*Folder, error) {
+    if args.Folder == nil {
+        return nil, &azureDevOps.ArgumentNilError{ArgumentName: "folder"}
+    }
+    routeValues := make(map[string]string)
+    if args.Project == nil || *args.Project == "" {
+        return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
+    }
+    routeValues["project"] = *args.Project
+
+    body, marshalErr := json.Marshal(*args.Folder)
+    if marshalErr != nil {
+        return nil, marshalErr
+    }
+    locationId, _ := uuid.Parse("f7ddf76d-ce0c-4d68-94ff-becaec5d9dea")
+    resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.2", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+    if err != nil {
+        return nil, err
+    }
+
+    var responseValue Folder
+    err = client.Client.UnmarshalBody(resp, &responseValue)
+    return &responseValue, err
+}
+
+// Arguments for the CreateFolder function
+type CreateFolderArgs struct {
+    // (required) Folder to create.
+    Folder *Folder
+    // (required) Project ID or project name
+    Project *string
+}
+
 // [Preview API] Deletes a definition folder for given folder name and path and all it's existing definitions.
 func (client Client) DeleteFolder(ctx context.Context, args DeleteFolderArgs) error {
     routeValues := make(map[string]string)

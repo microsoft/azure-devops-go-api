@@ -10,6 +10,7 @@ package contributions
 
 import (
     "github.com/google/uuid"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/gallery"
     "time"
 )
 
@@ -158,7 +159,7 @@ type ContributionPropertyDescription struct {
     Type *ContributionPropertyType `json:"type,omitempty"`
 }
 
-// The type of value used for a property
+// [Flags] The type of value used for a property
 type ContributionPropertyType string
 
 type contributionPropertyTypeValuesType struct {
@@ -200,7 +201,7 @@ var ContributionPropertyTypeValues = contributionPropertyTypeValuesType{
     Object: "object",
 }
 
-// Options that control the contributions to include in a query
+// [Flags] Options that control the contributions to include in a query
 type ContributionQueryOptions string
 
 type contributionQueryOptionsValuesType struct {
@@ -307,13 +308,7 @@ type ExtensionEventCallbackCollection struct {
     VersionCheck *ExtensionEventCallback `json:"versionCheck,omitempty"`
 }
 
-type ExtensionFile struct {
-    AssetType *string `json:"assetType,omitempty"`
-    Language *string `json:"language,omitempty"`
-    Source *string `json:"source,omitempty"`
-}
-
-// Set of flags applied to extensions that are relevant to contribution consumers
+// [Flags] Set of flags applied to extensions that are relevant to contribution consumers
 type ExtensionFlags string
 
 type extensionFlagsValuesType struct {
@@ -364,7 +359,7 @@ type ExtensionManifest struct {
     ServiceInstanceType *uuid.UUID `json:"serviceInstanceType,omitempty"`
 }
 
-// States of an extension Note:  If you add value to this enum, you need to do 2 other things.  First add the back compat enum in value src\Vssf\Sdk\Server\Contributions\InstalledExtensionMessage.cs.  Second, you can not send the new value on the message bus.  You need to remove it from the message bus event prior to being sent.
+// [Flags] States of an extension Note:  If you add value to this enum, you need to do 2 other things.  First add the back compat enum in value src\Vssf\Sdk\Server\Contributions\InstalledExtensionMessage.cs.  Second, you can not send the new value on the message bus.  You need to remove it from the message bus event prior to being sent.
 type ExtensionStateFlags string
 
 type extensionStateFlagsValuesType struct {
@@ -439,7 +434,7 @@ type InstalledExtension struct {
     // The display name of the extension.
     ExtensionName *string `json:"extensionName,omitempty"`
     // This is the set of files available from the extension.
-    Files *[]ExtensionFile `json:"files,omitempty"`
+    Files *[]gallery.ExtensionFile `json:"files,omitempty"`
     // Extension flags relevant to contribution consumers
     Flags *ExtensionFlags `json:"flags,omitempty"`
     // Information about this particular installation of the extension

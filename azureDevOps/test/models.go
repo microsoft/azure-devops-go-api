@@ -11,6 +11,9 @@ package test
 import (
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevOps"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/core"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/system"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "time"
 )
 
@@ -348,7 +351,7 @@ type Coverage2 struct {
     State *byte `json:"state,omitempty"`
 }
 
-// Used to choose which coverage data is returned by a QueryXXXCoverage() call.
+// [Flags] Used to choose which coverage data is returned by a QueryXXXCoverage() call.
 type CoverageQueryFlags string
 
 type coverageQueryFlagsValuesType struct {
@@ -445,6 +448,7 @@ type CustomTestFieldDefinition struct {
     Scope *CustomTestFieldScope `json:"scope,omitempty"`
 }
 
+// [Flags]
 type CustomTestFieldScope string
 
 type customTestFieldScopeValuesType struct {
@@ -624,49 +628,11 @@ type FunctionCoverage2 struct {
     SourceFile *string `json:"sourceFile,omitempty"`
 }
 
-type GraphSubjectBase struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-}
-
 type HttpPostedTcmAttachment struct {
     AttachmentContent *string `json:"attachmentContent,omitempty"`
     ContentLength *int `json:"contentLength,omitempty"`
     ContentType *string `json:"contentType,omitempty"`
     FileName *string `json:"fileName,omitempty"`
-}
-
-type IdentityRef struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph user referenced in the "self" entry of the IdentityRef "_links" dictionary
-    DirectoryAlias *string `json:"directoryAlias,omitempty"`
-    Id *string `json:"id,omitempty"`
-    // Deprecated - Available in the "avatar" entry of the IdentityRef "_links" dictionary
-    ImageUrl *string `json:"imageUrl,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph membership state referenced in the "membershipState" entry of the GraphUser "_links" dictionary
-    Inactive *bool `json:"inactive,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsAadUserType/Descriptor.IsAadGroupType)
-    IsAadIdentity *bool `json:"isAadIdentity,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsGroupType)
-    IsContainer *bool `json:"isContainer,omitempty"`
-    IsDeletedInOrigin *bool `json:"isDeletedInOrigin,omitempty"`
-    // Deprecated - not in use in most preexisting implementations of ToIdentityRef
-    ProfileUrl *string `json:"profileUrl,omitempty"`
-    // Deprecated - use Domain+PrincipalName instead
-    UniqueName *string `json:"uniqueName,omitempty"`
 }
 
 // Job in pipeline. This is related to matrixing in YAML.
@@ -684,7 +650,7 @@ type LastResultDetails struct {
     // Duration of LastResult.
     Duration *uint64 `json:"duration,omitempty"`
     // RunBy.
-    RunBy *IdentityRef `json:"runBy,omitempty"`
+    RunBy *webApi.IdentityRef `json:"runBy,omitempty"`
 }
 
 type LegacyBuildConfiguration struct {
@@ -1000,7 +966,7 @@ type PlanUpdateModel struct {
     // Name of the test plan.
     Name *string `json:"name,omitempty"`
     // Owner of the test plan.
-    Owner *IdentityRef `json:"owner,omitempty"`
+    Owner *webApi.IdentityRef `json:"owner,omitempty"`
     // Release Environment to be used to deploy the build and run automated tests from this test plan.
     ReleaseEnvironmentDefinition *ReleaseEnvironmentDefinitionReference `json:"releaseEnvironmentDefinition,omitempty"`
     // Start date for the test plan.
@@ -1016,7 +982,7 @@ type PointAssignment struct {
     // Configuration that was assigned to the test case.
     Configuration *ShallowReference `json:"configuration,omitempty"`
     // Tester that was assigned to the test case
-    Tester *IdentityRef `json:"tester,omitempty"`
+    Tester *webApi.IdentityRef `json:"tester,omitempty"`
 }
 
 type PointLastResult struct {
@@ -1031,7 +997,7 @@ type PointsFilter struct {
     // List of test case id for filtering.
     TestcaseIds *[]int `json:"testcaseIds,omitempty"`
     // List of tester for filtering.
-    Testers *[]IdentityRef `json:"testers,omitempty"`
+    Testers *[]webApi.IdentityRef `json:"testers,omitempty"`
 }
 
 type PointsReference2 struct {
@@ -1060,56 +1026,13 @@ type PointUpdateModel struct {
     // Reset test point to active.
     ResetToActive *bool `json:"resetToActive,omitempty"`
     // Tester to update. Type IdentityRef.
-    Tester *IdentityRef `json:"tester,omitempty"`
+    Tester *webApi.IdentityRef `json:"tester,omitempty"`
 }
 
 // Test point workitem property.
 type PointWorkItemProperty struct {
     // key value pair of test point work item property.
     WorkItem *azureDevOps.KeyValuePair `json:"workItem,omitempty"`
-}
-
-type ProjectState string
-
-type projectStateValuesType struct {
-    Deleting ProjectState
-    New ProjectState
-    WellFormed ProjectState
-    CreatePending ProjectState
-    All ProjectState
-    Unchanged ProjectState
-    Deleted ProjectState
-}
-
-var ProjectStateValues = projectStateValuesType{
-    // Project is in the process of being deleted.
-    Deleting: "deleting",
-    // Project is in the process of being created.
-    New: "new",
-    // Project is completely created and ready to use.
-    WellFormed: "wellFormed",
-    // Project has been queued for creation, but the process has not yet started.
-    CreatePending: "createPending",
-    // All projects regardless of state.
-    All: "all",
-    // Project has not been changed.
-    Unchanged: "unchanged",
-    // Project has been deleted.
-    Deleted: "deleted",
-}
-
-type ProjectVisibility string
-
-type projectVisibilityValuesType struct {
-    Private ProjectVisibility
-    Public ProjectVisibility
-}
-
-var ProjectVisibilityValues = projectVisibilityValuesType{
-    // The project is only visible to users with explicit access.
-    Private: "private",
-    // The project is visible to all.
-    Public: "public",
 }
 
 // The class to represent a Generic store for test session data.
@@ -1173,12 +1096,6 @@ type QueryTestRunsRequest struct {
 type QueryTestRunStatsRequest struct {
     TeamProjectName *string `json:"teamProjectName,omitempty"`
     TestRunId *int `json:"testRunId,omitempty"`
-}
-
-// The class to represent a collection of REST reference links.
-type ReferenceLinks struct {
-    // The readonly view of the links.  Because Reference links are readonly, we only want to expose them as read only.
-    Links *map[string]interface{} `json:"links,omitempty"`
 }
 
 // Reference to release environment resource.
@@ -1335,7 +1252,7 @@ type ResultRetentionSettings struct {
     // Automated test result retention duration in days
     AutomatedResultsRetentionDuration *int `json:"automatedResultsRetentionDuration,omitempty"`
     // Last Updated by identity
-    LastUpdatedBy *IdentityRef `json:"lastUpdatedBy,omitempty"`
+    LastUpdatedBy *webApi.IdentityRef `json:"lastUpdatedBy,omitempty"`
     // Last updated date
     LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
     // Manual test result retention duration in days
@@ -1449,7 +1366,7 @@ type RunCreateModel struct {
     // Name of the test run.
     Name *string `json:"name,omitempty"`
     // Display name of the owner of the run.
-    Owner *IdentityRef `json:"owner,omitempty"`
+    Owner *webApi.IdentityRef `json:"owner,omitempty"`
     // Reference of the pipeline to which this test run belongs. PipelineReference.PipelineId should be equal to RunCreateModel.Build.Id
     PipelineReference *PipelineReference `json:"pipelineReference,omitempty"`
     // An abstracted reference to the plan that it belongs.
@@ -1644,76 +1561,6 @@ type SharedStepModel struct {
     Revision *int `json:"revision,omitempty"`
 }
 
-type SqlDbType string
-
-type sqlDbTypeValuesType struct {
-    BigInt SqlDbType
-    Binary SqlDbType
-    Bit SqlDbType
-    Char SqlDbType
-    DateTime SqlDbType
-    Decimal SqlDbType
-    Float SqlDbType
-    Image SqlDbType
-    Int SqlDbType
-    Money SqlDbType
-    NChar SqlDbType
-    NText SqlDbType
-    NVarChar SqlDbType
-    Real SqlDbType
-    UniqueIdentifier SqlDbType
-    SmallDateTime SqlDbType
-    SmallInt SqlDbType
-    SmallMoney SqlDbType
-    Text SqlDbType
-    Timestamp SqlDbType
-    TinyInt SqlDbType
-    VarBinary SqlDbType
-    VarChar SqlDbType
-    Variant SqlDbType
-    Xml SqlDbType
-    Udt SqlDbType
-    Structured SqlDbType
-    Date SqlDbType
-    Time SqlDbType
-    DateTime2 SqlDbType
-    DateTimeOffset SqlDbType
-}
-
-var SqlDbTypeValues = sqlDbTypeValuesType{
-    BigInt: "bigInt",
-    Binary: "binary",
-    Bit: "bit",
-    Char: "char",
-    DateTime: "dateTime",
-    Decimal: "decimal",
-    Float: "float",
-    Image: "image",
-    Int: "int",
-    Money: "money",
-    NChar: "nChar",
-    NText: "nText",
-    NVarChar: "nVarChar",
-    Real: "real",
-    UniqueIdentifier: "uniqueIdentifier",
-    SmallDateTime: "smallDateTime",
-    SmallInt: "smallInt",
-    SmallMoney: "smallMoney",
-    Text: "text",
-    Timestamp: "timestamp",
-    TinyInt: "tinyInt",
-    VarBinary: "varBinary",
-    VarChar: "varChar",
-    Variant: "variant",
-    Xml: "xml",
-    Udt: "udt",
-    Structured: "structured",
-    Date: "date",
-    Time: "time",
-    DateTime2: "dateTime2",
-    DateTimeOffset: "dateTimeOffset",
-}
-
 // Stage in pipeline
 type StageReference struct {
     // Attempt number of stage
@@ -1756,7 +1603,7 @@ type SuiteEntryUpdateModel struct {
     TestCaseId *int `json:"testCaseId,omitempty"`
 }
 
-// Option to get details in response
+// [Flags] Option to get details in response
 type SuiteExpand string
 
 type suiteExpandValuesType struct {
@@ -1826,42 +1673,6 @@ var TCMServiceDataMigrationStatusValues = tcmServiceDataMigrationStatusValuesTyp
     Completed: "completed",
     // Migration Failed
     Failed: "failed",
-}
-
-// The Team Context for an operation.
-type TeamContext struct {
-    // The team project Id or name.  Ignored if ProjectId is set.
-    Project *string `json:"project,omitempty"`
-    // The Team Project ID.  Required if Project is not set.
-    ProjectId *uuid.UUID `json:"projectId,omitempty"`
-    // The Team Id or name.  Ignored if TeamId is set.
-    Team *string `json:"team,omitempty"`
-    // The Team Id
-    TeamId *uuid.UUID `json:"teamId,omitempty"`
-}
-
-// Represents a shallow reference to a TeamProject.
-type TeamProjectReference struct {
-    // Project abbreviation.
-    Abbreviation *string `json:"abbreviation,omitempty"`
-    // Url to default team identity image.
-    DefaultTeamImageUrl *string `json:"defaultTeamImageUrl,omitempty"`
-    // The project's description (if any).
-    Description *string `json:"description,omitempty"`
-    // Project identifier.
-    Id *uuid.UUID `json:"id,omitempty"`
-    // Project last update time.
-    LastUpdateTime *time.Time `json:"lastUpdateTime,omitempty"`
-    // Project name.
-    Name *string `json:"name,omitempty"`
-    // Project revision.
-    Revision *uint64 `json:"revision,omitempty"`
-    // Project state.
-    State *ProjectState `json:"state,omitempty"`
-    // Url to the full version of the object.
-    Url *string `json:"url,omitempty"`
-    // Project visibility.
-    Visibility *ProjectVisibility `json:"visibility,omitempty"`
 }
 
 type TestActionResult struct {
@@ -2049,13 +1860,13 @@ type TestCaseResult struct {
     // Test result details of test iterations used only for Manual Testing.
     IterationDetails *[]TestIterationDetailsModel `json:"iterationDetails,omitempty"`
     // Reference to identity last updated test result.
-    LastUpdatedBy *IdentityRef `json:"lastUpdatedBy,omitempty"`
+    LastUpdatedBy *webApi.IdentityRef `json:"lastUpdatedBy,omitempty"`
     // Last updated datetime of test result.
     LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
     // Test outcome of test result. Valid values = (Unspecified, None, Passed, Failed, Inconclusive, Timeout, Aborted, Blocked, NotExecuted, Warning, Error, NotApplicable, Paused, InProgress, NotImpacted)
     Outcome *string `json:"outcome,omitempty"`
     // Reference to test owner.
-    Owner *IdentityRef `json:"owner,omitempty"`
+    Owner *webApi.IdentityRef `json:"owner,omitempty"`
     // Priority of test executed.
     Priority *int `json:"priority,omitempty"`
     // Reference to team project.
@@ -2075,7 +1886,7 @@ type TestCaseResult struct {
     // Revision number of test result.
     Revision *int `json:"revision,omitempty"`
     // Reference to identity executed the test.
-    RunBy *IdentityRef `json:"runBy,omitempty"`
+    RunBy *webApi.IdentityRef `json:"runBy,omitempty"`
     // Stacktrace with maxSize= 1000 chars.
     StackTrace *string `json:"stackTrace,omitempty"`
     // Time when test execution started.
@@ -2144,9 +1955,9 @@ type TestCaseResultUpdateModel struct {
     ErrorMessage *string `json:"errorMessage,omitempty"`
     FailureType *string `json:"failureType,omitempty"`
     Outcome *string `json:"outcome,omitempty"`
-    Owner *IdentityRef `json:"owner,omitempty"`
+    Owner *webApi.IdentityRef `json:"owner,omitempty"`
     ResolutionState *string `json:"resolutionState,omitempty"`
-    RunBy *IdentityRef `json:"runBy,omitempty"`
+    RunBy *webApi.IdentityRef `json:"runBy,omitempty"`
     StackTrace *string `json:"stackTrace,omitempty"`
     StartedDate *string `json:"startedDate,omitempty"`
     State *string `json:"state,omitempty"`
@@ -2165,7 +1976,7 @@ type TestConfiguration struct {
     // Is the configuration a default for the test plans
     IsDefault *bool `json:"isDefault,omitempty"`
     // Last Updated By  Reference
-    LastUpdatedBy *IdentityRef `json:"lastUpdatedBy,omitempty"`
+    LastUpdatedBy *webApi.IdentityRef `json:"lastUpdatedBy,omitempty"`
     // Last Updated Data
     LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
     // Name of the configuration
@@ -2197,14 +2008,6 @@ var TestConfigurationStateValues = testConfigurationStateValuesType{
     Inactive: "inactive",
 }
 
-// Test environment Detail.
-type TestEnvironment struct {
-    // Test Environment Id.
-    EnvironmentId *uuid.UUID `json:"environmentId,omitempty"`
-    // Test Environment Name.
-    EnvironmentName *string `json:"environmentName,omitempty"`
-}
-
 type TestExecutionReportData struct {
     ReportData *[]DatedTestFieldData `json:"reportData,omitempty"`
 }
@@ -2220,7 +2023,7 @@ type TestExtensionFieldDetails struct {
     IsRunScoped *bool `json:"isRunScoped,omitempty"`
     IsSystemField *bool `json:"isSystemField,omitempty"`
     Name *string `json:"name,omitempty"`
-    Type *SqlDbType `json:"type,omitempty"`
+    Type *system.SqlDbType `json:"type,omitempty"`
 }
 
 type TestFailureDetails struct {
@@ -2609,7 +2412,7 @@ type TestPlan struct {
     // Name of the test plan.
     Name *string `json:"name,omitempty"`
     // Owner of the test plan.
-    Owner *IdentityRef `json:"owner,omitempty"`
+    Owner *webApi.IdentityRef `json:"owner,omitempty"`
     PreviousBuild *ShallowReference `json:"previousBuild,omitempty"`
     // Project which contains the test plan.
     Project *ShallowReference `json:"project,omitempty"`
@@ -2625,7 +2428,7 @@ type TestPlan struct {
     State *string `json:"state,omitempty"`
     // Value to configure how same tests across test suites under a test plan need to behave
     TestOutcomeSettings *TestOutcomeSettings `json:"testOutcomeSettings,omitempty"`
-    UpdatedBy *IdentityRef `json:"updatedBy,omitempty"`
+    UpdatedBy *webApi.IdentityRef `json:"updatedBy,omitempty"`
     UpdatedDate *time.Time `json:"updatedDate,omitempty"`
     // URL of the test plan resource.
     Url *string `json:"url,omitempty"`
@@ -2654,7 +2457,7 @@ type TestPlansWithSelection struct {
 // Test point.
 type TestPoint struct {
     // AssignedTo. Type IdentityRef.
-    AssignedTo *IdentityRef `json:"assignedTo,omitempty"`
+    AssignedTo *webApi.IdentityRef `json:"assignedTo,omitempty"`
     // Automated.
     Automated *bool `json:"automated,omitempty"`
     // Comment associated with test point.
@@ -2680,7 +2483,7 @@ type TestPoint struct {
     // Last testRun of test point. Type ShallowReference.
     LastTestRun *ShallowReference `json:"lastTestRun,omitempty"`
     // Test point last updated by. Type IdentityRef.
-    LastUpdatedBy *IdentityRef `json:"lastUpdatedBy,omitempty"`
+    LastUpdatedBy *webApi.IdentityRef `json:"lastUpdatedBy,omitempty"`
     // Last updated date of test point.
     LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
     // Outcome of test point.
@@ -2831,9 +2634,9 @@ type TestResultCreateModel struct {
     ErrorMessage *string `json:"errorMessage,omitempty"`
     FailureType *string `json:"failureType,omitempty"`
     Outcome *string `json:"outcome,omitempty"`
-    Owner *IdentityRef `json:"owner,omitempty"`
+    Owner *webApi.IdentityRef `json:"owner,omitempty"`
     ResolutionState *string `json:"resolutionState,omitempty"`
-    RunBy *IdentityRef `json:"runBy,omitempty"`
+    RunBy *webApi.IdentityRef `json:"runBy,omitempty"`
     StackTrace *string `json:"stackTrace,omitempty"`
     StartedDate *string `json:"startedDate,omitempty"`
     State *string `json:"state,omitempty"`
@@ -3057,7 +2860,7 @@ var TestResultsSettingsTypeValues = testResultsSettingsTypeValuesType{
 type TestResultSummary struct {
     AggregatedResultsAnalysis *AggregatedResultsAnalysis `json:"aggregatedResultsAnalysis,omitempty"`
     NoConfigRunsCount *int `json:"noConfigRunsCount,omitempty"`
-    TeamProject *TeamProjectReference `json:"teamProject,omitempty"`
+    TeamProject *core.TeamProjectReference `json:"teamProject,omitempty"`
     TestFailures *TestFailuresAnalysis `json:"testFailures,omitempty"`
     TestResultsContext *TestResultsContext `json:"testResultsContext,omitempty"`
     TotalRunsCount *int `json:"totalRunsCount,omitempty"`
@@ -3121,7 +2924,7 @@ type TestRun struct {
     // The iteration to which the run belongs.
     Iteration *string `json:"iteration,omitempty"`
     // Team foundation ID of the last updated the test run.
-    LastUpdatedBy *IdentityRef `json:"lastUpdatedBy,omitempty"`
+    LastUpdatedBy *webApi.IdentityRef `json:"lastUpdatedBy,omitempty"`
     // Last updated date and time
     LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
     // Name of the test run.
@@ -3129,7 +2932,7 @@ type TestRun struct {
     // Number of Not Applicable Tests.
     NotApplicableTests *int `json:"notApplicableTests,omitempty"`
     // Team Foundation ID of the owner of the runs.
-    Owner *IdentityRef `json:"owner,omitempty"`
+    Owner *webApi.IdentityRef `json:"owner,omitempty"`
     // Number of passed tests in the run
     PassedTests *int `json:"passedTests,omitempty"`
     // Phase/State for the testRun.
@@ -3159,8 +2962,6 @@ type TestRun struct {
     Substate *TestRunSubstate `json:"substate,omitempty"`
     // Tags attached with this test run.
     Tags *[]TestTag `json:"tags,omitempty"`
-    // Test environment associated with the run.
-    TestEnvironment *TestEnvironment `json:"testEnvironment,omitempty"`
     TestMessageLogId *int `json:"testMessageLogId,omitempty"`
     TestSettings *ShallowReference `json:"testSettings,omitempty"`
     // Total tests in the run
@@ -3424,11 +3225,11 @@ type TestSession struct {
     // Id of the test session
     Id *int `json:"id,omitempty"`
     // Last Updated By  Reference
-    LastUpdatedBy *IdentityRef `json:"lastUpdatedBy,omitempty"`
+    LastUpdatedBy *webApi.IdentityRef `json:"lastUpdatedBy,omitempty"`
     // Last updated date
     LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
     // Owner of the test session
-    Owner *IdentityRef `json:"owner,omitempty"`
+    Owner *webApi.IdentityRef `json:"owner,omitempty"`
     // Project to which the test session belongs
     Project *ShallowReference `json:"project,omitempty"`
     // Generic store for test session data
@@ -3546,13 +3347,13 @@ type TestSettings struct {
 type TestSettings2 struct {
     // Area path required to create test settings
     AreaPath *string `json:"areaPath,omitempty"`
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     CreatedDate *time.Time `json:"createdDate,omitempty"`
     // Description of the test settings. Used in create test settings.
     Description *string `json:"description,omitempty"`
     // Indicates if the tests settings is public or private.Used in create test settings.
     IsPublic *bool `json:"isPublic,omitempty"`
-    LastUpdatedBy *IdentityRef `json:"lastUpdatedBy,omitempty"`
+    LastUpdatedBy *webApi.IdentityRef `json:"lastUpdatedBy,omitempty"`
     LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
     // Xml string of machine roles. Used in create test settings.
     MachineRoles *string `json:"machineRoles,omitempty"`
@@ -3630,7 +3431,7 @@ type TestSuite struct {
     // Last populated date.
     LastPopulatedDate *time.Time `json:"lastPopulatedDate,omitempty"`
     // IdentityRef of user who has updated test suite recently.
-    LastUpdatedBy *IdentityRef `json:"lastUpdatedBy,omitempty"`
+    LastUpdatedBy *webApi.IdentityRef `json:"lastUpdatedBy,omitempty"`
     // Last update date.
     LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
     // Name of test suite.

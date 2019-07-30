@@ -11,6 +11,7 @@ package gallery
 import (
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevOps"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "time"
 )
 
@@ -471,7 +472,7 @@ type ExtensionPolicy struct {
     Request *ExtensionPolicyFlags `json:"request,omitempty"`
 }
 
-// Set of flags that can be associated with a given permission over an extension
+// [Flags] Set of flags that can be associated with a given permission over an extension
 type ExtensionPolicyFlags string
 
 type extensionPolicyFlagsValuesType struct {
@@ -583,7 +584,7 @@ var ExtensionQueryFilterTypeValues = extensionQueryFilterTypeValuesType{
     OrganizationSharedWith: "organizationSharedWith",
 }
 
-// Set of flags used to determine which set of information is retrieved when reading published extensions
+// [Flags] Set of flags used to determine which set of information is retrieved when reading published extensions
 type ExtensionQueryFlags string
 
 type extensionQueryFlagsValuesType struct {
@@ -710,7 +711,7 @@ type ExtensionVersion struct {
     VersionDescription *string `json:"versionDescription,omitempty"`
 }
 
-// Set of flags that can be associated with a given extension version. These flags apply to a specific version of the extension.
+// [Flags] Set of flags that can be associated with a given extension version. These flags apply to a specific version of the extension.
 type ExtensionVersionFlags string
 
 type extensionVersionFlagsValuesType struct {
@@ -730,44 +731,6 @@ type FilterCriteria struct {
     FilterType *int `json:"filterType,omitempty"`
     // The value used in the match based on the filter type.
     Value *string `json:"value,omitempty"`
-}
-
-type GraphSubjectBase struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-}
-
-type IdentityRef struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph user referenced in the "self" entry of the IdentityRef "_links" dictionary
-    DirectoryAlias *string `json:"directoryAlias,omitempty"`
-    Id *string `json:"id,omitempty"`
-    // Deprecated - Available in the "avatar" entry of the IdentityRef "_links" dictionary
-    ImageUrl *string `json:"imageUrl,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph membership state referenced in the "membershipState" entry of the GraphUser "_links" dictionary
-    Inactive *bool `json:"inactive,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsAadUserType/Descriptor.IsAadGroupType)
-    IsAadIdentity *bool `json:"isAadIdentity,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsGroupType)
-    IsContainer *bool `json:"isContainer,omitempty"`
-    IsDeletedInOrigin *bool `json:"isDeletedInOrigin,omitempty"`
-    // Deprecated - not in use in most preexisting implementations of ToIdentityRef
-    ProfileUrl *string `json:"profileUrl,omitempty"`
-    // Deprecated - use Domain+PrincipalName instead
-    UniqueName *string `json:"uniqueName,omitempty"`
 }
 
 type InstallationTarget struct {
@@ -867,7 +830,7 @@ type PublishedExtension struct {
     Versions *[]ExtensionVersion `json:"versions,omitempty"`
 }
 
-// Set of flags that can be associated with a given extension. These flags apply to all versions of the extension and not to a specific version.
+// [Flags] Set of flags that can be associated with a given extension. These flags apply to all versions of the extension and not to a specific version.
 type PublishedExtensionFlags string
 
 type publishedExtensionFlagsValuesType struct {
@@ -929,7 +892,7 @@ type Publisher struct {
     PublisherName *string `json:"publisherName,omitempty"`
     ShortDescription *string `json:"shortDescription,omitempty"`
     State *PublisherState `json:"state,omitempty"`
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
 }
 
 // Keeping base class separate since publisher DB model class and publisher contract class share these common properties
@@ -960,6 +923,7 @@ type PublisherFilterResult struct {
     Publishers *[]Publisher `json:"publishers,omitempty"`
 }
 
+// [Flags]
 type PublisherFlags string
 
 type publisherFlagsValuesType struct {
@@ -986,6 +950,7 @@ var PublisherFlagsValues = publisherFlagsValuesType{
     ServiceFlags: "serviceFlags",
 }
 
+// [Flags]
 type PublisherPermissions string
 
 type publisherPermissionsValuesType struct {
@@ -1038,7 +1003,7 @@ type PublisherQuery struct {
     Flags *PublisherQueryFlags `json:"flags,omitempty"`
 }
 
-// Set of flags used to define the attributes requested when a publisher is returned. Some API's allow the caller to specify the level of detail needed.
+// [Flags] Set of flags used to define the attributes requested when a publisher is returned. Some API's allow the caller to specify the level of detail needed.
 type PublisherQueryFlags string
 
 type publisherQueryFlagsValuesType struct {
@@ -1083,7 +1048,7 @@ type PublisherRoleAssignment struct {
     // User friendly description of access assignment.
     AccessDisplayName *string `json:"accessDisplayName,omitempty"`
     // The user to whom the role is assigned.
-    Identity *IdentityRef `json:"identity,omitempty"`
+    Identity *webApi.IdentityRef `json:"identity,omitempty"`
     // The role assigned to the user.
     Role *PublisherSecurityRole `json:"role,omitempty"`
 }
@@ -1105,6 +1070,7 @@ type PublisherSecurityRole struct {
     Scope *string `json:"scope,omitempty"`
 }
 
+// [Flags]
 type PublisherState string
 
 type publisherStateValuesType struct {
@@ -1153,7 +1119,7 @@ type QnAItem struct {
     User *UserIdentityRef `json:"user,omitempty"`
 }
 
-// Denotes the status of the QnA Item
+// [Flags] Denotes the status of the QnA Item
 type QnAItemStatus string
 
 type qnAItemStatusValuesType struct {
@@ -1218,12 +1184,6 @@ type RatingCountPerRating struct {
     Rating *byte `json:"rating,omitempty"`
     // Count of total ratings
     RatingCount *uint64 `json:"ratingCount,omitempty"`
-}
-
-// The class to represent a collection of REST reference links.
-type ReferenceLinks struct {
-    // The readonly view of the links.  Because Reference links are readonly, we only want to expose them as read only.
-    Links *map[string]interface{} `json:"links,omitempty"`
 }
 
 // The structure of a response
@@ -1348,7 +1308,7 @@ type ReviewEventProperties struct {
     UserId *uuid.UUID `json:"userId,omitempty"`
 }
 
-// Options to GetReviews query
+// [Flags] Options to GetReviews query
 type ReviewFilterOptions string
 
 type reviewFilterOptionsValuesType struct {

@@ -14,6 +14,7 @@ import (
     "encoding/json"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevOps"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "io"
     "net/http"
     "net/url"
@@ -479,7 +480,7 @@ type UpdateClassificationNodeArgs struct {
 }
 
 // [Preview API] Get users who reacted on the comment.
-func (client Client) GetEngagedUsers(ctx context.Context, args GetEngagedUsersArgs) (*[]IdentityRef, error) {
+func (client Client) GetEngagedUsers(ctx context.Context, args GetEngagedUsersArgs) (*[]webApi.IdentityRef, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -511,7 +512,7 @@ func (client Client) GetEngagedUsers(ctx context.Context, args GetEngagedUsersAr
         return nil, err
     }
 
-    var responseValue []IdentityRef
+    var responseValue []webApi.IdentityRef
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -2505,7 +2506,7 @@ func (client Client) CreateWorkItem(ctx context.Context, args CreateWorkItemArgs
 // Arguments for the CreateWorkItem function
 type CreateWorkItemArgs struct {
     // (required) The JSON Patch document representing the work item
-    Document *[]JsonPatchOperation
+    Document *[]webApi.JsonPatchOperation
     // (required) Project ID or project name
     Project *string
     // (required) The work item type of the work item to create
@@ -2752,7 +2753,7 @@ func (client Client) UpdateWorkItem(ctx context.Context, args UpdateWorkItemArgs
 // Arguments for the UpdateWorkItem function
 type UpdateWorkItemArgs struct {
     // (required) The JSON Patch document representing the update
-    Document *[]JsonPatchOperation
+    Document *[]webApi.JsonPatchOperation
     // (required) The id of the work item to update
     Id *int
     // (optional) Project ID or project name

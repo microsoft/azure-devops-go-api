@@ -14,6 +14,8 @@ import (
     "encoding/json"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevOps"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/delegatedAuthorization"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "net/http"
     "net/url"
     "strconv"
@@ -875,20 +877,20 @@ func (client Client) UpdateScope(ctx context.Context, args UpdateScopeArgs) erro
 // Arguments for the UpdateScope function
 type UpdateScopeArgs struct {
     // (required)
-    PatchDocument *[]JsonPatchOperation
+    PatchDocument *[]webApi.JsonPatchOperation
     // (required)
     ScopeId *uuid.UUID
 }
 
 // [Preview API]
-func (client Client) GetSignedInToken(ctx context.Context, args GetSignedInTokenArgs) (*AccessTokenResult, error) {
+func (client Client) GetSignedInToken(ctx context.Context, args GetSignedInTokenArgs) (*delegatedAuthorization.AccessTokenResult, error) {
     locationId, _ := uuid.Parse("6074ff18-aaad-4abb-a41e-5c75f6178057")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
 
-    var responseValue AccessTokenResult
+    var responseValue delegatedAuthorization.AccessTokenResult
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -898,14 +900,14 @@ type GetSignedInTokenArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetSignoutToken(ctx context.Context, args GetSignoutTokenArgs) (*AccessTokenResult, error) {
+func (client Client) GetSignoutToken(ctx context.Context, args GetSignoutTokenArgs) (*delegatedAuthorization.AccessTokenResult, error) {
     locationId, _ := uuid.Parse("be39e83c-7529-45e9-9c67-0410885880da")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, nil, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
 
-    var responseValue AccessTokenResult
+    var responseValue delegatedAuthorization.AccessTokenResult
     err = client.Client.UnmarshalBody(resp, &responseValue)
     return &responseValue, err
 }

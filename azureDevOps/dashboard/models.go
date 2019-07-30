@@ -14,7 +14,7 @@ import (
 
 // Model of a Dashboard.
 type Dashboard struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Description of the dashboard.
     Description *string `json:"description,omitempty"`
     // Server defined version tracking value, used for edit collision detection.
@@ -36,7 +36,7 @@ type Dashboard struct {
 
 // Describes a list of dashboards associated to an owner. Currently, teams own dashboard groups.
 type DashboardGroup struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // A list of Dashboards held by the Dashboard Group
     DashboardEntries *[]DashboardGroupEntry `json:"dashboardEntries,omitempty"`
     // Deprecated: The old permission model describing the level of permissions for the current team. Pre-M125.
@@ -48,7 +48,7 @@ type DashboardGroup struct {
 
 // Dashboard group entry, wrapping around Dashboard (needed?)
 type DashboardGroupEntry struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Description of the dashboard.
     Description *string `json:"description,omitempty"`
     // Server defined version tracking value, used for edit collision detection.
@@ -70,7 +70,7 @@ type DashboardGroupEntry struct {
 
 // Response from RestAPI when saving and editing DashboardGroupEntry
 type DashboardGroupEntryResponse struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Description of the dashboard.
     Description *string `json:"description,omitempty"`
     // Server defined version tracking value, used for edit collision detection.
@@ -91,7 +91,7 @@ type DashboardGroupEntryResponse struct {
 }
 
 type DashboardResponse struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Description of the dashboard.
     Description *string `json:"description,omitempty"`
     // Server defined version tracking value, used for edit collision detection.
@@ -150,12 +150,6 @@ type LightboxOptions struct {
     Width *int `json:"width,omitempty"`
 }
 
-// The class to represent a collection of REST reference links.
-type ReferenceLinks struct {
-    // The readonly view of the links.  Because Reference links are readonly, we only want to expose them as read only.
-    Links *map[string]interface{} `json:"links,omitempty"`
-}
-
 // versioning for an artifact as described at: http://semver.org/, of the form major.minor.patch.
 type SemanticVersion struct {
     // Major version when you make incompatible API changes
@@ -166,18 +160,7 @@ type SemanticVersion struct {
     Patch *int `json:"patch,omitempty"`
 }
 
-// The Team Context for an operation.
-type TeamContext struct {
-    // The team project Id or name.  Ignored if ProjectId is set.
-    Project *string `json:"project,omitempty"`
-    // The Team Project ID.  Required if Project is not set.
-    ProjectId *uuid.UUID `json:"projectId,omitempty"`
-    // The Team Id or name.  Ignored if TeamId is set.
-    Team *string `json:"team,omitempty"`
-    // The Team Id
-    TeamId *uuid.UUID `json:"teamId,omitempty"`
-}
-
+// [Flags]
 type TeamDashboardPermission string
 
 type teamDashboardPermissionValuesType struct {
@@ -200,7 +183,7 @@ var TeamDashboardPermissionValues = teamDashboardPermissionValuesType{
 
 // Widget data
 type Widget struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Refers to the allowed sizes for the widget. This gets populated when user wants to configure the widget
     AllowedSizes *[]WidgetSize `json:"allowedSizes,omitempty"`
     // Read-Only Property from Dashboard Service. Indicates if settings are blocked for the current user.
@@ -287,7 +270,7 @@ type WidgetPosition struct {
 
 // Response from RestAPI when saving and editing Widget
 type WidgetResponse struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Refers to the allowed sizes for the widget. This gets populated when user wants to configure the widget
     AllowedSizes *[]WidgetSize `json:"allowedSizes,omitempty"`
     // Read-Only Property from Dashboard Service. Indicates if settings are blocked for the current user.
@@ -343,7 +326,7 @@ type WidgetsVersionedList struct {
 }
 
 type WidgetTypesResponse struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     Uri *string `json:"uri,omitempty"`
     WidgetTypes *[]WidgetMetadata `json:"widgetTypes,omitempty"`
 }

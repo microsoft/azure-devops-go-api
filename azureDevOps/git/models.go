@@ -10,6 +10,9 @@ package git
 
 import (
     "github.com/google/uuid"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/core"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/policy"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "time"
 )
 
@@ -61,9 +64,9 @@ type AsyncRefOperationTimeoutNotification struct {
 // Meta data for a file attached to an artifact.
 type Attachment struct {
     // Links to other related objects.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The person that uploaded this attachment.
-    Author *IdentityRef `json:"author,omitempty"`
+    Author *webApi.IdentityRef `json:"author,omitempty"`
     // Content hash of on-disk representation of file content. Its calculated by the server by using SHA1 hash function.
     ContentHash *string `json:"contentHash,omitempty"`
     // The time the attachment was uploaded.
@@ -167,9 +170,9 @@ type CheckinNote struct {
 // Represents a comment which is one of potentially many in a comment thread.
 type Comment struct {
     // Links to other related objects.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The author of the comment.
-    Author *IdentityRef `json:"author,omitempty"`
+    Author *webApi.IdentityRef `json:"author,omitempty"`
     // The comment type at the time of creation.
     CommentType *CommentType `json:"commentType,omitempty"`
     // The comment content.
@@ -187,7 +190,7 @@ type Comment struct {
     // The date the comment was first published.
     PublishedDate *time.Time `json:"publishedDate,omitempty"`
     // A list of the users who have liked this comment.
-    UsersLiked *[]IdentityRef `json:"usersLiked,omitempty"`
+    UsersLiked *[]webApi.IdentityRef `json:"usersLiked,omitempty"`
 }
 
 // Comment iteration context is used to identify which diff was being viewed when the thread was created.
@@ -208,13 +211,13 @@ type CommentPosition struct {
 // Represents a comment thread of a pull request. A thread contains meta data about the file it was left on along with one or more comments (an initial comment and the subsequent replies).
 type CommentThread struct {
     // Links to other related objects.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // A list of the comments.
     Comments *[]Comment `json:"comments,omitempty"`
     // The comment thread id.
     Id *int `json:"id,omitempty"`
     // Set of identities related to this thread
-    Identities *map[string]IdentityRef `json:"identities,omitempty"`
+    Identities *map[string]webApi.IdentityRef `json:"identities,omitempty"`
     // Specify if the thread is deleted which happens when all comments are deleted.
     IsDeleted *bool `json:"isDeleted,omitempty"`
     // The time this thread was last updated.
@@ -407,7 +410,7 @@ var GitAsyncOperationStatusValues = gitAsyncOperationStatusValuesType{
 }
 
 type GitAsyncRefOperation struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     DetailedStatus *GitAsyncRefOperationDetail `json:"detailedStatus,omitempty"`
     Parameters *GitAsyncRefOperationParameters `json:"parameters,omitempty"`
     Status *GitAsyncOperationStatus `json:"status,omitempty"`
@@ -508,7 +511,7 @@ type GitBaseVersionDescriptor struct {
 }
 
 type GitBlobRef struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // SHA1 hash of git object
     ObjectId *string `json:"objectId,omitempty"`
     // Size of blob content (in bytes)
@@ -532,7 +535,7 @@ type GitBranchStats struct {
 
 // This object is returned from Cherry Pick operations and provides the id and status of the operation
 type GitCherryPick struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     DetailedStatus *GitAsyncRefOperationDetail `json:"detailedStatus,omitempty"`
     Parameters *GitAsyncRefOperationParameters `json:"parameters,omitempty"`
     Status *GitAsyncOperationStatus `json:"status,omitempty"`
@@ -543,7 +546,7 @@ type GitCherryPick struct {
 
 type GitCommit struct {
     // A collection of related REST reference links.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Author of the commit.
     Author *GitUserDate `json:"author,omitempty"`
     // Counts of the types of changes (edits, deletes, etc.) included with the commit.
@@ -569,7 +572,7 @@ type GitCommit struct {
     // REST URL for this resource.
     Url *string `json:"url,omitempty"`
     // A list of workitems associated with this commit.
-    WorkItems *[]ResourceRef `json:"workItems,omitempty"`
+    WorkItems *[]webApi.ResourceRef `json:"workItems,omitempty"`
     TreeId *string `json:"treeId,omitempty"`
 }
 
@@ -592,7 +595,7 @@ type GitCommitDiffs struct {
 // Provides properties that describe a Git commit and associated metadata.
 type GitCommitRef struct {
     // A collection of related REST reference links.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Author of the commit.
     Author *GitUserDate `json:"author,omitempty"`
     // Counts of the types of changes (edits, deletes, etc.) included with the commit.
@@ -618,7 +621,7 @@ type GitCommitRef struct {
     // REST URL for this resource.
     Url *string `json:"url,omitempty"`
     // A list of workitems associated with this commit.
-    WorkItems *[]ResourceRef `json:"workItems,omitempty"`
+    WorkItems *[]webApi.ResourceRef `json:"workItems,omitempty"`
 }
 
 type GitCommitToCreate struct {
@@ -628,7 +631,7 @@ type GitCommitToCreate struct {
 }
 
 type GitConflict struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     ConflictId *int `json:"conflictId,omitempty"`
     ConflictPath *string `json:"conflictPath,omitempty"`
     ConflictType *GitConflictType `json:"conflictType,omitempty"`
@@ -638,14 +641,14 @@ type GitConflict struct {
     MergeTargetCommit *GitCommitRef `json:"mergeTargetCommit,omitempty"`
     ResolutionError *GitResolutionError `json:"resolutionError,omitempty"`
     ResolutionStatus *GitResolutionStatus `json:"resolutionStatus,omitempty"`
-    ResolvedBy *IdentityRef `json:"resolvedBy,omitempty"`
+    ResolvedBy *webApi.IdentityRef `json:"resolvedBy,omitempty"`
     ResolvedDate *time.Time `json:"resolvedDate,omitempty"`
     Url *string `json:"url,omitempty"`
 }
 
 // Data object for AddAdd conflict
 type GitConflictAddAdd struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     ConflictId *int `json:"conflictId,omitempty"`
     ConflictPath *string `json:"conflictPath,omitempty"`
     ConflictType *GitConflictType `json:"conflictType,omitempty"`
@@ -655,7 +658,7 @@ type GitConflictAddAdd struct {
     MergeTargetCommit *GitCommitRef `json:"mergeTargetCommit,omitempty"`
     ResolutionError *GitResolutionError `json:"resolutionError,omitempty"`
     ResolutionStatus *GitResolutionStatus `json:"resolutionStatus,omitempty"`
-    ResolvedBy *IdentityRef `json:"resolvedBy,omitempty"`
+    ResolvedBy *webApi.IdentityRef `json:"resolvedBy,omitempty"`
     ResolvedDate *time.Time `json:"resolvedDate,omitempty"`
     Url *string `json:"url,omitempty"`
     Resolution *GitResolutionMergeContent `json:"resolution,omitempty"`
@@ -665,7 +668,7 @@ type GitConflictAddAdd struct {
 
 // Data object for RenameAdd conflict
 type GitConflictAddRename struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     ConflictId *int `json:"conflictId,omitempty"`
     ConflictPath *string `json:"conflictPath,omitempty"`
     ConflictType *GitConflictType `json:"conflictType,omitempty"`
@@ -675,7 +678,7 @@ type GitConflictAddRename struct {
     MergeTargetCommit *GitCommitRef `json:"mergeTargetCommit,omitempty"`
     ResolutionError *GitResolutionError `json:"resolutionError,omitempty"`
     ResolutionStatus *GitResolutionStatus `json:"resolutionStatus,omitempty"`
-    ResolvedBy *IdentityRef `json:"resolvedBy,omitempty"`
+    ResolvedBy *webApi.IdentityRef `json:"resolvedBy,omitempty"`
     ResolvedDate *time.Time `json:"resolvedDate,omitempty"`
     Url *string `json:"url,omitempty"`
     BaseBlob *GitBlobRef `json:"baseBlob,omitempty"`
@@ -687,7 +690,7 @@ type GitConflictAddRename struct {
 
 // Data object for EditDelete conflict
 type GitConflictDeleteEdit struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     ConflictId *int `json:"conflictId,omitempty"`
     ConflictPath *string `json:"conflictPath,omitempty"`
     ConflictType *GitConflictType `json:"conflictType,omitempty"`
@@ -697,7 +700,7 @@ type GitConflictDeleteEdit struct {
     MergeTargetCommit *GitCommitRef `json:"mergeTargetCommit,omitempty"`
     ResolutionError *GitResolutionError `json:"resolutionError,omitempty"`
     ResolutionStatus *GitResolutionStatus `json:"resolutionStatus,omitempty"`
-    ResolvedBy *IdentityRef `json:"resolvedBy,omitempty"`
+    ResolvedBy *webApi.IdentityRef `json:"resolvedBy,omitempty"`
     ResolvedDate *time.Time `json:"resolvedDate,omitempty"`
     Url *string `json:"url,omitempty"`
     BaseBlob *GitBlobRef `json:"baseBlob,omitempty"`
@@ -707,7 +710,7 @@ type GitConflictDeleteEdit struct {
 
 // Data object for RenameDelete conflict
 type GitConflictDeleteRename struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     ConflictId *int `json:"conflictId,omitempty"`
     ConflictPath *string `json:"conflictPath,omitempty"`
     ConflictType *GitConflictType `json:"conflictType,omitempty"`
@@ -717,7 +720,7 @@ type GitConflictDeleteRename struct {
     MergeTargetCommit *GitCommitRef `json:"mergeTargetCommit,omitempty"`
     ResolutionError *GitResolutionError `json:"resolutionError,omitempty"`
     ResolutionStatus *GitResolutionStatus `json:"resolutionStatus,omitempty"`
-    ResolvedBy *IdentityRef `json:"resolvedBy,omitempty"`
+    ResolvedBy *webApi.IdentityRef `json:"resolvedBy,omitempty"`
     ResolvedDate *time.Time `json:"resolvedDate,omitempty"`
     Url *string `json:"url,omitempty"`
     BaseBlob *GitBlobRef `json:"baseBlob,omitempty"`
@@ -728,7 +731,7 @@ type GitConflictDeleteRename struct {
 
 // Data object for FileDirectory conflict
 type GitConflictDirectoryFile struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     ConflictId *int `json:"conflictId,omitempty"`
     ConflictPath *string `json:"conflictPath,omitempty"`
     ConflictType *GitConflictType `json:"conflictType,omitempty"`
@@ -738,7 +741,7 @@ type GitConflictDirectoryFile struct {
     MergeTargetCommit *GitCommitRef `json:"mergeTargetCommit,omitempty"`
     ResolutionError *GitResolutionError `json:"resolutionError,omitempty"`
     ResolutionStatus *GitResolutionStatus `json:"resolutionStatus,omitempty"`
-    ResolvedBy *IdentityRef `json:"resolvedBy,omitempty"`
+    ResolvedBy *webApi.IdentityRef `json:"resolvedBy,omitempty"`
     ResolvedDate *time.Time `json:"resolvedDate,omitempty"`
     Url *string `json:"url,omitempty"`
     Resolution *GitResolutionPathConflict `json:"resolution,omitempty"`
@@ -748,7 +751,7 @@ type GitConflictDirectoryFile struct {
 
 // Data object for DeleteEdit conflict
 type GitConflictEditDelete struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     ConflictId *int `json:"conflictId,omitempty"`
     ConflictPath *string `json:"conflictPath,omitempty"`
     ConflictType *GitConflictType `json:"conflictType,omitempty"`
@@ -758,7 +761,7 @@ type GitConflictEditDelete struct {
     MergeTargetCommit *GitCommitRef `json:"mergeTargetCommit,omitempty"`
     ResolutionError *GitResolutionError `json:"resolutionError,omitempty"`
     ResolutionStatus *GitResolutionStatus `json:"resolutionStatus,omitempty"`
-    ResolvedBy *IdentityRef `json:"resolvedBy,omitempty"`
+    ResolvedBy *webApi.IdentityRef `json:"resolvedBy,omitempty"`
     ResolvedDate *time.Time `json:"resolvedDate,omitempty"`
     Url *string `json:"url,omitempty"`
     BaseBlob *GitBlobRef `json:"baseBlob,omitempty"`
@@ -768,7 +771,7 @@ type GitConflictEditDelete struct {
 
 // Data object for EditEdit conflict
 type GitConflictEditEdit struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     ConflictId *int `json:"conflictId,omitempty"`
     ConflictPath *string `json:"conflictPath,omitempty"`
     ConflictType *GitConflictType `json:"conflictType,omitempty"`
@@ -778,7 +781,7 @@ type GitConflictEditEdit struct {
     MergeTargetCommit *GitCommitRef `json:"mergeTargetCommit,omitempty"`
     ResolutionError *GitResolutionError `json:"resolutionError,omitempty"`
     ResolutionStatus *GitResolutionStatus `json:"resolutionStatus,omitempty"`
-    ResolvedBy *IdentityRef `json:"resolvedBy,omitempty"`
+    ResolvedBy *webApi.IdentityRef `json:"resolvedBy,omitempty"`
     ResolvedDate *time.Time `json:"resolvedDate,omitempty"`
     Url *string `json:"url,omitempty"`
     BaseBlob *GitBlobRef `json:"baseBlob,omitempty"`
@@ -789,7 +792,7 @@ type GitConflictEditEdit struct {
 
 // Data object for DirectoryFile conflict
 type GitConflictFileDirectory struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     ConflictId *int `json:"conflictId,omitempty"`
     ConflictPath *string `json:"conflictPath,omitempty"`
     ConflictType *GitConflictType `json:"conflictType,omitempty"`
@@ -799,7 +802,7 @@ type GitConflictFileDirectory struct {
     MergeTargetCommit *GitCommitRef `json:"mergeTargetCommit,omitempty"`
     ResolutionError *GitResolutionError `json:"resolutionError,omitempty"`
     ResolutionStatus *GitResolutionStatus `json:"resolutionStatus,omitempty"`
-    ResolvedBy *IdentityRef `json:"resolvedBy,omitempty"`
+    ResolvedBy *webApi.IdentityRef `json:"resolvedBy,omitempty"`
     ResolvedDate *time.Time `json:"resolvedDate,omitempty"`
     Url *string `json:"url,omitempty"`
     Resolution *GitResolutionPathConflict `json:"resolution,omitempty"`
@@ -809,7 +812,7 @@ type GitConflictFileDirectory struct {
 
 // Data object for Rename1to2 conflict
 type GitConflictRename1to2 struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     ConflictId *int `json:"conflictId,omitempty"`
     ConflictPath *string `json:"conflictPath,omitempty"`
     ConflictType *GitConflictType `json:"conflictType,omitempty"`
@@ -819,7 +822,7 @@ type GitConflictRename1to2 struct {
     MergeTargetCommit *GitCommitRef `json:"mergeTargetCommit,omitempty"`
     ResolutionError *GitResolutionError `json:"resolutionError,omitempty"`
     ResolutionStatus *GitResolutionStatus `json:"resolutionStatus,omitempty"`
-    ResolvedBy *IdentityRef `json:"resolvedBy,omitempty"`
+    ResolvedBy *webApi.IdentityRef `json:"resolvedBy,omitempty"`
     ResolvedDate *time.Time `json:"resolvedDate,omitempty"`
     Url *string `json:"url,omitempty"`
     BaseBlob *GitBlobRef `json:"baseBlob,omitempty"`
@@ -832,7 +835,7 @@ type GitConflictRename1to2 struct {
 
 // Data object for Rename2to1 conflict
 type GitConflictRename2to1 struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     ConflictId *int `json:"conflictId,omitempty"`
     ConflictPath *string `json:"conflictPath,omitempty"`
     ConflictType *GitConflictType `json:"conflictType,omitempty"`
@@ -842,7 +845,7 @@ type GitConflictRename2to1 struct {
     MergeTargetCommit *GitCommitRef `json:"mergeTargetCommit,omitempty"`
     ResolutionError *GitResolutionError `json:"resolutionError,omitempty"`
     ResolutionStatus *GitResolutionStatus `json:"resolutionStatus,omitempty"`
-    ResolvedBy *IdentityRef `json:"resolvedBy,omitempty"`
+    ResolvedBy *webApi.IdentityRef `json:"resolvedBy,omitempty"`
     ResolvedDate *time.Time `json:"resolvedDate,omitempty"`
     Url *string `json:"url,omitempty"`
     Resolution *GitResolutionPathConflict `json:"resolution,omitempty"`
@@ -856,7 +859,7 @@ type GitConflictRename2to1 struct {
 
 // Data object for AddRename conflict
 type GitConflictRenameAdd struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     ConflictId *int `json:"conflictId,omitempty"`
     ConflictPath *string `json:"conflictPath,omitempty"`
     ConflictType *GitConflictType `json:"conflictType,omitempty"`
@@ -866,7 +869,7 @@ type GitConflictRenameAdd struct {
     MergeTargetCommit *GitCommitRef `json:"mergeTargetCommit,omitempty"`
     ResolutionError *GitResolutionError `json:"resolutionError,omitempty"`
     ResolutionStatus *GitResolutionStatus `json:"resolutionStatus,omitempty"`
-    ResolvedBy *IdentityRef `json:"resolvedBy,omitempty"`
+    ResolvedBy *webApi.IdentityRef `json:"resolvedBy,omitempty"`
     ResolvedDate *time.Time `json:"resolvedDate,omitempty"`
     Url *string `json:"url,omitempty"`
     BaseBlob *GitBlobRef `json:"baseBlob,omitempty"`
@@ -878,7 +881,7 @@ type GitConflictRenameAdd struct {
 
 // Data object for DeleteRename conflict
 type GitConflictRenameDelete struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     ConflictId *int `json:"conflictId,omitempty"`
     ConflictPath *string `json:"conflictPath,omitempty"`
     ConflictType *GitConflictType `json:"conflictType,omitempty"`
@@ -888,7 +891,7 @@ type GitConflictRenameDelete struct {
     MergeTargetCommit *GitCommitRef `json:"mergeTargetCommit,omitempty"`
     ResolutionError *GitResolutionError `json:"resolutionError,omitempty"`
     ResolutionStatus *GitResolutionStatus `json:"resolutionStatus,omitempty"`
-    ResolvedBy *IdentityRef `json:"resolvedBy,omitempty"`
+    ResolvedBy *webApi.IdentityRef `json:"resolvedBy,omitempty"`
     ResolvedDate *time.Time `json:"resolvedDate,omitempty"`
     Url *string `json:"url,omitempty"`
     BaseBlob *GitBlobRef `json:"baseBlob,omitempty"`
@@ -899,7 +902,7 @@ type GitConflictRenameDelete struct {
 
 // Data object for RenameRename conflict
 type GitConflictRenameRename struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     ConflictId *int `json:"conflictId,omitempty"`
     ConflictPath *string `json:"conflictPath,omitempty"`
     ConflictType *GitConflictType `json:"conflictType,omitempty"`
@@ -909,7 +912,7 @@ type GitConflictRenameRename struct {
     MergeTargetCommit *GitCommitRef `json:"mergeTargetCommit,omitempty"`
     ResolutionError *GitResolutionError `json:"resolutionError,omitempty"`
     ResolutionStatus *GitResolutionStatus `json:"resolutionStatus,omitempty"`
-    ResolvedBy *IdentityRef `json:"resolvedBy,omitempty"`
+    ResolvedBy *webApi.IdentityRef `json:"resolvedBy,omitempty"`
     ResolvedDate *time.Time `json:"resolvedDate,omitempty"`
     Url *string `json:"url,omitempty"`
     BaseBlob *GitBlobRef `json:"baseBlob,omitempty"`
@@ -1010,11 +1013,11 @@ var GitConflictUpdateStatusValues = gitConflictUpdateStatusValuesType{
 
 type GitDeletedRepository struct {
     CreatedDate *time.Time `json:"createdDate,omitempty"`
-    DeletedBy *IdentityRef `json:"deletedBy,omitempty"`
+    DeletedBy *webApi.IdentityRef `json:"deletedBy,omitempty"`
     DeletedDate *time.Time `json:"deletedDate,omitempty"`
     Id *uuid.UUID `json:"id,omitempty"`
     Name *string `json:"name,omitempty"`
-    Project *TeamProjectReference `json:"project,omitempty"`
+    Project *core.TeamProjectReference `json:"project,omitempty"`
 }
 
 type GitFilePathsCollection struct {
@@ -1035,10 +1038,10 @@ type GitForkOperationStatusDetail struct {
 
 // Information about a fork ref.
 type GitForkRef struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    Creator *IdentityRef `json:"creator,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
+    Creator *webApi.IdentityRef `json:"creator,omitempty"`
     IsLocked *bool `json:"isLocked,omitempty"`
-    IsLockedBy *IdentityRef `json:"isLockedBy,omitempty"`
+    IsLockedBy *webApi.IdentityRef `json:"isLockedBy,omitempty"`
     Name *string `json:"name,omitempty"`
     ObjectId *string `json:"objectId,omitempty"`
     PeeledObjectId *string `json:"peeledObjectId,omitempty"`
@@ -1051,7 +1054,7 @@ type GitForkRef struct {
 // Request to sync data between two forks.
 type GitForkSyncRequest struct {
     // Collection of related links
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     DetailedStatus *GitForkOperationStatusDetail `json:"detailedStatus,omitempty"`
     // Unique identifier for the operation.
     OperationId *int `json:"operationId,omitempty"`
@@ -1071,26 +1074,6 @@ type GitForkSyncRequestParameters struct {
 }
 
 type GitForkTeamProjectReference struct {
-    // Project abbreviation.
-    Abbreviation *string `json:"abbreviation,omitempty"`
-    // Url to default team identity image.
-    DefaultTeamImageUrl *string `json:"defaultTeamImageUrl,omitempty"`
-    // The project's description (if any).
-    Description *string `json:"description,omitempty"`
-    // Project identifier.
-    Id *uuid.UUID `json:"id,omitempty"`
-    // Project last update time.
-    LastUpdateTime *time.Time `json:"lastUpdateTime,omitempty"`
-    // Project name.
-    Name *string `json:"name,omitempty"`
-    // Project revision.
-    Revision *uint64 `json:"revision,omitempty"`
-    // Project state.
-    State *ProjectState `json:"state,omitempty"`
-    // Url to the full version of the object.
-    Url *string `json:"url,omitempty"`
-    // Project visibility.
-    Visibility *ProjectVisibility `json:"visibility,omitempty"`
 }
 
 // Accepted types of version
@@ -1130,7 +1113,7 @@ type GitImportGitSource struct {
 // A request to import data from a remote source control system.
 type GitImportRequest struct {
     // Links to related resources.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Detailed status of the import, including the current step and an error message, if applicable.
     DetailedStatus *GitImportStatusDetail `json:"detailedStatus,omitempty"`
     // The unique identifier for this import request.
@@ -1183,7 +1166,7 @@ type GitImportTfvcSource struct {
 }
 
 type GitItem struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     Content *string `json:"content,omitempty"`
     ContentMetadata *FileContentMetadata `json:"contentMetadata,omitempty"`
     IsFolder *bool `json:"isFolder,omitempty"`
@@ -1248,7 +1231,7 @@ type GitMerge struct {
     // An enumeration of the parent commit IDs for the merge  commit.
     Parents *[]string `json:"parents,omitempty"`
     // Reference links.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Detailed status of the merge operation.
     DetailedStatus *GitMergeOperationStatusDetail `json:"detailedStatus,omitempty"`
     // Unique identifier for the merge operation.
@@ -1342,19 +1325,19 @@ type GitPathToItemsCollection struct {
 type GitPolicyConfigurationResponse struct {
     // The HTTP client methods find the continuation token header in the response and populate this field.
     ContinuationToken *string `json:"continuationToken,omitempty"`
-    PolicyConfigurations *[]PolicyConfiguration `json:"policyConfigurations,omitempty"`
+    PolicyConfigurations *[]policy.PolicyConfiguration `json:"policyConfigurations,omitempty"`
 }
 
 // Represents all the data associated with a pull request.
 type GitPullRequest struct {
     // Links to other related objects.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // A string which uniquely identifies this pull request. To generate an artifact ID for a pull request, use this template: ```vstfs:///Git/PullRequestId/{projectId}/{repositoryId}/{pullRequestId}```
     ArtifactId *string `json:"artifactId,omitempty"`
     // If set, auto-complete is enabled for this pull request and this is the identity that enabled it.
-    AutoCompleteSetBy *IdentityRef `json:"autoCompleteSetBy,omitempty"`
+    AutoCompleteSetBy *webApi.IdentityRef `json:"autoCompleteSetBy,omitempty"`
     // The user who closed the pull request.
-    ClosedBy *IdentityRef `json:"closedBy,omitempty"`
+    ClosedBy *webApi.IdentityRef `json:"closedBy,omitempty"`
     // The date when the pull request was closed (completed, abandoned, or merged externally).
     ClosedDate *time.Time `json:"closedDate,omitempty"`
     // The code review ID of the pull request. Used internally.
@@ -1366,7 +1349,7 @@ type GitPullRequest struct {
     // The most recent date at which the pull request entered the queue to be completed. Used internally.
     CompletionQueueTime *time.Time `json:"completionQueueTime,omitempty"`
     // The identity of the user who created the pull request.
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     // The date when the pull request was created.
     CreationDate *time.Time `json:"creationDate,omitempty"`
     // The description of the pull request.
@@ -1376,7 +1359,7 @@ type GitPullRequest struct {
     // Draft / WIP pull request.
     IsDraft *bool `json:"isDraft,omitempty"`
     // The labels associated with the pull request.
-    Labels *[]WebApiTagDefinition `json:"labels,omitempty"`
+    Labels *[]core.WebApiTagDefinition `json:"labels,omitempty"`
     // The commit of the most recent pull request merge. If empty, the most recent merge is in progress or was unsuccessful.
     LastMergeCommit *GitCommitRef `json:"lastMergeCommit,omitempty"`
     // The commit at the head of the source branch at the time of the last pull request merge.
@@ -1414,7 +1397,7 @@ type GitPullRequest struct {
     // Used internally.
     Url *string `json:"url,omitempty"`
     // Any work item references associated with this pull request.
-    WorkItemRefs *[]ResourceRef `json:"workItemRefs,omitempty"`
+    WorkItemRefs *[]webApi.ResourceRef `json:"workItemRefs,omitempty"`
 }
 
 // Change made in a pull request.
@@ -1426,13 +1409,13 @@ type GitPullRequestChange struct {
 // Represents a comment thread of a pull request. A thread contains meta data about the file it was left on (if any) along with one or more comments (an initial comment and the subsequent replies).
 type GitPullRequestCommentThread struct {
     // Links to other related objects.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // A list of the comments.
     Comments *[]Comment `json:"comments,omitempty"`
     // The comment thread id.
     Id *int `json:"id,omitempty"`
     // Set of identities related to this thread
-    Identities *map[string]IdentityRef `json:"identities,omitempty"`
+    Identities *map[string]webApi.IdentityRef `json:"identities,omitempty"`
     // Specify if the thread is deleted which happens when all comments are deleted.
     IsDeleted *bool `json:"isDeleted,omitempty"`
     // The time this thread was last updated.
@@ -1482,9 +1465,9 @@ type GitPullRequestCompletionOptions struct {
 // Provides properties that describe a Git pull request iteration. Iterations are created as a result of creating and pushing updates to a pull request.
 type GitPullRequestIteration struct {
     // A collection of related REST reference links.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Author of the pull request iteration.
-    Author *IdentityRef `json:"author,omitempty"`
+    Author *webApi.IdentityRef `json:"author,omitempty"`
     // Changes included with the pull request iteration.
     ChangeList *[]GitPullRequestChange `json:"changeList,omitempty"`
     // The commits included with the pull request iteration.
@@ -1588,7 +1571,7 @@ var GitPullRequestQueryTypeValues = gitPullRequestQueryTypeValuesType{
 }
 
 type GitPullRequestReviewFileContentInfo struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The file change path.
     Path *string `json:"path,omitempty"`
     // Content hash of on-disk representation of file content. Its calculated by the client by using SHA1 hash function. Ensure that uploaded file has same encoding as in source control.
@@ -1630,11 +1613,11 @@ type GitPullRequestSearchCriteria struct {
 // This class contains the metadata of a service/extension posting pull request status. Status can be associated with a pull request or an iteration.
 type GitPullRequestStatus struct {
     // Reference links.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Context of the status.
     Context *GitStatusContext `json:"context,omitempty"`
     // Identity that created the status.
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     // Creation date and time of the status.
     CreationDate *time.Time `json:"creationDate,omitempty"`
     // Status description. Typically describes current state of the status.
@@ -1654,10 +1637,10 @@ type GitPullRequestStatus struct {
 }
 
 type GitPush struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     Date *time.Time `json:"date,omitempty"`
     PushCorrelationId *uuid.UUID `json:"pushCorrelationId,omitempty"`
-    PushedBy *IdentityRef `json:"pushedBy,omitempty"`
+    PushedBy *webApi.IdentityRef `json:"pushedBy,omitempty"`
     PushId *int `json:"pushId,omitempty"`
     Url *string `json:"url,omitempty"`
     Commits *[]GitCommitRef `json:"commits,omitempty"`
@@ -1674,11 +1657,11 @@ type GitPushEventData struct {
 }
 
 type GitPushRef struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     Date *time.Time `json:"date,omitempty"`
     // Deprecated: This is unused as of Dev15 M115 and may be deleted in the future
     PushCorrelationId *uuid.UUID `json:"pushCorrelationId,omitempty"`
-    PushedBy *IdentityRef `json:"pushedBy,omitempty"`
+    PushedBy *webApi.IdentityRef `json:"pushedBy,omitempty"`
     PushId *int `json:"pushId,omitempty"`
     Url *string `json:"url,omitempty"`
 }
@@ -1752,10 +1735,10 @@ type GitRecycleBinRepositoryDetails struct {
 }
 
 type GitRef struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    Creator *IdentityRef `json:"creator,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
+    Creator *webApi.IdentityRef `json:"creator,omitempty"`
     IsLocked *bool `json:"isLocked,omitempty"`
-    IsLockedBy *IdentityRef `json:"isLockedBy,omitempty"`
+    IsLockedBy *webApi.IdentityRef `json:"isLockedBy,omitempty"`
     Name *string `json:"name,omitempty"`
     ObjectId *string `json:"objectId,omitempty"`
     PeeledObjectId *string `json:"peeledObjectId,omitempty"`
@@ -1764,7 +1747,7 @@ type GitRef struct {
 }
 
 type GitRefFavorite struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     Id *int `json:"id,omitempty"`
     IdentityId *uuid.UUID `json:"identityId,omitempty"`
     Name *string `json:"name,omitempty"`
@@ -1890,14 +1873,14 @@ var GitRefUpdateStatusValues = gitRefUpdateStatusValuesType{
 }
 
 type GitRepository struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     DefaultBranch *string `json:"defaultBranch,omitempty"`
     Id *uuid.UUID `json:"id,omitempty"`
     // True if the repository was created as a fork
     IsFork *bool `json:"isFork,omitempty"`
     Name *string `json:"name,omitempty"`
     ParentRepository *GitRepositoryRef `json:"parentRepository,omitempty"`
-    Project *TeamProjectReference `json:"project,omitempty"`
+    Project *core.TeamProjectReference `json:"project,omitempty"`
     RemoteUrl *string `json:"remoteUrl,omitempty"`
     // Compressed size (bytes) of the repository.
     Size *uint64 `json:"size,omitempty"`
@@ -1910,17 +1893,17 @@ type GitRepository struct {
 type GitRepositoryCreateOptions struct {
     Name *string `json:"name,omitempty"`
     ParentRepository *GitRepositoryRef `json:"parentRepository,omitempty"`
-    Project *TeamProjectReference `json:"project,omitempty"`
+    Project *core.TeamProjectReference `json:"project,omitempty"`
 }
 
 type GitRepositoryRef struct {
     // Team Project Collection where this Fork resides
-    Collection *TeamProjectCollectionReference `json:"collection,omitempty"`
+    Collection *core.TeamProjectCollectionReference `json:"collection,omitempty"`
     Id *uuid.UUID `json:"id,omitempty"`
     // True if the repository was created as a fork
     IsFork *bool `json:"isFork,omitempty"`
     Name *string `json:"name,omitempty"`
-    Project *TeamProjectReference `json:"project,omitempty"`
+    Project *core.TeamProjectReference `json:"project,omitempty"`
     RemoteUrl *string `json:"remoteUrl,omitempty"`
     SshUrl *string `json:"sshUrl,omitempty"`
     Url *string `json:"url,omitempty"`
@@ -1935,7 +1918,7 @@ type GitRepositoryStats struct {
 
 type GitResolution struct {
     // User who created the resolution.
-    Author *IdentityRef `json:"author,omitempty"`
+    Author *webApi.IdentityRef `json:"author,omitempty"`
 }
 
 // The type of a merge conflict.
@@ -1970,7 +1953,7 @@ var GitResolutionErrorValues = gitResolutionErrorValuesType{
 
 type GitResolutionMergeContent struct {
     // User who created the resolution.
-    Author *IdentityRef `json:"author,omitempty"`
+    Author *webApi.IdentityRef `json:"author,omitempty"`
     MergeType *GitResolutionMergeType `json:"mergeType,omitempty"`
     UserMergedBlob *GitBlobRef `json:"userMergedBlob,omitempty"`
     UserMergedContent *[]byte `json:"userMergedContent,omitempty"`
@@ -1996,7 +1979,7 @@ var GitResolutionMergeTypeValues = gitResolutionMergeTypeValuesType{
 
 type GitResolutionPathConflict struct {
     // User who created the resolution.
-    Author *IdentityRef `json:"author,omitempty"`
+    Author *webApi.IdentityRef `json:"author,omitempty"`
     Action *GitResolutionPathConflictAction `json:"action,omitempty"`
     RenamePath *string `json:"renamePath,omitempty"`
 }
@@ -2021,13 +2004,13 @@ var GitResolutionPathConflictActionValues = gitResolutionPathConflictActionValue
 
 type GitResolutionPickOneAction struct {
     // User who created the resolution.
-    Author *IdentityRef `json:"author,omitempty"`
+    Author *webApi.IdentityRef `json:"author,omitempty"`
     Action *GitResolutionWhichAction `json:"action,omitempty"`
 }
 
 type GitResolutionRename1to2 struct {
     // User who created the resolution.
-    Author *IdentityRef `json:"author,omitempty"`
+    Author *webApi.IdentityRef `json:"author,omitempty"`
     MergeType *GitResolutionMergeType `json:"mergeType,omitempty"`
     UserMergedBlob *GitBlobRef `json:"userMergedBlob,omitempty"`
     UserMergedContent *[]byte `json:"userMergedContent,omitempty"`
@@ -2080,7 +2063,7 @@ var GitResolutionWhichActionValues = gitResolutionWhichActionValuesType{
 }
 
 type GitRevert struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     DetailedStatus *GitAsyncRefOperationDetail `json:"detailedStatus,omitempty"`
     Parameters *GitAsyncRefOperationParameters `json:"parameters,omitempty"`
     Status *GitAsyncOperationStatus `json:"status,omitempty"`
@@ -2092,11 +2075,11 @@ type GitRevert struct {
 // This class contains the metadata of a service/extension posting a status.
 type GitStatus struct {
     // Reference links.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Context of the status.
     Context *GitStatusContext `json:"context,omitempty"`
     // Identity that created the status.
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     // Creation date and time of the status.
     CreationDate *time.Time `json:"creationDate,omitempty"`
     // Status description. Typically describes current state of the status.
@@ -2222,7 +2205,7 @@ type GitTreeEntryRef struct {
 }
 
 type GitTreeRef struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // SHA1 hash of git object
     ObjectId *string `json:"objectId,omitempty"`
     // Sum of sizes of all children
@@ -2300,17 +2283,6 @@ type GlobalGitRepositoryKey struct {
     RepositoryId *uuid.UUID `json:"repositoryId,omitempty"`
 }
 
-type GraphSubjectBase struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-}
-
 type HistoryEntry struct {
     // The Change list (changeset/commit/shelveset) for this point in history
     ChangeList *ChangeList `json:"changeList,omitempty"`
@@ -2320,59 +2292,8 @@ type HistoryEntry struct {
     ServerItem *string `json:"serverItem,omitempty"`
 }
 
-type IdentityRef struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph user referenced in the "self" entry of the IdentityRef "_links" dictionary
-    DirectoryAlias *string `json:"directoryAlias,omitempty"`
-    Id *string `json:"id,omitempty"`
-    // Deprecated - Available in the "avatar" entry of the IdentityRef "_links" dictionary
-    ImageUrl *string `json:"imageUrl,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph membership state referenced in the "membershipState" entry of the GraphUser "_links" dictionary
-    Inactive *bool `json:"inactive,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsAadUserType/Descriptor.IsAadGroupType)
-    IsAadIdentity *bool `json:"isAadIdentity,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsGroupType)
-    IsContainer *bool `json:"isContainer,omitempty"`
-    IsDeletedInOrigin *bool `json:"isDeletedInOrigin,omitempty"`
-    // Deprecated - not in use in most preexisting implementations of ToIdentityRef
-    ProfileUrl *string `json:"profileUrl,omitempty"`
-    // Deprecated - use Domain+PrincipalName instead
-    UniqueName *string `json:"uniqueName,omitempty"`
-}
-
 // Identity information including a vote on a pull request.
 type IdentityRefWithVote struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph user referenced in the "self" entry of the IdentityRef "_links" dictionary
-    DirectoryAlias *string `json:"directoryAlias,omitempty"`
-    Id *string `json:"id,omitempty"`
-    // Deprecated - Available in the "avatar" entry of the IdentityRef "_links" dictionary
-    ImageUrl *string `json:"imageUrl,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph membership state referenced in the "membershipState" entry of the GraphUser "_links" dictionary
-    Inactive *bool `json:"inactive,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsAadUserType/Descriptor.IsAadGroupType)
-    IsAadIdentity *bool `json:"isAadIdentity,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsGroupType)
-    IsContainer *bool `json:"isContainer,omitempty"`
-    IsDeletedInOrigin *bool `json:"isDeletedInOrigin,omitempty"`
-    // Deprecated - not in use in most preexisting implementations of ToIdentityRef
-    ProfileUrl *string `json:"profileUrl,omitempty"`
-    // Deprecated - use Domain+PrincipalName instead
-    UniqueName *string `json:"uniqueName,omitempty"`
     // Indicates if this is a required reviewer for this pull request. <br /> Branches can have policies that require particular reviewers are required for pull requests.
     IsRequired *bool `json:"isRequired,omitempty"`
     // URL to retrieve information about this identity
@@ -2410,6 +2331,7 @@ type ItemContent struct {
     ContentType *ItemContentType `json:"contentType,omitempty"`
 }
 
+// [Flags]
 type ItemContentType string
 
 type itemContentTypeValuesType struct {
@@ -2431,7 +2353,7 @@ type ItemDetailsOptions struct {
 }
 
 type ItemModel struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     Content *string `json:"content,omitempty"`
     ContentMetadata *FileContentMetadata `json:"contentMetadata,omitempty"`
     IsFolder *bool `json:"isFolder,omitempty"`
@@ -2440,7 +2362,7 @@ type ItemModel struct {
     Url *string `json:"url,omitempty"`
 }
 
-// The reason for which the pull request iteration was created.
+// [Flags] The reason for which the pull request iteration was created.
 type IterationReason string
 
 type iterationReasonValuesType struct {
@@ -2459,18 +2381,6 @@ var IterationReasonValues = iterationReasonValuesType{
     Rebase: "rebase",
     Unknown: "unknown",
     Retarget: "retarget",
-}
-
-// The JSON model for a JSON Patch operation
-type JsonPatchOperation struct {
-    // The path to copy from for the Move/Copy operation.
-    From *string `json:"from,omitempty"`
-    // The patch operation
-    Op *Operation `json:"op,omitempty"`
-    // The path for the operation. In the case of an array, a zero based index can be used to specify the position in the array (e.g. /biscuits/0/name). The "-" character can be used instead of an index to insert at the end of the array (e.g. /biscuits/-).
-    Path *string `json:"path,omitempty"`
-    // The value for the operation. This is either a primitive or a JToken.
-    Value interface{} `json:"value,omitempty"`
 }
 
 // Real time event (SignalR) for updated labels on a pull request
@@ -2524,121 +2434,12 @@ type MergeCompletedEvent struct {
     PullRequestId *int `json:"pullRequestId,omitempty"`
 }
 
-type Operation string
-
-type operationValuesType struct {
-    Add Operation
-    Remove Operation
-    Replace Operation
-    Move Operation
-    Copy Operation
-    Test Operation
-}
-
-var OperationValues = operationValuesType{
-    Add: "add",
-    Remove: "remove",
-    Replace: "replace",
-    Move: "move",
-    Copy: "copy",
-    Test: "test",
-}
-
-// The full policy configuration with settings.
-type PolicyConfiguration struct {
-    // The policy configuration ID.
-    Id *int `json:"id,omitempty"`
-    // The policy configuration type.
-    Type *PolicyTypeRef `json:"type,omitempty"`
-    // The URL where the policy configuration can be retrieved.
-    Url *string `json:"url,omitempty"`
-    // The policy configuration revision ID.
-    Revision *int `json:"revision,omitempty"`
-    // The links to other objects related to this object.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // A reference to the identity that created the policy.
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
-    // The date and time when the policy was created.
-    CreatedDate *time.Time `json:"createdDate,omitempty"`
-    // Indicates whether the policy is blocking.
-    IsBlocking *bool `json:"isBlocking,omitempty"`
-    // Indicates whether the policy has been (soft) deleted.
-    IsDeleted *bool `json:"isDeleted,omitempty"`
-    // Indicates whether the policy is enabled.
-    IsEnabled *bool `json:"isEnabled,omitempty"`
-    // The policy configuration settings.
-    Settings interface{} `json:"settings,omitempty"`
-}
-
-// Policy configuration reference.
-type PolicyConfigurationRef struct {
-    // The policy configuration ID.
-    Id *int `json:"id,omitempty"`
-    // The policy configuration type.
-    Type *PolicyTypeRef `json:"type,omitempty"`
-    // The URL where the policy configuration can be retrieved.
-    Url *string `json:"url,omitempty"`
-}
-
 // Real time event (SignalR) for a policy evaluation update on a pull request
 type PolicyEvaluationUpdatedEvent struct {
     // The id of this event. Can be used to track send/receive state between client and server.
     EventId *uuid.UUID `json:"eventId,omitempty"`
     // The id of the pull request this event was generated for.
     PullRequestId *int `json:"pullRequestId,omitempty"`
-}
-
-// Policy type reference.
-type PolicyTypeRef struct {
-    // Display name of the policy type.
-    DisplayName *string `json:"displayName,omitempty"`
-    // The policy type ID.
-    Id *uuid.UUID `json:"id,omitempty"`
-    // The URL where the policy type can be retrieved.
-    Url *string `json:"url,omitempty"`
-}
-
-type ProjectState string
-
-type projectStateValuesType struct {
-    Deleting ProjectState
-    New ProjectState
-    WellFormed ProjectState
-    CreatePending ProjectState
-    All ProjectState
-    Unchanged ProjectState
-    Deleted ProjectState
-}
-
-var ProjectStateValues = projectStateValuesType{
-    // Project is in the process of being deleted.
-    Deleting: "deleting",
-    // Project is in the process of being created.
-    New: "new",
-    // Project is completely created and ready to use.
-    WellFormed: "wellFormed",
-    // Project has been queued for creation, but the process has not yet started.
-    CreatePending: "createPending",
-    // All projects regardless of state.
-    All: "all",
-    // Project has not been changed.
-    Unchanged: "unchanged",
-    // Project has been deleted.
-    Deleted: "deleted",
-}
-
-type ProjectVisibility string
-
-type projectVisibilityValuesType struct {
-    Private ProjectVisibility
-    Public ProjectVisibility
-}
-
-var ProjectVisibilityValues = projectVisibilityValuesType{
-    // The project is only visible to users with explicit access.
-    Private: "private",
-    // The project is visible to all.
-    Public: "public",
 }
 
 // The status of a pull request merge.
@@ -2735,12 +2536,6 @@ type RealTimePullRequestEvent struct {
     PullRequestId *int `json:"pullRequestId,omitempty"`
 }
 
-// The class to represent a collection of REST reference links.
-type ReferenceLinks struct {
-    // The readonly view of the links.  Because Reference links are readonly, we only want to expose them as read only.
-    Links *map[string]interface{} `json:"links,omitempty"`
-}
-
 type RefFavoriteType string
 
 type refFavoriteTypeValuesType struct {
@@ -2753,11 +2548,6 @@ var RefFavoriteTypeValues = refFavoriteTypeValuesType{
     Invalid: "invalid",
     Folder: "folder",
     Ref: "ref",
-}
-
-type ResourceRef struct {
-    Id *string `json:"id,omitempty"`
-    Url *string `json:"url,omitempty"`
 }
 
 // Real time event (SignalR) for when the target branch of a pull request is changed
@@ -2797,19 +2587,7 @@ type ShareNotificationContext struct {
     // Optional user note or message.
     Message *string `json:"message,omitempty"`
     // Identities of users who will receive a share notification.
-    Receivers *[]IdentityRef `json:"receivers,omitempty"`
-}
-
-type SourceControlTypes string
-
-type sourceControlTypesValuesType struct {
-    Tfvc SourceControlTypes
-    Git SourceControlTypes
-}
-
-var SourceControlTypesValues = sourceControlTypesValuesType{
-    Tfvc: "tfvc",
-    Git: "git",
+    Receivers *[]webApi.IdentityRef `json:"receivers,omitempty"`
 }
 
 type SourceToTargetRef struct {
@@ -2896,45 +2674,11 @@ var SupportedIdeTypeValues = supportedIdeTypeValuesType{
     WebStorm: "webStorm",
 }
 
-// Reference object for a TeamProjectCollection.
-type TeamProjectCollectionReference struct {
-    // Collection Id.
-    Id *uuid.UUID `json:"id,omitempty"`
-    // Collection Name.
-    Name *string `json:"name,omitempty"`
-    // Collection REST Url.
-    Url *string `json:"url,omitempty"`
-}
-
-// Represents a shallow reference to a TeamProject.
-type TeamProjectReference struct {
-    // Project abbreviation.
-    Abbreviation *string `json:"abbreviation,omitempty"`
-    // Url to default team identity image.
-    DefaultTeamImageUrl *string `json:"defaultTeamImageUrl,omitempty"`
-    // The project's description (if any).
-    Description *string `json:"description,omitempty"`
-    // Project identifier.
-    Id *uuid.UUID `json:"id,omitempty"`
-    // Project last update time.
-    LastUpdateTime *time.Time `json:"lastUpdateTime,omitempty"`
-    // Project name.
-    Name *string `json:"name,omitempty"`
-    // Project revision.
-    Revision *uint64 `json:"revision,omitempty"`
-    // Project state.
-    State *ProjectState `json:"state,omitempty"`
-    // Url to the full version of the object.
-    Url *string `json:"url,omitempty"`
-    // Project visibility.
-    Visibility *ProjectVisibility `json:"visibility,omitempty"`
-}
-
 type TfvcBranch struct {
     // Path for the branch.
     Path *string `json:"path,omitempty"`
     // A collection of REST reference links.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Creation date of the branch.
     CreatedDate *time.Time `json:"createdDate,omitempty"`
     // Description of the branch.
@@ -2942,7 +2686,7 @@ type TfvcBranch struct {
     // Is the branch deleted?
     IsDeleted *bool `json:"isDeleted,omitempty"`
     // Alias or display name of user
-    Owner *IdentityRef `json:"owner,omitempty"`
+    Owner *webApi.IdentityRef `json:"owner,omitempty"`
     // URL to retrieve the item.
     Url *string `json:"url,omitempty"`
     // List of children for the branch.
@@ -2968,7 +2712,7 @@ type TfvcBranchRef struct {
     // Path for the branch.
     Path *string `json:"path,omitempty"`
     // A collection of REST reference links.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Creation date of the branch.
     CreatedDate *time.Time `json:"createdDate,omitempty"`
     // Description of the branch.
@@ -2976,7 +2720,7 @@ type TfvcBranchRef struct {
     // Is the branch deleted?
     IsDeleted *bool `json:"isDeleted,omitempty"`
     // Alias or display name of user
-    Owner *IdentityRef `json:"owner,omitempty"`
+    Owner *webApi.IdentityRef `json:"owner,omitempty"`
     // URL to retrieve the item.
     Url *string `json:"url,omitempty"`
 }
@@ -2990,13 +2734,13 @@ type TfvcChange struct {
 
 type TfvcChangeset struct {
     // A collection of REST reference links.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Alias or display name of user
-    Author *IdentityRef `json:"author,omitempty"`
+    Author *webApi.IdentityRef `json:"author,omitempty"`
     // Id of the changeset.
     ChangesetId *int `json:"changesetId,omitempty"`
     // Alias or display name of user
-    CheckedInBy *IdentityRef `json:"checkedInBy,omitempty"`
+    CheckedInBy *webApi.IdentityRef `json:"checkedInBy,omitempty"`
     // Comment for the changeset.
     Comment *string `json:"comment,omitempty"`
     // Was the Comment result truncated?
@@ -3025,13 +2769,13 @@ type TfvcChangeset struct {
 
 type TfvcChangesetRef struct {
     // A collection of REST reference links.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Alias or display name of user
-    Author *IdentityRef `json:"author,omitempty"`
+    Author *webApi.IdentityRef `json:"author,omitempty"`
     // Id of the changeset.
     ChangesetId *int `json:"changesetId,omitempty"`
     // Alias or display name of user
-    CheckedInBy *IdentityRef `json:"checkedInBy,omitempty"`
+    CheckedInBy *webApi.IdentityRef `json:"checkedInBy,omitempty"`
     // Comment for the changeset.
     Comment *string `json:"comment,omitempty"`
     // Was the Comment result truncated?
@@ -3074,7 +2818,7 @@ type TfvcChangesetsRequestData struct {
 
 type TfvcCheckinEventData struct {
     Changeset *TfvcChangeset `json:"changeset,omitempty"`
-    Project *TeamProjectReference `json:"project,omitempty"`
+    Project *core.TeamProjectReference `json:"project,omitempty"`
 }
 
 type TfvcHistoryEntry struct {
@@ -3085,7 +2829,7 @@ type TfvcHistoryEntry struct {
 }
 
 type TfvcItem struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     Content *string `json:"content,omitempty"`
     ContentMetadata *FileContentMetadata `json:"contentMetadata,omitempty"`
     IsFolder *bool `json:"isFolder,omitempty"`
@@ -3115,7 +2859,7 @@ type TfvcItemDescriptor struct {
 }
 
 type TfvcItemPreviousHash struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     Content *string `json:"content,omitempty"`
     ContentMetadata *FileContentMetadata `json:"contentMetadata,omitempty"`
     IsFolder *bool `json:"isFolder,omitempty"`
@@ -3146,25 +2890,25 @@ type TfvcItemRequestData struct {
 }
 
 type TfvcLabel struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     Description *string `json:"description,omitempty"`
     Id *int `json:"id,omitempty"`
     LabelScope *string `json:"labelScope,omitempty"`
     ModifiedDate *time.Time `json:"modifiedDate,omitempty"`
     Name *string `json:"name,omitempty"`
-    Owner *IdentityRef `json:"owner,omitempty"`
+    Owner *webApi.IdentityRef `json:"owner,omitempty"`
     Url *string `json:"url,omitempty"`
     Items *[]TfvcItem `json:"items,omitempty"`
 }
 
 type TfvcLabelRef struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     Description *string `json:"description,omitempty"`
     Id *int `json:"id,omitempty"`
     LabelScope *string `json:"labelScope,omitempty"`
     ModifiedDate *time.Time `json:"modifiedDate,omitempty"`
     Name *string `json:"name,omitempty"`
-    Owner *IdentityRef `json:"owner,omitempty"`
+    Owner *webApi.IdentityRef `json:"owner,omitempty"`
     Url *string `json:"url,omitempty"`
 }
 
@@ -3211,13 +2955,13 @@ type TfvcShallowBranchRef struct {
 
 // This is the deep shelveset class
 type TfvcShelveset struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     Comment *string `json:"comment,omitempty"`
     CommentTruncated *bool `json:"commentTruncated,omitempty"`
     CreatedDate *time.Time `json:"createdDate,omitempty"`
     Id *string `json:"id,omitempty"`
     Name *string `json:"name,omitempty"`
-    Owner *IdentityRef `json:"owner,omitempty"`
+    Owner *webApi.IdentityRef `json:"owner,omitempty"`
     Url *string `json:"url,omitempty"`
     Changes *[]TfvcChange `json:"changes,omitempty"`
     Notes *[]CheckinNote `json:"notes,omitempty"`
@@ -3227,13 +2971,13 @@ type TfvcShelveset struct {
 
 // This is the shallow shelveset class
 type TfvcShelvesetRef struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     Comment *string `json:"comment,omitempty"`
     CommentTruncated *bool `json:"commentTruncated,omitempty"`
     CreatedDate *time.Time `json:"createdDate,omitempty"`
     Id *string `json:"id,omitempty"`
     Name *string `json:"name,omitempty"`
-    Owner *IdentityRef `json:"owner,omitempty"`
+    Owner *webApi.IdentityRef `json:"owner,omitempty"`
     Url *string `json:"url,omitempty"`
 }
 
@@ -3318,6 +3062,7 @@ type UpdateRefsRequest struct {
     UpdateMode *GitRefUpdateMode `json:"updateMode,omitempty"`
 }
 
+// [Flags]
 type VersionControlChangeType string
 
 type versionControlChangeTypeValuesType struct {
@@ -3357,8 +3102,8 @@ var VersionControlChangeTypeValues = versionControlChangeTypeValuesType{
 }
 
 type VersionControlProjectInfo struct {
-    DefaultSourceControlType *SourceControlTypes `json:"defaultSourceControlType,omitempty"`
-    Project *TeamProjectReference `json:"project,omitempty"`
+    DefaultSourceControlType *core.SourceControlTypes `json:"defaultSourceControlType,omitempty"`
+    Project *core.TeamProjectReference `json:"project,omitempty"`
     SupportsGit *bool `json:"supportsGit,omitempty"`
     SupportsTFVC *bool `json:"supportsTFVC,omitempty"`
 }
@@ -3381,34 +3126,4 @@ var VersionControlRecursionTypeValues = versionControlRecursionTypeValuesType{
     OneLevelPlusNestedEmptyFolders: "oneLevelPlusNestedEmptyFolders",
     // Return specified item and all descendants
     Full: "full",
-}
-
-// A particular revision for a policy configuration.
-type VersionedPolicyConfigurationRef struct {
-    // The policy configuration ID.
-    Id *int `json:"id,omitempty"`
-    // The policy configuration type.
-    Type *PolicyTypeRef `json:"type,omitempty"`
-    // The URL where the policy configuration can be retrieved.
-    Url *string `json:"url,omitempty"`
-    // The policy configuration revision ID.
-    Revision *int `json:"revision,omitempty"`
-}
-
-// The representation of data needed to create a tag definition which is sent across the wire.
-type WebApiCreateTagRequestData struct {
-    // Name of the tag definition that will be created.
-    Name *string `json:"name,omitempty"`
-}
-
-// The representation of a tag definition which is sent across the wire.
-type WebApiTagDefinition struct {
-    // Whether or not the tag definition is active.
-    Active *bool `json:"active,omitempty"`
-    // ID of the tag definition.
-    Id *uuid.UUID `json:"id,omitempty"`
-    // The name of the tag definition.
-    Name *string `json:"name,omitempty"`
-    // Resource URL for the Tag Definition.
-    Url *string `json:"url,omitempty"`
 }

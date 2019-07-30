@@ -10,7 +10,8 @@ package serviceHooks
 
 import (
     "github.com/google/uuid"
-    "math/big"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/formInput"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "time"
 )
 
@@ -35,7 +36,7 @@ var AuthenticationTypeValues = authenticationTypeValuesType{
 // Defines the data contract of a consumer.
 type Consumer struct {
     // Reference Links
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Gets this consumer's actions.
     Actions *[]ConsumerAction `json:"actions,omitempty"`
     // Gets or sets this consumer's authentication type.
@@ -51,7 +52,7 @@ type Consumer struct {
     // Gets or sets this consumer's information URL, if any.
     InformationUrl *string `json:"informationUrl,omitempty"`
     // Gets or sets this consumer's input descriptors.
-    InputDescriptors *[]InputDescriptor `json:"inputDescriptors,omitempty"`
+    InputDescriptors *[]formInput.InputDescriptor `json:"inputDescriptors,omitempty"`
     // Gets or sets this consumer's localized name.
     Name *string `json:"name,omitempty"`
     // The url for this resource
@@ -61,7 +62,7 @@ type Consumer struct {
 // Defines the data contract of a consumer action.
 type ConsumerAction struct {
     // Reference Links
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Gets or sets the flag indicating if resource version can be overridden when creating or editing a subscription.
     AllowResourceVersionOverride *bool `json:"allowResourceVersionOverride,omitempty"`
     // Gets or sets the identifier of the consumer to which this action belongs.
@@ -71,7 +72,7 @@ type ConsumerAction struct {
     // Gets or sets this action's identifier.
     Id *string `json:"id,omitempty"`
     // Gets or sets this action's input descriptors.
-    InputDescriptors *[]InputDescriptor `json:"inputDescriptors,omitempty"`
+    InputDescriptors *[]formInput.InputDescriptor `json:"inputDescriptors,omitempty"`
     // Gets or sets this action's localized name.
     Name *string `json:"name,omitempty"`
     // Gets or sets this action's supported event identifiers.
@@ -113,7 +114,7 @@ type EventTypeDescriptor struct {
     // A unique id for the event type
     Id *string `json:"id,omitempty"`
     // Event-specific inputs
-    InputDescriptors *[]InputDescriptor `json:"inputDescriptors,omitempty"`
+    InputDescriptors *[]formInput.InputDescriptor `json:"inputDescriptors,omitempty"`
     // A localized friendly name for the event type
     Name *string `json:"name,omitempty"`
     // A unique id for the publisher of this event type
@@ -142,225 +143,6 @@ type FormattedEventMessage struct {
     Markdown *string `json:"markdown,omitempty"`
     // Gets or sets the raw text of the message
     Text *string `json:"text,omitempty"`
-}
-
-type GraphSubjectBase struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-}
-
-type IdentityRef struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph user referenced in the "self" entry of the IdentityRef "_links" dictionary
-    DirectoryAlias *string `json:"directoryAlias,omitempty"`
-    Id *string `json:"id,omitempty"`
-    // Deprecated - Available in the "avatar" entry of the IdentityRef "_links" dictionary
-    ImageUrl *string `json:"imageUrl,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph membership state referenced in the "membershipState" entry of the GraphUser "_links" dictionary
-    Inactive *bool `json:"inactive,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsAadUserType/Descriptor.IsAadGroupType)
-    IsAadIdentity *bool `json:"isAadIdentity,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsGroupType)
-    IsContainer *bool `json:"isContainer,omitempty"`
-    IsDeletedInOrigin *bool `json:"isDeletedInOrigin,omitempty"`
-    // Deprecated - not in use in most preexisting implementations of ToIdentityRef
-    ProfileUrl *string `json:"profileUrl,omitempty"`
-    // Deprecated - use Domain+PrincipalName instead
-    UniqueName *string `json:"uniqueName,omitempty"`
-}
-
-// Enumerates data types that are supported as subscription input values.
-type InputDataType string
-
-type inputDataTypeValuesType struct {
-    None InputDataType
-    String InputDataType
-    Number InputDataType
-    Boolean InputDataType
-    Guid InputDataType
-    Uri InputDataType
-}
-
-var InputDataTypeValues = inputDataTypeValuesType{
-    // No data type is specified.
-    None: "none",
-    // Represents a textual value.
-    String: "string",
-    // Represents a numeric value.
-    Number: "number",
-    // Represents a value of true or false.
-    Boolean: "boolean",
-    // Represents a Guid.
-    Guid: "guid",
-    // Represents a URI.
-    Uri: "uri",
-}
-
-// Describes an input for subscriptions.
-type InputDescriptor struct {
-    // The ids of all inputs that the value of this input is dependent on.
-    DependencyInputIds *[]string `json:"dependencyInputIds,omitempty"`
-    // Description of what this input is used for
-    Description *string `json:"description,omitempty"`
-    // The group localized name to which this input belongs and can be shown as a header for the container that will include all the inputs in the group.
-    GroupName *string `json:"groupName,omitempty"`
-    // If true, the value information for this input is dynamic and should be fetched when the value of dependency inputs change.
-    HasDynamicValueInformation *bool `json:"hasDynamicValueInformation,omitempty"`
-    // Identifier for the subscription input
-    Id *string `json:"id,omitempty"`
-    // Mode in which the value of this input should be entered
-    InputMode *InputMode `json:"inputMode,omitempty"`
-    // Gets whether this input is confidential, such as for a password or application key
-    IsConfidential *bool `json:"isConfidential,omitempty"`
-    // Localized name which can be shown as a label for the subscription input
-    Name *string `json:"name,omitempty"`
-    // Custom properties for the input which can be used by the service provider
-    Properties *map[string]interface{} `json:"properties,omitempty"`
-    // Underlying data type for the input value. When this value is specified, InputMode, Validation and Values are optional.
-    Type *string `json:"type,omitempty"`
-    // Gets whether this input is included in the default generated action description.
-    UseInDefaultDescription *bool `json:"useInDefaultDescription,omitempty"`
-    // Information to use to validate this input's value
-    Validation *InputValidation `json:"validation,omitempty"`
-    // A hint for input value. It can be used in the UI as the input placeholder.
-    ValueHint *string `json:"valueHint,omitempty"`
-    // Information about possible values for this input
-    Values *InputValues `json:"values,omitempty"`
-}
-
-// Defines a filter for subscription inputs. The filter matches a set of inputs if any (one or more) of the groups evaluates to true.
-type InputFilter struct {
-    // Groups of input filter expressions. This filter matches a set of inputs if any (one or more) of the groups evaluates to true.
-    Conditions *[]InputFilterCondition `json:"conditions,omitempty"`
-}
-
-// An expression which can be applied to filter a list of subscription inputs
-type InputFilterCondition struct {
-    // Whether or not to do a case sensitive match
-    CaseSensitive *bool `json:"caseSensitive,omitempty"`
-    // The Id of the input to filter on
-    InputId *string `json:"inputId,omitempty"`
-    // The "expected" input value to compare with the actual input value
-    InputValue *string `json:"inputValue,omitempty"`
-    // The operator applied between the expected and actual input value
-    Operator *InputFilterOperator `json:"operator,omitempty"`
-}
-
-type InputFilterOperator string
-
-type inputFilterOperatorValuesType struct {
-    Equals InputFilterOperator
-    NotEquals InputFilterOperator
-}
-
-var InputFilterOperatorValues = inputFilterOperatorValuesType{
-    Equals: "equals",
-    NotEquals: "notEquals",
-}
-
-// Mode in which a subscription input should be entered (in a UI)
-type InputMode string
-
-type inputModeValuesType struct {
-    None InputMode
-    TextBox InputMode
-    PasswordBox InputMode
-    Combo InputMode
-    RadioButtons InputMode
-    CheckBox InputMode
-    TextArea InputMode
-}
-
-var InputModeValues = inputModeValuesType{
-    // This input should not be shown in the UI
-    None: "none",
-    // An input text box should be shown
-    TextBox: "textBox",
-    // An password input box should be shown
-    PasswordBox: "passwordBox",
-    // A select/combo control should be shown
-    Combo: "combo",
-    // Radio buttons should be shown
-    RadioButtons: "radioButtons",
-    // Checkbox should be shown(for true/false values)
-    CheckBox: "checkBox",
-    // A multi-line text area should be shown
-    TextArea: "textArea",
-}
-
-// Describes what values are valid for a subscription input
-type InputValidation struct {
-    // Gets or sets the data data type to validate.
-    DataType *InputDataType `json:"dataType,omitempty"`
-    // Gets or sets if this is a required field.
-    IsRequired *bool `json:"isRequired,omitempty"`
-    // Gets or sets the maximum length of this descriptor.
-    MaxLength *int `json:"maxLength,omitempty"`
-    // Gets or sets the minimum value for this descriptor.
-    MaxValue *big.Float `json:"maxValue,omitempty"`
-    // Gets or sets the minimum length of this descriptor.
-    MinLength *int `json:"minLength,omitempty"`
-    // Gets or sets the minimum value for this descriptor.
-    MinValue *big.Float `json:"minValue,omitempty"`
-    // Gets or sets the pattern to validate.
-    Pattern *string `json:"pattern,omitempty"`
-    // Gets or sets the error on pattern mismatch.
-    PatternMismatchErrorMessage *string `json:"patternMismatchErrorMessage,omitempty"`
-}
-
-// Information about a single value for an input
-type InputValue struct {
-    // Any other data about this input
-    Data *map[string]interface{} `json:"data,omitempty"`
-    // The text to show for the display of this value
-    DisplayValue *string `json:"displayValue,omitempty"`
-    // The value to store for this input
-    Value *string `json:"value,omitempty"`
-}
-
-// Information about the possible/allowed values for a given subscription input
-type InputValues struct {
-    // The default value to use for this input
-    DefaultValue *string `json:"defaultValue,omitempty"`
-    // Errors encountered while computing dynamic values.
-    Error *InputValuesError `json:"error,omitempty"`
-    // The id of the input
-    InputId *string `json:"inputId,omitempty"`
-    // Should this input be disabled
-    IsDisabled *bool `json:"isDisabled,omitempty"`
-    // Should the value be restricted to one of the values in the PossibleValues (True) or are the values in PossibleValues just a suggestion (False)
-    IsLimitedToPossibleValues *bool `json:"isLimitedToPossibleValues,omitempty"`
-    // Should this input be made read-only
-    IsReadOnly *bool `json:"isReadOnly,omitempty"`
-    // Possible values that this input can take
-    PossibleValues *[]InputValue `json:"possibleValues,omitempty"`
-}
-
-// Error information related to a subscription input value.
-type InputValuesError struct {
-    // The error message.
-    Message *string `json:"message,omitempty"`
-}
-
-type InputValuesQuery struct {
-    CurrentValues *map[string]string `json:"currentValues,omitempty"`
-    // The input values to return on input, and the result from the consumer on output.
-    InputValues *[]InputValues `json:"inputValues,omitempty"`
-    // Subscription containing information about the publisher/consumer and the current input values
-    Resource interface{} `json:"resource,omitempty"`
 }
 
 // Defines the data contract of the result of processing an event for a subscription.
@@ -512,13 +294,13 @@ type NotificationSummary struct {
 // Defines the data contract of an event publisher.
 type Publisher struct {
     // Reference Links
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Gets this publisher's localized description.
     Description *string `json:"description,omitempty"`
     // Gets this publisher's identifier.
     Id *string `json:"id,omitempty"`
     // Publisher-specific inputs
-    InputDescriptors *[]InputDescriptor `json:"inputDescriptors,omitempty"`
+    InputDescriptors *[]formInput.InputDescriptor `json:"inputDescriptors,omitempty"`
     // Gets this publisher's localized name.
     Name *string `json:"name,omitempty"`
     // The service instance type of the first party publisher.
@@ -542,7 +324,7 @@ type PublisherEvent struct {
     // Gets or sets the array of older supported resource versions.
     OtherResourceVersions *[]VersionedResource `json:"otherResourceVersions,omitempty"`
     // Optional publisher-input filters which restricts the set of subscriptions which are triggered by the event
-    PublisherInputFilters *[]InputFilter `json:"publisherInputFilters,omitempty"`
+    PublisherInputFilters *[]formInput.InputFilter `json:"publisherInputFilters,omitempty"`
     // Gets or sets matched hooks subscription which caused this event.
     Subscription *Subscription `json:"subscription,omitempty"`
 }
@@ -555,12 +337,6 @@ type PublishersQuery struct {
     PublisherInputs *map[string]string `json:"publisherInputs,omitempty"`
     // Results from the query
     Results *[]Publisher `json:"results,omitempty"`
-}
-
-// The class to represent a collection of REST reference links.
-type ReferenceLinks struct {
-    // The readonly view of the links.  Because Reference links are readonly, we only want to expose them as read only.
-    Links *map[string]interface{} `json:"links,omitempty"`
 }
 
 // The base class for all resource containers, i.e. Account, Collection, Project
@@ -588,18 +364,18 @@ type SessionToken struct {
 // Encapsulates an event subscription.
 type Subscription struct {
     // Reference Links
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     ActionDescription *string `json:"actionDescription,omitempty"`
     ConsumerActionId *string `json:"consumerActionId,omitempty"`
     ConsumerId *string `json:"consumerId,omitempty"`
     // Consumer input values
     ConsumerInputs *map[string]string `json:"consumerInputs,omitempty"`
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     CreatedDate *time.Time `json:"createdDate,omitempty"`
     EventDescription *string `json:"eventDescription,omitempty"`
     EventType *string `json:"eventType,omitempty"`
     Id *uuid.UUID `json:"id,omitempty"`
-    ModifiedBy *IdentityRef `json:"modifiedBy,omitempty"`
+    ModifiedBy *webApi.IdentityRef `json:"modifiedBy,omitempty"`
     ModifiedDate *time.Time `json:"modifiedDate,omitempty"`
     ProbationRetries *byte `json:"probationRetries,omitempty"`
     PublisherId *string `json:"publisherId,omitempty"`
@@ -607,14 +383,8 @@ type Subscription struct {
     PublisherInputs *map[string]string `json:"publisherInputs,omitempty"`
     ResourceVersion *string `json:"resourceVersion,omitempty"`
     Status *SubscriptionStatus `json:"status,omitempty"`
-    Subscriber *IdentityRef `json:"subscriber,omitempty"`
+    Subscriber *webApi.IdentityRef `json:"subscriber,omitempty"`
     Url *string `json:"url,omitempty"`
-}
-
-type SubscriptionDiagnostics struct {
-    DeliveryResults *SubscriptionTracing `json:"deliveryResults,omitempty"`
-    DeliveryTracing *SubscriptionTracing `json:"deliveryTracing,omitempty"`
-    EvaluationTracing *SubscriptionTracing `json:"evaluationTracing,omitempty"`
 }
 
 // The scope to which a subscription input applies
@@ -635,7 +405,7 @@ var SubscriptionInputScopeValues = subscriptionInputScopeValuesType{
 // Query for obtaining information about the possible/allowed values for one or more subscription inputs
 type SubscriptionInputValuesQuery struct {
     // The input values to return on input, and the result from the consumer on output.
-    InputValues *[]InputValues `json:"inputValues,omitempty"`
+    InputValues *[]formInput.InputValues `json:"inputValues,omitempty"`
     // The scope at which the properties to query belong
     Scope *SubscriptionInputScope `json:"scope,omitempty"`
     // Subscription containing information about the publisher/consumer and the current input values
@@ -649,13 +419,13 @@ type SubscriptionsQuery struct {
     // Optional consumer id to restrict the results to (null for any)
     ConsumerId *string `json:"consumerId,omitempty"`
     // Filter for subscription consumer inputs
-    ConsumerInputFilters *[]InputFilter `json:"consumerInputFilters,omitempty"`
+    ConsumerInputFilters *[]formInput.InputFilter `json:"consumerInputFilters,omitempty"`
     // Optional event type id to restrict the results to (null for any)
     EventType *string `json:"eventType,omitempty"`
     // Optional publisher id to restrict the results to (null for any)
     PublisherId *string `json:"publisherId,omitempty"`
     // Filter for subscription publisher inputs
-    PublisherInputFilters *[]InputFilter `json:"publisherInputFilters,omitempty"`
+    PublisherInputFilters *[]formInput.InputFilter `json:"publisherInputFilters,omitempty"`
     // Results from the query
     Results *[]Subscription `json:"results,omitempty"`
     // Optional subscriber filter.
@@ -684,28 +454,6 @@ var SubscriptionStatusValues = subscriptionStatusValuesType{
     DisabledBySystem: "disabledBySystem",
     // The subscription is disabled because the owner is inactive or is missing permissions.
     DisabledByInactiveIdentity: "disabledByInactiveIdentity",
-}
-
-type SubscriptionTracing struct {
-    Enabled *bool `json:"enabled,omitempty"`
-    // Trace until the specified end date.
-    EndDate *time.Time `json:"endDate,omitempty"`
-    // The maximum number of result details to trace.
-    MaxTracedEntries *int `json:"maxTracedEntries,omitempty"`
-    // The date and time tracing started.
-    StartDate *time.Time `json:"startDate,omitempty"`
-    // Trace until remaining count reaches 0.
-    TracedEntries *int `json:"tracedEntries,omitempty"`
-}
-
-type UpdateSubscripitonDiagnosticsParameters struct {
-    DeliveryResults *UpdateSubscripitonTracingParameters `json:"deliveryResults,omitempty"`
-    DeliveryTracing *UpdateSubscripitonTracingParameters `json:"deliveryTracing,omitempty"`
-    EvaluationTracing *UpdateSubscripitonTracingParameters `json:"evaluationTracing,omitempty"`
-}
-
-type UpdateSubscripitonTracingParameters struct {
-    Enabled *bool `json:"enabled,omitempty"`
 }
 
 // Encapsulates the resource version and its data or reference to the compatible version. Only one of the two last fields should be not null.

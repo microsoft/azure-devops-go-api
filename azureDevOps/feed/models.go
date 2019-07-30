@@ -55,7 +55,7 @@ type Feed struct {
     // View name.
     ViewName *string `json:"viewName,omitempty"`
     // Related REST links.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // If set, this feed supports generation of package badges.
     BadgesEnabled *bool `json:"badgesEnabled,omitempty"`
     // The view that the feed administrator has indicated is the default experience for readers.
@@ -74,11 +74,6 @@ type Feed struct {
     Url *string `json:"url,omitempty"`
 }
 
-type FeedBatchData struct {
-    Data *FeedBatchOperationData `json:"data,omitempty"`
-    Operation *FeedBatchOperation `json:"operation,omitempty"`
-}
-
 type FeedBatchOperation string
 
 type feedBatchOperationValuesType struct {
@@ -89,10 +84,7 @@ var FeedBatchOperationValues = feedBatchOperationValuesType{
     SaveCachedPackages: "saveCachedPackages",
 }
 
-type FeedBatchOperationData struct {
-}
-
-// Capabilities are used to track features that are available to individual feeds. In general, newly created feeds should be given all available capabilities. These flags track breaking changes in behaviour to feeds, or changes that require user reaction.
+// [Flags] Capabilities are used to track features that are available to individual feeds. In general, newly created feeds should be given all available capabilities. These flags track breaking changes in behaviour to feeds, or changes that require user reaction.
 type FeedCapabilities string
 
 type feedCapabilitiesValuesType struct {
@@ -127,7 +119,7 @@ type FeedChange struct {
 
 // A result set containing the feed changes for the range that was requested.
 type FeedChangesResponse struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // The number of changes in this set.
     Count *int `json:"count,omitempty"`
     // A container that encapsulates the state of the feed after a create, update, or delete.
@@ -237,7 +229,7 @@ type FeedUpdate struct {
 // A view on top of a feed.
 type FeedView struct {
     // Related REST links.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Id of the view.
     Id *uuid.UUID `json:"id,omitempty"`
     // Name of the view.
@@ -316,18 +308,6 @@ var GlobalRoleValues = globalRoleValuesType{
     Administrator: "administrator",
 }
 
-// The JSON model for a JSON Patch operation
-type JsonPatchOperation struct {
-    // The path to copy from for the Move/Copy operation.
-    From *string `json:"from,omitempty"`
-    // The patch operation
-    Op *Operation `json:"op,omitempty"`
-    // The path for the operation. In the case of an array, a zero based index can be used to specify the position in the array (e.g. /biscuits/0/name). The "-" character can be used instead of an index to insert at the end of the array (e.g. /biscuits/-).
-    Path *string `json:"path,omitempty"`
-    // The value for the operation. This is either a primitive or a JToken.
-    Value interface{} `json:"value,omitempty"`
-}
-
 // Core data about any package, including its id and version information and basic state.
 type MinimalPackageVersion struct {
     // Upstream source this package was ingested from.
@@ -356,30 +336,10 @@ type MinimalPackageVersion struct {
     Views *[]FeedView `json:"views,omitempty"`
 }
 
-type Operation string
-
-type operationValuesType struct {
-    Add Operation
-    Remove Operation
-    Replace Operation
-    Move Operation
-    Copy Operation
-    Test Operation
-}
-
-var OperationValues = operationValuesType{
-    Add: "add",
-    Remove: "remove",
-    Replace: "replace",
-    Move: "move",
-    Copy: "copy",
-    Test: "test",
-}
-
 // A package, which is a container for one or more package versions.
 type Package struct {
     // Related REST links.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Id of the package.
     Id *uuid.UUID `json:"id,omitempty"`
     // Used for legacy scenarios and may be removed in future versions.
@@ -409,7 +369,7 @@ type PackageChange struct {
 // A set of change operations to a feed's packages.
 type PackageChangesResponse struct {
     // Related REST links.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Number of changes in this batch.
     Count *int `json:"count,omitempty"`
     // Token that should be used in future calls for this feed to retrieve new changes.
@@ -483,7 +443,7 @@ type PackageVersion struct {
     // List of views containing this package version.
     Views *[]FeedView `json:"views,omitempty"`
     // Related links
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Package version author.
     Author *string `json:"author,omitempty"`
     // UTC date that this package version was deleted.
@@ -606,7 +566,7 @@ type RecycleBinPackageVersion struct {
     // List of views containing this package version.
     Views *[]FeedView `json:"views,omitempty"`
     // Related links
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Package version author.
     Author *string `json:"author,omitempty"`
     // UTC date that this package version was deleted.
@@ -631,17 +591,6 @@ type RecycleBinPackageVersion struct {
     Url *string `json:"url,omitempty"`
     // UTC date on which the package will automatically be removed from the recycle bin and permanently deleted.
     ScheduledPermanentDeleteDate *time.Time `json:"scheduledPermanentDeleteDate,omitempty"`
-}
-
-// The class to represent a collection of REST reference links.
-type ReferenceLinks struct {
-    // The readonly view of the links.  Because Reference links are readonly, we only want to expose them as read only.
-    Links *map[string]interface{} `json:"links,omitempty"`
-}
-
-type SaveCachedPackagesData struct {
-    NormalizedPackageNames *[]string `json:"normalizedPackageNames,omitempty"`
-    ViewsForPromotion *[]uuid.UUID `json:"viewsForPromotion,omitempty"`
 }
 
 // Upstream source definition, including its Identity, package type, and other associated information.

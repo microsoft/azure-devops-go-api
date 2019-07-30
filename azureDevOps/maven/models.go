@@ -9,13 +9,10 @@
 package maven
 
 import (
-    "github.com/google/uuid"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/packagingShared"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "time"
 )
-
-// Do not attempt to use this type to create a new BatchOperationData. This type does not contain sufficient fields to create a new batch operation data.
-type BatchOperationData struct {
-}
 
 type MavenBatchOperationType string
 
@@ -54,23 +51,23 @@ type MavenMinimalPackageDetails struct {
 
 type MavenPackage struct {
     ArtifactId *string `json:"artifactId,omitempty"`
-    ArtifactIndex *ReferenceLink `json:"artifactIndex,omitempty"`
-    ArtifactMetadata *ReferenceLink `json:"artifactMetadata,omitempty"`
+    ArtifactIndex *webApi.ReferenceLink `json:"artifactIndex,omitempty"`
+    ArtifactMetadata *webApi.ReferenceLink `json:"artifactMetadata,omitempty"`
     DeletedDate *time.Time `json:"deletedDate,omitempty"`
-    Files *ReferenceLinks `json:"files,omitempty"`
+    Files interface{} `json:"files,omitempty"`
     GroupId *string `json:"groupId,omitempty"`
     Pom *MavenPomMetadata `json:"pom,omitempty"`
-    RequestedFile *ReferenceLink `json:"requestedFile,omitempty"`
-    SnapshotMetadata *ReferenceLink `json:"snapshotMetadata,omitempty"`
+    RequestedFile *webApi.ReferenceLink `json:"requestedFile,omitempty"`
+    SnapshotMetadata *webApi.ReferenceLink `json:"snapshotMetadata,omitempty"`
     Version *string `json:"version,omitempty"`
-    Versions *ReferenceLinks `json:"versions,omitempty"`
-    VersionsIndex *ReferenceLink `json:"versionsIndex,omitempty"`
+    Versions interface{} `json:"versions,omitempty"`
+    VersionsIndex *webApi.ReferenceLink `json:"versionsIndex,omitempty"`
 }
 
 // A batch of operations to apply to package versions.
 type MavenPackagesBatchRequest struct {
     // Data required to perform the operation. This is optional based on type of operation. Use BatchPromoteData if performing a promote operation.
-    Data *BatchOperationData `json:"data,omitempty"`
+    Data interface{} `json:"data,omitempty"`
     // Type of operation that needs to be performed on packages.
     Operation *MavenBatchOperationType `json:"operation,omitempty"`
     // The packages onto which the operation will be performed.
@@ -221,7 +218,7 @@ type MavenSnapshotRepository struct {
 // Package version metadata for a Maven package
 type Package struct {
     // Related REST links.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // If and when the package was deleted.
     DeletedDate *time.Time `json:"deletedDate,omitempty"`
     // Package Id.
@@ -231,24 +228,9 @@ type Package struct {
     // If and when the package was permanently deleted.
     PermanentlyDeletedDate *time.Time `json:"permanentlyDeletedDate,omitempty"`
     // The history of upstream sources for this package. The first source in the list is the immediate source from which this package was saved.
-    SourceChain *[]UpstreamSourceInfo `json:"sourceChain,omitempty"`
+    SourceChain *[]packagingShared.UpstreamSourceInfo `json:"sourceChain,omitempty"`
     // The version of the package.
     Version *string `json:"version,omitempty"`
-}
-
-// Type of an upstream source, such as Public or Internal.
-type PackagingSourceType string
-
-type packagingSourceTypeValuesType struct {
-    Public PackagingSourceType
-    Internal PackagingSourceType
-}
-
-var PackagingSourceTypeValues = packagingSourceTypeValuesType{
-    // Publicly available source.
-    Public: "public",
-    // Azure DevOps upstream source.
-    Internal: "internal",
 }
 
 type Plugin struct {
@@ -260,29 +242,4 @@ type Plugin struct {
 
 type PluginConfiguration struct {
     GoalPrefix *string `json:"goalPrefix,omitempty"`
-}
-
-// The class to represent a REST reference link.  RFC: http://tools.ietf.org/html/draft-kelly-json-hal-06  The RFC is not fully implemented, additional properties are allowed on the reference link but as of yet we don't have a need for them.
-type ReferenceLink struct {
-    Href *string `json:"href,omitempty"`
-}
-
-// The class to represent a collection of REST reference links.
-type ReferenceLinks struct {
-    // The readonly view of the links.  Because Reference links are readonly, we only want to expose them as read only.
-    Links *map[string]interface{} `json:"links,omitempty"`
-}
-
-// Upstream source definition, including its Identity, package type, and other associated information.
-type UpstreamSourceInfo struct {
-    // Locator for connecting to the upstream source in a user friendly format, that may potentially change over time
-    DisplayLocation *string `json:"displayLocation,omitempty"`
-    // Identity of the upstream source.
-    Id *uuid.UUID `json:"id,omitempty"`
-    // Locator for connecting to the upstream source
-    Location *string `json:"location,omitempty"`
-    // Display name.
-    Name *string `json:"name,omitempty"`
-    // Source type, such as Public or Internal.
-    SourceType *PackagingSourceType `json:"sourceType,omitempty"`
 }

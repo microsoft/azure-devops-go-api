@@ -62,6 +62,7 @@ type PlanEnvironment struct {
     Variables *map[string]string `json:"variables,omitempty"`
 }
 
+// [Flags]
 type PlanGroupStatus string
 
 type planGroupStatusValuesType struct {
@@ -79,12 +80,6 @@ var PlanGroupStatusValues = planGroupStatusValuesType{
 type ProjectReference struct {
     Id *uuid.UUID `json:"id,omitempty"`
     Name *string `json:"name,omitempty"`
-}
-
-// The class to represent a collection of REST reference links.
-type ReferenceLinks struct {
-    // The readonly view of the links.  Because Reference links are readonly, we only want to expose them as read only.
-    Links *map[string]interface{} `json:"links,omitempty"`
 }
 
 type TaskAgentJob struct {
@@ -134,7 +129,7 @@ type TaskAgentJobVariable struct {
 }
 
 type TaskAttachment struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     CreatedOn *time.Time `json:"createdOn,omitempty"`
     LastChangedBy *uuid.UUID `json:"lastChangedBy,omitempty"`
     LastChangedOn *time.Time `json:"lastChangedOn,omitempty"`
@@ -186,7 +181,7 @@ var TaskOrchestrationItemTypeValues = taskOrchestrationItemTypeValuesType{
 }
 
 type TaskOrchestrationOwner struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     Id *int `json:"id,omitempty"`
     Name *string `json:"name,omitempty"`
 }

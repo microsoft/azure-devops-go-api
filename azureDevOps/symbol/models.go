@@ -10,6 +10,7 @@ package symbol
 
 import (
     "github.com/google/uuid"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/symbolCommon"
     "time"
 )
 
@@ -34,7 +35,7 @@ type DebugEntry struct {
     // A key the client (debugger, for example) uses to find the debug entry. Note it is not unique for each different symbol file as it does not distinguish between those which only differ by information level.
     ClientKey *string `json:"clientKey,omitempty"`
     // The information level this debug entry contains.
-    InformationLevel *DebugInformationLevel `json:"informationLevel,omitempty"`
+    InformationLevel *symbolCommon.DebugInformationLevel `json:"informationLevel,omitempty"`
     // The identifier of symbol request to which this debug entry belongs.
     RequestId *string `json:"requestId,omitempty"`
     // The status of debug entry.
@@ -83,42 +84,6 @@ var DebugEntryStatusValues = debugEntryStatusValuesType{
     Created: "created",
     // The symbol file for the requested debug entry is missing.
     BlobMissing: "blobMissing",
-}
-
-// Defines the level of debug-related information inside the .pdb file. These values can be combined together (bitwise OR'ed) to create a customized level.
-type DebugInformationLevel string
-
-type debugInformationLevelValuesType struct {
-    None DebugInformationLevel
-    Binary DebugInformationLevel
-    Publics DebugInformationLevel
-    TraceFormatPresent DebugInformationLevel
-    TypeInfo DebugInformationLevel
-    LineNumbers DebugInformationLevel
-    GlobalSymbols DebugInformationLevel
-    Private DebugInformationLevel
-    SourceIndexed DebugInformationLevel
-}
-
-var DebugInformationLevelValues = debugInformationLevelValuesType{
-    // If set, the .pdb file contains no debug information.
-    None: "none",
-    // If set, the .pdb file contains debug information which is binary.
-    Binary: "binary",
-    // If set, the .pdb file contains public symbols.
-    Publics: "publics",
-    // If set, the .pdb file contains trace format.
-    TraceFormatPresent: "traceFormatPresent",
-    // If set, the .pdb file contains type information.
-    TypeInfo: "typeInfo",
-    // If set, the .pdb file contains line number information.
-    LineNumbers: "lineNumbers",
-    // If set, the .pdb file contains symbol information.
-    GlobalSymbols: "globalSymbols",
-    // If set, the .pdb file contains public symbols and has type, line number and symbol information.
-    Private: "private",
-    // If set, the .pdb file supports the source server.
-    SourceIndexed: "sourceIndexed",
 }
 
 // BlobBlock hash formatted to be deserialized for symbol service.

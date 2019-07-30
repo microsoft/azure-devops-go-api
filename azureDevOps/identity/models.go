@@ -10,23 +10,7 @@ package identity
 
 import (
     "github.com/google/uuid"
-    "time"
 )
-
-type AccessTokenResult struct {
-    AccessToken *JsonWebToken `json:"accessToken,omitempty"`
-    AccessTokenError *TokenError `json:"accessTokenError,omitempty"`
-    AuthorizationId *uuid.UUID `json:"authorizationId,omitempty"`
-    ErrorDescription *string `json:"errorDescription,omitempty"`
-    HasError *bool `json:"hasError,omitempty"`
-    RefreshToken *RefreshTokenGrant `json:"refreshToken,omitempty"`
-    TokenType *string `json:"tokenType,omitempty"`
-    ValidTo *time.Time `json:"validTo,omitempty"`
-}
-
-type AuthorizationGrant struct {
-    GrantType *GrantType `json:"grantType,omitempty"`
-}
 
 // Container class for changed identities
 type ChangedIdentities struct {
@@ -80,24 +64,6 @@ var FrameworkIdentityTypeValues = frameworkIdentityTypeValuesType{
     ServiceIdentity: "serviceIdentity",
     AggregateIdentity: "aggregateIdentity",
     ImportedIdentity: "importedIdentity",
-}
-
-type GrantType string
-
-type grantTypeValuesType struct {
-    None GrantType
-    JwtBearer GrantType
-    RefreshToken GrantType
-    Implicit GrantType
-    ClientCredentials GrantType
-}
-
-var GrantTypeValues = grantTypeValuesType{
-    None: "none",
-    JwtBearer: "jwtBearer",
-    RefreshToken: "refreshToken",
-    Implicit: "implicit",
-    ClientCredentials: "clientCredentials",
 }
 
 type GroupMembership struct {
@@ -219,41 +185,6 @@ type IdentityUpdateData struct {
     Updated *bool `json:"updated,omitempty"`
 }
 
-// The JSON model for a JSON Patch operation
-type JsonPatchOperation struct {
-    // The path to copy from for the Move/Copy operation.
-    From *string `json:"from,omitempty"`
-    // The patch operation
-    Op *Operation `json:"op,omitempty"`
-    // The path for the operation. In the case of an array, a zero based index can be used to specify the position in the array (e.g. /biscuits/0/name). The "-" character can be used instead of an index to insert at the end of the array (e.g. /biscuits/-).
-    Path *string `json:"path,omitempty"`
-    // The value for the operation. This is either a primitive or a JToken.
-    Value interface{} `json:"value,omitempty"`
-}
-
-type JsonWebToken struct {
-}
-
-type Operation string
-
-type operationValuesType struct {
-    Add Operation
-    Remove Operation
-    Replace Operation
-    Move Operation
-    Copy Operation
-    Test Operation
-}
-
-var OperationValues = operationValuesType{
-    Add: "add",
-    Remove: "remove",
-    Replace: "replace",
-    Move: "move",
-    Copy: "copy",
-    Test: "test",
-}
-
 type QueryMembership string
 
 type queryMembershipValuesType struct {
@@ -277,6 +208,7 @@ var QueryMembershipValues = queryMembershipValuesType{
     ExpandedDown: "expandedDown",
 }
 
+// [Flags]
 type ReadIdentitiesOptions string
 
 type readIdentitiesOptionsValuesType struct {
@@ -289,11 +221,6 @@ var ReadIdentitiesOptionsValues = readIdentitiesOptionsValuesType{
     FilterIllegalMemberships: "filterIllegalMemberships",
 }
 
-type RefreshTokenGrant struct {
-    GrantType *GrantType `json:"grantType,omitempty"`
-    Jwt *JsonWebToken `json:"jwt,omitempty"`
-}
-
 type SwapIdentityInfo struct {
     Id1 *uuid.UUID `json:"id1,omitempty"`
     Id2 *uuid.UUID `json:"id2,omitempty"`
@@ -304,76 +231,4 @@ type TenantInfo struct {
     TenantId *uuid.UUID `json:"tenantId,omitempty"`
     TenantName *string `json:"tenantName,omitempty"`
     VerifiedDomains *[]string `json:"verifiedDomains,omitempty"`
-}
-
-type TokenError string
-
-type tokenErrorValuesType struct {
-    None TokenError
-    GrantTypeRequired TokenError
-    AuthorizationGrantRequired TokenError
-    ClientSecretRequired TokenError
-    RedirectUriRequired TokenError
-    InvalidAuthorizationGrant TokenError
-    InvalidAuthorizationScopes TokenError
-    InvalidRefreshToken TokenError
-    AuthorizationNotFound TokenError
-    AuthorizationGrantExpired TokenError
-    AccessAlreadyIssued TokenError
-    InvalidRedirectUri TokenError
-    AccessTokenNotFound TokenError
-    InvalidAccessToken TokenError
-    AccessTokenAlreadyRefreshed TokenError
-    InvalidClientSecret TokenError
-    ClientSecretExpired TokenError
-    ServerError TokenError
-    AccessDenied TokenError
-    AccessTokenKeyRequired TokenError
-    InvalidAccessTokenKey TokenError
-    FailedToGetAccessToken TokenError
-    InvalidClientId TokenError
-    InvalidClient TokenError
-    InvalidValidTo TokenError
-    InvalidUserId TokenError
-    FailedToIssueAccessToken TokenError
-    AuthorizationGrantScopeMissing TokenError
-    InvalidPublicAccessTokenKey TokenError
-    InvalidPublicAccessToken TokenError
-    PublicFeatureFlagNotEnabled TokenError
-    SshPolicyDisabled TokenError
-}
-
-var TokenErrorValues = tokenErrorValuesType{
-    None: "none",
-    GrantTypeRequired: "grantTypeRequired",
-    AuthorizationGrantRequired: "authorizationGrantRequired",
-    ClientSecretRequired: "clientSecretRequired",
-    RedirectUriRequired: "redirectUriRequired",
-    InvalidAuthorizationGrant: "invalidAuthorizationGrant",
-    InvalidAuthorizationScopes: "invalidAuthorizationScopes",
-    InvalidRefreshToken: "invalidRefreshToken",
-    AuthorizationNotFound: "authorizationNotFound",
-    AuthorizationGrantExpired: "authorizationGrantExpired",
-    AccessAlreadyIssued: "accessAlreadyIssued",
-    InvalidRedirectUri: "invalidRedirectUri",
-    AccessTokenNotFound: "accessTokenNotFound",
-    InvalidAccessToken: "invalidAccessToken",
-    AccessTokenAlreadyRefreshed: "accessTokenAlreadyRefreshed",
-    InvalidClientSecret: "invalidClientSecret",
-    ClientSecretExpired: "clientSecretExpired",
-    ServerError: "serverError",
-    AccessDenied: "accessDenied",
-    AccessTokenKeyRequired: "accessTokenKeyRequired",
-    InvalidAccessTokenKey: "invalidAccessTokenKey",
-    FailedToGetAccessToken: "failedToGetAccessToken",
-    InvalidClientId: "invalidClientId",
-    InvalidClient: "invalidClient",
-    InvalidValidTo: "invalidValidTo",
-    InvalidUserId: "invalidUserId",
-    FailedToIssueAccessToken: "failedToIssueAccessToken",
-    AuthorizationGrantScopeMissing: "authorizationGrantScopeMissing",
-    InvalidPublicAccessTokenKey: "invalidPublicAccessTokenKey",
-    InvalidPublicAccessToken: "invalidPublicAccessToken",
-    PublicFeatureFlagNotEnabled: "publicFeatureFlagNotEnabled",
-    SshPolicyDisabled: "sshPolicyDisabled",
 }

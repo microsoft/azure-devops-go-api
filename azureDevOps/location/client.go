@@ -14,6 +14,7 @@ import (
     "encoding/json"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevOps"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "net/http"
     "net/url"
     "strconv"
@@ -56,7 +57,7 @@ func (client Client) GetConnectionData(ctx context.Context, args GetConnectionDa
 // Arguments for the GetConnectionData function
 type GetConnectionDataArgs struct {
     // (optional)
-    ConnectOptions *ConnectOptions
+    ConnectOptions *webApi.ConnectOptions
     // (optional) Obsolete 32-bit LastChangeId
     LastChangeId *int
     // (optional) Non-truncated 64-bit LastChangeId

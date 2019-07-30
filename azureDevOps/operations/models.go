@@ -23,7 +23,7 @@ type Operation struct {
     // URL to get the full operation object.
     Url *string `json:"url,omitempty"`
     // Links to other related objects.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Detailed messaged about the status of an operation.
     DetailedMessage *string `json:"detailedMessage,omitempty"`
     // Result message for an operation.
@@ -74,10 +74,4 @@ var OperationStatusValues = operationStatusValuesType{
     Succeeded: "succeeded",
     // The operation completed with a failure.
     Failed: "failed",
-}
-
-// The class to represent a collection of REST reference links.
-type ReferenceLinks struct {
-    // The readonly view of the links.  Because Reference links are readonly, we only want to expose them as read only.
-    Links *map[string]interface{} `json:"links,omitempty"`
 }

@@ -6,55 +6,86 @@
 // Changes may cause incorrect behavior and will be lost if the code is regenerated.
 // --------------------------------------------------------------------------------------------
 
-package cloudLoadTest
+package testService
 
 import (
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "time"
 )
 
 type AgentGroup struct {
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    // User that created the agent group
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
+    // Time agent group was created
     CreationTime *time.Time `json:"creationTime,omitempty"`
+    // Id of the agent group
     GroupId *string `json:"groupId,omitempty"`
+    // The name of the agent group
     GroupName *string `json:"groupName,omitempty"`
     MachineAccessData *[]AgentGroupAccessData `json:"machineAccessData,omitempty"`
+    // Machine configuration
     MachineConfiguration *WebApiUserLoadTestMachineInput `json:"machineConfiguration,omitempty"`
+    // Tenant Id
     TenantId *string `json:"tenantId,omitempty"`
 }
 
 type AgentGroupAccessData struct {
+    // Type Specific details
     Details *string `json:"details,omitempty"`
+    // Access string
     StorageConnectionString *string `json:"storageConnectionString,omitempty"`
+    // Endpoint for the service
     StorageEndPoint *string `json:"storageEndPoint,omitempty"`
+    // Identifier for the storage (eg. table name)
     StorageName *string `json:"storageName,omitempty"`
+    // Type of the store (table, queue, blob)
     StorageType *string `json:"storageType,omitempty"`
 }
 
 type Application struct {
+    // Unique Id of the Application Component
     ApplicationId *string `json:"applicationId,omitempty"`
+    // Description of the Application component
     Description *string `json:"description,omitempty"`
+    // The Name of the Application component
     Name *string `json:"name,omitempty"`
+    // Path identifier of the Application component
     Path *string `json:"path,omitempty"`
+    // Character used to separate paths for counters
     PathSeperator *string `json:"pathSeperator,omitempty"`
+    // Type identifier of the Application component under test
     Type *string `json:"type,omitempty"`
+    // Version of the Application Component
     Version *string `json:"version,omitempty"`
 }
 
 type ApplicationCounters struct {
+    // The unique Id of the Application that the counter belongs
     ApplicationId *string `json:"applicationId,omitempty"`
+    // Description of autCounter
     Description *string `json:"description,omitempty"`
+    // The unique Id for the AutCounter
     Id *string `json:"id,omitempty"`
+    // Whether the autCounter is a default counter or not
     IsDefault *bool `json:"isDefault,omitempty"`
+    // Name of the AutCounter
     Name *string `json:"name,omitempty"`
+    // The Path of the the autcounter wrt to hierarchy
     Path *string `json:"path,omitempty"`
 }
 
 type ApplicationType struct {
+    // Helper link url
     ActionUriLink *string `json:"actionUriLink,omitempty"`
+    // The link that points to aut results site
     AutPortalLink *string `json:"autPortalLink,omitempty"`
+    // true if application results collection is enabled for this tenant
     IsEnabled *bool `json:"isEnabled,omitempty"`
+    // the max no. of application components allowed for collection per run
     MaxComponentsAllowedForCollection *int `json:"maxComponentsAllowedForCollection,omitempty"`
+    // The max no. of counters that can be collected per aut
     MaxCountersAllowed *int `json:"maxCountersAllowed,omitempty"`
+    // Application Type
     Type *string `json:"type,omitempty"`
 }
 
@@ -77,6 +108,7 @@ type CounterGroup struct {
 type CounterInstanceSamples struct {
     Count *int `json:"count,omitempty"`
     CounterInstanceId *string `json:"counterInstanceId,omitempty"`
+    // The time of next refresh
     NextRefreshTime *time.Time `json:"nextRefreshTime,omitempty"`
     Values *[]CounterSample `json:"values,omitempty"`
 }
@@ -95,15 +127,20 @@ type CounterSample struct {
 }
 
 type CounterSampleQueryDetails struct {
+    // The instanceId for which samples are required
     CounterInstanceId *string `json:"counterInstanceId,omitempty"`
     FromInterval *int `json:"fromInterval,omitempty"`
     ToInterval *int `json:"toInterval,omitempty"`
 }
 
 type CounterSamplesResult struct {
+    // Count of the samples
     Count *int `json:"count,omitempty"`
+    // Maximum number of samples returned in this object
     MaxBatchSize *int `json:"maxBatchSize,omitempty"`
+    // Count of the samples
     TotalSamplesCount *int `json:"totalSamplesCount,omitempty"`
+    // The result samples
     Values *[]CounterInstanceSamples `json:"values,omitempty"`
 }
 
@@ -115,6 +152,7 @@ type Diagnostics struct {
 
 type DropAccessData struct {
     DropContainerUrl *string `json:"dropContainerUrl,omitempty"`
+    // The SaSkey to use for the drop.
     SasKey *string `json:"sasKey,omitempty"`
 }
 
@@ -126,29 +164,6 @@ type ErrorDetails struct {
     ScenarioName *string `json:"scenarioName,omitempty"`
     StackTrace *string `json:"stackTrace,omitempty"`
     TestCaseName *string `json:"testCaseName,omitempty"`
-}
-
-type GraphSubjectBase struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    Descriptor *string `json:"descriptor,omitempty"`
-    DisplayName *string `json:"displayName,omitempty"`
-    Url *string `json:"url,omitempty"`
-}
-
-type IdentityRef struct {
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    Descriptor *string `json:"descriptor,omitempty"`
-    DisplayName *string `json:"displayName,omitempty"`
-    Url *string `json:"url,omitempty"`
-    DirectoryAlias *string `json:"directoryAlias,omitempty"`
-    Id *string `json:"id,omitempty"`
-    ImageUrl *string `json:"imageUrl,omitempty"`
-    Inactive *bool `json:"inactive,omitempty"`
-    IsAadIdentity *bool `json:"isAadIdentity,omitempty"`
-    IsContainer *bool `json:"isContainer,omitempty"`
-    IsDeletedInOrigin *bool `json:"isDeletedInOrigin,omitempty"`
-    ProfileUrl *string `json:"profileUrl,omitempty"`
-    UniqueName *string `json:"uniqueName,omitempty"`
 }
 
 type LoadGenerationGeoLocation struct {
@@ -172,6 +187,18 @@ type LoadTestDefinition struct {
     SamplingRate *int `json:"samplingRate,omitempty"`
     ThinkTime *int `json:"thinkTime,omitempty"`
     Urls *[]string `json:"urls,omitempty"`
+}
+
+type LoadTestErrorDetails struct {
+    LastErrorDate *time.Time `json:"lastErrorDate,omitempty"`
+    MessageText *string `json:"messageText,omitempty"`
+    Occurrences *int `json:"occurrences,omitempty"`
+    Request *string `json:"request,omitempty"`
+    ScenarioName *string `json:"scenarioName,omitempty"`
+    StackTrace *string `json:"stackTrace,omitempty"`
+    SubType *string `json:"subType,omitempty"`
+    TestCaseName *string `json:"testCaseName,omitempty"`
+    Type *string `json:"type,omitempty"`
 }
 
 type LoadTestErrors struct {
@@ -301,10 +328,6 @@ var ProcessorArchitectureValues = processorArchitectureValuesType{
     Arm: "arm",
 }
 
-type ReferenceLinks struct {
-    Links *map[string]interface{} `json:"links,omitempty"`
-}
-
 type RequestSummary struct {
     AverageResponseTime *float64 `json:"averageResponseTime,omitempty"`
     FailedRequests *int `json:"failedRequests,omitempty"`
@@ -321,6 +344,14 @@ type ScenarioSummary struct {
     MaxUserLoad *int `json:"maxUserLoad,omitempty"`
     MinUserLoad *int `json:"minUserLoad,omitempty"`
     ScenarioName *string `json:"scenarioName,omitempty"`
+}
+
+type StaticAgent struct {
+    AgentGroupId *string `json:"agentGroupId,omitempty"`
+    AgentGroupName *string `json:"agentGroupName,omitempty"`
+    LastHeartBeat *time.Time `json:"lastHeartBeat,omitempty"`
+    Name *string `json:"name,omitempty"`
+    State *string `json:"state,omitempty"`
 }
 
 type StaticAgentRunSetting struct {
@@ -341,25 +372,18 @@ type SummaryPercentileData struct {
     PercentileValue *float64 `json:"percentileValue,omitempty"`
 }
 
-type TenantDetails struct {
-    AccessDetails *[]AgentGroupAccessData `json:"accessDetails,omitempty"`
-    Id *string `json:"id,omitempty"`
-    StaticMachines *[]WebApiTestMachine `json:"staticMachines,omitempty"`
-    UserLoadAgentInput *WebApiUserLoadTestMachineInput `json:"userLoadAgentInput,omitempty"`
-    UserLoadAgentResourcesUri *string `json:"userLoadAgentResourcesUri,omitempty"`
-    ValidGeoLocations *[]string `json:"validGeoLocations,omitempty"`
-}
-
 type TestDefinition struct {
+    // Data for accessing the drop and not persisted in storage
     AccessData *DropAccessData `json:"accessData,omitempty"`
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     CreatedDate *time.Time `json:"createdDate,omitempty"`
     Id *string `json:"id,omitempty"`
-    LastModifiedBy *IdentityRef `json:"lastModifiedBy,omitempty"`
+    LastModifiedBy *webApi.IdentityRef `json:"lastModifiedBy,omitempty"`
     LastModifiedDate *time.Time `json:"lastModifiedDate,omitempty"`
     LoadTestType *LoadTestTypes `json:"loadTestType,omitempty"`
     Name *string `json:"name,omitempty"`
     Description *string `json:"description,omitempty"`
+    // Geo location from where load is generated
     LoadGenerationGeoLocations *[]LoadGenerationGeoLocation `json:"loadGenerationGeoLocations,omitempty"`
     LoadTestDefinitionSource *string `json:"loadTestDefinitionSource,omitempty"`
     RunSettings *LoadTestRunSettings `json:"runSettings,omitempty"`
@@ -368,34 +392,47 @@ type TestDefinition struct {
 }
 
 type TestDefinitionBasic struct {
+    // Data for accessing the drop and not persisted in storage
     AccessData *DropAccessData `json:"accessData,omitempty"`
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
     CreatedDate *time.Time `json:"createdDate,omitempty"`
     Id *string `json:"id,omitempty"`
-    LastModifiedBy *IdentityRef `json:"lastModifiedBy,omitempty"`
+    LastModifiedBy *webApi.IdentityRef `json:"lastModifiedBy,omitempty"`
     LastModifiedDate *time.Time `json:"lastModifiedDate,omitempty"`
     LoadTestType *LoadTestTypes `json:"loadTestType,omitempty"`
     Name *string `json:"name,omitempty"`
 }
 
 type TestDrop struct {
+    // Data for accessing the drop and not persisted in storage
     AccessData *DropAccessData `json:"accessData,omitempty"`
+    // Time at which the drop is created
     CreatedDate *time.Time `json:"createdDate,omitempty"`
+    // Identifies the type of drop
     DropType *string `json:"dropType,omitempty"`
+    // Drop Id
     Id *string `json:"id,omitempty"`
+    // LoadTest definition of the run for which testdrop is created
     LoadTestDefinition *LoadTestDefinition `json:"loadTestDefinition,omitempty"`
+    // Test Run Id
     TestRunId *string `json:"testRunId,omitempty"`
 }
 
+// An abstracted reference to some other resource. This class is used to provide the load test data contracts with a uniform way to reference other resources in a way that provides easy traversal through links.
 type TestDropRef struct {
+    // Id of the resource
     Id *string `json:"id,omitempty"`
+    // Full http link to the resource
     Url *string `json:"url,omitempty"`
 }
 
 type TestResults struct {
+    // The uri to the test run results file.
     CloudLoadTestSolutionUrl *string `json:"cloudLoadTestSolutionUrl,omitempty"`
     CounterGroups *[]CounterGroup `json:"counterGroups,omitempty"`
+    // The object contains diagnostic details
     Diagnostics *Diagnostics `json:"diagnostics,omitempty"`
+    // The uri to the test run results file.
     ResultsUrl *string `json:"resultsUrl,omitempty"`
 }
 
@@ -412,40 +449,71 @@ type TestResultsSummary struct {
 }
 
 type TestRun struct {
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    // Vss User identity who created the test run.
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
+    // Gets the creation time of the test run
     CreatedDate *time.Time `json:"createdDate,omitempty"`
-    DeletedBy *IdentityRef `json:"deletedBy,omitempty"`
+    // Vss User identity who deleted the test run.
+    DeletedBy *webApi.IdentityRef `json:"deletedBy,omitempty"`
+    // Gets the deleted time of the test run
     DeletedDate *time.Time `json:"deletedDate,omitempty"`
+    // Gets the finish time of the test run
     FinishedDate *time.Time `json:"finishedDate,omitempty"`
+    // Gets the unique identifier for the test run definition.
     Id *string `json:"id,omitempty"`
     LoadGenerationGeoLocations *[]LoadGenerationGeoLocation `json:"loadGenerationGeoLocations,omitempty"`
+    // Gets the load test file of the test run definition.
     LoadTestFileName *string `json:"loadTestFileName,omitempty"`
+    // Gets the name of the test run definition.
     Name *string `json:"name,omitempty"`
+    // Gets the number of the test run (unique within a tenant)
     RunNumber *int `json:"runNumber,omitempty"`
+    // Test run source like Ibiza,VSO,BuildVNext, etc.
     RunSource *string `json:"runSource,omitempty"`
+    // Run specific details.
     RunSpecificDetails *LoadTestRunDetails `json:"runSpecificDetails,omitempty"`
+    // Run type like VisualStudioLoadTest or JMeterLoadTest
     RunType *TestRunType `json:"runType,omitempty"`
+    // State of the test run.
     State *TestRunState `json:"state,omitempty"`
     Url *string `json:"url,omitempty"`
+    // Message associated to state change, contains details of infrastructure error.
     AbortMessage *TestRunAbortMessage `json:"abortMessage,omitempty"`
+    // true if aut counter collection could not start due to some critical error for this run.
     AutInitializationError *bool `json:"autInitializationError,omitempty"`
+    // Whether run is chargeable or not Its chargeable once we configured agent and sent start signal
     Chargeable *bool `json:"chargeable,omitempty"`
+    // Whether run is chargeable or not The Charged VUser Minutes for the RUN
     ChargedVUserminutes *int `json:"chargedVUserminutes,omitempty"`
+    // Test run description.
     Description *string `json:"description,omitempty"`
+    // Gets the time when the test run execution finished
     ExecutionFinishedDate *time.Time `json:"executionFinishedDate,omitempty"`
+    // Gets the time when the test run warmup finished(if warmup was specified) and load test started
     ExecutionStartedDate *time.Time `json:"executionStartedDate,omitempty"`
+    // Gets the time when the test run was queued
     QueuedDate *time.Time `json:"queuedDate,omitempty"`
+    // Retention state of the run
     RetentionState *TestRunRetentionState `json:"retentionState,omitempty"`
     RunSourceIdentifier *string `json:"runSourceIdentifier,omitempty"`
+    // The uri to the run source.
     RunSourceUrl *string `json:"runSourceUrl,omitempty"`
-    StartedBy *IdentityRef `json:"startedBy,omitempty"`
+    // Vss User identity who created the test run.
+    StartedBy *webApi.IdentityRef `json:"startedBy,omitempty"`
+    // When the test run started execution.
     StartedDate *time.Time `json:"startedDate,omitempty"`
-    StoppedBy *IdentityRef `json:"stoppedBy,omitempty"`
+    // Vss User identity who created the test run.
+    StoppedBy *webApi.IdentityRef `json:"stoppedBy,omitempty"`
+    // SubState is more granular description of the state
     SubState *TestRunSubState `json:"subState,omitempty"`
     SupersedeRunSettings *OverridableRunSettings `json:"supersedeRunSettings,omitempty"`
+    // Drop associated with this test run
     TestDrop *TestDropRef `json:"testDrop,omitempty"`
+    // The Test settings for the test run
     TestSettings *TestSettings `json:"testSettings,omitempty"`
+    // Gets the time when the test run warmup started
     WarmUpStartedDate *time.Time `json:"warmUpStartedDate,omitempty"`
+    // The uri to the vso detailed result.
     WebResultUrl *string `json:"webResultUrl,omitempty"`
 }
 
@@ -458,44 +526,70 @@ type TestRunAbortMessage struct {
 }
 
 type TestRunBasic struct {
-    CreatedBy *IdentityRef `json:"createdBy,omitempty"`
+    // Vss User identity who created the test run.
+    CreatedBy *webApi.IdentityRef `json:"createdBy,omitempty"`
+    // Gets the creation time of the test run
     CreatedDate *time.Time `json:"createdDate,omitempty"`
-    DeletedBy *IdentityRef `json:"deletedBy,omitempty"`
+    // Vss User identity who deleted the test run.
+    DeletedBy *webApi.IdentityRef `json:"deletedBy,omitempty"`
+    // Gets the deleted time of the test run
     DeletedDate *time.Time `json:"deletedDate,omitempty"`
+    // Gets the finish time of the test run
     FinishedDate *time.Time `json:"finishedDate,omitempty"`
+    // Gets the unique identifier for the test run definition.
     Id *string `json:"id,omitempty"`
     LoadGenerationGeoLocations *[]LoadGenerationGeoLocation `json:"loadGenerationGeoLocations,omitempty"`
+    // Gets the load test file of the test run definition.
     LoadTestFileName *string `json:"loadTestFileName,omitempty"`
+    // Gets the name of the test run definition.
     Name *string `json:"name,omitempty"`
+    // Gets the number of the test run (unique within a tenant)
     RunNumber *int `json:"runNumber,omitempty"`
+    // Test run source like Ibiza,VSO,BuildVNext, etc.
     RunSource *string `json:"runSource,omitempty"`
+    // Run specific details.
     RunSpecificDetails *LoadTestRunDetails `json:"runSpecificDetails,omitempty"`
+    // Run type like VisualStudioLoadTest or JMeterLoadTest
     RunType *TestRunType `json:"runType,omitempty"`
+    // State of the test run.
     State *TestRunState `json:"state,omitempty"`
     Url *string `json:"url,omitempty"`
 }
 
 type TestRunCounterInstance struct {
+    // CategoryName for this counter
     CategoryName *string `json:"categoryName,omitempty"`
+    // Combination of source and SourceInstanceId
     CounterInstanceId *string `json:"counterInstanceId,omitempty"`
+    // Name of the counter Eg: Errors/Sec
     CounterName *string `json:"counterName,omitempty"`
+    // Units for this counter. Empty string for mere numbers
     CounterUnits *string `json:"counterUnits,omitempty"`
+    // Instance Name Eg: _Avg,_Total etc
     InstanceName *string `json:"instanceName,omitempty"`
+    // true if this counter instance is a default counter
     IsPreselectedCounter *bool `json:"isPreselectedCounter,omitempty"`
+    // Machine from where this counter was collected Used in case of machine specific counters like - Agent CPU and memory etc.
     MachineName *string `json:"machineName,omitempty"`
+    // Counter Groups to which this counter instance is part of
     PartOfCounterGroups *[]string `json:"partOfCounterGroups,omitempty"`
+    // Summary result for this counter instance
     SummaryData *WebInstanceSummaryData `json:"summaryData,omitempty"`
+    // A unique name for this counter instance
     UniqueName *string `json:"uniqueName,omitempty"`
 }
 
 type TestRunMessage struct {
+    // Agent Id
     AgentId *string `json:"agentId,omitempty"`
     ErrorCode *string `json:"errorCode,omitempty"`
     LoggedDate *time.Time `json:"loggedDate,omitempty"`
     Message *string `json:"message,omitempty"`
+    // Message Id
     MessageId *string `json:"messageId,omitempty"`
     MessageSource *MessageSource `json:"messageSource,omitempty"`
     MessageType *MessageType `json:"messageType,omitempty"`
+    // Id of the test run
     TestRunId *string `json:"testRunId,omitempty"`
     Url *string `json:"url,omitempty"`
 }
@@ -581,8 +675,11 @@ var TestRunTypeValues = testRunTypeValuesType{
 }
 
 type TestSettings struct {
+    // Cleanup command
     CleanupCommand *string `json:"cleanupCommand,omitempty"`
+    // Processor Architecture chosen
     HostProcessPlatform *ProcessorArchitecture `json:"hostProcessPlatform,omitempty"`
+    // Setup command
     SetupCommand *string `json:"setupCommand,omitempty"`
 }
 
@@ -633,12 +730,7 @@ type WebApiSetupParamaters struct {
     Configurations *map[WebApiMachineConfiguration]string `json:"configurations,omitempty"`
 }
 
-type WebApiTestMachine struct {
-    LastHeartBeat *time.Time `json:"lastHeartBeat,omitempty"`
-    MachineName *string `json:"machineName,omitempty"`
-    Status *string `json:"status,omitempty"`
-}
-
+// This can eventually evolve as the ultimate JSON file that user can use to configure their machine(s) against CLT
 type WebApiUserLoadTestMachineInput struct {
     MachineGroupId *string `json:"machineGroupId,omitempty"`
     MachineType *LoadTestMachineType `json:"machineType,omitempty"`

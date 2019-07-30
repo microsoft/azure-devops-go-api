@@ -10,6 +10,8 @@ package core
 
 import (
     "github.com/google/uuid"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/identity"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "time"
 )
 
@@ -33,166 +35,14 @@ var ConnectedServiceKindValues = connectedServiceKindValuesType{
     Generic: "generic",
 }
 
-type GraphSubjectBase struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-}
-
-type Identity struct {
-    // The custom display name for the identity (if any). Setting this property to an empty string will clear the existing custom display name. Setting this property to null will not affect the existing persisted value (since null values do not get sent over the wire or to the database)
-    CustomDisplayName *string `json:"customDisplayName,omitempty"`
-    Descriptor *string `json:"descriptor,omitempty"`
-    Id *uuid.UUID `json:"id,omitempty"`
-    IsActive *bool `json:"isActive,omitempty"`
-    IsContainer *bool `json:"isContainer,omitempty"`
-    MasterId *uuid.UUID `json:"masterId,omitempty"`
-    MemberIds *[]uuid.UUID `json:"memberIds,omitempty"`
-    MemberOf *[]string `json:"memberOf,omitempty"`
-    Members *[]string `json:"members,omitempty"`
-    MetaTypeId *int `json:"metaTypeId,omitempty"`
-    Properties interface{} `json:"properties,omitempty"`
-    // The display name for the identity as specified by the source identity provider.
-    ProviderDisplayName *string `json:"providerDisplayName,omitempty"`
-    ResourceVersion *int `json:"resourceVersion,omitempty"`
-    SocialDescriptor *string `json:"socialDescriptor,omitempty"`
-    SubjectDescriptor *string `json:"subjectDescriptor,omitempty"`
-    UniqueUserId *int `json:"uniqueUserId,omitempty"`
-}
-
-// Base Identity class to allow "trimmed" identity class in the GetConnectionData API Makes sure that on-the-wire representations of the derived classes are compatible with each other (e.g. Server responds with PublicIdentity object while client deserializes it as Identity object) Derived classes should not have additional [DataMember] properties
-type IdentityBase struct {
-    // The custom display name for the identity (if any). Setting this property to an empty string will clear the existing custom display name. Setting this property to null will not affect the existing persisted value (since null values do not get sent over the wire or to the database)
-    CustomDisplayName *string `json:"customDisplayName,omitempty"`
-    Descriptor *string `json:"descriptor,omitempty"`
-    Id *uuid.UUID `json:"id,omitempty"`
-    IsActive *bool `json:"isActive,omitempty"`
-    IsContainer *bool `json:"isContainer,omitempty"`
-    MasterId *uuid.UUID `json:"masterId,omitempty"`
-    MemberIds *[]uuid.UUID `json:"memberIds,omitempty"`
-    MemberOf *[]string `json:"memberOf,omitempty"`
-    Members *[]string `json:"members,omitempty"`
-    MetaTypeId *int `json:"metaTypeId,omitempty"`
-    Properties interface{} `json:"properties,omitempty"`
-    // The display name for the identity as specified by the source identity provider.
-    ProviderDisplayName *string `json:"providerDisplayName,omitempty"`
-    ResourceVersion *int `json:"resourceVersion,omitempty"`
-    SocialDescriptor *string `json:"socialDescriptor,omitempty"`
-    SubjectDescriptor *string `json:"subjectDescriptor,omitempty"`
-    UniqueUserId *int `json:"uniqueUserId,omitempty"`
-}
-
 type IdentityData struct {
     IdentityIds *[]uuid.UUID `json:"identityIds,omitempty"`
-}
-
-type IdentityRef struct {
-    // This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
-    Links *ReferenceLinks `json:"_links,omitempty"`
-    // The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
-    Descriptor *string `json:"descriptor,omitempty"`
-    // This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
-    DisplayName *string `json:"displayName,omitempty"`
-    // This url is the full route to the source resource of this graph subject.
-    Url *string `json:"url,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph user referenced in the "self" entry of the IdentityRef "_links" dictionary
-    DirectoryAlias *string `json:"directoryAlias,omitempty"`
-    Id *string `json:"id,omitempty"`
-    // Deprecated - Available in the "avatar" entry of the IdentityRef "_links" dictionary
-    ImageUrl *string `json:"imageUrl,omitempty"`
-    // Deprecated - Can be retrieved by querying the Graph membership state referenced in the "membershipState" entry of the GraphUser "_links" dictionary
-    Inactive *bool `json:"inactive,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsAadUserType/Descriptor.IsAadGroupType)
-    IsAadIdentity *bool `json:"isAadIdentity,omitempty"`
-    // Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsGroupType)
-    IsContainer *bool `json:"isContainer,omitempty"`
-    IsDeletedInOrigin *bool `json:"isDeletedInOrigin,omitempty"`
-    // Deprecated - not in use in most preexisting implementations of ToIdentityRef
-    ProfileUrl *string `json:"profileUrl,omitempty"`
-    // Deprecated - use Domain+PrincipalName instead
-    UniqueName *string `json:"uniqueName,omitempty"`
-}
-
-// The JSON model for a JSON Patch operation
-type JsonPatchOperation struct {
-    // The path to copy from for the Move/Copy operation.
-    From *string `json:"from,omitempty"`
-    // The patch operation
-    Op *Operation `json:"op,omitempty"`
-    // The path for the operation. In the case of an array, a zero based index can be used to specify the position in the array (e.g. /biscuits/0/name). The "-" character can be used instead of an index to insert at the end of the array (e.g. /biscuits/-).
-    Path *string `json:"path,omitempty"`
-    // The value for the operation. This is either a primitive or a JToken.
-    Value interface{} `json:"value,omitempty"`
-}
-
-type Operation string
-
-type operationValuesType struct {
-    Add Operation
-    Remove Operation
-    Replace Operation
-    Move Operation
-    Copy Operation
-    Test Operation
-}
-
-var OperationValues = operationValuesType{
-    Add: "add",
-    Remove: "remove",
-    Replace: "replace",
-    Move: "move",
-    Copy: "copy",
-    Test: "test",
-}
-
-// Reference for an async operation.
-type OperationReference struct {
-    // Unique identifier for the operation.
-    Id *uuid.UUID `json:"id,omitempty"`
-    // Unique identifier for the plugin.
-    PluginId *uuid.UUID `json:"pluginId,omitempty"`
-    // The current status of the operation.
-    Status *OperationStatus `json:"status,omitempty"`
-    // URL to get the full operation object.
-    Url *string `json:"url,omitempty"`
-}
-
-// The status of an operation.
-type OperationStatus string
-
-type operationStatusValuesType struct {
-    NotSet OperationStatus
-    Queued OperationStatus
-    InProgress OperationStatus
-    Cancelled OperationStatus
-    Succeeded OperationStatus
-    Failed OperationStatus
-}
-
-var OperationStatusValues = operationStatusValuesType{
-    // The operation does not have a status set.
-    NotSet: "notSet",
-    // The operation has been queued.
-    Queued: "queued",
-    // The operation is in progress.
-    InProgress: "inProgress",
-    // The operation was cancelled by the user.
-    Cancelled: "cancelled",
-    // The operation completed successfully.
-    Succeeded: "succeeded",
-    // The operation completed with a failure.
-    Failed: "failed",
 }
 
 type Process struct {
     Name *string `json:"name,omitempty"`
     Url *string `json:"url,omitempty"`
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     Description *string `json:"description,omitempty"`
     Id *uuid.UUID `json:"id,omitempty"`
     IsDefault *bool `json:"isDefault,omitempty"`
@@ -365,21 +215,7 @@ type ProxyAuthorization struct {
     // Gets or sets the user identity to authorize for on-prem.
     Identity *string `json:"identity,omitempty"`
     // Gets or sets the public key used to verify the identity of this proxy. Only specify on hosted.
-    PublicKey *PublicKey `json:"publicKey,omitempty"`
-}
-
-// Represents the public key portion of an RSA asymmetric key.
-type PublicKey struct {
-    // Gets or sets the exponent for the public key.
-    Exponent *[]byte `json:"exponent,omitempty"`
-    // Gets or sets the modulus for the public key.
-    Modulus *[]byte `json:"modulus,omitempty"`
-}
-
-// The class to represent a collection of REST reference links.
-type ReferenceLinks struct {
-    // The readonly view of the links.  Because Reference links are readonly, we only want to expose them as read only.
-    Links *map[string]interface{} `json:"links,omitempty"`
+    PublicKey *webApi.PublicKey `json:"publicKey,omitempty"`
 }
 
 type SourceControlTypes string
@@ -406,11 +242,6 @@ type TeamContext struct {
     TeamId *uuid.UUID `json:"teamId,omitempty"`
 }
 
-type TeamMember struct {
-    Identity *IdentityRef `json:"identity,omitempty"`
-    IsTeamAdmin *bool `json:"isTeamAdmin,omitempty"`
-}
-
 // Represents a Team Project object.
 type TeamProject struct {
     // Project abbreviation.
@@ -434,7 +265,7 @@ type TeamProject struct {
     // Project visibility.
     Visibility *ProjectVisibility `json:"visibility,omitempty"`
     // The links to other objects related to this object.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Set of capabilities this project has (such as process template & version control).
     Capabilities *map[string]map[string]string `json:"capabilities,omitempty"`
     // The shallow ref to the default team.
@@ -450,7 +281,7 @@ type TeamProjectCollection struct {
     // Collection REST Url.
     Url *string `json:"url,omitempty"`
     // The links to other objects related to this object.
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // Project collection description.
     Description *string `json:"description,omitempty"`
     // Process customization type on this collection. It can be Xml or Inherited.
@@ -521,7 +352,7 @@ type UpdateTeam struct {
 type WebApiConnectedService struct {
     Url *string `json:"url,omitempty"`
     // The user who did the OAuth authentication to created this service
-    AuthenticatedBy *IdentityRef `json:"authenticatedBy,omitempty"`
+    AuthenticatedBy *webApi.IdentityRef `json:"authenticatedBy,omitempty"`
     // Extra description on the service.
     Description *string `json:"description,omitempty"`
     // Friendly Name of service connection
@@ -635,7 +466,7 @@ type WebApiTeam struct {
     // Team description
     Description *string `json:"description,omitempty"`
     // Team identity.
-    Identity *Identity `json:"identity,omitempty"`
+    Identity *identity.Identity `json:"identity,omitempty"`
     // Identity REST API Url to this team
     IdentityUrl *string `json:"identityUrl,omitempty"`
     ProjectId *uuid.UUID `json:"projectId,omitempty"`

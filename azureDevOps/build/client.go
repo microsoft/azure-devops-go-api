@@ -14,6 +14,7 @@ import (
     "encoding/json"
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azureDevOps"
+    "github.com/microsoft/azure-devops-go-api/azureDevOps/webApi"
     "io"
     "net/http"
     "net/url"
@@ -1979,7 +1980,7 @@ func (client Client) UpdateBuildProperties(ctx context.Context, args UpdateBuild
 // Arguments for the UpdateBuildProperties function
 type UpdateBuildPropertiesArgs struct {
     // (required) A json-patch document describing the properties to update.
-    Document *[]JsonPatchOperation
+    Document *[]webApi.JsonPatchOperation
     // (required) Project ID or project name
     Project *string
     // (required) The ID of the build.
@@ -2057,7 +2058,7 @@ func (client Client) UpdateDefinitionProperties(ctx context.Context, args Update
 // Arguments for the UpdateDefinitionProperties function
 type UpdateDefinitionPropertiesArgs struct {
     // (required) A json-patch document describing the properties to update.
-    Document *[]JsonPatchOperation
+    Document *[]webApi.JsonPatchOperation
     // (required) Project ID or project name
     Project *string
     // (required) The ID of the definition.
@@ -3084,7 +3085,7 @@ type ListWebhooksArgs struct {
 }
 
 // Gets the work items associated with a build.
-func (client Client) GetBuildWorkItemsRefs(ctx context.Context, args GetBuildWorkItemsRefsArgs) (*[]ResourceRef, error) {
+func (client Client) GetBuildWorkItemsRefs(ctx context.Context, args GetBuildWorkItemsRefsArgs) (*[]webApi.ResourceRef, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -3105,7 +3106,7 @@ func (client Client) GetBuildWorkItemsRefs(ctx context.Context, args GetBuildWor
         return nil, err
     }
 
-    var responseValue []ResourceRef
+    var responseValue []webApi.ResourceRef
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -3121,7 +3122,7 @@ type GetBuildWorkItemsRefsArgs struct {
 }
 
 // Gets the work items associated with a build, filtered to specific commits.
-func (client Client) GetBuildWorkItemsRefsFromCommits(ctx context.Context, args GetBuildWorkItemsRefsFromCommitsArgs) (*[]ResourceRef, error) {
+func (client Client) GetBuildWorkItemsRefsFromCommits(ctx context.Context, args GetBuildWorkItemsRefsFromCommitsArgs) (*[]webApi.ResourceRef, error) {
     if args.CommitIds == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "commitIds"}
     }
@@ -3149,7 +3150,7 @@ func (client Client) GetBuildWorkItemsRefsFromCommits(ctx context.Context, args 
         return nil, err
     }
 
-    var responseValue []ResourceRef
+    var responseValue []webApi.ResourceRef
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }
@@ -3167,7 +3168,7 @@ type GetBuildWorkItemsRefsFromCommitsArgs struct {
 }
 
 // [Preview API] Gets all the work items between two builds.
-func (client Client) GetWorkItemsBetweenBuilds(ctx context.Context, args GetWorkItemsBetweenBuildsArgs) (*[]ResourceRef, error) {
+func (client Client) GetWorkItemsBetweenBuilds(ctx context.Context, args GetWorkItemsBetweenBuildsArgs) (*[]webApi.ResourceRef, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -3192,7 +3193,7 @@ func (client Client) GetWorkItemsBetweenBuilds(ctx context.Context, args GetWork
         return nil, err
     }
 
-    var responseValue []ResourceRef
+    var responseValue []webApi.ResourceRef
     err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
     return &responseValue, err
 }

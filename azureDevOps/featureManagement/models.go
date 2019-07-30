@@ -15,7 +15,7 @@ import (
 // A feature that can be enabled or disabled
 type ContributedFeature struct {
     // Named links describing the feature
-    Links *ReferenceLinks `json:"_links,omitempty"`
+    Links interface{} `json:"_links,omitempty"`
     // If true, the feature is enabled unless overridden at some scope
     DefaultState *bool `json:"defaultState,omitempty"`
     // Rules for setting the default value if not specified by any setting/scope. Evaluated in order until a rule returns an Enabled or Disabled state (not Undefined)
@@ -115,10 +115,4 @@ type ContributedFeatureValueRule struct {
     Name *string `json:"name,omitempty"`
     // Properties to feed to the handler
     Properties *map[string]interface{} `json:"properties,omitempty"`
-}
-
-// The class to represent a collection of REST reference links.
-type ReferenceLinks struct {
-    // The readonly view of the links.  Because Reference links are readonly, we only want to expose them as read only.
-    Links *map[string]interface{} `json:"links,omitempty"`
 }
