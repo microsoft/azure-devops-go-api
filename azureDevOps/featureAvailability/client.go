@@ -23,7 +23,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -31,7 +31,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
 }
 
 // [Preview API] Retrieve a listing of all feature flags and their current states for a user
-func (client Client) GetAllFeatureFlags(ctx context.Context, args GetAllFeatureFlagsArgs) (*[]FeatureFlag, error) {
+func (client *Client) GetAllFeatureFlags(ctx context.Context, args GetAllFeatureFlagsArgs) (*[]FeatureFlag, error) {
     queryParams := url.Values{}
     if args.UserEmail != nil {
         queryParams.Add("userEmail", *args.UserEmail)
@@ -54,7 +54,7 @@ type GetAllFeatureFlagsArgs struct {
 }
 
 // [Preview API] Retrieve information on a single feature flag and its current states
-func (client Client) GetFeatureFlagByName(ctx context.Context, args GetFeatureFlagByNameArgs) (*FeatureFlag, error) {
+func (client *Client) GetFeatureFlagByName(ctx context.Context, args GetFeatureFlagByNameArgs) (*FeatureFlag, error) {
     routeValues := make(map[string]string)
     if args.Name == nil || *args.Name == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "name"} 
@@ -85,7 +85,7 @@ type GetFeatureFlagByNameArgs struct {
 }
 
 // [Preview API] Retrieve information on a single feature flag and its current states for a user
-func (client Client) GetFeatureFlagByNameAndUserEmail(ctx context.Context, args GetFeatureFlagByNameAndUserEmailArgs) (*FeatureFlag, error) {
+func (client *Client) GetFeatureFlagByNameAndUserEmail(ctx context.Context, args GetFeatureFlagByNameAndUserEmailArgs) (*FeatureFlag, error) {
     routeValues := make(map[string]string)
     if args.Name == nil || *args.Name == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "name"} 
@@ -122,7 +122,7 @@ type GetFeatureFlagByNameAndUserEmailArgs struct {
 }
 
 // [Preview API] Retrieve information on a single feature flag and its current states for a user
-func (client Client) GetFeatureFlagByNameAndUserId(ctx context.Context, args GetFeatureFlagByNameAndUserIdArgs) (*FeatureFlag, error) {
+func (client *Client) GetFeatureFlagByNameAndUserId(ctx context.Context, args GetFeatureFlagByNameAndUserIdArgs) (*FeatureFlag, error) {
     routeValues := make(map[string]string)
     if args.Name == nil || *args.Name == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "name"} 
@@ -159,7 +159,7 @@ type GetFeatureFlagByNameAndUserIdArgs struct {
 }
 
 // [Preview API] Change the state of an individual feature flag for a name
-func (client Client) UpdateFeatureFlag(ctx context.Context, args UpdateFeatureFlagArgs) (*FeatureFlag, error) {
+func (client *Client) UpdateFeatureFlag(ctx context.Context, args UpdateFeatureFlagArgs) (*FeatureFlag, error) {
     if args.State == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "state"}
     }

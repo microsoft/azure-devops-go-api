@@ -29,7 +29,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -40,7 +40,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // [Preview API] Create an annotated tag.
-func (client Client) CreateAnnotatedTag(ctx context.Context, args CreateAnnotatedTagArgs) (*GitAnnotatedTag, error) {
+func (client *Client) CreateAnnotatedTag(ctx context.Context, args CreateAnnotatedTagArgs) (*GitAnnotatedTag, error) {
     if args.TagObject == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "tagObject"}
     }
@@ -80,7 +80,7 @@ type CreateAnnotatedTagArgs struct {
 }
 
 // [Preview API] Get an annotated tag.
-func (client Client) GetAnnotatedTag(ctx context.Context, args GetAnnotatedTagArgs) (*GitAnnotatedTag, error) {
+func (client *Client) GetAnnotatedTag(ctx context.Context, args GetAnnotatedTagArgs) (*GitAnnotatedTag, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -117,7 +117,7 @@ type GetAnnotatedTagArgs struct {
 }
 
 // Get a single blob.
-func (client Client) GetBlob(ctx context.Context, args GetBlobArgs) (*GitBlobRef, error) {
+func (client *Client) GetBlob(ctx context.Context, args GetBlobArgs) (*GitBlobRef, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -169,7 +169,7 @@ type GetBlobArgs struct {
 }
 
 // Get a single blob.
-func (client Client) GetBlobContent(ctx context.Context, args GetBlobContentArgs) (io.ReadCloser, error) {
+func (client *Client) GetBlobContent(ctx context.Context, args GetBlobContentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -219,7 +219,7 @@ type GetBlobContentArgs struct {
 }
 
 // Gets one or more blobs in a zip file download.
-func (client Client) GetBlobsZip(ctx context.Context, args GetBlobsZipArgs) (io.ReadCloser, error) {
+func (client *Client) GetBlobsZip(ctx context.Context, args GetBlobsZipArgs) (io.ReadCloser, error) {
     if args.BlobIds == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "blobIds"}
     }
@@ -262,7 +262,7 @@ type GetBlobsZipArgs struct {
 }
 
 // Get a single blob.
-func (client Client) GetBlobZip(ctx context.Context, args GetBlobZipArgs) (io.ReadCloser, error) {
+func (client *Client) GetBlobZip(ctx context.Context, args GetBlobZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -312,7 +312,7 @@ type GetBlobZipArgs struct {
 }
 
 // Retrieve statistics about a single branch.
-func (client Client) GetBranch(ctx context.Context, args GetBranchArgs) (*GitBranchStats, error) {
+func (client *Client) GetBranch(ctx context.Context, args GetBranchArgs) (*GitBranchStats, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -362,7 +362,7 @@ type GetBranchArgs struct {
 }
 
 // Retrieve statistics about all branches within a repository.
-func (client Client) GetBranches(ctx context.Context, args GetBranchesArgs) (*[]GitBranchStats, error) {
+func (client *Client) GetBranches(ctx context.Context, args GetBranchesArgs) (*[]GitBranchStats, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -406,7 +406,7 @@ type GetBranchesArgs struct {
 }
 
 // Retrieve changes for a particular commit.
-func (client Client) GetChanges(ctx context.Context, args GetChangesArgs) (*GitCommitChanges, error) {
+func (client *Client) GetChanges(ctx context.Context, args GetChangesArgs) (*GitCommitChanges, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -453,7 +453,7 @@ type GetChangesArgs struct {
 }
 
 // [Preview API] Cherry pick a specific commit or commits that are associated to a pull request into a new branch.
-func (client Client) CreateCherryPick(ctx context.Context, args CreateCherryPickArgs) (*GitCherryPick, error) {
+func (client *Client) CreateCherryPick(ctx context.Context, args CreateCherryPickArgs) (*GitCherryPick, error) {
     if args.CherryPickToCreate == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "cherryPickToCreate"}
     }
@@ -493,7 +493,7 @@ type CreateCherryPickArgs struct {
 }
 
 // [Preview API] Retrieve information about a cherry pick by cherry pick Id.
-func (client Client) GetCherryPick(ctx context.Context, args GetCherryPickArgs) (*GitCherryPick, error) {
+func (client *Client) GetCherryPick(ctx context.Context, args GetCherryPickArgs) (*GitCherryPick, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -530,7 +530,7 @@ type GetCherryPickArgs struct {
 }
 
 // [Preview API] Retrieve information about a cherry pick for a specific branch.
-func (client Client) GetCherryPickForRefName(ctx context.Context, args GetCherryPickForRefNameArgs) (*GitCherryPick, error) {
+func (client *Client) GetCherryPickForRefName(ctx context.Context, args GetCherryPickForRefNameArgs) (*GitCherryPick, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -568,7 +568,7 @@ type GetCherryPickForRefNameArgs struct {
 }
 
 // Find the closest common commit (the merge base) between base and target commits, and get the diff between either the base and target commits or common and target commits.
-func (client Client) GetCommitDiffs(ctx context.Context, args GetCommitDiffsArgs) (*GitCommitDiffs, error) {
+func (client *Client) GetCommitDiffs(ctx context.Context, args GetCommitDiffsArgs) (*GitCommitDiffs, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -640,7 +640,7 @@ type GetCommitDiffsArgs struct {
 }
 
 // Retrieve a particular commit.
-func (client Client) GetCommit(ctx context.Context, args GetCommitArgs) (*GitCommit, error) {
+func (client *Client) GetCommit(ctx context.Context, args GetCommitArgs) (*GitCommit, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -682,7 +682,7 @@ type GetCommitArgs struct {
 }
 
 // Retrieve git commits for a project
-func (client Client) GetCommits(ctx context.Context, args GetCommitsArgs) (*[]GitCommitRef, error) {
+func (client *Client) GetCommits(ctx context.Context, args GetCommitsArgs) (*[]GitCommitRef, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -790,7 +790,7 @@ type GetCommitsArgs struct {
 }
 
 // Retrieve a list of commits associated with a particular push.
-func (client Client) GetPushCommits(ctx context.Context, args GetPushCommitsArgs) (*[]GitCommitRef, error) {
+func (client *Client) GetPushCommits(ctx context.Context, args GetPushCommitsArgs) (*[]GitCommitRef, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -842,7 +842,7 @@ type GetPushCommitsArgs struct {
 }
 
 // Retrieve git commits for a project matching the search criteria
-func (client Client) GetCommitsBatch(ctx context.Context, args GetCommitsBatchArgs) (*[]GitCommitRef, error) {
+func (client *Client) GetCommitsBatch(ctx context.Context, args GetCommitsBatchArgs) (*[]GitCommitRef, error) {
     if args.SearchCriteria == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "searchCriteria"}
     }
@@ -897,7 +897,7 @@ type GetCommitsBatchArgs struct {
 }
 
 // [Preview API] Retrieve deleted git repositories.
-func (client Client) GetDeletedRepositories(ctx context.Context, args GetDeletedRepositoriesArgs) (*[]GitDeletedRepository, error) {
+func (client *Client) GetDeletedRepositories(ctx context.Context, args GetDeletedRepositoriesArgs) (*[]GitDeletedRepository, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -922,7 +922,7 @@ type GetDeletedRepositoriesArgs struct {
 }
 
 // [Preview API] Retrieve all forks of a repository in the collection.
-func (client Client) GetForks(ctx context.Context, args GetForksArgs) (*[]GitRepositoryRef, error) {
+func (client *Client) GetForks(ctx context.Context, args GetForksArgs) (*[]GitRepositoryRef, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -964,7 +964,7 @@ type GetForksArgs struct {
 }
 
 // [Preview API] Request that another repository's refs be fetched into this one. It syncs two existing forks. To create a fork, please see the <a href="https://docs.microsoft.com/en-us/rest/api/vsts/git/repositories/create?view=azure-devops-rest-5.1"> repositories endpoint</a>
-func (client Client) CreateForkSyncRequest(ctx context.Context, args CreateForkSyncRequestArgs) (*GitForkSyncRequest, error) {
+func (client *Client) CreateForkSyncRequest(ctx context.Context, args CreateForkSyncRequestArgs) (*GitForkSyncRequest, error) {
     if args.SyncParams == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "syncParams"}
     }
@@ -1009,7 +1009,7 @@ type CreateForkSyncRequestArgs struct {
 }
 
 // [Preview API] Get a specific fork sync operation's details.
-func (client Client) GetForkSyncRequest(ctx context.Context, args GetForkSyncRequestArgs) (*GitForkSyncRequest, error) {
+func (client *Client) GetForkSyncRequest(ctx context.Context, args GetForkSyncRequestArgs) (*GitForkSyncRequest, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -1051,7 +1051,7 @@ type GetForkSyncRequestArgs struct {
 }
 
 // [Preview API] Retrieve all requested fork sync operations on this repository.
-func (client Client) GetForkSyncRequests(ctx context.Context, args GetForkSyncRequestsArgs) (*[]GitForkSyncRequest, error) {
+func (client *Client) GetForkSyncRequests(ctx context.Context, args GetForkSyncRequestsArgs) (*[]GitForkSyncRequest, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -1092,7 +1092,7 @@ type GetForkSyncRequestsArgs struct {
 }
 
 // [Preview API] Create an import request.
-func (client Client) CreateImportRequest(ctx context.Context, args CreateImportRequestArgs) (*GitImportRequest, error) {
+func (client *Client) CreateImportRequest(ctx context.Context, args CreateImportRequestArgs) (*GitImportRequest, error) {
     if args.ImportRequest == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "importRequest"}
     }
@@ -1132,7 +1132,7 @@ type CreateImportRequestArgs struct {
 }
 
 // [Preview API] Retrieve a particular import request.
-func (client Client) GetImportRequest(ctx context.Context, args GetImportRequestArgs) (*GitImportRequest, error) {
+func (client *Client) GetImportRequest(ctx context.Context, args GetImportRequestArgs) (*GitImportRequest, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1169,7 +1169,7 @@ type GetImportRequestArgs struct {
 }
 
 // [Preview API] Retrieve import requests for a repository.
-func (client Client) QueryImportRequests(ctx context.Context, args QueryImportRequestsArgs) (*[]GitImportRequest, error) {
+func (client *Client) QueryImportRequests(ctx context.Context, args QueryImportRequestsArgs) (*[]GitImportRequest, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1206,7 +1206,7 @@ type QueryImportRequestsArgs struct {
 }
 
 // [Preview API] Retry or abandon a failed import request.
-func (client Client) UpdateImportRequest(ctx context.Context, args UpdateImportRequestArgs) (*GitImportRequest, error) {
+func (client *Client) UpdateImportRequest(ctx context.Context, args UpdateImportRequestArgs) (*GitImportRequest, error) {
     if args.ImportRequestToUpdate == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "importRequestToUpdate"}
     }
@@ -1252,7 +1252,7 @@ type UpdateImportRequestArgs struct {
 }
 
 // Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content, which is always returned as a download.
-func (client Client) GetItem(ctx context.Context, args GetItemArgs) (*GitItem, error) {
+func (client *Client) GetItem(ctx context.Context, args GetItemArgs) (*GitItem, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -1337,7 +1337,7 @@ type GetItemArgs struct {
 }
 
 // Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content, which is always returned as a download.
-func (client Client) GetItemContent(ctx context.Context, args GetItemContentArgs) (io.ReadCloser, error) {
+func (client *Client) GetItemContent(ctx context.Context, args GetItemContentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -1420,7 +1420,7 @@ type GetItemContentArgs struct {
 }
 
 // Get Item Metadata and/or Content for a collection of items. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content which is always returned as a download.
-func (client Client) GetItems(ctx context.Context, args GetItemsArgs) (*[]GitItem, error) {
+func (client *Client) GetItems(ctx context.Context, args GetItemsArgs) (*[]GitItem, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -1494,7 +1494,7 @@ type GetItemsArgs struct {
 }
 
 // Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content, which is always returned as a download.
-func (client Client) GetItemText(ctx context.Context, args GetItemTextArgs) (io.ReadCloser, error) {
+func (client *Client) GetItemText(ctx context.Context, args GetItemTextArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -1577,7 +1577,7 @@ type GetItemTextArgs struct {
 }
 
 // Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content, which is always returned as a download.
-func (client Client) GetItemZip(ctx context.Context, args GetItemZipArgs) (io.ReadCloser, error) {
+func (client *Client) GetItemZip(ctx context.Context, args GetItemZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -1660,7 +1660,7 @@ type GetItemZipArgs struct {
 }
 
 // Post for retrieving a creating a batch out of a set of items in a repo / project given a list of paths or a long path
-func (client Client) GetItemsBatch(ctx context.Context, args GetItemsBatchArgs) (*[][]GitItem, error) {
+func (client *Client) GetItemsBatch(ctx context.Context, args GetItemsBatchArgs) (*[][]GitItem, error) {
     if args.RequestData == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "requestData"}
     }
@@ -1699,7 +1699,7 @@ type GetItemsBatchArgs struct {
 }
 
 // [Preview API] Find the merge bases of two commits, optionally across forks. If otherRepositoryId is not specified, the merge bases will only be calculated within the context of the local repositoryNameOrId.
-func (client Client) GetMergeBases(ctx context.Context, args GetMergeBasesArgs) (*[]GitCommitRef, error) {
+func (client *Client) GetMergeBases(ctx context.Context, args GetMergeBasesArgs) (*[]GitCommitRef, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -1752,7 +1752,7 @@ type GetMergeBasesArgs struct {
 }
 
 // [Preview API] Request a git merge operation. Currently we support merging only 2 commits.
-func (client Client) CreateMergeRequest(ctx context.Context, args CreateMergeRequestArgs) (*GitMerge, error) {
+func (client *Client) CreateMergeRequest(ctx context.Context, args CreateMergeRequestArgs) (*GitMerge, error) {
     if args.MergeParameters == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "mergeParameters"}
     }
@@ -1798,7 +1798,7 @@ type CreateMergeRequestArgs struct {
 }
 
 // [Preview API] Get a specific merge operation's details.
-func (client Client) GetMergeRequest(ctx context.Context, args GetMergeRequestArgs) (*GitMerge, error) {
+func (client *Client) GetMergeRequest(ctx context.Context, args GetMergeRequestArgs) (*GitMerge, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1841,7 +1841,7 @@ type GetMergeRequestArgs struct {
 }
 
 // [Preview API] Retrieve a list of policy configurations by a given set of scope/filtering criteria.
-func (client Client) GetPolicyConfigurations(ctx context.Context, args GetPolicyConfigurationsArgs) (*GitPolicyConfigurationResponse, error) {
+func (client *Client) GetPolicyConfigurations(ctx context.Context, args GetPolicyConfigurationsArgs) (*GitPolicyConfigurationResponse, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1902,7 +1902,7 @@ type GetPolicyConfigurationsArgs struct {
 }
 
 // [Preview API] Attach a new file to a pull request.
-func (client Client) CreateAttachment(ctx context.Context, args CreateAttachmentArgs) (*Attachment, error) {
+func (client *Client) CreateAttachment(ctx context.Context, args CreateAttachmentArgs) (*Attachment, error) {
     if args.UploadStream == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -1949,7 +1949,7 @@ type CreateAttachmentArgs struct {
 }
 
 // [Preview API] Delete a pull request attachment.
-func (client Client) DeleteAttachment(ctx context.Context, args DeleteAttachmentArgs) error {
+func (client *Client) DeleteAttachment(ctx context.Context, args DeleteAttachmentArgs) error {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -1989,7 +1989,7 @@ type DeleteAttachmentArgs struct {
 }
 
 // [Preview API] Get the file content of a pull request attachment.
-func (client Client) GetAttachmentContent(ctx context.Context, args GetAttachmentContentArgs) (io.ReadCloser, error) {
+func (client *Client) GetAttachmentContent(ctx context.Context, args GetAttachmentContentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2029,7 +2029,7 @@ type GetAttachmentContentArgs struct {
 }
 
 // [Preview API] Get a list of files attached to a given pull request.
-func (client Client) GetAttachments(ctx context.Context, args GetAttachmentsArgs) (*[]Attachment, error) {
+func (client *Client) GetAttachments(ctx context.Context, args GetAttachmentsArgs) (*[]Attachment, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2065,7 +2065,7 @@ type GetAttachmentsArgs struct {
 }
 
 // [Preview API] Get the file content of a pull request attachment.
-func (client Client) GetAttachmentZip(ctx context.Context, args GetAttachmentZipArgs) (io.ReadCloser, error) {
+func (client *Client) GetAttachmentZip(ctx context.Context, args GetAttachmentZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2105,7 +2105,7 @@ type GetAttachmentZipArgs struct {
 }
 
 // [Preview API] Add a like on a comment.
-func (client Client) CreateLike(ctx context.Context, args CreateLikeArgs) error {
+func (client *Client) CreateLike(ctx context.Context, args CreateLikeArgs) error {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2151,7 +2151,7 @@ type CreateLikeArgs struct {
 }
 
 // [Preview API] Delete a like on a comment.
-func (client Client) DeleteLike(ctx context.Context, args DeleteLikeArgs) error {
+func (client *Client) DeleteLike(ctx context.Context, args DeleteLikeArgs) error {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2197,7 +2197,7 @@ type DeleteLikeArgs struct {
 }
 
 // [Preview API] Get likes for a comment.
-func (client Client) GetLikes(ctx context.Context, args GetLikesArgs) (*[]webApi.IdentityRef, error) {
+func (client *Client) GetLikes(ctx context.Context, args GetLikesArgs) (*[]webApi.IdentityRef, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2245,7 +2245,7 @@ type GetLikesArgs struct {
 }
 
 // Get the commits for the specified iteration of a pull request.
-func (client Client) GetPullRequestIterationCommits(ctx context.Context, args GetPullRequestIterationCommitsArgs) (*[]GitCommitRef, error) {
+func (client *Client) GetPullRequestIterationCommits(ctx context.Context, args GetPullRequestIterationCommitsArgs) (*[]GitCommitRef, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2298,7 +2298,7 @@ type GetPullRequestIterationCommitsArgs struct {
 }
 
 // Get the commits for the specified pull request.
-func (client Client) GetPullRequestCommits(ctx context.Context, args GetPullRequestCommitsArgs) (*[]GitCommitRef, error) {
+func (client *Client) GetPullRequestCommits(ctx context.Context, args GetPullRequestCommitsArgs) (*[]GitCommitRef, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2334,7 +2334,7 @@ type GetPullRequestCommitsArgs struct {
 }
 
 // Retrieve the changes made in a pull request between two iterations.
-func (client Client) GetPullRequestIterationChanges(ctx context.Context, args GetPullRequestIterationChangesArgs) (*GitPullRequestIterationChanges, error) {
+func (client *Client) GetPullRequestIterationChanges(ctx context.Context, args GetPullRequestIterationChangesArgs) (*GitPullRequestIterationChanges, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2392,7 +2392,7 @@ type GetPullRequestIterationChangesArgs struct {
 }
 
 // Get the specified iteration for a pull request.
-func (client Client) GetPullRequestIteration(ctx context.Context, args GetPullRequestIterationArgs) (*GitPullRequestIteration, error) {
+func (client *Client) GetPullRequestIteration(ctx context.Context, args GetPullRequestIterationArgs) (*GitPullRequestIteration, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2434,7 +2434,7 @@ type GetPullRequestIterationArgs struct {
 }
 
 // Get the list of iterations for the specified pull request.
-func (client Client) GetPullRequestIterations(ctx context.Context, args GetPullRequestIterationsArgs) (*[]GitPullRequestIteration, error) {
+func (client *Client) GetPullRequestIterations(ctx context.Context, args GetPullRequestIterationsArgs) (*[]GitPullRequestIteration, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2476,7 +2476,7 @@ type GetPullRequestIterationsArgs struct {
 }
 
 // [Preview API] Create a pull request status on the iteration. This operation will have the same result as Create status on pull request with specified iteration ID in the request body.
-func (client Client) CreatePullRequestIterationStatus(ctx context.Context, args CreatePullRequestIterationStatusArgs) (*GitPullRequestStatus, error) {
+func (client *Client) CreatePullRequestIterationStatus(ctx context.Context, args CreatePullRequestIterationStatusArgs) (*GitPullRequestStatus, error) {
     if args.Status == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "status"}
     }
@@ -2527,7 +2527,7 @@ type CreatePullRequestIterationStatusArgs struct {
 }
 
 // [Preview API] Delete pull request iteration status.
-func (client Client) DeletePullRequestIterationStatus(ctx context.Context, args DeletePullRequestIterationStatusArgs) error {
+func (client *Client) DeletePullRequestIterationStatus(ctx context.Context, args DeletePullRequestIterationStatusArgs) error {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2573,7 +2573,7 @@ type DeletePullRequestIterationStatusArgs struct {
 }
 
 // [Preview API] Get the specific pull request iteration status by ID. The status ID is unique within the pull request across all iterations.
-func (client Client) GetPullRequestIterationStatus(ctx context.Context, args GetPullRequestIterationStatusArgs) (*GitPullRequestStatus, error) {
+func (client *Client) GetPullRequestIterationStatus(ctx context.Context, args GetPullRequestIterationStatusArgs) (*GitPullRequestStatus, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2621,7 +2621,7 @@ type GetPullRequestIterationStatusArgs struct {
 }
 
 // [Preview API] Get all the statuses associated with a pull request iteration.
-func (client Client) GetPullRequestIterationStatuses(ctx context.Context, args GetPullRequestIterationStatusesArgs) (*[]GitPullRequestStatus, error) {
+func (client *Client) GetPullRequestIterationStatuses(ctx context.Context, args GetPullRequestIterationStatusesArgs) (*[]GitPullRequestStatus, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2663,7 +2663,7 @@ type GetPullRequestIterationStatusesArgs struct {
 }
 
 // [Preview API] Update pull request iteration statuses collection. The only supported operation type is `remove`.
-func (client Client) UpdatePullRequestIterationStatuses(ctx context.Context, args UpdatePullRequestIterationStatusesArgs) error {
+func (client *Client) UpdatePullRequestIterationStatuses(ctx context.Context, args UpdatePullRequestIterationStatusesArgs) error {
     if args.PatchDocument == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "patchDocument"}
     }
@@ -2712,7 +2712,7 @@ type UpdatePullRequestIterationStatusesArgs struct {
 }
 
 // [Preview API] Create a label for a specified pull request. The only required field is the name of the new label.
-func (client Client) CreatePullRequestLabel(ctx context.Context, args CreatePullRequestLabelArgs) (*core.WebApiTagDefinition, error) {
+func (client *Client) CreatePullRequestLabel(ctx context.Context, args CreatePullRequestLabelArgs) (*core.WebApiTagDefinition, error) {
     if args.Label == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "label"}
     }
@@ -2763,7 +2763,7 @@ type CreatePullRequestLabelArgs struct {
 }
 
 // [Preview API] Removes a label from the set of those assigned to the pull request.
-func (client Client) DeletePullRequestLabels(ctx context.Context, args DeletePullRequestLabelsArgs) error {
+func (client *Client) DeletePullRequestLabels(ctx context.Context, args DeletePullRequestLabelsArgs) error {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2809,7 +2809,7 @@ type DeletePullRequestLabelsArgs struct {
 }
 
 // [Preview API] Retrieves a single label that has been assigned to a pull request.
-func (client Client) GetPullRequestLabel(ctx context.Context, args GetPullRequestLabelArgs) (*core.WebApiTagDefinition, error) {
+func (client *Client) GetPullRequestLabel(ctx context.Context, args GetPullRequestLabelArgs) (*core.WebApiTagDefinition, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2857,7 +2857,7 @@ type GetPullRequestLabelArgs struct {
 }
 
 // [Preview API] Get all the labels assigned to a pull request.
-func (client Client) GetPullRequestLabels(ctx context.Context, args GetPullRequestLabelsArgs) (*[]core.WebApiTagDefinition, error) {
+func (client *Client) GetPullRequestLabels(ctx context.Context, args GetPullRequestLabelsArgs) (*[]core.WebApiTagDefinition, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2899,7 +2899,7 @@ type GetPullRequestLabelsArgs struct {
 }
 
 // [Preview API] Get external properties of the pull request.
-func (client Client) GetPullRequestProperties(ctx context.Context, args GetPullRequestPropertiesArgs) (interface{}, error) {
+func (client *Client) GetPullRequestProperties(ctx context.Context, args GetPullRequestPropertiesArgs) (interface{}, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2935,7 +2935,7 @@ type GetPullRequestPropertiesArgs struct {
 }
 
 // [Preview API] Create or update pull request external properties. The patch operation can be `add`, `replace` or `remove`. For `add` operation, the path can be empty. If the path is empty, the value must be a list of key value pairs. For `replace` operation, the path cannot be empty. If the path does not exist, the property will be added to the collection. For `remove` operation, the path cannot be empty. If the path does not exist, no action will be performed.
-func (client Client) UpdatePullRequestProperties(ctx context.Context, args UpdatePullRequestPropertiesArgs) (interface{}, error) {
+func (client *Client) UpdatePullRequestProperties(ctx context.Context, args UpdatePullRequestPropertiesArgs) (interface{}, error) {
     if args.PatchDocument == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "patchDocument"}
     }
@@ -2980,7 +2980,7 @@ type UpdatePullRequestPropertiesArgs struct {
 }
 
 // This API is used to find what pull requests are related to a given commit.  It can be used to either find the pull request that created a particular merge commit or it can be used to find all pull requests that have ever merged a particular commit.  The input is a list of queries which each contain a list of commits. For each commit that you search against, you will get back a dictionary of commit -> pull requests.
-func (client Client) GetPullRequestQuery(ctx context.Context, args GetPullRequestQueryArgs) (*GitPullRequestQuery, error) {
+func (client *Client) GetPullRequestQuery(ctx context.Context, args GetPullRequestQueryArgs) (*GitPullRequestQuery, error) {
     if args.Queries == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "queries"}
     }
@@ -3019,7 +3019,7 @@ type GetPullRequestQueryArgs struct {
 }
 
 // Add a reviewer to a pull request or cast a vote.
-func (client Client) CreatePullRequestReviewer(ctx context.Context, args CreatePullRequestReviewerArgs) (*IdentityRefWithVote, error) {
+func (client *Client) CreatePullRequestReviewer(ctx context.Context, args CreatePullRequestReviewerArgs) (*IdentityRefWithVote, error) {
     if args.Reviewer == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "reviewer"}
     }
@@ -3070,7 +3070,7 @@ type CreatePullRequestReviewerArgs struct {
 }
 
 // Add reviewers to a pull request.
-func (client Client) CreatePullRequestReviewers(ctx context.Context, args CreatePullRequestReviewersArgs) (*[]IdentityRefWithVote, error) {
+func (client *Client) CreatePullRequestReviewers(ctx context.Context, args CreatePullRequestReviewersArgs) (*[]IdentityRefWithVote, error) {
     if args.Reviewers == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "reviewers"}
     }
@@ -3115,7 +3115,7 @@ type CreatePullRequestReviewersArgs struct {
 }
 
 // Remove a reviewer from a pull request.
-func (client Client) DeletePullRequestReviewer(ctx context.Context, args DeletePullRequestReviewerArgs) error {
+func (client *Client) DeletePullRequestReviewer(ctx context.Context, args DeletePullRequestReviewerArgs) error {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -3155,7 +3155,7 @@ type DeletePullRequestReviewerArgs struct {
 }
 
 // Retrieve information about a particular reviewer on a pull request
-func (client Client) GetPullRequestReviewer(ctx context.Context, args GetPullRequestReviewerArgs) (*IdentityRefWithVote, error) {
+func (client *Client) GetPullRequestReviewer(ctx context.Context, args GetPullRequestReviewerArgs) (*IdentityRefWithVote, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -3197,7 +3197,7 @@ type GetPullRequestReviewerArgs struct {
 }
 
 // Retrieve the reviewers for a pull request
-func (client Client) GetPullRequestReviewers(ctx context.Context, args GetPullRequestReviewersArgs) (*[]IdentityRefWithVote, error) {
+func (client *Client) GetPullRequestReviewers(ctx context.Context, args GetPullRequestReviewersArgs) (*[]IdentityRefWithVote, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -3233,7 +3233,7 @@ type GetPullRequestReviewersArgs struct {
 }
 
 // Reset the votes of multiple reviewers on a pull request.  NOTE: This endpoint only supports updating votes, but does not support updating required reviewers (use policy) or display names.
-func (client Client) UpdatePullRequestReviewers(ctx context.Context, args UpdatePullRequestReviewersArgs) error {
+func (client *Client) UpdatePullRequestReviewers(ctx context.Context, args UpdatePullRequestReviewersArgs) error {
     if args.PatchVotes == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "patchVotes"}
     }
@@ -3276,7 +3276,7 @@ type UpdatePullRequestReviewersArgs struct {
 }
 
 // Retrieve a pull request.
-func (client Client) GetPullRequestById(ctx context.Context, args GetPullRequestByIdArgs) (*GitPullRequest, error) {
+func (client *Client) GetPullRequestById(ctx context.Context, args GetPullRequestByIdArgs) (*GitPullRequest, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -3306,7 +3306,7 @@ type GetPullRequestByIdArgs struct {
 }
 
 // Retrieve all pull requests matching a specified criteria.
-func (client Client) GetPullRequestsByProject(ctx context.Context, args GetPullRequestsByProjectArgs) (*[]GitPullRequest, error) {
+func (client *Client) GetPullRequestsByProject(ctx context.Context, args GetPullRequestsByProjectArgs) (*[]GitPullRequest, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -3376,7 +3376,7 @@ type GetPullRequestsByProjectArgs struct {
 }
 
 // Create a pull request.
-func (client Client) CreatePullRequest(ctx context.Context, args CreatePullRequestArgs) (*GitPullRequest, error) {
+func (client *Client) CreatePullRequest(ctx context.Context, args CreatePullRequestArgs) (*GitPullRequest, error) {
     if args.GitPullRequestToCreate == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "gitPullRequestToCreate"}
     }
@@ -3421,7 +3421,7 @@ type CreatePullRequestArgs struct {
 }
 
 // Retrieve a pull request.
-func (client Client) GetPullRequest(ctx context.Context, args GetPullRequestArgs) (*GitPullRequest, error) {
+func (client *Client) GetPullRequest(ctx context.Context, args GetPullRequestArgs) (*GitPullRequest, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -3483,7 +3483,7 @@ type GetPullRequestArgs struct {
 }
 
 // Retrieve all pull requests matching a specified criteria.
-func (client Client) GetPullRequests(ctx context.Context, args GetPullRequestsArgs) (*[]GitPullRequest, error) {
+func (client *Client) GetPullRequests(ctx context.Context, args GetPullRequestsArgs) (*[]GitPullRequest, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -3558,7 +3558,7 @@ type GetPullRequestsArgs struct {
 }
 
 // Update a pull request
-func (client Client) UpdatePullRequest(ctx context.Context, args UpdatePullRequestArgs) (*GitPullRequest, error) {
+func (client *Client) UpdatePullRequest(ctx context.Context, args UpdatePullRequestArgs) (*GitPullRequest, error) {
     if args.GitPullRequestToUpdate == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "gitPullRequestToUpdate"}
     }
@@ -3603,7 +3603,7 @@ type UpdatePullRequestArgs struct {
 }
 
 // [Preview API] Sends an e-mail notification about a specific pull request to a set of recipients
-func (client Client) SharePullRequest(ctx context.Context, args SharePullRequestArgs) error {
+func (client *Client) SharePullRequest(ctx context.Context, args SharePullRequestArgs) error {
     if args.UserMessage == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "userMessage"}
     }
@@ -3646,7 +3646,7 @@ type SharePullRequestArgs struct {
 }
 
 // [Preview API] Create a pull request status.
-func (client Client) CreatePullRequestStatus(ctx context.Context, args CreatePullRequestStatusArgs) (*GitPullRequestStatus, error) {
+func (client *Client) CreatePullRequestStatus(ctx context.Context, args CreatePullRequestStatusArgs) (*GitPullRequestStatus, error) {
     if args.Status == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "status"}
     }
@@ -3691,7 +3691,7 @@ type CreatePullRequestStatusArgs struct {
 }
 
 // [Preview API] Delete pull request status.
-func (client Client) DeletePullRequestStatus(ctx context.Context, args DeletePullRequestStatusArgs) error {
+func (client *Client) DeletePullRequestStatus(ctx context.Context, args DeletePullRequestStatusArgs) error {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -3731,7 +3731,7 @@ type DeletePullRequestStatusArgs struct {
 }
 
 // [Preview API] Get the specific pull request status by ID. The status ID is unique within the pull request across all iterations.
-func (client Client) GetPullRequestStatus(ctx context.Context, args GetPullRequestStatusArgs) (*GitPullRequestStatus, error) {
+func (client *Client) GetPullRequestStatus(ctx context.Context, args GetPullRequestStatusArgs) (*GitPullRequestStatus, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -3773,7 +3773,7 @@ type GetPullRequestStatusArgs struct {
 }
 
 // [Preview API] Get all the statuses associated with a pull request.
-func (client Client) GetPullRequestStatuses(ctx context.Context, args GetPullRequestStatusesArgs) (*[]GitPullRequestStatus, error) {
+func (client *Client) GetPullRequestStatuses(ctx context.Context, args GetPullRequestStatusesArgs) (*[]GitPullRequestStatus, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -3809,7 +3809,7 @@ type GetPullRequestStatusesArgs struct {
 }
 
 // [Preview API] Update pull request statuses collection. The only supported operation type is `remove`.
-func (client Client) UpdatePullRequestStatuses(ctx context.Context, args UpdatePullRequestStatusesArgs) error {
+func (client *Client) UpdatePullRequestStatuses(ctx context.Context, args UpdatePullRequestStatusesArgs) error {
     if args.PatchDocument == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "patchDocument"}
     }
@@ -3852,7 +3852,7 @@ type UpdatePullRequestStatusesArgs struct {
 }
 
 // Create a comment on a specific thread in a pull request (up to 500 comments can be created per thread).
-func (client Client) CreateComment(ctx context.Context, args CreateCommentArgs) (*Comment, error) {
+func (client *Client) CreateComment(ctx context.Context, args CreateCommentArgs) (*Comment, error) {
     if args.Comment == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "comment"}
     }
@@ -3903,7 +3903,7 @@ type CreateCommentArgs struct {
 }
 
 // Delete a comment associated with a specific thread in a pull request.
-func (client Client) DeleteComment(ctx context.Context, args DeleteCommentArgs) error {
+func (client *Client) DeleteComment(ctx context.Context, args DeleteCommentArgs) error {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -3949,7 +3949,7 @@ type DeleteCommentArgs struct {
 }
 
 // Retrieve a comment associated with a specific thread in a pull request.
-func (client Client) GetComment(ctx context.Context, args GetCommentArgs) (*Comment, error) {
+func (client *Client) GetComment(ctx context.Context, args GetCommentArgs) (*Comment, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -3997,7 +3997,7 @@ type GetCommentArgs struct {
 }
 
 // Retrieve all comments associated with a specific thread in a pull request.
-func (client Client) GetComments(ctx context.Context, args GetCommentsArgs) (*[]Comment, error) {
+func (client *Client) GetComments(ctx context.Context, args GetCommentsArgs) (*[]Comment, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -4039,7 +4039,7 @@ type GetCommentsArgs struct {
 }
 
 // Update a comment associated with a specific thread in a pull request.
-func (client Client) UpdateComment(ctx context.Context, args UpdateCommentArgs) (*Comment, error) {
+func (client *Client) UpdateComment(ctx context.Context, args UpdateCommentArgs) (*Comment, error) {
     if args.Comment == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "comment"}
     }
@@ -4096,7 +4096,7 @@ type UpdateCommentArgs struct {
 }
 
 // Create a thread in a pull request.
-func (client Client) CreateThread(ctx context.Context, args CreateThreadArgs) (*GitPullRequestCommentThread, error) {
+func (client *Client) CreateThread(ctx context.Context, args CreateThreadArgs) (*GitPullRequestCommentThread, error) {
     if args.CommentThread == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "commentThread"}
     }
@@ -4141,7 +4141,7 @@ type CreateThreadArgs struct {
 }
 
 // Retrieve a thread in a pull request.
-func (client Client) GetPullRequestThread(ctx context.Context, args GetPullRequestThreadArgs) (*GitPullRequestCommentThread, error) {
+func (client *Client) GetPullRequestThread(ctx context.Context, args GetPullRequestThreadArgs) (*GitPullRequestCommentThread, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -4194,7 +4194,7 @@ type GetPullRequestThreadArgs struct {
 }
 
 // Retrieve all threads in a pull request.
-func (client Client) GetThreads(ctx context.Context, args GetThreadsArgs) (*[]GitPullRequestCommentThread, error) {
+func (client *Client) GetThreads(ctx context.Context, args GetThreadsArgs) (*[]GitPullRequestCommentThread, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -4241,7 +4241,7 @@ type GetThreadsArgs struct {
 }
 
 // Update a thread in a pull request.
-func (client Client) UpdateThread(ctx context.Context, args UpdateThreadArgs) (*GitPullRequestCommentThread, error) {
+func (client *Client) UpdateThread(ctx context.Context, args UpdateThreadArgs) (*GitPullRequestCommentThread, error) {
     if args.CommentThread == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "commentThread"}
     }
@@ -4292,7 +4292,7 @@ type UpdateThreadArgs struct {
 }
 
 // Retrieve a list of work items associated with a pull request.
-func (client Client) GetPullRequestWorkItemRefs(ctx context.Context, args GetPullRequestWorkItemRefsArgs) (*[]webApi.ResourceRef, error) {
+func (client *Client) GetPullRequestWorkItemRefs(ctx context.Context, args GetPullRequestWorkItemRefsArgs) (*[]webApi.ResourceRef, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -4328,7 +4328,7 @@ type GetPullRequestWorkItemRefsArgs struct {
 }
 
 // Push changes to the repository.
-func (client Client) CreatePush(ctx context.Context, args CreatePushArgs) (*GitPush, error) {
+func (client *Client) CreatePush(ctx context.Context, args CreatePushArgs) (*GitPush, error) {
     if args.Push == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "push"}
     }
@@ -4367,7 +4367,7 @@ type CreatePushArgs struct {
 }
 
 // Retrieves a particular push.
-func (client Client) GetPush(ctx context.Context, args GetPushArgs) (*GitPush, error) {
+func (client *Client) GetPush(ctx context.Context, args GetPushArgs) (*GitPush, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -4414,7 +4414,7 @@ type GetPushArgs struct {
 }
 
 // Retrieves pushes associated with the specified repository.
-func (client Client) GetPushes(ctx context.Context, args GetPushesArgs) (*[]GitPush, error) {
+func (client *Client) GetPushes(ctx context.Context, args GetPushesArgs) (*[]GitPush, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -4477,7 +4477,7 @@ type GetPushesArgs struct {
 }
 
 // [Preview API] Destroy (hard delete) a soft-deleted Git repository.
-func (client Client) DeleteRepositoryFromRecycleBin(ctx context.Context, args DeleteRepositoryFromRecycleBinArgs) error {
+func (client *Client) DeleteRepositoryFromRecycleBin(ctx context.Context, args DeleteRepositoryFromRecycleBinArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -4506,7 +4506,7 @@ type DeleteRepositoryFromRecycleBinArgs struct {
 }
 
 // [Preview API] Retrieve soft-deleted git repositories from the recycle bin.
-func (client Client) GetRecycleBinRepositories(ctx context.Context, args GetRecycleBinRepositoriesArgs) (*[]GitDeletedRepository, error) {
+func (client *Client) GetRecycleBinRepositories(ctx context.Context, args GetRecycleBinRepositoriesArgs) (*[]GitDeletedRepository, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -4531,7 +4531,7 @@ type GetRecycleBinRepositoriesArgs struct {
 }
 
 // [Preview API] Recover a soft-deleted Git repository. Recently deleted repositories go into a soft-delete state for a period of time before they are hard deleted and become unrecoverable.
-func (client Client) RestoreRepositoryFromRecycleBin(ctx context.Context, args RestoreRepositoryFromRecycleBinArgs) (*GitRepository, error) {
+func (client *Client) RestoreRepositoryFromRecycleBin(ctx context.Context, args RestoreRepositoryFromRecycleBinArgs) (*GitRepository, error) {
     if args.RepositoryDetails == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "repositoryDetails"}
     }
@@ -4571,7 +4571,7 @@ type RestoreRepositoryFromRecycleBinArgs struct {
 }
 
 // Queries the provided repository for its refs and returns them.
-func (client Client) GetRefs(ctx context.Context, args GetRefsArgs) (*[]GitRef, error) {
+func (client *Client) GetRefs(ctx context.Context, args GetRefsArgs) (*[]GitRef, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -4637,7 +4637,7 @@ type GetRefsArgs struct {
 }
 
 // Lock or Unlock a branch.
-func (client Client) UpdateRef(ctx context.Context, args UpdateRefArgs) (*GitRef, error) {
+func (client *Client) UpdateRef(ctx context.Context, args UpdateRefArgs) (*GitRef, error) {
     if args.NewRefInfo == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "newRefInfo"}
     }
@@ -4688,7 +4688,7 @@ type UpdateRefArgs struct {
 }
 
 // Creating, updating, or deleting refs(branches).
-func (client Client) UpdateRefs(ctx context.Context, args UpdateRefsArgs) (*[]GitRefUpdateResult, error) {
+func (client *Client) UpdateRefs(ctx context.Context, args UpdateRefsArgs) (*[]GitRefUpdateResult, error) {
     if args.RefUpdates == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "refUpdates"}
     }
@@ -4733,7 +4733,7 @@ type UpdateRefsArgs struct {
 }
 
 // [Preview API] Creates a ref favorite
-func (client Client) CreateFavorite(ctx context.Context, args CreateFavoriteArgs) (*GitRefFavorite, error) {
+func (client *Client) CreateFavorite(ctx context.Context, args CreateFavoriteArgs) (*GitRefFavorite, error) {
     if args.Favorite == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "favorite"}
     }
@@ -4767,7 +4767,7 @@ type CreateFavoriteArgs struct {
 }
 
 // [Preview API] Deletes the refs favorite specified
-func (client Client) DeleteRefFavorite(ctx context.Context, args DeleteRefFavoriteArgs) error {
+func (client *Client) DeleteRefFavorite(ctx context.Context, args DeleteRefFavoriteArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -4796,7 +4796,7 @@ type DeleteRefFavoriteArgs struct {
 }
 
 // [Preview API] Gets the refs favorite for a favorite Id.
-func (client Client) GetRefFavorite(ctx context.Context, args GetRefFavoriteArgs) (*GitRefFavorite, error) {
+func (client *Client) GetRefFavorite(ctx context.Context, args GetRefFavoriteArgs) (*GitRefFavorite, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -4827,7 +4827,7 @@ type GetRefFavoriteArgs struct {
 }
 
 // [Preview API] Gets the refs favorites for a repo and an identity.
-func (client Client) GetRefFavorites(ctx context.Context, args GetRefFavoritesArgs) (*[]GitRefFavorite, error) {
+func (client *Client) GetRefFavorites(ctx context.Context, args GetRefFavoritesArgs) (*[]GitRefFavorite, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -4863,7 +4863,7 @@ type GetRefFavoritesArgs struct {
 }
 
 // Create a git repository in a team project.
-func (client Client) CreateRepository(ctx context.Context, args CreateRepositoryArgs) (*GitRepository, error) {
+func (client *Client) CreateRepository(ctx context.Context, args CreateRepositoryArgs) (*GitRepository, error) {
     if args.GitRepositoryToCreate == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "gitRepositoryToCreate"}
     }
@@ -4902,7 +4902,7 @@ type CreateRepositoryArgs struct {
 }
 
 // Delete a git repository
-func (client Client) DeleteRepository(ctx context.Context, args DeleteRepositoryArgs) error {
+func (client *Client) DeleteRepository(ctx context.Context, args DeleteRepositoryArgs) error {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -4930,7 +4930,7 @@ type DeleteRepositoryArgs struct {
 }
 
 // Retrieve git repositories.
-func (client Client) GetRepositories(ctx context.Context, args GetRepositoriesArgs) (*[]GitRepository, error) {
+func (client *Client) GetRepositories(ctx context.Context, args GetRepositoriesArgs) (*[]GitRepository, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -4970,7 +4970,7 @@ type GetRepositoriesArgs struct {
 }
 
 // Retrieve a git repository.
-func (client Client) GetRepository(ctx context.Context, args GetRepositoryArgs) (*GitRepository, error) {
+func (client *Client) GetRepository(ctx context.Context, args GetRepositoryArgs) (*GitRepository, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -5000,7 +5000,7 @@ type GetRepositoryArgs struct {
 }
 
 // Retrieve a git repository.
-func (client Client) GetRepositoryWithParent(ctx context.Context, args GetRepositoryWithParentArgs) (*GitRepository, error) {
+func (client *Client) GetRepositoryWithParent(ctx context.Context, args GetRepositoryWithParentArgs) (*GitRepository, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -5037,7 +5037,7 @@ type GetRepositoryWithParentArgs struct {
 }
 
 // Updates the Git repository with either a new repo name or a new default branch.
-func (client Client) UpdateRepository(ctx context.Context, args UpdateRepositoryArgs) (*GitRepository, error) {
+func (client *Client) UpdateRepository(ctx context.Context, args UpdateRepositoryArgs) (*GitRepository, error) {
     if args.NewRepositoryInfo == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "newRepositoryInfo"}
     }
@@ -5076,7 +5076,7 @@ type UpdateRepositoryArgs struct {
 }
 
 // [Preview API] Starts the operation to create a new branch which reverts changes introduced by either a specific commit or commits that are associated to a pull request.
-func (client Client) CreateRevert(ctx context.Context, args CreateRevertArgs) (*GitRevert, error) {
+func (client *Client) CreateRevert(ctx context.Context, args CreateRevertArgs) (*GitRevert, error) {
     if args.RevertToCreate == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "revertToCreate"}
     }
@@ -5116,7 +5116,7 @@ type CreateRevertArgs struct {
 }
 
 // [Preview API] Retrieve information about a revert operation by revert Id.
-func (client Client) GetRevert(ctx context.Context, args GetRevertArgs) (*GitRevert, error) {
+func (client *Client) GetRevert(ctx context.Context, args GetRevertArgs) (*GitRevert, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -5153,7 +5153,7 @@ type GetRevertArgs struct {
 }
 
 // [Preview API] Retrieve information about a revert operation for a specific branch.
-func (client Client) GetRevertForRefName(ctx context.Context, args GetRevertForRefNameArgs) (*GitRevert, error) {
+func (client *Client) GetRevertForRefName(ctx context.Context, args GetRevertForRefNameArgs) (*GitRevert, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -5191,7 +5191,7 @@ type GetRevertForRefNameArgs struct {
 }
 
 // Create Git commit status.
-func (client Client) CreateCommitStatus(ctx context.Context, args CreateCommitStatusArgs) (*GitStatus, error) {
+func (client *Client) CreateCommitStatus(ctx context.Context, args CreateCommitStatusArgs) (*GitStatus, error) {
     if args.GitCommitStatusToCreate == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "gitCommitStatusToCreate"}
     }
@@ -5236,7 +5236,7 @@ type CreateCommitStatusArgs struct {
 }
 
 // Get statuses associated with the Git commit.
-func (client Client) GetStatuses(ctx context.Context, args GetStatusesArgs) (*[]GitStatus, error) {
+func (client *Client) GetStatuses(ctx context.Context, args GetStatusesArgs) (*[]GitStatus, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -5288,7 +5288,7 @@ type GetStatusesArgs struct {
 }
 
 // [Preview API] Retrieve a pull request suggestion for a particular repository or team project.
-func (client Client) GetSuggestions(ctx context.Context, args GetSuggestionsArgs) (*[]GitSuggestion, error) {
+func (client *Client) GetSuggestions(ctx context.Context, args GetSuggestionsArgs) (*[]GitSuggestion, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -5318,7 +5318,7 @@ type GetSuggestionsArgs struct {
 }
 
 // The Tree endpoint returns the collection of objects underneath the specified tree. Trees are folders in a Git repository.
-func (client Client) GetTree(ctx context.Context, args GetTreeArgs) (*GitTreeRef, error) {
+func (client *Client) GetTree(ctx context.Context, args GetTreeArgs) (*GitTreeRef, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -5370,7 +5370,7 @@ type GetTreeArgs struct {
 }
 
 // The Tree endpoint returns the collection of objects underneath the specified tree. Trees are folders in a Git repository.
-func (client Client) GetTreeZip(ctx context.Context, args GetTreeZipArgs) (io.ReadCloser, error) {
+func (client *Client) GetTreeZip(ctx context.Context, args GetTreeZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project

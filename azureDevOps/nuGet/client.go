@@ -26,7 +26,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -37,7 +37,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // [Preview API] Download a package version directly.  This API is intended for manual UI download options, not for programmatic access and scripting.  You may be heavily throttled if accessing this api for scripting purposes.
-func (client Client) DownloadPackage(ctx context.Context, args DownloadPackageArgs) (io.ReadCloser, error) {
+func (client *Client) DownloadPackage(ctx context.Context, args DownloadPackageArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -83,7 +83,7 @@ type DownloadPackageArgs struct {
 }
 
 // [Preview API] Update several packages from a single feed in a single request. The updates to the packages do not happen atomically.
-func (client Client) UpdatePackageVersions(ctx context.Context, args UpdatePackageVersionsArgs) error {
+func (client *Client) UpdatePackageVersions(ctx context.Context, args UpdatePackageVersionsArgs) error {
     if args.BatchRequest == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "batchRequest"}
     }
@@ -120,7 +120,7 @@ type UpdatePackageVersionsArgs struct {
 }
 
 // [Preview API] Delete a package version from a feed's recycle bin.
-func (client Client) DeletePackageVersionFromRecycleBin(ctx context.Context, args DeletePackageVersionFromRecycleBinArgs) error {
+func (client *Client) DeletePackageVersionFromRecycleBin(ctx context.Context, args DeletePackageVersionFromRecycleBinArgs) error {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -160,7 +160,7 @@ type DeletePackageVersionFromRecycleBinArgs struct {
 }
 
 // [Preview API] View a package version's deletion/recycled status
-func (client Client) GetPackageVersionMetadataFromRecycleBin(ctx context.Context, args GetPackageVersionMetadataFromRecycleBinArgs) (*NuGetPackageVersionDeletionState, error) {
+func (client *Client) GetPackageVersionMetadataFromRecycleBin(ctx context.Context, args GetPackageVersionMetadataFromRecycleBinArgs) (*NuGetPackageVersionDeletionState, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -202,7 +202,7 @@ type GetPackageVersionMetadataFromRecycleBinArgs struct {
 }
 
 // [Preview API] Restore a package version from a feed's recycle bin back into the active feed.
-func (client Client) RestorePackageVersionFromRecycleBin(ctx context.Context, args RestorePackageVersionFromRecycleBinArgs) error {
+func (client *Client) RestorePackageVersionFromRecycleBin(ctx context.Context, args RestorePackageVersionFromRecycleBinArgs) error {
     if args.PackageVersionDetails == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "packageVersionDetails"}
     }
@@ -251,7 +251,7 @@ type RestorePackageVersionFromRecycleBinArgs struct {
 }
 
 // [Preview API] Send a package version from the feed to its paired recycle bin.
-func (client Client) DeletePackageVersion(ctx context.Context, args DeletePackageVersionArgs) (*Package, error) {
+func (client *Client) DeletePackageVersion(ctx context.Context, args DeletePackageVersionArgs) (*Package, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -293,7 +293,7 @@ type DeletePackageVersionArgs struct {
 }
 
 // [Preview API] Get information about a package version.
-func (client Client) GetPackageVersion(ctx context.Context, args GetPackageVersionArgs) (*Package, error) {
+func (client *Client) GetPackageVersion(ctx context.Context, args GetPackageVersionArgs) (*Package, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -341,7 +341,7 @@ type GetPackageVersionArgs struct {
 }
 
 // [Preview API] Set mutable state on a package version.
-func (client Client) UpdatePackageVersion(ctx context.Context, args UpdatePackageVersionArgs) error {
+func (client *Client) UpdatePackageVersion(ctx context.Context, args UpdatePackageVersionArgs) error {
     if args.PackageVersionDetails == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "packageVersionDetails"}
     }

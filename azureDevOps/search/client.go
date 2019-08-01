@@ -24,7 +24,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -35,7 +35,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // [Preview API] Provides a set of results for the search text.
-func (client Client) FetchScrollCodeSearchResults(ctx context.Context, args FetchScrollCodeSearchResultsArgs) (*CodeSearchResponse, error) {
+func (client *Client) FetchScrollCodeSearchResults(ctx context.Context, args FetchScrollCodeSearchResultsArgs) (*CodeSearchResponse, error) {
     if args.Request == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "request"}
     }
@@ -68,7 +68,7 @@ type FetchScrollCodeSearchResultsArgs struct {
 }
 
 // [Preview API] Provides a set of results for the search text.
-func (client Client) FetchCodeSearchResults(ctx context.Context, args FetchCodeSearchResultsArgs) (*CodeSearchResponse, error) {
+func (client *Client) FetchCodeSearchResults(ctx context.Context, args FetchCodeSearchResultsArgs) (*CodeSearchResponse, error) {
     if args.Request == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "request"}
     }
@@ -101,7 +101,7 @@ type FetchCodeSearchResultsArgs struct {
 }
 
 // [Preview API] Provides a set of results for the search text.
-func (client Client) FetchPackageSearchResults(ctx context.Context, args FetchPackageSearchResultsArgs) (*searchShared.PackageSearchResponse, error) {
+func (client *Client) FetchPackageSearchResults(ctx context.Context, args FetchPackageSearchResultsArgs) (*searchShared.PackageSearchResponse, error) {
     if args.Request == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "request"}
     }
@@ -136,7 +136,7 @@ type FetchPackageSearchResultsArgs struct {
 }
 
 // [Preview API] Provides a set of results for the search request.
-func (client Client) FetchWikiSearchResults(ctx context.Context, args FetchWikiSearchResultsArgs) (*searchShared.WikiSearchResponse, error) {
+func (client *Client) FetchWikiSearchResults(ctx context.Context, args FetchWikiSearchResultsArgs) (*searchShared.WikiSearchResponse, error) {
     if args.Request == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "request"}
     }
@@ -169,7 +169,7 @@ type FetchWikiSearchResultsArgs struct {
 }
 
 // [Preview API] Provides a set of results for the search text.
-func (client Client) FetchWorkItemSearchResults(ctx context.Context, args FetchWorkItemSearchResultsArgs) (*WorkItemSearchResponse, error) {
+func (client *Client) FetchWorkItemSearchResults(ctx context.Context, args FetchWorkItemSearchResultsArgs) (*WorkItemSearchResponse, error) {
     if args.Request == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "request"}
     }

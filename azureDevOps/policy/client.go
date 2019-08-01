@@ -25,7 +25,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -36,7 +36,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // Create a policy configuration of a given policy type.
-func (client Client) CreatePolicyConfiguration(ctx context.Context, args CreatePolicyConfigurationArgs) (*PolicyConfiguration, error) {
+func (client *Client) CreatePolicyConfiguration(ctx context.Context, args CreatePolicyConfigurationArgs) (*PolicyConfiguration, error) {
     if args.Configuration == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "configuration"}
     }
@@ -75,7 +75,7 @@ type CreatePolicyConfigurationArgs struct {
 }
 
 // Delete a policy configuration by its ID.
-func (client Client) DeletePolicyConfiguration(ctx context.Context, args DeletePolicyConfigurationArgs) error {
+func (client *Client) DeletePolicyConfiguration(ctx context.Context, args DeletePolicyConfigurationArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -104,7 +104,7 @@ type DeletePolicyConfigurationArgs struct {
 }
 
 // Get a policy configuration by its ID.
-func (client Client) GetPolicyConfiguration(ctx context.Context, args GetPolicyConfigurationArgs) (*PolicyConfiguration, error) {
+func (client *Client) GetPolicyConfiguration(ctx context.Context, args GetPolicyConfigurationArgs) (*PolicyConfiguration, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -135,7 +135,7 @@ type GetPolicyConfigurationArgs struct {
 }
 
 // Get a list of policy configurations in a project.
-func (client Client) GetPolicyConfigurations(ctx context.Context, args GetPolicyConfigurationsArgs) (*[]PolicyConfiguration, error) {
+func (client *Client) GetPolicyConfigurations(ctx context.Context, args GetPolicyConfigurationsArgs) (*[]PolicyConfiguration, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -171,7 +171,7 @@ type GetPolicyConfigurationsArgs struct {
 }
 
 // Update a policy configuration by its ID.
-func (client Client) UpdatePolicyConfiguration(ctx context.Context, args UpdatePolicyConfigurationArgs) (*PolicyConfiguration, error) {
+func (client *Client) UpdatePolicyConfiguration(ctx context.Context, args UpdatePolicyConfigurationArgs) (*PolicyConfiguration, error) {
     if args.Configuration == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "configuration"}
     }
@@ -211,7 +211,7 @@ type UpdatePolicyConfigurationArgs struct {
 }
 
 // [Preview API] Gets the present evaluation state of a policy.
-func (client Client) GetPolicyEvaluation(ctx context.Context, args GetPolicyEvaluationArgs) (*PolicyEvaluationRecord, error) {
+func (client *Client) GetPolicyEvaluation(ctx context.Context, args GetPolicyEvaluationArgs) (*PolicyEvaluationRecord, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -242,7 +242,7 @@ type GetPolicyEvaluationArgs struct {
 }
 
 // [Preview API] Requeue the policy evaluation.
-func (client Client) RequeuePolicyEvaluation(ctx context.Context, args RequeuePolicyEvaluationArgs) (*PolicyEvaluationRecord, error) {
+func (client *Client) RequeuePolicyEvaluation(ctx context.Context, args RequeuePolicyEvaluationArgs) (*PolicyEvaluationRecord, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -273,7 +273,7 @@ type RequeuePolicyEvaluationArgs struct {
 }
 
 // [Preview API] Retrieves a list of all the policy evaluation statuses for a specific pull request.
-func (client Client) GetPolicyEvaluations(ctx context.Context, args GetPolicyEvaluationsArgs) (*[]PolicyEvaluationRecord, error) {
+func (client *Client) GetPolicyEvaluations(ctx context.Context, args GetPolicyEvaluationsArgs) (*[]PolicyEvaluationRecord, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -320,7 +320,7 @@ type GetPolicyEvaluationsArgs struct {
 }
 
 // Retrieve a specific revision of a given policy by ID.
-func (client Client) GetPolicyConfigurationRevision(ctx context.Context, args GetPolicyConfigurationRevisionArgs) (*PolicyConfiguration, error) {
+func (client *Client) GetPolicyConfigurationRevision(ctx context.Context, args GetPolicyConfigurationRevisionArgs) (*PolicyConfiguration, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -357,7 +357,7 @@ type GetPolicyConfigurationRevisionArgs struct {
 }
 
 // Retrieve all revisions for a given policy.
-func (client Client) GetPolicyConfigurationRevisions(ctx context.Context, args GetPolicyConfigurationRevisionsArgs) (*[]PolicyConfiguration, error) {
+func (client *Client) GetPolicyConfigurationRevisions(ctx context.Context, args GetPolicyConfigurationRevisionsArgs) (*[]PolicyConfiguration, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -399,7 +399,7 @@ type GetPolicyConfigurationRevisionsArgs struct {
 }
 
 // Retrieve a specific policy type by ID.
-func (client Client) GetPolicyType(ctx context.Context, args GetPolicyTypeArgs) (*PolicyType, error) {
+func (client *Client) GetPolicyType(ctx context.Context, args GetPolicyTypeArgs) (*PolicyType, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -430,7 +430,7 @@ type GetPolicyTypeArgs struct {
 }
 
 // Retrieve all available policy types.
-func (client Client) GetPolicyTypes(ctx context.Context, args GetPolicyTypesArgs) (*[]PolicyType, error) {
+func (client *Client) GetPolicyTypes(ctx context.Context, args GetPolicyTypesArgs) (*[]PolicyType, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 

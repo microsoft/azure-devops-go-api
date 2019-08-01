@@ -28,7 +28,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -39,7 +39,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // Get a list of approvals
-func (client Client) GetApprovals(ctx context.Context, args GetApprovalsArgs) (*[]ReleaseApproval, error) {
+func (client *Client) GetApprovals(ctx context.Context, args GetApprovalsArgs) (*[]ReleaseApproval, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -110,7 +110,7 @@ type GetApprovalsArgs struct {
 }
 
 // Update status of an approval
-func (client Client) UpdateReleaseApproval(ctx context.Context, args UpdateReleaseApprovalArgs) (*ReleaseApproval, error) {
+func (client *Client) UpdateReleaseApproval(ctx context.Context, args UpdateReleaseApprovalArgs) (*ReleaseApproval, error) {
     if args.Approval == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "approval"}
     }
@@ -150,7 +150,7 @@ type UpdateReleaseApprovalArgs struct {
 }
 
 // [Preview API] Get a release task attachment.
-func (client Client) GetReleaseTaskAttachmentContent(ctx context.Context, args GetReleaseTaskAttachmentContentArgs) (io.ReadCloser, error) {
+func (client *Client) GetReleaseTaskAttachmentContent(ctx context.Context, args GetReleaseTaskAttachmentContentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -221,7 +221,7 @@ type GetReleaseTaskAttachmentContentArgs struct {
 }
 
 // [Preview API] Get the release task attachments.
-func (client Client) GetReleaseTaskAttachments(ctx context.Context, args GetReleaseTaskAttachmentsArgs) (*[]ReleaseTaskAttachment, error) {
+func (client *Client) GetReleaseTaskAttachments(ctx context.Context, args GetReleaseTaskAttachmentsArgs) (*[]ReleaseTaskAttachment, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -276,7 +276,7 @@ type GetReleaseTaskAttachmentsArgs struct {
 }
 
 // Create a release definition
-func (client Client) CreateReleaseDefinition(ctx context.Context, args CreateReleaseDefinitionArgs) (*ReleaseDefinition, error) {
+func (client *Client) CreateReleaseDefinition(ctx context.Context, args CreateReleaseDefinitionArgs) (*ReleaseDefinition, error) {
     if args.ReleaseDefinition == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseDefinition"}
     }
@@ -310,7 +310,7 @@ type CreateReleaseDefinitionArgs struct {
 }
 
 // Delete a release definition.
-func (client Client) DeleteReleaseDefinition(ctx context.Context, args DeleteReleaseDefinitionArgs) error {
+func (client *Client) DeleteReleaseDefinition(ctx context.Context, args DeleteReleaseDefinitionArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -350,7 +350,7 @@ type DeleteReleaseDefinitionArgs struct {
 }
 
 // Get a release definition.
-func (client Client) GetReleaseDefinition(ctx context.Context, args GetReleaseDefinitionArgs) (*ReleaseDefinition, error) {
+func (client *Client) GetReleaseDefinition(ctx context.Context, args GetReleaseDefinitionArgs) (*ReleaseDefinition, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -388,7 +388,7 @@ type GetReleaseDefinitionArgs struct {
 }
 
 // Get a list of release definitions.
-func (client Client) GetReleaseDefinitions(ctx context.Context, args GetReleaseDefinitionsArgs) (*[]ReleaseDefinition, error) {
+func (client *Client) GetReleaseDefinitions(ctx context.Context, args GetReleaseDefinitionsArgs) (*[]ReleaseDefinition, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -487,7 +487,7 @@ type GetReleaseDefinitionsArgs struct {
 }
 
 // Update a release definition.
-func (client Client) UpdateReleaseDefinition(ctx context.Context, args UpdateReleaseDefinitionArgs) (*ReleaseDefinition, error) {
+func (client *Client) UpdateReleaseDefinition(ctx context.Context, args UpdateReleaseDefinitionArgs) (*ReleaseDefinition, error) {
     if args.ReleaseDefinition == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseDefinition"}
     }
@@ -520,7 +520,7 @@ type UpdateReleaseDefinitionArgs struct {
     Project *string
 }
 
-func (client Client) GetDeployments(ctx context.Context, args GetDeploymentsArgs) (*[]Deployment, error) {
+func (client *Client) GetDeployments(ctx context.Context, args GetDeploymentsArgs) (*[]Deployment, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -621,7 +621,7 @@ type GetDeploymentsArgs struct {
 }
 
 // [Preview API] Get a release environment.
-func (client Client) GetReleaseEnvironment(ctx context.Context, args GetReleaseEnvironmentArgs) (*ReleaseEnvironment, error) {
+func (client *Client) GetReleaseEnvironment(ctx context.Context, args GetReleaseEnvironmentArgs) (*ReleaseEnvironment, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -658,7 +658,7 @@ type GetReleaseEnvironmentArgs struct {
 }
 
 // [Preview API] Update the status of a release environment
-func (client Client) UpdateReleaseEnvironment(ctx context.Context, args UpdateReleaseEnvironmentArgs) (*ReleaseEnvironment, error) {
+func (client *Client) UpdateReleaseEnvironment(ctx context.Context, args UpdateReleaseEnvironmentArgs) (*ReleaseEnvironment, error) {
     if args.EnvironmentUpdateData == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "environmentUpdateData"}
     }
@@ -704,7 +704,7 @@ type UpdateReleaseEnvironmentArgs struct {
 }
 
 // [Preview API] Creates a new folder.
-func (client Client) CreateFolder(ctx context.Context, args CreateFolderArgs) (*Folder, error) {
+func (client *Client) CreateFolder(ctx context.Context, args CreateFolderArgs) (*Folder, error) {
     if args.Folder == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "folder"}
     }
@@ -738,7 +738,7 @@ type CreateFolderArgs struct {
 }
 
 // [Preview API] Deletes a definition folder for given folder name and path and all it's existing definitions.
-func (client Client) DeleteFolder(ctx context.Context, args DeleteFolderArgs) error {
+func (client *Client) DeleteFolder(ctx context.Context, args DeleteFolderArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -767,7 +767,7 @@ type DeleteFolderArgs struct {
 }
 
 // [Preview API] Gets folders.
-func (client Client) GetFolders(ctx context.Context, args GetFoldersArgs) (*[]Folder, error) {
+func (client *Client) GetFolders(ctx context.Context, args GetFoldersArgs) (*[]Folder, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -803,7 +803,7 @@ type GetFoldersArgs struct {
 }
 
 // [Preview API] Updates an existing folder at given existing path.
-func (client Client) UpdateFolder(ctx context.Context, args UpdateFolderArgs) (*Folder, error) {
+func (client *Client) UpdateFolder(ctx context.Context, args UpdateFolderArgs) (*Folder, error) {
     if args.Folder == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "folder"}
     }
@@ -843,7 +843,7 @@ type UpdateFolderArgs struct {
 }
 
 // [Preview API] Updates the gate for a deployment.
-func (client Client) UpdateGates(ctx context.Context, args UpdateGatesArgs) (*ReleaseGates, error) {
+func (client *Client) UpdateGates(ctx context.Context, args UpdateGatesArgs) (*ReleaseGates, error) {
     if args.GateUpdateMetadata == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "gateUpdateMetadata"}
     }
@@ -883,7 +883,7 @@ type UpdateGatesArgs struct {
 }
 
 // [Preview API] Get logs for a release Id.
-func (client Client) GetLogs(ctx context.Context, args GetLogsArgs) (io.ReadCloser, error) {
+func (client *Client) GetLogs(ctx context.Context, args GetLogsArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -912,7 +912,7 @@ type GetLogsArgs struct {
 }
 
 // [Preview API] Gets the task log of a release as a plain text file.
-func (client Client) GetTaskLog(ctx context.Context, args GetTaskLogArgs) (io.ReadCloser, error) {
+func (client *Client) GetTaskLog(ctx context.Context, args GetTaskLogArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -970,7 +970,7 @@ type GetTaskLogArgs struct {
 }
 
 // Get manual intervention for a given release and manual intervention id.
-func (client Client) GetManualIntervention(ctx context.Context, args GetManualInterventionArgs) (*ManualIntervention, error) {
+func (client *Client) GetManualIntervention(ctx context.Context, args GetManualInterventionArgs) (*ManualIntervention, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1007,7 +1007,7 @@ type GetManualInterventionArgs struct {
 }
 
 // List all manual interventions for a given release.
-func (client Client) GetManualInterventions(ctx context.Context, args GetManualInterventionsArgs) (*[]ManualIntervention, error) {
+func (client *Client) GetManualInterventions(ctx context.Context, args GetManualInterventionsArgs) (*[]ManualIntervention, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1038,7 +1038,7 @@ type GetManualInterventionsArgs struct {
 }
 
 // Update manual intervention.
-func (client Client) UpdateManualIntervention(ctx context.Context, args UpdateManualInterventionArgs) (*ManualIntervention, error) {
+func (client *Client) UpdateManualIntervention(ctx context.Context, args UpdateManualInterventionArgs) (*ManualIntervention, error) {
     if args.ManualInterventionUpdateMetadata == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "manualInterventionUpdateMetadata"}
     }
@@ -1084,7 +1084,7 @@ type UpdateManualInterventionArgs struct {
 }
 
 // Get a list of releases
-func (client Client) GetReleases(ctx context.Context, args GetReleasesArgs) (*[]Release, error) {
+func (client *Client) GetReleases(ctx context.Context, args GetReleasesArgs) (*[]Release, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -1221,7 +1221,7 @@ type GetReleasesArgs struct {
 }
 
 // Create a release.
-func (client Client) CreateRelease(ctx context.Context, args CreateReleaseArgs) (*Release, error) {
+func (client *Client) CreateRelease(ctx context.Context, args CreateReleaseArgs) (*Release, error) {
     if args.ReleaseStartMetadata == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseStartMetadata"}
     }
@@ -1255,7 +1255,7 @@ type CreateReleaseArgs struct {
 }
 
 // Get a Release
-func (client Client) GetRelease(ctx context.Context, args GetReleaseArgs) (*Release, error) {
+func (client *Client) GetRelease(ctx context.Context, args GetReleaseArgs) (*Release, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1308,7 +1308,7 @@ type GetReleaseArgs struct {
 }
 
 // Get release for a given revision number.
-func (client Client) GetReleaseRevision(ctx context.Context, args GetReleaseRevisionArgs) (io.ReadCloser, error) {
+func (client *Client) GetReleaseRevision(ctx context.Context, args GetReleaseRevisionArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1344,7 +1344,7 @@ type GetReleaseRevisionArgs struct {
 }
 
 // Update a complete release object.
-func (client Client) UpdateRelease(ctx context.Context, args UpdateReleaseArgs) (*Release, error) {
+func (client *Client) UpdateRelease(ctx context.Context, args UpdateReleaseArgs) (*Release, error) {
     if args.Release == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "release"}
     }
@@ -1384,7 +1384,7 @@ type UpdateReleaseArgs struct {
 }
 
 // Update few properties of a release.
-func (client Client) UpdateReleaseResource(ctx context.Context, args UpdateReleaseResourceArgs) (*Release, error) {
+func (client *Client) UpdateReleaseResource(ctx context.Context, args UpdateReleaseResourceArgs) (*Release, error) {
     if args.ReleaseUpdateMetadata == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releaseUpdateMetadata"}
     }
@@ -1424,7 +1424,7 @@ type UpdateReleaseResourceArgs struct {
 }
 
 // [Preview API] Get release definition for a given definitionId and revision
-func (client Client) GetDefinitionRevision(ctx context.Context, args GetDefinitionRevisionArgs) (io.ReadCloser, error) {
+func (client *Client) GetDefinitionRevision(ctx context.Context, args GetDefinitionRevisionArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1459,7 +1459,7 @@ type GetDefinitionRevisionArgs struct {
 }
 
 // [Preview API] Get revision history for a release definition
-func (client Client) GetReleaseDefinitionHistory(ctx context.Context, args GetReleaseDefinitionHistoryArgs) (*[]ReleaseDefinitionRevision, error) {
+func (client *Client) GetReleaseDefinitionHistory(ctx context.Context, args GetReleaseDefinitionHistoryArgs) (*[]ReleaseDefinitionRevision, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 

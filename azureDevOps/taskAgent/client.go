@@ -27,7 +27,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -38,7 +38,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // [Preview API]
-func (client Client) AddAgentCloud(ctx context.Context, args AddAgentCloudArgs) (*TaskAgentCloud, error) {
+func (client *Client) AddAgentCloud(ctx context.Context, args AddAgentCloudArgs) (*TaskAgentCloud, error) {
     if args.AgentCloud == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "agentCloud"}
     }
@@ -64,7 +64,7 @@ type AddAgentCloudArgs struct {
 }
 
 // [Preview API]
-func (client Client) DeleteAgentCloud(ctx context.Context, args DeleteAgentCloudArgs) (*TaskAgentCloud, error) {
+func (client *Client) DeleteAgentCloud(ctx context.Context, args DeleteAgentCloudArgs) (*TaskAgentCloud, error) {
     routeValues := make(map[string]string)
     if args.AgentCloudId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "agentCloudId"} 
@@ -89,7 +89,7 @@ type DeleteAgentCloudArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetAgentCloud(ctx context.Context, args GetAgentCloudArgs) (*TaskAgentCloud, error) {
+func (client *Client) GetAgentCloud(ctx context.Context, args GetAgentCloudArgs) (*TaskAgentCloud, error) {
     routeValues := make(map[string]string)
     if args.AgentCloudId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "agentCloudId"} 
@@ -114,7 +114,7 @@ type GetAgentCloudArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetAgentClouds(ctx context.Context, args GetAgentCloudsArgs) (*[]TaskAgentCloud, error) {
+func (client *Client) GetAgentClouds(ctx context.Context, args GetAgentCloudsArgs) (*[]TaskAgentCloud, error) {
     locationId, _ := uuid.Parse("bfa72b3d-0fc6-43fb-932b-a7f6559f93b9")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, nil, nil, "", "application/json", nil)
     if err != nil {
@@ -131,7 +131,7 @@ type GetAgentCloudsArgs struct {
 }
 
 // [Preview API] Get agent cloud types.
-func (client Client) GetAgentCloudTypes(ctx context.Context, args GetAgentCloudTypesArgs) (*[]TaskAgentCloudType, error) {
+func (client *Client) GetAgentCloudTypes(ctx context.Context, args GetAgentCloudTypesArgs) (*[]TaskAgentCloudType, error) {
     locationId, _ := uuid.Parse("5932e193-f376-469d-9c3e-e5588ce12cb5")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, nil, nil, "", "application/json", nil)
     if err != nil {
@@ -148,7 +148,7 @@ type GetAgentCloudTypesArgs struct {
 }
 
 // Adds an agent to a pool.  You probably don't want to call this endpoint directly. Instead, [configure an agent](https://docs.microsoft.com/azure/devops/pipelines/agents/agents) using the agent download package.
-func (client Client) AddAgent(ctx context.Context, args AddAgentArgs) (*TaskAgent, error) {
+func (client *Client) AddAgent(ctx context.Context, args AddAgentArgs) (*TaskAgent, error) {
     if args.Agent == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "agent"}
     }
@@ -182,7 +182,7 @@ type AddAgentArgs struct {
 }
 
 // Delete an agent.  You probably don't want to call this endpoint directly. Instead, [use the agent configuration script](https://docs.microsoft.com/azure/devops/pipelines/agents/agents) to remove an agent from your organization.
-func (client Client) DeleteAgent(ctx context.Context, args DeleteAgentArgs) error {
+func (client *Client) DeleteAgent(ctx context.Context, args DeleteAgentArgs) error {
     routeValues := make(map[string]string)
     if args.PoolId == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "poolId"} 
@@ -211,7 +211,7 @@ type DeleteAgentArgs struct {
 }
 
 // Get information about an agent.
-func (client Client) GetAgent(ctx context.Context, args GetAgentArgs) (*TaskAgent, error) {
+func (client *Client) GetAgent(ctx context.Context, args GetAgentArgs) (*TaskAgent, error) {
     routeValues := make(map[string]string)
     if args.PoolId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "poolId"} 
@@ -264,7 +264,7 @@ type GetAgentArgs struct {
 }
 
 // Get a list of agents.
-func (client Client) GetAgents(ctx context.Context, args GetAgentsArgs) (*[]TaskAgent, error) {
+func (client *Client) GetAgents(ctx context.Context, args GetAgentsArgs) (*[]TaskAgent, error) {
     routeValues := make(map[string]string)
     if args.PoolId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "poolId"} 
@@ -322,7 +322,7 @@ type GetAgentsArgs struct {
 }
 
 // Replace an agent.  You probably don't want to call this endpoint directly. Instead, [use the agent configuration script](https://docs.microsoft.com/azure/devops/pipelines/agents/agents) to remove and reconfigure an agent from your organization.
-func (client Client) ReplaceAgent(ctx context.Context, args ReplaceAgentArgs) (*TaskAgent, error) {
+func (client *Client) ReplaceAgent(ctx context.Context, args ReplaceAgentArgs) (*TaskAgent, error) {
     if args.Agent == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "agent"}
     }
@@ -362,7 +362,7 @@ type ReplaceAgentArgs struct {
 }
 
 // Update agent details.
-func (client Client) UpdateAgent(ctx context.Context, args UpdateAgentArgs) (*TaskAgent, error) {
+func (client *Client) UpdateAgent(ctx context.Context, args UpdateAgentArgs) (*TaskAgent, error) {
     if args.Agent == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "agent"}
     }
@@ -402,7 +402,7 @@ type UpdateAgentArgs struct {
 }
 
 // [Preview API] Create a deployment group.
-func (client Client) AddDeploymentGroup(ctx context.Context, args AddDeploymentGroupArgs) (*DeploymentGroup, error) {
+func (client *Client) AddDeploymentGroup(ctx context.Context, args AddDeploymentGroupArgs) (*DeploymentGroup, error) {
     if args.DeploymentGroup == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "deploymentGroup"}
     }
@@ -436,7 +436,7 @@ type AddDeploymentGroupArgs struct {
 }
 
 // [Preview API] Delete a deployment group.
-func (client Client) DeleteDeploymentGroup(ctx context.Context, args DeleteDeploymentGroupArgs) error {
+func (client *Client) DeleteDeploymentGroup(ctx context.Context, args DeleteDeploymentGroupArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -465,7 +465,7 @@ type DeleteDeploymentGroupArgs struct {
 }
 
 // [Preview API] Get a deployment group by its ID.
-func (client Client) GetDeploymentGroup(ctx context.Context, args GetDeploymentGroupArgs) (*DeploymentGroup, error) {
+func (client *Client) GetDeploymentGroup(ctx context.Context, args GetDeploymentGroupArgs) (*DeploymentGroup, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -507,7 +507,7 @@ type GetDeploymentGroupArgs struct {
 }
 
 // [Preview API] Get a list of deployment groups by name or IDs.
-func (client Client) GetDeploymentGroups(ctx context.Context, args GetDeploymentGroupsArgs) (*[]DeploymentGroup, error) {
+func (client *Client) GetDeploymentGroups(ctx context.Context, args GetDeploymentGroupsArgs) (*[]DeploymentGroup, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -568,7 +568,7 @@ type GetDeploymentGroupsArgs struct {
 }
 
 // [Preview API] Update a deployment group.
-func (client Client) UpdateDeploymentGroup(ctx context.Context, args UpdateDeploymentGroupArgs) (*DeploymentGroup, error) {
+func (client *Client) UpdateDeploymentGroup(ctx context.Context, args UpdateDeploymentGroupArgs) (*DeploymentGroup, error) {
     if args.DeploymentGroup == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "deploymentGroup"}
     }
@@ -608,7 +608,7 @@ type UpdateDeploymentGroupArgs struct {
 }
 
 // Create an agent pool.
-func (client Client) AddAgentPool(ctx context.Context, args AddAgentPoolArgs) (*TaskAgentPool, error) {
+func (client *Client) AddAgentPool(ctx context.Context, args AddAgentPoolArgs) (*TaskAgentPool, error) {
     if args.Pool == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pool"}
     }
@@ -634,7 +634,7 @@ type AddAgentPoolArgs struct {
 }
 
 // Delete an agent pool.
-func (client Client) DeleteAgentPool(ctx context.Context, args DeleteAgentPoolArgs) error {
+func (client *Client) DeleteAgentPool(ctx context.Context, args DeleteAgentPoolArgs) error {
     routeValues := make(map[string]string)
     if args.PoolId == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "poolId"} 
@@ -657,7 +657,7 @@ type DeleteAgentPoolArgs struct {
 }
 
 // Get information about an agent pool.
-func (client Client) GetAgentPool(ctx context.Context, args GetAgentPoolArgs) (*TaskAgentPool, error) {
+func (client *Client) GetAgentPool(ctx context.Context, args GetAgentPoolArgs) (*TaskAgentPool, error) {
     routeValues := make(map[string]string)
     if args.PoolId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "poolId"} 
@@ -694,7 +694,7 @@ type GetAgentPoolArgs struct {
 }
 
 // Get a list of agent pools.
-func (client Client) GetAgentPools(ctx context.Context, args GetAgentPoolsArgs) (*[]TaskAgentPool, error) {
+func (client *Client) GetAgentPools(ctx context.Context, args GetAgentPoolsArgs) (*[]TaskAgentPool, error) {
     queryParams := url.Values{}
     if args.PoolName != nil {
         queryParams.Add("poolName", *args.PoolName)
@@ -733,7 +733,7 @@ type GetAgentPoolsArgs struct {
 }
 
 // Get a list of agent pools.
-func (client Client) GetAgentPoolsByIds(ctx context.Context, args GetAgentPoolsByIdsArgs) (*[]TaskAgentPool, error) {
+func (client *Client) GetAgentPoolsByIds(ctx context.Context, args GetAgentPoolsByIdsArgs) (*[]TaskAgentPool, error) {
     queryParams := url.Values{}
     if args.PoolIds == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "poolIds"}
@@ -767,7 +767,7 @@ type GetAgentPoolsByIdsArgs struct {
 }
 
 // Update properties on an agent pool
-func (client Client) UpdateAgentPool(ctx context.Context, args UpdateAgentPoolArgs) (*TaskAgentPool, error) {
+func (client *Client) UpdateAgentPool(ctx context.Context, args UpdateAgentPoolArgs) (*TaskAgentPool, error) {
     if args.Pool == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "pool"}
     }
@@ -801,7 +801,7 @@ type UpdateAgentPoolArgs struct {
 }
 
 // [Preview API] Create a new agent queue to connect a project to an agent pool.
-func (client Client) AddAgentQueue(ctx context.Context, args AddAgentQueueArgs) (*TaskAgentQueue, error) {
+func (client *Client) AddAgentQueue(ctx context.Context, args AddAgentQueueArgs) (*TaskAgentQueue, error) {
     if args.Queue == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "queue"}
     }
@@ -840,7 +840,7 @@ type AddAgentQueueArgs struct {
 }
 
 // [Preview API] Removes an agent queue from a project.
-func (client Client) DeleteAgentQueue(ctx context.Context, args DeleteAgentQueueArgs) error {
+func (client *Client) DeleteAgentQueue(ctx context.Context, args DeleteAgentQueueArgs) error {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -868,7 +868,7 @@ type DeleteAgentQueueArgs struct {
 }
 
 // [Preview API] Get information about an agent queue.
-func (client Client) GetAgentQueue(ctx context.Context, args GetAgentQueueArgs) (*TaskAgentQueue, error) {
+func (client *Client) GetAgentQueue(ctx context.Context, args GetAgentQueueArgs) (*TaskAgentQueue, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -904,7 +904,7 @@ type GetAgentQueueArgs struct {
 }
 
 // [Preview API] Get a list of agent queues.
-func (client Client) GetAgentQueues(ctx context.Context, args GetAgentQueuesArgs) (*[]TaskAgentQueue, error) {
+func (client *Client) GetAgentQueues(ctx context.Context, args GetAgentQueuesArgs) (*[]TaskAgentQueue, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -939,7 +939,7 @@ type GetAgentQueuesArgs struct {
 }
 
 // [Preview API] Get a list of agent queues by their IDs
-func (client Client) GetAgentQueuesByIds(ctx context.Context, args GetAgentQueuesByIdsArgs) (*[]TaskAgentQueue, error) {
+func (client *Client) GetAgentQueuesByIds(ctx context.Context, args GetAgentQueuesByIdsArgs) (*[]TaskAgentQueue, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -980,7 +980,7 @@ type GetAgentQueuesByIdsArgs struct {
 }
 
 // [Preview API] Get a list of agent queues by their names
-func (client Client) GetAgentQueuesByNames(ctx context.Context, args GetAgentQueuesByNamesArgs) (*[]TaskAgentQueue, error) {
+func (client *Client) GetAgentQueuesByNames(ctx context.Context, args GetAgentQueuesByNamesArgs) (*[]TaskAgentQueue, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -1017,7 +1017,7 @@ type GetAgentQueuesByNamesArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetAgentCloudRequests(ctx context.Context, args GetAgentCloudRequestsArgs) (*[]TaskAgentCloudRequest, error) {
+func (client *Client) GetAgentCloudRequests(ctx context.Context, args GetAgentCloudRequestsArgs) (*[]TaskAgentCloudRequest, error) {
     routeValues := make(map[string]string)
     if args.AgentCloudId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "agentCloudId"} 
@@ -1042,7 +1042,7 @@ type GetAgentCloudRequestsArgs struct {
 }
 
 // [Preview API] Delete a deployment target in a deployment group. This deletes the agent from associated deployment pool too.
-func (client Client) DeleteDeploymentTarget(ctx context.Context, args DeleteDeploymentTargetArgs) error {
+func (client *Client) DeleteDeploymentTarget(ctx context.Context, args DeleteDeploymentTargetArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1077,7 +1077,7 @@ type DeleteDeploymentTargetArgs struct {
 }
 
 // [Preview API] Get a deployment target by its ID in a deployment group
-func (client Client) GetDeploymentTarget(ctx context.Context, args GetDeploymentTargetArgs) (*DeploymentMachine, error) {
+func (client *Client) GetDeploymentTarget(ctx context.Context, args GetDeploymentTargetArgs) (*DeploymentMachine, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1120,7 +1120,7 @@ type GetDeploymentTargetArgs struct {
 }
 
 // [Preview API] Get a list of deployment targets in a deployment group.
-func (client Client) GetDeploymentTargets(ctx context.Context, args GetDeploymentTargetsArgs) (*[]DeploymentMachine, error) {
+func (client *Client) GetDeploymentTargets(ctx context.Context, args GetDeploymentTargetsArgs) (*[]DeploymentMachine, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1204,7 +1204,7 @@ type GetDeploymentTargetsArgs struct {
 }
 
 // [Preview API] Update tags of a list of deployment targets in a deployment group.
-func (client Client) UpdateDeploymentTargets(ctx context.Context, args UpdateDeploymentTargetsArgs) (*[]DeploymentMachine, error) {
+func (client *Client) UpdateDeploymentTargets(ctx context.Context, args UpdateDeploymentTargetsArgs) (*[]DeploymentMachine, error) {
     if args.Machines == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "machines"}
     }
@@ -1244,7 +1244,7 @@ type UpdateDeploymentTargetsArgs struct {
 }
 
 // [Preview API] Create a task group.
-func (client Client) AddTaskGroup(ctx context.Context, args AddTaskGroupArgs) (*TaskGroup, error) {
+func (client *Client) AddTaskGroup(ctx context.Context, args AddTaskGroupArgs) (*TaskGroup, error) {
     if args.TaskGroup == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "taskGroup"}
     }
@@ -1278,7 +1278,7 @@ type AddTaskGroupArgs struct {
 }
 
 // [Preview API] Delete a task group.
-func (client Client) DeleteTaskGroup(ctx context.Context, args DeleteTaskGroupArgs) error {
+func (client *Client) DeleteTaskGroup(ctx context.Context, args DeleteTaskGroupArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1313,7 +1313,7 @@ type DeleteTaskGroupArgs struct {
 }
 
 // [Preview API] List task groups.
-func (client Client) GetTaskGroups(ctx context.Context, args GetTaskGroupsArgs) (*[]TaskGroup, error) {
+func (client *Client) GetTaskGroups(ctx context.Context, args GetTaskGroupsArgs) (*[]TaskGroup, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1374,7 +1374,7 @@ type GetTaskGroupsArgs struct {
 }
 
 // [Preview API] Update a task group.
-func (client Client) UpdateTaskGroup(ctx context.Context, args UpdateTaskGroupArgs) (*TaskGroup, error) {
+func (client *Client) UpdateTaskGroup(ctx context.Context, args UpdateTaskGroupArgs) (*TaskGroup, error) {
     if args.TaskGroup == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "taskGroup"}
     }
@@ -1414,7 +1414,7 @@ type UpdateTaskGroupArgs struct {
 }
 
 // [Preview API] Add a variable group.
-func (client Client) AddVariableGroup(ctx context.Context, args AddVariableGroupArgs) (*VariableGroup, error) {
+func (client *Client) AddVariableGroup(ctx context.Context, args AddVariableGroupArgs) (*VariableGroup, error) {
     if args.Group == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "group"}
     }
@@ -1448,7 +1448,7 @@ type AddVariableGroupArgs struct {
 }
 
 // [Preview API] Delete a variable group
-func (client Client) DeleteVariableGroup(ctx context.Context, args DeleteVariableGroupArgs) error {
+func (client *Client) DeleteVariableGroup(ctx context.Context, args DeleteVariableGroupArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1477,7 +1477,7 @@ type DeleteVariableGroupArgs struct {
 }
 
 // [Preview API] Get a variable group.
-func (client Client) GetVariableGroup(ctx context.Context, args GetVariableGroupArgs) (*VariableGroup, error) {
+func (client *Client) GetVariableGroup(ctx context.Context, args GetVariableGroupArgs) (*VariableGroup, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1508,7 +1508,7 @@ type GetVariableGroupArgs struct {
 }
 
 // [Preview API] Get variable groups.
-func (client Client) GetVariableGroups(ctx context.Context, args GetVariableGroupsArgs) (*[]VariableGroup, error) {
+func (client *Client) GetVariableGroups(ctx context.Context, args GetVariableGroupsArgs) (*[]VariableGroup, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1559,7 +1559,7 @@ type GetVariableGroupsArgs struct {
 }
 
 // [Preview API] Get variable groups by ids.
-func (client Client) GetVariableGroupsById(ctx context.Context, args GetVariableGroupsByIdArgs) (*[]VariableGroup, error) {
+func (client *Client) GetVariableGroupsById(ctx context.Context, args GetVariableGroupsByIdArgs) (*[]VariableGroup, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1596,7 +1596,7 @@ type GetVariableGroupsByIdArgs struct {
 }
 
 // [Preview API] Update a variable group.
-func (client Client) UpdateVariableGroup(ctx context.Context, args UpdateVariableGroupArgs) (*VariableGroup, error) {
+func (client *Client) UpdateVariableGroup(ctx context.Context, args UpdateVariableGroupArgs) (*VariableGroup, error) {
     if args.Group == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "group"}
     }
@@ -1635,7 +1635,7 @@ type UpdateVariableGroupArgs struct {
     GroupId *int
 }
 
-func (client Client) GetYamlSchema(ctx context.Context, args GetYamlSchemaArgs) (interface{}, error) {
+func (client *Client) GetYamlSchema(ctx context.Context, args GetYamlSchemaArgs) (interface{}, error) {
     locationId, _ := uuid.Parse("1f9990b9-1dba-441f-9c2e-6485888c42b6")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, nil, nil, "", "application/json", nil)
     if err != nil {

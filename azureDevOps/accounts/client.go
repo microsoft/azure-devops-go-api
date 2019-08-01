@@ -22,7 +22,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -33,7 +33,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // Get a list of accounts for a specific owner or a specific member.
-func (client Client) GetAccounts(ctx context.Context, args GetAccountsArgs) (*[]Account, error) {
+func (client *Client) GetAccounts(ctx context.Context, args GetAccountsArgs) (*[]Account, error) {
     queryParams := url.Values{}
     if args.OwnerId != nil {
         queryParams.Add("ownerId", (*args.OwnerId).String())

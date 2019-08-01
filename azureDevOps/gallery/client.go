@@ -27,7 +27,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -38,7 +38,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // [Preview API]
-func (client Client) ShareExtensionById(ctx context.Context, args ShareExtensionByIdArgs) error {
+func (client *Client) ShareExtensionById(ctx context.Context, args ShareExtensionByIdArgs) error {
     routeValues := make(map[string]string)
     if args.ExtensionId == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "extensionId"} 
@@ -67,7 +67,7 @@ type ShareExtensionByIdArgs struct {
 }
 
 // [Preview API]
-func (client Client) UnshareExtensionById(ctx context.Context, args UnshareExtensionByIdArgs) error {
+func (client *Client) UnshareExtensionById(ctx context.Context, args UnshareExtensionByIdArgs) error {
     routeValues := make(map[string]string)
     if args.ExtensionId == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "extensionId"} 
@@ -96,7 +96,7 @@ type UnshareExtensionByIdArgs struct {
 }
 
 // [Preview API]
-func (client Client) ShareExtension(ctx context.Context, args ShareExtensionArgs) error {
+func (client *Client) ShareExtension(ctx context.Context, args ShareExtensionArgs) error {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -131,7 +131,7 @@ type ShareExtensionArgs struct {
 }
 
 // [Preview API]
-func (client Client) UnshareExtension(ctx context.Context, args UnshareExtensionArgs) error {
+func (client *Client) UnshareExtension(ctx context.Context, args UnshareExtensionArgs) error {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -166,7 +166,7 @@ type UnshareExtensionArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetAcquisitionOptions(ctx context.Context, args GetAcquisitionOptionsArgs) (*AcquisitionOptions, error) {
+func (client *Client) GetAcquisitionOptions(ctx context.Context, args GetAcquisitionOptionsArgs) (*AcquisitionOptions, error) {
     routeValues := make(map[string]string)
     if args.ItemId == nil || *args.ItemId == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "itemId"} 
@@ -208,7 +208,7 @@ type GetAcquisitionOptionsArgs struct {
 }
 
 // [Preview API]
-func (client Client) RequestAcquisition(ctx context.Context, args RequestAcquisitionArgs) (*ExtensionAcquisitionRequest, error) {
+func (client *Client) RequestAcquisition(ctx context.Context, args RequestAcquisitionArgs) (*ExtensionAcquisitionRequest, error) {
     if args.AcquisitionRequest == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "acquisitionRequest"}
     }
@@ -234,7 +234,7 @@ type RequestAcquisitionArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetAssetByName(ctx context.Context, args GetAssetByNameArgs) (io.ReadCloser, error) {
+func (client *Client) GetAssetByName(ctx context.Context, args GetAssetByNameArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -292,7 +292,7 @@ type GetAssetByNameArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetAsset(ctx context.Context, args GetAssetArgs) (io.ReadCloser, error) {
+func (client *Client) GetAsset(ctx context.Context, args GetAssetArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.ExtensionId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "extensionId"} 
@@ -344,7 +344,7 @@ type GetAssetArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetAssetAuthenticated(ctx context.Context, args GetAssetAuthenticatedArgs) (io.ReadCloser, error) {
+func (client *Client) GetAssetAuthenticated(ctx context.Context, args GetAssetAuthenticatedArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -397,7 +397,7 @@ type GetAssetAuthenticatedArgs struct {
 }
 
 // [Preview API]
-func (client Client) AssociateAzurePublisher(ctx context.Context, args AssociateAzurePublisherArgs) (*AzurePublisher, error) {
+func (client *Client) AssociateAzurePublisher(ctx context.Context, args AssociateAzurePublisherArgs) (*AzurePublisher, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -429,7 +429,7 @@ type AssociateAzurePublisherArgs struct {
 }
 
 // [Preview API]
-func (client Client) QueryAssociatedAzurePublisher(ctx context.Context, args QueryAssociatedAzurePublisherArgs) (*AzurePublisher, error) {
+func (client *Client) QueryAssociatedAzurePublisher(ctx context.Context, args QueryAssociatedAzurePublisherArgs) (*AzurePublisher, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -454,7 +454,7 @@ type QueryAssociatedAzurePublisherArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetCategories(ctx context.Context, args GetCategoriesArgs) (*[]string, error) {
+func (client *Client) GetCategories(ctx context.Context, args GetCategoriesArgs) (*[]string, error) {
     queryParams := url.Values{}
     if args.Languages != nil {
         queryParams.Add("languages", *args.Languages)
@@ -477,7 +477,7 @@ type GetCategoriesArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetCategoryDetails(ctx context.Context, args GetCategoryDetailsArgs) (*CategoriesResult, error) {
+func (client *Client) GetCategoryDetails(ctx context.Context, args GetCategoryDetailsArgs) (*CategoriesResult, error) {
     routeValues := make(map[string]string)
     if args.CategoryName == nil || *args.CategoryName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "categoryName"} 
@@ -513,7 +513,7 @@ type GetCategoryDetailsArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetCategoryTree(ctx context.Context, args GetCategoryTreeArgs) (*ProductCategory, error) {
+func (client *Client) GetCategoryTree(ctx context.Context, args GetCategoryTreeArgs) (*ProductCategory, error) {
     routeValues := make(map[string]string)
     if args.Product == nil || *args.Product == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "product"} 
@@ -570,7 +570,7 @@ type GetCategoryTreeArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetRootCategories(ctx context.Context, args GetRootCategoriesArgs) (*ProductCategoriesResult, error) {
+func (client *Client) GetRootCategories(ctx context.Context, args GetRootCategoriesArgs) (*ProductCategoriesResult, error) {
     routeValues := make(map[string]string)
     if args.Product == nil || *args.Product == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "product"} 
@@ -621,7 +621,7 @@ type GetRootCategoriesArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetCertificate(ctx context.Context, args GetCertificateArgs) (io.ReadCloser, error) {
+func (client *Client) GetCertificate(ctx context.Context, args GetCertificateArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -655,7 +655,7 @@ type GetCertificateArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetContentVerificationLog(ctx context.Context, args GetContentVerificationLogArgs) (io.ReadCloser, error) {
+func (client *Client) GetContentVerificationLog(ctx context.Context, args GetContentVerificationLogArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -684,7 +684,7 @@ type GetContentVerificationLogArgs struct {
 }
 
 // [Preview API]
-func (client Client) CreateDraftForEditExtension(ctx context.Context, args CreateDraftForEditExtensionArgs) (*ExtensionDraft, error) {
+func (client *Client) CreateDraftForEditExtension(ctx context.Context, args CreateDraftForEditExtensionArgs) (*ExtensionDraft, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -715,7 +715,7 @@ type CreateDraftForEditExtensionArgs struct {
 }
 
 // [Preview API]
-func (client Client) PerformEditExtensionDraftOperation(ctx context.Context, args PerformEditExtensionDraftOperationArgs) (*ExtensionDraft, error) {
+func (client *Client) PerformEditExtensionDraftOperation(ctx context.Context, args PerformEditExtensionDraftOperationArgs) (*ExtensionDraft, error) {
     if args.DraftPatch == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "draftPatch"}
     }
@@ -761,7 +761,7 @@ type PerformEditExtensionDraftOperationArgs struct {
 }
 
 // [Preview API]
-func (client Client) UpdatePayloadInDraftForEditExtension(ctx context.Context, args UpdatePayloadInDraftForEditExtensionArgs) (*ExtensionDraft, error) {
+func (client *Client) UpdatePayloadInDraftForEditExtension(ctx context.Context, args UpdatePayloadInDraftForEditExtensionArgs) (*ExtensionDraft, error) {
     if args.UploadStream == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -809,7 +809,7 @@ type UpdatePayloadInDraftForEditExtensionArgs struct {
 }
 
 // [Preview API]
-func (client Client) AddAssetForEditExtensionDraft(ctx context.Context, args AddAssetForEditExtensionDraftArgs) (*ExtensionDraftAsset, error) {
+func (client *Client) AddAssetForEditExtensionDraft(ctx context.Context, args AddAssetForEditExtensionDraftArgs) (*ExtensionDraftAsset, error) {
     if args.UploadStream == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -857,7 +857,7 @@ type AddAssetForEditExtensionDraftArgs struct {
 }
 
 // [Preview API]
-func (client Client) CreateDraftForNewExtension(ctx context.Context, args CreateDraftForNewExtensionArgs) (*ExtensionDraft, error) {
+func (client *Client) CreateDraftForNewExtension(ctx context.Context, args CreateDraftForNewExtensionArgs) (*ExtensionDraft, error) {
     if args.UploadStream == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -898,7 +898,7 @@ type CreateDraftForNewExtensionArgs struct {
 }
 
 // [Preview API]
-func (client Client) PerformNewExtensionDraftOperation(ctx context.Context, args PerformNewExtensionDraftOperationArgs) (*ExtensionDraft, error) {
+func (client *Client) PerformNewExtensionDraftOperation(ctx context.Context, args PerformNewExtensionDraftOperationArgs) (*ExtensionDraft, error) {
     if args.DraftPatch == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "draftPatch"}
     }
@@ -938,7 +938,7 @@ type PerformNewExtensionDraftOperationArgs struct {
 }
 
 // [Preview API]
-func (client Client) UpdatePayloadInDraftForNewExtension(ctx context.Context, args UpdatePayloadInDraftForNewExtensionArgs) (*ExtensionDraft, error) {
+func (client *Client) UpdatePayloadInDraftForNewExtension(ctx context.Context, args UpdatePayloadInDraftForNewExtensionArgs) (*ExtensionDraft, error) {
     if args.UploadStream == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -980,7 +980,7 @@ type UpdatePayloadInDraftForNewExtensionArgs struct {
 }
 
 // [Preview API]
-func (client Client) AddAssetForNewExtensionDraft(ctx context.Context, args AddAssetForNewExtensionDraftArgs) (*ExtensionDraftAsset, error) {
+func (client *Client) AddAssetForNewExtensionDraft(ctx context.Context, args AddAssetForNewExtensionDraftArgs) (*ExtensionDraftAsset, error) {
     if args.UploadStream == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -1022,7 +1022,7 @@ type AddAssetForNewExtensionDraftArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetAssetFromEditExtensionDraft(ctx context.Context, args GetAssetFromEditExtensionDraftArgs) (io.ReadCloser, error) {
+func (client *Client) GetAssetFromEditExtensionDraft(ctx context.Context, args GetAssetFromEditExtensionDraftArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -1064,7 +1064,7 @@ type GetAssetFromEditExtensionDraftArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetAssetFromNewExtensionDraft(ctx context.Context, args GetAssetFromNewExtensionDraftArgs) (io.ReadCloser, error) {
+func (client *Client) GetAssetFromNewExtensionDraft(ctx context.Context, args GetAssetFromNewExtensionDraftArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -1099,7 +1099,7 @@ type GetAssetFromNewExtensionDraftArgs struct {
 }
 
 // [Preview API] Get install/uninstall events of an extension. If both count and afterDate parameters are specified, count takes precedence.
-func (client Client) GetExtensionEvents(ctx context.Context, args GetExtensionEventsArgs) (*ExtensionEvents, error) {
+func (client *Client) GetExtensionEvents(ctx context.Context, args GetExtensionEventsArgs) (*ExtensionEvents, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -1151,7 +1151,7 @@ type GetExtensionEventsArgs struct {
 }
 
 // [Preview API] API endpoint to publish extension install/uninstall events. This is meant to be invoked by EMS only for sending us data related to install/uninstall of an extension.
-func (client Client) PublishExtensionEvents(ctx context.Context, args PublishExtensionEventsArgs) error {
+func (client *Client) PublishExtensionEvents(ctx context.Context, args PublishExtensionEventsArgs) error {
     if args.ExtensionEvents == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "extensionEvents"}
     }
@@ -1175,7 +1175,7 @@ type PublishExtensionEventsArgs struct {
 }
 
 // [Preview API]
-func (client Client) QueryExtensions(ctx context.Context, args QueryExtensionsArgs) (*ExtensionQueryResult, error) {
+func (client *Client) QueryExtensions(ctx context.Context, args QueryExtensionsArgs) (*ExtensionQueryResult, error) {
     if args.ExtensionQuery == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "extensionQuery"}
     }
@@ -1213,7 +1213,7 @@ type QueryExtensionsArgs struct {
 }
 
 // [Preview API]
-func (client Client) CreateExtension(ctx context.Context, args CreateExtensionArgs) (*PublishedExtension, error) {
+func (client *Client) CreateExtension(ctx context.Context, args CreateExtensionArgs) (*PublishedExtension, error) {
     if args.UploadStream == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -1235,7 +1235,7 @@ type CreateExtensionArgs struct {
 }
 
 // [Preview API]
-func (client Client) DeleteExtensionById(ctx context.Context, args DeleteExtensionByIdArgs) error {
+func (client *Client) DeleteExtensionById(ctx context.Context, args DeleteExtensionByIdArgs) error {
     routeValues := make(map[string]string)
     if args.ExtensionId == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "extensionId"} 
@@ -1264,7 +1264,7 @@ type DeleteExtensionByIdArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetExtensionById(ctx context.Context, args GetExtensionByIdArgs) (*PublishedExtension, error) {
+func (client *Client) GetExtensionById(ctx context.Context, args GetExtensionByIdArgs) (*PublishedExtension, error) {
     routeValues := make(map[string]string)
     if args.ExtensionId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "extensionId"} 
@@ -1300,7 +1300,7 @@ type GetExtensionByIdArgs struct {
 }
 
 // [Preview API]
-func (client Client) UpdateExtensionById(ctx context.Context, args UpdateExtensionByIdArgs) (*PublishedExtension, error) {
+func (client *Client) UpdateExtensionById(ctx context.Context, args UpdateExtensionByIdArgs) (*PublishedExtension, error) {
     routeValues := make(map[string]string)
     if args.ExtensionId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "extensionId"} 
@@ -1325,7 +1325,7 @@ type UpdateExtensionByIdArgs struct {
 }
 
 // [Preview API]
-func (client Client) CreateExtensionWithPublisher(ctx context.Context, args CreateExtensionWithPublisherArgs) (*PublishedExtension, error) {
+func (client *Client) CreateExtensionWithPublisher(ctx context.Context, args CreateExtensionWithPublisherArgs) (*PublishedExtension, error) {
     if args.UploadStream == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -1355,7 +1355,7 @@ type CreateExtensionWithPublisherArgs struct {
 }
 
 // [Preview API]
-func (client Client) DeleteExtension(ctx context.Context, args DeleteExtensionArgs) error {
+func (client *Client) DeleteExtension(ctx context.Context, args DeleteExtensionArgs) error {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -1390,7 +1390,7 @@ type DeleteExtensionArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetExtension(ctx context.Context, args GetExtensionArgs) (*PublishedExtension, error) {
+func (client *Client) GetExtension(ctx context.Context, args GetExtensionArgs) (*PublishedExtension, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -1443,7 +1443,7 @@ type GetExtensionArgs struct {
 }
 
 // [Preview API] REST endpoint to update an extension.
-func (client Client) UpdateExtension(ctx context.Context, args UpdateExtensionArgs) (*PublishedExtension, error) {
+func (client *Client) UpdateExtension(ctx context.Context, args UpdateExtensionArgs) (*PublishedExtension, error) {
     if args.UploadStream == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -1485,7 +1485,7 @@ type UpdateExtensionArgs struct {
 }
 
 // [Preview API]
-func (client Client) UpdateExtensionProperties(ctx context.Context, args UpdateExtensionPropertiesArgs) (*PublishedExtension, error) {
+func (client *Client) UpdateExtensionProperties(ctx context.Context, args UpdateExtensionPropertiesArgs) (*PublishedExtension, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -1523,7 +1523,7 @@ type UpdateExtensionPropertiesArgs struct {
 }
 
 // [Preview API]
-func (client Client) ShareExtensionWithHost(ctx context.Context, args ShareExtensionWithHostArgs) error {
+func (client *Client) ShareExtensionWithHost(ctx context.Context, args ShareExtensionWithHostArgs) error {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -1564,7 +1564,7 @@ type ShareExtensionWithHostArgs struct {
 }
 
 // [Preview API]
-func (client Client) UnshareExtensionWithHost(ctx context.Context, args UnshareExtensionWithHostArgs) error {
+func (client *Client) UnshareExtensionWithHost(ctx context.Context, args UnshareExtensionWithHostArgs) error {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -1605,7 +1605,7 @@ type UnshareExtensionWithHostArgs struct {
 }
 
 // [Preview API]
-func (client Client) ExtensionValidator(ctx context.Context, args ExtensionValidatorArgs) error {
+func (client *Client) ExtensionValidator(ctx context.Context, args ExtensionValidatorArgs) error {
     if args.AzureRestApiRequestModel == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "azureRestApiRequestModel"}
     }
@@ -1629,7 +1629,7 @@ type ExtensionValidatorArgs struct {
 }
 
 // [Preview API] Send Notification
-func (client Client) SendNotifications(ctx context.Context, args SendNotificationsArgs) error {
+func (client *Client) SendNotifications(ctx context.Context, args SendNotificationsArgs) error {
     if args.NotificationData == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "notificationData"}
     }
@@ -1653,7 +1653,7 @@ type SendNotificationsArgs struct {
 }
 
 // [Preview API] This endpoint gets hit when you download a VSTS extension from the Web UI
-func (client Client) GetPackage(ctx context.Context, args GetPackageArgs) (io.ReadCloser, error) {
+func (client *Client) GetPackage(ctx context.Context, args GetPackageArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -1705,7 +1705,7 @@ type GetPackageArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetAssetWithToken(ctx context.Context, args GetAssetWithTokenArgs) (io.ReadCloser, error) {
+func (client *Client) GetAssetWithToken(ctx context.Context, args GetAssetWithTokenArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -1768,7 +1768,7 @@ type GetAssetWithTokenArgs struct {
 }
 
 // [Preview API] Delete publisher asset like logo
-func (client Client) DeletePublisherAsset(ctx context.Context, args DeletePublisherAssetArgs) error {
+func (client *Client) DeletePublisherAsset(ctx context.Context, args DeletePublisherAssetArgs) error {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -1797,7 +1797,7 @@ type DeletePublisherAssetArgs struct {
 }
 
 // [Preview API] Get publisher asset like logo as a stream
-func (client Client) GetPublisherAsset(ctx context.Context, args GetPublisherAssetArgs) (io.ReadCloser, error) {
+func (client *Client) GetPublisherAsset(ctx context.Context, args GetPublisherAssetArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -1826,7 +1826,7 @@ type GetPublisherAssetArgs struct {
 }
 
 // [Preview API] Update publisher asset like logo. It accepts asset file as an octet stream and file name is passed in header values.
-func (client Client) UpdatePublisherAsset(ctx context.Context, args UpdatePublisherAssetArgs) (*map[string]string, error) {
+func (client *Client) UpdatePublisherAsset(ctx context.Context, args UpdatePublisherAssetArgs) (*map[string]string, error) {
     if args.UploadStream == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -1868,7 +1868,7 @@ type UpdatePublisherAssetArgs struct {
 }
 
 // [Preview API]
-func (client Client) QueryPublishers(ctx context.Context, args QueryPublishersArgs) (*PublisherQueryResult, error) {
+func (client *Client) QueryPublishers(ctx context.Context, args QueryPublishersArgs) (*PublisherQueryResult, error) {
     if args.PublisherQuery == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "publisherQuery"}
     }
@@ -1894,7 +1894,7 @@ type QueryPublishersArgs struct {
 }
 
 // [Preview API]
-func (client Client) CreatePublisher(ctx context.Context, args CreatePublisherArgs) (*Publisher, error) {
+func (client *Client) CreatePublisher(ctx context.Context, args CreatePublisherArgs) (*Publisher, error) {
     if args.Publisher == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "publisher"}
     }
@@ -1920,7 +1920,7 @@ type CreatePublisherArgs struct {
 }
 
 // [Preview API]
-func (client Client) DeletePublisher(ctx context.Context, args DeletePublisherArgs) error {
+func (client *Client) DeletePublisher(ctx context.Context, args DeletePublisherArgs) error {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -1943,7 +1943,7 @@ type DeletePublisherArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetPublisher(ctx context.Context, args GetPublisherArgs) (*Publisher, error) {
+func (client *Client) GetPublisher(ctx context.Context, args GetPublisherArgs) (*Publisher, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -1974,7 +1974,7 @@ type GetPublisherArgs struct {
 }
 
 // [Preview API]
-func (client Client) UpdatePublisher(ctx context.Context, args UpdatePublisherArgs) (*Publisher, error) {
+func (client *Client) UpdatePublisher(ctx context.Context, args UpdatePublisherArgs) (*Publisher, error) {
     if args.Publisher == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "publisher"}
     }
@@ -2008,7 +2008,7 @@ type UpdatePublisherArgs struct {
 }
 
 // [Preview API] Endpoint to add/modify publisher membership. Currently Supports only addition/modification of 1 user at a time Works only for adding members of same tenant.
-func (client Client) UpdatePublisherMembers(ctx context.Context, args UpdatePublisherMembersArgs) (*[]PublisherRoleAssignment, error) {
+func (client *Client) UpdatePublisherMembers(ctx context.Context, args UpdatePublisherMembersArgs) (*[]PublisherRoleAssignment, error) {
     if args.RoleAssignments == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "roleAssignments"}
     }
@@ -2048,7 +2048,7 @@ type UpdatePublisherMembersArgs struct {
 }
 
 // [Preview API] Returns a list of questions with their responses associated with an extension.
-func (client Client) GetQuestions(ctx context.Context, args GetQuestionsArgs) (*QuestionsResult, error) {
+func (client *Client) GetQuestions(ctx context.Context, args GetQuestionsArgs) (*QuestionsResult, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -2095,7 +2095,7 @@ type GetQuestionsArgs struct {
 }
 
 // [Preview API] Flags a concern with an existing question for an extension.
-func (client Client) ReportQuestion(ctx context.Context, args ReportQuestionArgs) (*Concern, error) {
+func (client *Client) ReportQuestion(ctx context.Context, args ReportQuestionArgs) (*Concern, error) {
     if args.Concern == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "concern"}
     }
@@ -2141,7 +2141,7 @@ type ReportQuestionArgs struct {
 }
 
 // [Preview API] Creates a new question for an extension.
-func (client Client) CreateQuestion(ctx context.Context, args CreateQuestionArgs) (*Question, error) {
+func (client *Client) CreateQuestion(ctx context.Context, args CreateQuestionArgs) (*Question, error) {
     if args.Question == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "question"}
     }
@@ -2181,7 +2181,7 @@ type CreateQuestionArgs struct {
 }
 
 // [Preview API] Deletes an existing question and all its associated responses for an extension. (soft delete)
-func (client Client) DeleteQuestion(ctx context.Context, args DeleteQuestionArgs) error {
+func (client *Client) DeleteQuestion(ctx context.Context, args DeleteQuestionArgs) error {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -2216,7 +2216,7 @@ type DeleteQuestionArgs struct {
 }
 
 // [Preview API] Updates an existing question for an extension.
-func (client Client) UpdateQuestion(ctx context.Context, args UpdateQuestionArgs) (*Question, error) {
+func (client *Client) UpdateQuestion(ctx context.Context, args UpdateQuestionArgs) (*Question, error) {
     if args.Question == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "question"}
     }
@@ -2262,7 +2262,7 @@ type UpdateQuestionArgs struct {
 }
 
 // [Preview API] Creates a new response for a given question for an extension.
-func (client Client) CreateResponse(ctx context.Context, args CreateResponseArgs) (*Response, error) {
+func (client *Client) CreateResponse(ctx context.Context, args CreateResponseArgs) (*Response, error) {
     if args.Response == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "response"}
     }
@@ -2308,7 +2308,7 @@ type CreateResponseArgs struct {
 }
 
 // [Preview API] Deletes a response for an extension. (soft delete)
-func (client Client) DeleteResponse(ctx context.Context, args DeleteResponseArgs) error {
+func (client *Client) DeleteResponse(ctx context.Context, args DeleteResponseArgs) error {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -2349,7 +2349,7 @@ type DeleteResponseArgs struct {
 }
 
 // [Preview API] Updates an existing response for a given question for an extension.
-func (client Client) UpdateResponse(ctx context.Context, args UpdateResponseArgs) (*Response, error) {
+func (client *Client) UpdateResponse(ctx context.Context, args UpdateResponseArgs) (*Response, error) {
     if args.Response == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "response"}
     }
@@ -2401,7 +2401,7 @@ type UpdateResponseArgs struct {
 }
 
 // [Preview API] Returns extension reports
-func (client Client) GetExtensionReports(ctx context.Context, args GetExtensionReportsArgs) (interface{}, error) {
+func (client *Client) GetExtensionReports(ctx context.Context, args GetExtensionReportsArgs) (interface{}, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -2448,7 +2448,7 @@ type GetExtensionReportsArgs struct {
 }
 
 // [Preview API] Returns a list of reviews associated with an extension
-func (client Client) GetReviews(ctx context.Context, args GetReviewsArgs) (*ReviewsResult, error) {
+func (client *Client) GetReviews(ctx context.Context, args GetReviewsArgs) (*ReviewsResult, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -2500,7 +2500,7 @@ type GetReviewsArgs struct {
 }
 
 // [Preview API] Returns a summary of the reviews
-func (client Client) GetReviewsSummary(ctx context.Context, args GetReviewsSummaryArgs) (*ReviewSummary, error) {
+func (client *Client) GetReviewsSummary(ctx context.Context, args GetReviewsSummaryArgs) (*ReviewSummary, error) {
     routeValues := make(map[string]string)
     if args.PubName == nil || *args.PubName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "pubName"} 
@@ -2542,7 +2542,7 @@ type GetReviewsSummaryArgs struct {
 }
 
 // [Preview API] Creates a new review for an extension
-func (client Client) CreateReview(ctx context.Context, args CreateReviewArgs) (*Review, error) {
+func (client *Client) CreateReview(ctx context.Context, args CreateReviewArgs) (*Review, error) {
     if args.Review == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "review"}
     }
@@ -2582,7 +2582,7 @@ type CreateReviewArgs struct {
 }
 
 // [Preview API] Deletes a review
-func (client Client) DeleteReview(ctx context.Context, args DeleteReviewArgs) error {
+func (client *Client) DeleteReview(ctx context.Context, args DeleteReviewArgs) error {
     routeValues := make(map[string]string)
     if args.PubName == nil || *args.PubName == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "pubName"} 
@@ -2617,7 +2617,7 @@ type DeleteReviewArgs struct {
 }
 
 // [Preview API] Updates or Flags a review
-func (client Client) UpdateReview(ctx context.Context, args UpdateReviewArgs) (*ReviewPatch, error) {
+func (client *Client) UpdateReview(ctx context.Context, args UpdateReviewArgs) (*ReviewPatch, error) {
     if args.ReviewPatch == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "reviewPatch"}
     }
@@ -2663,7 +2663,7 @@ type UpdateReviewArgs struct {
 }
 
 // [Preview API]
-func (client Client) CreateCategory(ctx context.Context, args CreateCategoryArgs) (*ExtensionCategory, error) {
+func (client *Client) CreateCategory(ctx context.Context, args CreateCategoryArgs) (*ExtensionCategory, error) {
     if args.Category == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "category"}
     }
@@ -2689,7 +2689,7 @@ type CreateCategoryArgs struct {
 }
 
 // [Preview API] Get all setting entries for the given user/all-users scope
-func (client Client) GetGalleryUserSettings(ctx context.Context, args GetGalleryUserSettingsArgs) (*map[string]interface{}, error) {
+func (client *Client) GetGalleryUserSettings(ctx context.Context, args GetGalleryUserSettingsArgs) (*map[string]interface{}, error) {
     routeValues := make(map[string]string)
     if args.UserScope == nil || *args.UserScope == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "userScope"} 
@@ -2719,7 +2719,7 @@ type GetGalleryUserSettingsArgs struct {
 }
 
 // [Preview API] Set all setting entries for the given user/all-users scope
-func (client Client) SetGalleryUserSettings(ctx context.Context, args SetGalleryUserSettingsArgs) error {
+func (client *Client) SetGalleryUserSettings(ctx context.Context, args SetGalleryUserSettingsArgs) error {
     if args.Entries == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "entries"}
     }
@@ -2751,7 +2751,7 @@ type SetGalleryUserSettingsArgs struct {
 }
 
 // [Preview API]
-func (client Client) GenerateKey(ctx context.Context, args GenerateKeyArgs) error {
+func (client *Client) GenerateKey(ctx context.Context, args GenerateKeyArgs) error {
     routeValues := make(map[string]string)
     if args.KeyType == nil || *args.KeyType == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "keyType"} 
@@ -2780,7 +2780,7 @@ type GenerateKeyArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetSigningKey(ctx context.Context, args GetSigningKeyArgs) (*string, error) {
+func (client *Client) GetSigningKey(ctx context.Context, args GetSigningKeyArgs) (*string, error) {
     routeValues := make(map[string]string)
     if args.KeyType == nil || *args.KeyType == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "keyType"} 
@@ -2805,7 +2805,7 @@ type GetSigningKeyArgs struct {
 }
 
 // [Preview API]
-func (client Client) UpdateExtensionStatistics(ctx context.Context, args UpdateExtensionStatisticsArgs) error {
+func (client *Client) UpdateExtensionStatistics(ctx context.Context, args UpdateExtensionStatisticsArgs) error {
     if args.ExtensionStatisticsUpdate == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "extensionStatisticsUpdate"}
     }
@@ -2843,7 +2843,7 @@ type UpdateExtensionStatisticsArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetExtensionDailyStats(ctx context.Context, args GetExtensionDailyStatsArgs) (*ExtensionDailyStats, error) {
+func (client *Client) GetExtensionDailyStats(ctx context.Context, args GetExtensionDailyStatsArgs) (*ExtensionDailyStats, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -2890,7 +2890,7 @@ type GetExtensionDailyStatsArgs struct {
 }
 
 // [Preview API] This route/location id only supports HTTP POST anonymously, so that the page view daily stat can be incremented from Marketplace client. Trying to call GET on this route should result in an exception. Without this explicit implementation, calling GET on this public route invokes the above GET implementation GetExtensionDailyStats.
-func (client Client) GetExtensionDailyStatsAnonymous(ctx context.Context, args GetExtensionDailyStatsAnonymousArgs) (*ExtensionDailyStats, error) {
+func (client *Client) GetExtensionDailyStatsAnonymous(ctx context.Context, args GetExtensionDailyStatsAnonymousArgs) (*ExtensionDailyStats, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -2927,7 +2927,7 @@ type GetExtensionDailyStatsAnonymousArgs struct {
 }
 
 // [Preview API] Increments a daily statistic associated with the extension
-func (client Client) IncrementExtensionDailyStat(ctx context.Context, args IncrementExtensionDailyStatArgs) error {
+func (client *Client) IncrementExtensionDailyStat(ctx context.Context, args IncrementExtensionDailyStatArgs) error {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -2969,7 +2969,7 @@ type IncrementExtensionDailyStatArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetVerificationLog(ctx context.Context, args GetVerificationLogArgs) (io.ReadCloser, error) {
+func (client *Client) GetVerificationLog(ctx context.Context, args GetVerificationLogArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 

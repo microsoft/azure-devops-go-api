@@ -27,7 +27,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -35,7 +35,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
 }
 
 // [Preview API]
-func (client Client) CreateTestIterationResultAttachment(ctx context.Context, args CreateTestIterationResultAttachmentArgs) (*test.TestAttachmentReference, error) {
+func (client *Client) CreateTestIterationResultAttachment(ctx context.Context, args CreateTestIterationResultAttachmentArgs) (*test.TestAttachmentReference, error) {
     if args.AttachmentRequestModel == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "attachmentRequestModel"}
     }
@@ -93,7 +93,7 @@ type CreateTestIterationResultAttachmentArgs struct {
 }
 
 // [Preview API]
-func (client Client) CreateTestResultAttachment(ctx context.Context, args CreateTestResultAttachmentArgs) (*test.TestAttachmentReference, error) {
+func (client *Client) CreateTestResultAttachment(ctx context.Context, args CreateTestResultAttachmentArgs) (*test.TestAttachmentReference, error) {
     if args.AttachmentRequestModel == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "attachmentRequestModel"}
     }
@@ -139,7 +139,7 @@ type CreateTestResultAttachmentArgs struct {
 }
 
 // [Preview API]
-func (client Client) CreateTestSubResultAttachment(ctx context.Context, args CreateTestSubResultAttachmentArgs) (*test.TestAttachmentReference, error) {
+func (client *Client) CreateTestSubResultAttachment(ctx context.Context, args CreateTestSubResultAttachmentArgs) (*test.TestAttachmentReference, error) {
     if args.AttachmentRequestModel == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "attachmentRequestModel"}
     }
@@ -192,7 +192,7 @@ type CreateTestSubResultAttachmentArgs struct {
 }
 
 // [Preview API]
-func (client Client) DeleteTestResultAttachment(ctx context.Context, args DeleteTestResultAttachmentArgs) error {
+func (client *Client) DeleteTestResultAttachment(ctx context.Context, args DeleteTestResultAttachmentArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -233,7 +233,7 @@ type DeleteTestResultAttachmentArgs struct {
 }
 
 // [Preview API] Returns a test result attachment
-func (client Client) GetTestResultAttachmentContent(ctx context.Context, args GetTestResultAttachmentContentArgs) (io.ReadCloser, error) {
+func (client *Client) GetTestResultAttachmentContent(ctx context.Context, args GetTestResultAttachmentContentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -274,7 +274,7 @@ type GetTestResultAttachmentContentArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetTestResultAttachments(ctx context.Context, args GetTestResultAttachmentsArgs) (*[]test.TestAttachment, error) {
+func (client *Client) GetTestResultAttachments(ctx context.Context, args GetTestResultAttachmentsArgs) (*[]test.TestAttachment, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -311,7 +311,7 @@ type GetTestResultAttachmentsArgs struct {
 }
 
 // [Preview API] Returns a test result attachment
-func (client Client) GetTestResultAttachmentZip(ctx context.Context, args GetTestResultAttachmentZipArgs) (io.ReadCloser, error) {
+func (client *Client) GetTestResultAttachmentZip(ctx context.Context, args GetTestResultAttachmentZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -352,7 +352,7 @@ type GetTestResultAttachmentZipArgs struct {
 }
 
 // [Preview API] Returns a test sub result attachment
-func (client Client) GetTestSubResultAttachmentContent(ctx context.Context, args GetTestSubResultAttachmentContentArgs) (io.ReadCloser, error) {
+func (client *Client) GetTestSubResultAttachmentContent(ctx context.Context, args GetTestSubResultAttachmentContentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -400,7 +400,7 @@ type GetTestSubResultAttachmentContentArgs struct {
 }
 
 // [Preview API] Returns attachment references for test sub result.
-func (client Client) GetTestSubResultAttachments(ctx context.Context, args GetTestSubResultAttachmentsArgs) (*[]test.TestAttachment, error) {
+func (client *Client) GetTestSubResultAttachments(ctx context.Context, args GetTestSubResultAttachmentsArgs) (*[]test.TestAttachment, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -444,7 +444,7 @@ type GetTestSubResultAttachmentsArgs struct {
 }
 
 // [Preview API] Returns a test sub result attachment
-func (client Client) GetTestSubResultAttachmentZip(ctx context.Context, args GetTestSubResultAttachmentZipArgs) (io.ReadCloser, error) {
+func (client *Client) GetTestSubResultAttachmentZip(ctx context.Context, args GetTestSubResultAttachmentZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -492,7 +492,7 @@ type GetTestSubResultAttachmentZipArgs struct {
 }
 
 // [Preview API]
-func (client Client) CreateTestRunAttachment(ctx context.Context, args CreateTestRunAttachmentArgs) (*test.TestAttachmentReference, error) {
+func (client *Client) CreateTestRunAttachment(ctx context.Context, args CreateTestRunAttachmentArgs) (*test.TestAttachmentReference, error) {
     if args.AttachmentRequestModel == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "attachmentRequestModel"}
     }
@@ -532,7 +532,7 @@ type CreateTestRunAttachmentArgs struct {
 }
 
 // [Preview API]
-func (client Client) DeleteTestRunAttachment(ctx context.Context, args DeleteTestRunAttachmentArgs) error {
+func (client *Client) DeleteTestRunAttachment(ctx context.Context, args DeleteTestRunAttachmentArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -567,7 +567,7 @@ type DeleteTestRunAttachmentArgs struct {
 }
 
 // [Preview API] Returns a test run attachment
-func (client Client) GetTestRunAttachmentContent(ctx context.Context, args GetTestRunAttachmentContentArgs) (io.ReadCloser, error) {
+func (client *Client) GetTestRunAttachmentContent(ctx context.Context, args GetTestRunAttachmentContentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -602,7 +602,7 @@ type GetTestRunAttachmentContentArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetTestRunAttachments(ctx context.Context, args GetTestRunAttachmentsArgs) (*[]test.TestAttachment, error) {
+func (client *Client) GetTestRunAttachments(ctx context.Context, args GetTestRunAttachmentsArgs) (*[]test.TestAttachment, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -633,7 +633,7 @@ type GetTestRunAttachmentsArgs struct {
 }
 
 // [Preview API] Returns a test run attachment
-func (client Client) GetTestRunAttachmentZip(ctx context.Context, args GetTestRunAttachmentZipArgs) (io.ReadCloser, error) {
+func (client *Client) GetTestRunAttachmentZip(ctx context.Context, args GetTestRunAttachmentZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -668,7 +668,7 @@ type GetTestRunAttachmentZipArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetBugsLinkedToTestResult(ctx context.Context, args GetBugsLinkedToTestResultArgs) (*[]test.WorkItemReference, error) {
+func (client *Client) GetBugsLinkedToTestResult(ctx context.Context, args GetBugsLinkedToTestResultArgs) (*[]test.WorkItemReference, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -705,7 +705,7 @@ type GetBugsLinkedToTestResultArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetBuildCodeCoverage(ctx context.Context, args GetBuildCodeCoverageArgs) (*[]test.BuildCoverage, error) {
+func (client *Client) GetBuildCodeCoverage(ctx context.Context, args GetBuildCodeCoverageArgs) (*[]test.BuildCoverage, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -743,7 +743,7 @@ type GetBuildCodeCoverageArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetCodeCoverageSummary(ctx context.Context, args GetCodeCoverageSummaryArgs) (*test.CodeCoverageSummary, error) {
+func (client *Client) GetCodeCoverageSummary(ctx context.Context, args GetCodeCoverageSummaryArgs) (*test.CodeCoverageSummary, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -780,7 +780,7 @@ type GetCodeCoverageSummaryArgs struct {
 }
 
 // [Preview API] http://(tfsserver):8080/tfs/DefaultCollection/_apis/test/CodeCoverage?buildId=10 Request: Json of code coverage summary
-func (client Client) UpdateCodeCoverageSummary(ctx context.Context, args UpdateCodeCoverageSummaryArgs) error {
+func (client *Client) UpdateCodeCoverageSummary(ctx context.Context, args UpdateCodeCoverageSummaryArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -816,7 +816,7 @@ type UpdateCodeCoverageSummaryArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetTestRunCodeCoverage(ctx context.Context, args GetTestRunCodeCoverageArgs) (*[]test.TestRunCoverage, error) {
+func (client *Client) GetTestRunCodeCoverage(ctx context.Context, args GetTestRunCodeCoverageArgs) (*[]test.TestRunCoverage, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -854,7 +854,7 @@ type GetTestRunCodeCoverageArgs struct {
 }
 
 // [Preview API]
-func (client Client) QueryTestResultHistory(ctx context.Context, args QueryTestResultHistoryArgs) (*test.TestResultHistory, error) {
+func (client *Client) QueryTestResultHistory(ctx context.Context, args QueryTestResultHistoryArgs) (*test.TestResultHistory, error) {
     if args.Filter == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "filter"}
     }
@@ -888,7 +888,7 @@ type QueryTestResultHistoryArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetTestResultDetailsForBuild(ctx context.Context, args GetTestResultDetailsForBuildArgs) (*test.TestResultsDetails, error) {
+func (client *Client) GetTestResultDetailsForBuild(ctx context.Context, args GetTestResultDetailsForBuildArgs) (*test.TestResultsDetails, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -950,7 +950,7 @@ type GetTestResultDetailsForBuildArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetTestResultDetailsForRelease(ctx context.Context, args GetTestResultDetailsForReleaseArgs) (*test.TestResultsDetails, error) {
+func (client *Client) GetTestResultDetailsForRelease(ctx context.Context, args GetTestResultDetailsForReleaseArgs) (*test.TestResultsDetails, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1018,7 +1018,7 @@ type GetTestResultDetailsForReleaseArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetTestResultsByQuery(ctx context.Context, args GetTestResultsByQueryArgs) (*test.TestResultsQuery, error) {
+func (client *Client) GetTestResultsByQuery(ctx context.Context, args GetTestResultsByQueryArgs) (*test.TestResultsQuery, error) {
     if args.Query == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "query"}
     }
@@ -1052,7 +1052,7 @@ type GetTestResultsByQueryArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetTestResultsByQueryWiql(ctx context.Context, args GetTestResultsByQueryWiqlArgs) (*[]test.TestCaseResult, error) {
+func (client *Client) GetTestResultsByQueryWiql(ctx context.Context, args GetTestResultsByQueryWiqlArgs) (*[]test.TestCaseResult, error) {
     if args.QueryModel == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "queryModel"}
     }
@@ -1107,7 +1107,7 @@ type GetTestResultsByQueryWiqlArgs struct {
 }
 
 // [Preview API]
-func (client Client) AddTestResultsToTestRun(ctx context.Context, args AddTestResultsToTestRunArgs) (*[]test.TestCaseResult, error) {
+func (client *Client) AddTestResultsToTestRun(ctx context.Context, args AddTestResultsToTestRunArgs) (*[]test.TestCaseResult, error) {
     if args.Results == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "results"}
     }
@@ -1147,7 +1147,7 @@ type AddTestResultsToTestRunArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetTestResultById(ctx context.Context, args GetTestResultByIdArgs) (*test.TestCaseResult, error) {
+func (client *Client) GetTestResultById(ctx context.Context, args GetTestResultByIdArgs) (*test.TestCaseResult, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1190,7 +1190,7 @@ type GetTestResultByIdArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetTestResults(ctx context.Context, args GetTestResultsArgs) (*[]test.TestCaseResult, error) {
+func (client *Client) GetTestResults(ctx context.Context, args GetTestResultsArgs) (*[]test.TestCaseResult, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1247,7 +1247,7 @@ type GetTestResultsArgs struct {
 }
 
 // [Preview API]
-func (client Client) UpdateTestResults(ctx context.Context, args UpdateTestResultsArgs) (*[]test.TestCaseResult, error) {
+func (client *Client) UpdateTestResults(ctx context.Context, args UpdateTestResultsArgs) (*[]test.TestCaseResult, error) {
     if args.Results == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "results"}
     }
@@ -1287,7 +1287,7 @@ type UpdateTestResultsArgs struct {
 }
 
 // [Preview API]
-func (client Client) QueryTestResultsReportForBuild(ctx context.Context, args QueryTestResultsReportForBuildArgs) (*test.TestResultSummary, error) {
+func (client *Client) QueryTestResultsReportForBuild(ctx context.Context, args QueryTestResultsReportForBuildArgs) (*test.TestResultSummary, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1354,7 +1354,7 @@ type QueryTestResultsReportForBuildArgs struct {
 }
 
 // [Preview API]
-func (client Client) QueryTestResultsReportForRelease(ctx context.Context, args QueryTestResultsReportForReleaseArgs) (*test.TestResultSummary, error) {
+func (client *Client) QueryTestResultsReportForRelease(ctx context.Context, args QueryTestResultsReportForReleaseArgs) (*test.TestResultSummary, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1436,7 +1436,7 @@ type QueryTestResultsReportForReleaseArgs struct {
 }
 
 // [Preview API]
-func (client Client) QueryTestResultsSummaryForReleases(ctx context.Context, args QueryTestResultsSummaryForReleasesArgs) (*[]test.TestResultSummary, error) {
+func (client *Client) QueryTestResultsSummaryForReleases(ctx context.Context, args QueryTestResultsSummaryForReleasesArgs) (*[]test.TestResultSummary, error) {
     if args.Releases == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "releases"}
     }
@@ -1470,7 +1470,7 @@ type QueryTestResultsSummaryForReleasesArgs struct {
 }
 
 // [Preview API]
-func (client Client) QueryTestSummaryByRequirement(ctx context.Context, args QueryTestSummaryByRequirementArgs) (*[]test.TestSummaryForWorkItem, error) {
+func (client *Client) QueryTestSummaryByRequirement(ctx context.Context, args QueryTestSummaryByRequirementArgs) (*[]test.TestSummaryForWorkItem, error) {
     if args.ResultsContext == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "resultsContext"}
     }
@@ -1515,7 +1515,7 @@ type QueryTestSummaryByRequirementArgs struct {
 }
 
 // [Preview API]
-func (client Client) QueryResultTrendForBuild(ctx context.Context, args QueryResultTrendForBuildArgs) (*[]test.AggregatedDataForResultTrend, error) {
+func (client *Client) QueryResultTrendForBuild(ctx context.Context, args QueryResultTrendForBuildArgs) (*[]test.AggregatedDataForResultTrend, error) {
     if args.Filter == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "filter"}
     }
@@ -1549,7 +1549,7 @@ type QueryResultTrendForBuildArgs struct {
 }
 
 // [Preview API]
-func (client Client) QueryResultTrendForRelease(ctx context.Context, args QueryResultTrendForReleaseArgs) (*[]test.AggregatedDataForResultTrend, error) {
+func (client *Client) QueryResultTrendForRelease(ctx context.Context, args QueryResultTrendForReleaseArgs) (*[]test.AggregatedDataForResultTrend, error) {
     if args.Filter == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "filter"}
     }
@@ -1583,7 +1583,7 @@ type QueryResultTrendForReleaseArgs struct {
 }
 
 // [Preview API]
-func (client Client) CreateTestRun(ctx context.Context, args CreateTestRunArgs) (*test.TestRun, error) {
+func (client *Client) CreateTestRun(ctx context.Context, args CreateTestRunArgs) (*test.TestRun, error) {
     if args.TestRun == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "testRun"}
     }
@@ -1617,7 +1617,7 @@ type CreateTestRunArgs struct {
 }
 
 // [Preview API]
-func (client Client) DeleteTestRun(ctx context.Context, args DeleteTestRunArgs) error {
+func (client *Client) DeleteTestRun(ctx context.Context, args DeleteTestRunArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1646,7 +1646,7 @@ type DeleteTestRunArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetTestRunById(ctx context.Context, args GetTestRunByIdArgs) (*test.TestRun, error) {
+func (client *Client) GetTestRunById(ctx context.Context, args GetTestRunByIdArgs) (*test.TestRun, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1688,7 +1688,7 @@ type GetTestRunByIdArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetTestRuns(ctx context.Context, args GetTestRunsArgs) (*[]test.TestRun, error) {
+func (client *Client) GetTestRuns(ctx context.Context, args GetTestRunsArgs) (*[]test.TestRun, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1754,7 +1754,7 @@ type GetTestRunsArgs struct {
 }
 
 // [Preview API] Query Test Runs based on filters. Mandatory fields are minLastUpdatedDate and maxLastUpdatedDate.
-func (client Client) QueryTestRuns(ctx context.Context, args QueryTestRunsArgs) (*[]test.TestRun, error) {
+func (client *Client) QueryTestRuns(ctx context.Context, args QueryTestRunsArgs) (*[]test.TestRun, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1897,7 +1897,7 @@ type QueryTestRunsArgs struct {
 }
 
 // [Preview API]
-func (client Client) UpdateTestRun(ctx context.Context, args UpdateTestRunArgs) (*test.TestRun, error) {
+func (client *Client) UpdateTestRun(ctx context.Context, args UpdateTestRunArgs) (*test.TestRun, error) {
     if args.RunUpdateModel == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "runUpdateModel"}
     }
@@ -1937,7 +1937,7 @@ type UpdateTestRunArgs struct {
 }
 
 // Get test run statistics , used when we want to get summary of a run by outcome.
-func (client Client) GetTestRunStatistics(ctx context.Context, args GetTestRunStatisticsArgs) (*test.TestRunStatistic, error) {
+func (client *Client) GetTestRunStatistics(ctx context.Context, args GetTestRunStatisticsArgs) (*test.TestRunStatistic, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1968,7 +1968,7 @@ type GetTestRunStatisticsArgs struct {
 }
 
 // [Preview API] Get TestResultsSettings data
-func (client Client) GetTestResultsSettings(ctx context.Context, args GetTestResultsSettingsArgs) (*test.TestResultsSettings, error) {
+func (client *Client) GetTestResultsSettings(ctx context.Context, args GetTestResultsSettingsArgs) (*test.TestResultsSettings, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1999,7 +1999,7 @@ type GetTestResultsSettingsArgs struct {
 }
 
 // [Preview API] Update project settings of test results
-func (client Client) UpdatePipelinesTestSettings(ctx context.Context, args UpdatePipelinesTestSettingsArgs) (*test.TestResultsSettings, error) {
+func (client *Client) UpdatePipelinesTestSettings(ctx context.Context, args UpdatePipelinesTestSettingsArgs) (*test.TestResultsSettings, error) {
     if args.TestResultsUpdateSettings == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "testResultsUpdateSettings"}
     }
@@ -2033,7 +2033,7 @@ type UpdatePipelinesTestSettingsArgs struct {
 }
 
 // [Preview API] Get history of a test method using TestHistoryQuery
-func (client Client) QueryTestHistory(ctx context.Context, args QueryTestHistoryArgs) (*test.TestHistoryQuery, error) {
+func (client *Client) QueryTestHistory(ctx context.Context, args QueryTestHistoryArgs) (*test.TestHistoryQuery, error) {
     if args.Filter == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "filter"}
     }
@@ -2067,7 +2067,7 @@ type QueryTestHistoryArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetTestLogsForBuild(ctx context.Context, args GetTestLogsForBuildArgs) (*[]test.TestLog, error) {
+func (client *Client) GetTestLogsForBuild(ctx context.Context, args GetTestLogsForBuildArgs) (*[]test.TestLog, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2131,7 +2131,7 @@ type GetTestLogsForBuildArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetTestResultLogs(ctx context.Context, args GetTestResultLogsArgs) (*[]test.TestLog, error) {
+func (client *Client) GetTestResultLogs(ctx context.Context, args GetTestResultLogsArgs) (*[]test.TestLog, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2201,7 +2201,7 @@ type GetTestResultLogsArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetTestSubResultLogs(ctx context.Context, args GetTestSubResultLogsArgs) (*[]test.TestLog, error) {
+func (client *Client) GetTestSubResultLogs(ctx context.Context, args GetTestSubResultLogsArgs) (*[]test.TestLog, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2277,7 +2277,7 @@ type GetTestSubResultLogsArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetTestRunLogs(ctx context.Context, args GetTestRunLogsArgs) (*[]test.TestLog, error) {
+func (client *Client) GetTestRunLogs(ctx context.Context, args GetTestRunLogsArgs) (*[]test.TestLog, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2341,7 +2341,7 @@ type GetTestRunLogsArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetTestLogStoreEndpointDetailsForBuildLog(ctx context.Context, args GetTestLogStoreEndpointDetailsForBuildLogArgs) (*test.TestLogStoreEndpointDetails, error) {
+func (client *Client) GetTestLogStoreEndpointDetailsForBuildLog(ctx context.Context, args GetTestLogStoreEndpointDetailsForBuildLogArgs) (*test.TestLogStoreEndpointDetails, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2385,7 +2385,7 @@ type GetTestLogStoreEndpointDetailsForBuildLogArgs struct {
 }
 
 // [Preview API]
-func (client Client) TestLogStoreEndpointDetailsForBuild(ctx context.Context, args TestLogStoreEndpointDetailsForBuildArgs) (*test.TestLogStoreEndpointDetails, error) {
+func (client *Client) TestLogStoreEndpointDetailsForBuild(ctx context.Context, args TestLogStoreEndpointDetailsForBuildArgs) (*test.TestLogStoreEndpointDetails, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2423,7 +2423,7 @@ type TestLogStoreEndpointDetailsForBuildArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetTestLogStoreEndpointDetailsForResultLog(ctx context.Context, args GetTestLogStoreEndpointDetailsForResultLogArgs) (*test.TestLogStoreEndpointDetails, error) {
+func (client *Client) GetTestLogStoreEndpointDetailsForResultLog(ctx context.Context, args GetTestLogStoreEndpointDetailsForResultLogArgs) (*test.TestLogStoreEndpointDetails, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2473,7 +2473,7 @@ type GetTestLogStoreEndpointDetailsForResultLogArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetTestLogStoreEndpointDetailsForSubResultLog(ctx context.Context, args GetTestLogStoreEndpointDetailsForSubResultLogArgs) (*test.TestLogStoreEndpointDetails, error) {
+func (client *Client) GetTestLogStoreEndpointDetailsForSubResultLog(ctx context.Context, args GetTestLogStoreEndpointDetailsForSubResultLogArgs) (*test.TestLogStoreEndpointDetails, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2529,7 +2529,7 @@ type GetTestLogStoreEndpointDetailsForSubResultLogArgs struct {
 }
 
 // [Preview API]
-func (client Client) TestLogStoreEndpointDetailsForResult(ctx context.Context, args TestLogStoreEndpointDetailsForResultArgs) (*test.TestLogStoreEndpointDetails, error) {
+func (client *Client) TestLogStoreEndpointDetailsForResult(ctx context.Context, args TestLogStoreEndpointDetailsForResultArgs) (*test.TestLogStoreEndpointDetails, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2585,7 +2585,7 @@ type TestLogStoreEndpointDetailsForResultArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetTestLogStoreEndpointDetailsForRunLog(ctx context.Context, args GetTestLogStoreEndpointDetailsForRunLogArgs) (*test.TestLogStoreEndpointDetails, error) {
+func (client *Client) GetTestLogStoreEndpointDetailsForRunLog(ctx context.Context, args GetTestLogStoreEndpointDetailsForRunLogArgs) (*test.TestLogStoreEndpointDetails, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2629,7 +2629,7 @@ type GetTestLogStoreEndpointDetailsForRunLogArgs struct {
 }
 
 // [Preview API]
-func (client Client) TestLogStoreEndpointDetailsForRun(ctx context.Context, args TestLogStoreEndpointDetailsForRunArgs) (*test.TestLogStoreEndpointDetails, error) {
+func (client *Client) TestLogStoreEndpointDetailsForRun(ctx context.Context, args TestLogStoreEndpointDetailsForRunArgs) (*test.TestLogStoreEndpointDetails, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2677,7 +2677,7 @@ type TestLogStoreEndpointDetailsForRunArgs struct {
 }
 
 // [Preview API]
-func (client Client) CreateTestSettings(ctx context.Context, args CreateTestSettingsArgs) (*int, error) {
+func (client *Client) CreateTestSettings(ctx context.Context, args CreateTestSettingsArgs) (*int, error) {
     if args.TestSettings == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "testSettings"}
     }
@@ -2711,7 +2711,7 @@ type CreateTestSettingsArgs struct {
 }
 
 // [Preview API]
-func (client Client) DeleteTestSettings(ctx context.Context, args DeleteTestSettingsArgs) error {
+func (client *Client) DeleteTestSettings(ctx context.Context, args DeleteTestSettingsArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2741,7 +2741,7 @@ type DeleteTestSettingsArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetTestSettingsById(ctx context.Context, args GetTestSettingsByIdArgs) (*test.TestSettings, error) {
+func (client *Client) GetTestSettingsById(ctx context.Context, args GetTestSettingsByIdArgs) (*test.TestSettings, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2773,7 +2773,7 @@ type GetTestSettingsByIdArgs struct {
 }
 
 // [Preview API]
-func (client Client) AddWorkItemToTestLinks(ctx context.Context, args AddWorkItemToTestLinksArgs) (*test.WorkItemToTestLinks, error) {
+func (client *Client) AddWorkItemToTestLinks(ctx context.Context, args AddWorkItemToTestLinksArgs) (*test.WorkItemToTestLinks, error) {
     if args.WorkItemToTestLinks == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "workItemToTestLinks"}
     }
@@ -2807,7 +2807,7 @@ type AddWorkItemToTestLinksArgs struct {
 }
 
 // [Preview API]
-func (client Client) DeleteTestMethodToWorkItemLink(ctx context.Context, args DeleteTestMethodToWorkItemLinkArgs) (*bool, error) {
+func (client *Client) DeleteTestMethodToWorkItemLink(ctx context.Context, args DeleteTestMethodToWorkItemLinkArgs) (*bool, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2845,7 +2845,7 @@ type DeleteTestMethodToWorkItemLinkArgs struct {
 }
 
 // [Preview API]
-func (client Client) QueryTestMethodLinkedWorkItems(ctx context.Context, args QueryTestMethodLinkedWorkItemsArgs) (*test.TestToWorkItemLinks, error) {
+func (client *Client) QueryTestMethodLinkedWorkItems(ctx context.Context, args QueryTestMethodLinkedWorkItemsArgs) (*test.TestToWorkItemLinks, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2877,7 +2877,7 @@ type QueryTestMethodLinkedWorkItemsArgs struct {
 }
 
 // [Preview API]
-func (client Client) QueryTestResultWorkItems(ctx context.Context, args QueryTestResultWorkItemsArgs) (*[]test.WorkItemReference, error) {
+func (client *Client) QueryTestResultWorkItems(ctx context.Context, args QueryTestResultWorkItemsArgs) (*[]test.WorkItemReference, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 

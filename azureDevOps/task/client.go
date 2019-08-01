@@ -24,7 +24,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -32,7 +32,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
 }
 
 // [Preview API]
-func (client Client) GetPlanAttachments(ctx context.Context, args GetPlanAttachmentsArgs) (*[]TaskAttachment, error) {
+func (client *Client) GetPlanAttachments(ctx context.Context, args GetPlanAttachmentsArgs) (*[]TaskAttachment, error) {
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
@@ -75,7 +75,7 @@ type GetPlanAttachmentsArgs struct {
 }
 
 // [Preview API]
-func (client Client) CreateAttachment(ctx context.Context, args CreateAttachmentArgs) (*TaskAttachment, error) {
+func (client *Client) CreateAttachment(ctx context.Context, args CreateAttachmentArgs) (*TaskAttachment, error) {
     if args.UploadStream == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -141,7 +141,7 @@ type CreateAttachmentArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetAttachment(ctx context.Context, args GetAttachmentArgs) (*TaskAttachment, error) {
+func (client *Client) GetAttachment(ctx context.Context, args GetAttachmentArgs) (*TaskAttachment, error) {
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
@@ -202,7 +202,7 @@ type GetAttachmentArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetAttachmentContent(ctx context.Context, args GetAttachmentContentArgs) (io.ReadCloser, error) {
+func (client *Client) GetAttachmentContent(ctx context.Context, args GetAttachmentContentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
@@ -261,7 +261,7 @@ type GetAttachmentContentArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetAttachments(ctx context.Context, args GetAttachmentsArgs) (*[]TaskAttachment, error) {
+func (client *Client) GetAttachments(ctx context.Context, args GetAttachmentsArgs) (*[]TaskAttachment, error) {
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
@@ -315,7 +315,7 @@ type GetAttachmentsArgs struct {
     Type_ *string
 }
 
-func (client Client) AppendLogContent(ctx context.Context, args AppendLogContentArgs) (*TaskLog, error) {
+func (client *Client) AppendLogContent(ctx context.Context, args AppendLogContentArgs) (*TaskLog, error) {
     if args.UploadStream == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "uploadStream"}
     }
@@ -362,7 +362,7 @@ type AppendLogContentArgs struct {
     LogId *int
 }
 
-func (client Client) CreateLog(ctx context.Context, args CreateLogArgs) (*TaskLog, error) {
+func (client *Client) CreateLog(ctx context.Context, args CreateLogArgs) (*TaskLog, error) {
     if args.Log == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "log"}
     }
@@ -407,7 +407,7 @@ type CreateLogArgs struct {
     PlanId *uuid.UUID
 }
 
-func (client Client) GetLog(ctx context.Context, args GetLogArgs) (*[]string, error) {
+func (client *Client) GetLog(ctx context.Context, args GetLogArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
@@ -460,7 +460,7 @@ type GetLogArgs struct {
     EndLine *uint64
 }
 
-func (client Client) GetLogs(ctx context.Context, args GetLogsArgs) (*[]TaskLog, error) {
+func (client *Client) GetLogs(ctx context.Context, args GetLogsArgs) (*[]TaskLog, error) {
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
@@ -496,7 +496,7 @@ type GetLogsArgs struct {
     PlanId *uuid.UUID
 }
 
-func (client Client) GetRecords(ctx context.Context, args GetRecordsArgs) (*[]TimelineRecord, error) {
+func (client *Client) GetRecords(ctx context.Context, args GetRecordsArgs) (*[]TimelineRecord, error) {
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
@@ -544,7 +544,7 @@ type GetRecordsArgs struct {
     ChangeId *int
 }
 
-func (client Client) UpdateRecords(ctx context.Context, args UpdateRecordsArgs) (*[]TimelineRecord, error) {
+func (client *Client) UpdateRecords(ctx context.Context, args UpdateRecordsArgs) (*[]TimelineRecord, error) {
     if args.Records == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "records"}
     }
@@ -595,7 +595,7 @@ type UpdateRecordsArgs struct {
     TimelineId *uuid.UUID
 }
 
-func (client Client) CreateTimeline(ctx context.Context, args CreateTimelineArgs) (*Timeline, error) {
+func (client *Client) CreateTimeline(ctx context.Context, args CreateTimelineArgs) (*Timeline, error) {
     if args.Timeline == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "timeline"}
     }
@@ -640,7 +640,7 @@ type CreateTimelineArgs struct {
     PlanId *uuid.UUID
 }
 
-func (client Client) DeleteTimeline(ctx context.Context, args DeleteTimelineArgs) error {
+func (client *Client) DeleteTimeline(ctx context.Context, args DeleteTimelineArgs) error {
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
@@ -680,7 +680,7 @@ type DeleteTimelineArgs struct {
     TimelineId *uuid.UUID
 }
 
-func (client Client) GetTimeline(ctx context.Context, args GetTimelineArgs) (*Timeline, error) {
+func (client *Client) GetTimeline(ctx context.Context, args GetTimelineArgs) (*Timeline, error) {
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 
@@ -733,7 +733,7 @@ type GetTimelineArgs struct {
     IncludeRecords *bool
 }
 
-func (client Client) GetTimelines(ctx context.Context, args GetTimelinesArgs) (*[]Timeline, error) {
+func (client *Client) GetTimelines(ctx context.Context, args GetTimelinesArgs) (*[]Timeline, error) {
     routeValues := make(map[string]string)
     if args.ScopeIdentifier == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "scopeIdentifier"} 

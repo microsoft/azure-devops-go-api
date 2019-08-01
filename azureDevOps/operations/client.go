@@ -20,7 +20,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -28,7 +28,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
 }
 
 // Gets an operation from the the operationId using the given pluginId.
-func (client Client) GetOperation(ctx context.Context, args GetOperationArgs) (*Operation, error) {
+func (client *Client) GetOperation(ctx context.Context, args GetOperationArgs) (*Operation, error) {
     routeValues := make(map[string]string)
     if args.OperationId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "operationId"} 

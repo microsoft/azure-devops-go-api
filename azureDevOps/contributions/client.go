@@ -26,7 +26,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -37,7 +37,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // [Preview API] Query for contribution nodes and provider details according the parameters in the passed in query object.
-func (client Client) QueryContributionNodes(ctx context.Context, args QueryContributionNodesArgs) (*ContributionNodeQueryResult, error) {
+func (client *Client) QueryContributionNodes(ctx context.Context, args QueryContributionNodesArgs) (*ContributionNodeQueryResult, error) {
     if args.Query == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "query"}
     }
@@ -63,7 +63,7 @@ type QueryContributionNodesArgs struct {
 }
 
 // [Preview API]
-func (client Client) QueryDataProviders(ctx context.Context, args QueryDataProvidersArgs) (*DataProviderResult, error) {
+func (client *Client) QueryDataProviders(ctx context.Context, args QueryDataProvidersArgs) (*DataProviderResult, error) {
     if args.Query == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "query"}
     }
@@ -101,7 +101,7 @@ type QueryDataProvidersArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetInstalledExtensions(ctx context.Context, args GetInstalledExtensionsArgs) (*[]InstalledExtension, error) {
+func (client *Client) GetInstalledExtensions(ctx context.Context, args GetInstalledExtensionsArgs) (*[]InstalledExtension, error) {
     queryParams := url.Values{}
     if args.ContributionIds != nil {
         listAsString := strings.Join((*args.ContributionIds)[:], ";")
@@ -136,7 +136,7 @@ type GetInstalledExtensionsArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetInstalledExtensionByName(ctx context.Context, args GetInstalledExtensionByNameArgs) (*InstalledExtension, error) {
+func (client *Client) GetInstalledExtensionByName(ctx context.Context, args GetInstalledExtensionByNameArgs) (*InstalledExtension, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 

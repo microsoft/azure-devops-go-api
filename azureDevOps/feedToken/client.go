@@ -21,7 +21,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -32,7 +32,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // [Preview API] Get a time-limited session token representing the current user, with permissions scoped to the read/write of Artifacts.
-func (client Client) GetPersonalAccessToken(ctx context.Context, args GetPersonalAccessTokenArgs) (*FeedSessionToken, error) {
+func (client *Client) GetPersonalAccessToken(ctx context.Context, args GetPersonalAccessTokenArgs) (*FeedSessionToken, error) {
     routeValues := make(map[string]string)
     if args.FeedName != nil && *args.FeedName != "" {
         routeValues["feedName"] = *args.FeedName

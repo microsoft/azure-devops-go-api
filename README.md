@@ -25,7 +25,7 @@ func main() {
     ctx := context.Background()
 
     // Create a client to interact with the Core area
-    coreClient, err := core.NewClient(ctx, *connection)
+    coreClient, err := core.NewClient(ctx, connection)
     if err != nil {
         log.Fatal(err)
     }

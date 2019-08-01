@@ -44,25 +44,31 @@ var apiResourceLocationCacheLock = sync.RWMutex{}
 // Base user agent string.  The UserAgent set on the connection will be appended to this.
 var baseUserAgent = "go/" + runtime.Version() + " (" + runtime.GOOS + " " + runtime.GOARCH + ") azure-devops-go-api/0.0.0"  // todo: get real version
 
-func NewClient(connection Connection, baseUrl string) *Client {
+func NewClient(connection *Connection, baseUrl string) *Client {
 	client := &http.Client{}
 	if connection.Timeout != nil {
 		client.Timeout = *connection.Timeout
 	}
 	return &Client {
 		baseUrl: baseUrl,
-		connection: connection,
-		client: *client,
+		client: client,
+		authorization: connection.AuthorizationString,
+		suppressFedAuthRedirect: connection.SuppressFedAuthRedirect,
+		forceMsaPassThrough: connection.ForceMsaPassThrough,
+		userAgent: connection.UserAgent,
 	}
 }
 
 type Client struct {
 	baseUrl string
-	connection Connection
-	client http.Client
+	client *http.Client
+	authorization string
+	suppressFedAuthRedirect bool
+	forceMsaPassThrough bool
+	userAgent string
 }
 
-func (client Client) SendRequest(request *http.Request) (response *http.Response, err error) {
+func (client *Client) SendRequest(request *http.Request) (response *http.Response, err error) {
 	resp, err := client.client.Do(request)  // todo: add retry logic
 	if resp != nil && (resp.StatusCode < 200 || resp.StatusCode >= 300) {
 		err = client.UnwrapError(resp)
@@ -70,7 +76,7 @@ func (client Client) SendRequest(request *http.Request) (response *http.Response
 	return resp, err
 }
 
-func (client Client) Send(ctx context.Context,
+func (client *Client) Send(ctx context.Context,
 						  httpMethod string,
 						  locationId uuid.UUID,
 						  apiVersion string,
@@ -110,7 +116,7 @@ func (client Client) Send(ctx context.Context,
 	return resp, err
 }
 
-func (client Client) GenerateUrl(apiResourceLocation *ApiResourceLocation, routeValues map[string]string, queryParameters url.Values) (request string) {
+func (client *Client) GenerateUrl(apiResourceLocation *ApiResourceLocation, routeValues map[string]string, queryParameters url.Values) (request string) {
 	builtUrl := *apiResourceLocation.RouteTemplate
 	if routeValues == nil {
 		routeValues = make(map[string]string)
@@ -124,7 +130,7 @@ func (client Client) GenerateUrl(apiResourceLocation *ApiResourceLocation, route
 	return builtUrl
 }
 
-func (client Client) CreateRequestMessage(ctx context.Context,
+func (client *Client) CreateRequestMessage(ctx context.Context,
 											httpMethod string,
 											url string,
 											apiVersion string,
@@ -141,8 +147,8 @@ func (client Client) CreateRequestMessage(ctx context.Context,
 		req = req.WithContext(ctx)
 	}
 
-	if client.connection.AuthorizationString != "" {
-		req.Header.Add(headerKeyAuthorization, client.connection.AuthorizationString)
+	if client.authorization != "" {
+		req.Header.Add(headerKeyAuthorization, client.authorization)
 	}
 	accept := acceptMediaType
 	if apiVersion != "" {
@@ -152,10 +158,10 @@ func (client Client) CreateRequestMessage(ctx context.Context,
 	if mediaType != "" {
 		req.Header.Add(headerKeyContentType, mediaType+";charset=utf-8")
 	}
-	if client.connection.SuppressFedAuthRedirect {
+	if client.suppressFedAuthRedirect {
 		req.Header.Add(headerKeyFedAuthRedirect, "Suppress")
 	}
-	if client.connection.ForceMsaPassThrough {
+	if client.forceMsaPassThrough {
 		req.Header.Add(headerKeyForceMsaPassThrough, "true")
 	}
 
@@ -166,8 +172,8 @@ func (client Client) CreateRequestMessage(ctx context.Context,
 	}
 
 	userAgent := baseUserAgent
-	if client.connection.UserAgent != "" {
-		userAgent += " " + client.connection.UserAgent
+	if client.userAgent != "" {
+		userAgent += " " + client.userAgent
 	}
 	req.Header.Add(headerUserAgent, userAgent)
 
@@ -178,7 +184,7 @@ func (client Client) CreateRequestMessage(ctx context.Context,
 	return req, err
 }
 
-func (client Client) getResourceLocation(ctx context.Context, locationId uuid.UUID) (*ApiResourceLocation, error) {
+func (client *Client) getResourceLocation(ctx context.Context, locationId uuid.UUID) (*ApiResourceLocation, error) {
 	locationsMap, ok := getApiResourceLocationCache(client.baseUrl)
 	if !ok {
 		locations, err := client.getResourceLocationsFromServer(ctx)
@@ -215,7 +221,7 @@ func setApiResourceLocationCache(url string, locationsMap *map[uuid.UUID] ApiRes
 	apiResourceLocationCache[url] = locationsMap
 }
 
-func (client Client) getResourceLocationsFromServer(ctx context.Context,) ([]ApiResourceLocation, error) {
+func (client *Client) getResourceLocationsFromServer(ctx context.Context,) ([]ApiResourceLocation, error) {
 	optionsUri := combineUrl(client.baseUrl, "_apis")
 	request, err := client.CreateRequestMessage(ctx, http.MethodOptions, optionsUri, "", nil, "", MediaTypeApplicationJson, nil)
 	if err != nil {
@@ -334,7 +340,7 @@ func transformRouteTemplate(routeTemplate string, routeValues map[string]string)
 	return newTemplate
 }
 
-func (client Client) UnmarshalBody(response *http.Response, v interface{}) (err error) {
+func (client *Client) UnmarshalBody(response *http.Response, v interface{}) (err error) {
 	if response != nil && response.Body != nil {
 		var err error
 		defer func() {
@@ -352,7 +358,7 @@ func (client Client) UnmarshalBody(response *http.Response, v interface{}) (err 
 	return nil
 }
 
-func (client Client) UnmarshalCollectionBody(response *http.Response, v interface{}) (err error) {
+func (client *Client) UnmarshalCollectionBody(response *http.Response, v interface{}) (err error) {
 	if response != nil && response.Body != nil {
 		var err error
 		defer func() {
@@ -371,7 +377,7 @@ func (client Client) UnmarshalCollectionBody(response *http.Response, v interfac
 	return nil
 }
 
-func (client Client) UnmarshalCollectionJson(jsonValue []byte, v interface{}) (err error) {
+func (client *Client) UnmarshalCollectionJson(jsonValue []byte, v interface{}) (err error) {
 	var wrappedResponse VssJsonCollectionWrapper
 	err = json.Unmarshal(jsonValue, &wrappedResponse)
 	if err != nil {
@@ -391,7 +397,7 @@ func trimByteOrderMark(body []byte) []byte {
 	return bytes.TrimPrefix(body, []byte("\xef\xbb\xbf"))
 }
 
-func (client Client) UnwrapError(response *http.Response) (err error) {
+func (client *Client) UnwrapError(response *http.Response) (err error) {
 	if response.ContentLength == 0 {
 		message := "Request returned status: " + response.Status
 		return &WrappedError{
@@ -441,7 +447,7 @@ func (client Client) UnwrapError(response *http.Response) (err error) {
 	return wrappedError
 }
 
-func (client Client) GetResourceAreas(ctx context.Context,) (*[]ResourceAreaInfo, error) {
+func (client *Client) GetResourceAreas(ctx context.Context,) (*[]ResourceAreaInfo, error) {
 	queryParams := url.Values{}
 	locationId, _ := uuid.Parse("e81700f7-3be2-46de-8624-2eb35882fcaa")
 	resp, err := client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)

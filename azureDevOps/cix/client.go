@@ -22,7 +22,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -30,7 +30,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
 }
 
 // [Preview API] Gets a list of existing configuration files for the given repository.
-func (client Client) GetConfigurations(ctx context.Context, args GetConfigurationsArgs) (*[]ConfigurationFile, error) {
+func (client *Client) GetConfigurations(ctx context.Context, args GetConfigurationsArgs) (*[]ConfigurationFile, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -76,7 +76,7 @@ type GetConfigurationsArgs struct {
 }
 
 // [Preview API] Creates a new Pipeline connection between the provider installation and the specified project. Returns the PipelineConnection object created.
-func (client Client) CreateProjectConnection(ctx context.Context, args CreateProjectConnectionArgs) (*PipelineConnection, error) {
+func (client *Client) CreateProjectConnection(ctx context.Context, args CreateProjectConnectionArgs) (*PipelineConnection, error) {
     if args.CreateConnectionInputs == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "createConnectionInputs"}
     }
@@ -109,7 +109,7 @@ type CreateProjectConnectionArgs struct {
 }
 
 // [Preview API] Returns a list of build frameworks that best match the given repository based on its contents.
-func (client Client) GetDetectedBuildFrameworks(ctx context.Context, args GetDetectedBuildFrameworksArgs) (*[]DetectedBuildFramework, error) {
+func (client *Client) GetDetectedBuildFrameworks(ctx context.Context, args GetDetectedBuildFrameworksArgs) (*[]DetectedBuildFramework, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -160,7 +160,7 @@ type GetDetectedBuildFrameworksArgs struct {
 }
 
 // [Preview API] Returns a list of all YAML templates with weighting based on which would best fit the given repository.
-func (client Client) GetTemplateRecommendations(ctx context.Context, args GetTemplateRecommendationsArgs) (*[]Template, error) {
+func (client *Client) GetTemplateRecommendations(ctx context.Context, args GetTemplateRecommendationsArgs) (*[]Template, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -206,7 +206,7 @@ type GetTemplateRecommendationsArgs struct {
 }
 
 // [Preview API]
-func (client Client) CreateResources(ctx context.Context, args CreateResourcesArgs) (*CreatedResources, error) {
+func (client *Client) CreateResources(ctx context.Context, args CreateResourcesArgs) (*CreatedResources, error) {
     if args.CreationParameters == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "creationParameters"}
     }
@@ -240,7 +240,7 @@ type CreateResourcesArgs struct {
 }
 
 // [Preview API]
-func (client Client) RenderTemplate(ctx context.Context, args RenderTemplateArgs) (*Template, error) {
+func (client *Client) RenderTemplate(ctx context.Context, args RenderTemplateArgs) (*Template, error) {
     if args.TemplateParameters == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "templateParameters"}
     }

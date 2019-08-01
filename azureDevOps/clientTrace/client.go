@@ -21,7 +21,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -29,7 +29,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
 }
 
 // [Preview API]
-func (client Client) PublishEvents(ctx context.Context, args PublishEventsArgs) error {
+func (client *Client) PublishEvents(ctx context.Context, args PublishEventsArgs) error {
     if args.Events == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "events"}
     }

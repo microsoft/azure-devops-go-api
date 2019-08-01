@@ -23,7 +23,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -31,7 +31,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
 }
 
 // Remove the specified ACEs from the ACL belonging to the specified token.
-func (client Client) RemoveAccessControlEntries(ctx context.Context, args RemoveAccessControlEntriesArgs) (*bool, error) {
+func (client *Client) RemoveAccessControlEntries(ctx context.Context, args RemoveAccessControlEntriesArgs) (*bool, error) {
     routeValues := make(map[string]string)
     if args.SecurityNamespaceId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "securityNamespaceId"} 
@@ -67,7 +67,7 @@ type RemoveAccessControlEntriesArgs struct {
 }
 
 // Add or update ACEs in the ACL for the provided token. The request body contains the target token, a list of [ACEs](https://docs.microsoft.com/en-us/rest/api/azure/devops/security/access%20control%20entries/set%20access%20control%20entries?#accesscontrolentry) and a optional merge parameter. In the case of a collision (by identity descriptor) with an existing ACE in the ACL, the "merge" parameter determines the behavior. If set, the existing ACE has its allow and deny merged with the incoming ACE's allow and deny. If unset, the existing ACE is displaced.
-func (client Client) SetAccessControlEntries(ctx context.Context, args SetAccessControlEntriesArgs) (*[]AccessControlEntry, error) {
+func (client *Client) SetAccessControlEntries(ctx context.Context, args SetAccessControlEntriesArgs) (*[]AccessControlEntry, error) {
     if args.Container == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "container"}
     }
@@ -101,7 +101,7 @@ type SetAccessControlEntriesArgs struct {
 }
 
 // Return a list of access control lists for the specified security namespace and token. All ACLs in the security namespace will be retrieved if no optional parameters are provided.
-func (client Client) QueryAccessControlLists(ctx context.Context, args QueryAccessControlListsArgs) (*[]AccessControlList, error) {
+func (client *Client) QueryAccessControlLists(ctx context.Context, args QueryAccessControlListsArgs) (*[]AccessControlList, error) {
     routeValues := make(map[string]string)
     if args.SecurityNamespaceId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "securityNamespaceId"} 
@@ -147,7 +147,7 @@ type QueryAccessControlListsArgs struct {
 }
 
 // Remove access control lists under the specfied security namespace.
-func (client Client) RemoveAccessControlLists(ctx context.Context, args RemoveAccessControlListsArgs) (*bool, error) {
+func (client *Client) RemoveAccessControlLists(ctx context.Context, args RemoveAccessControlListsArgs) (*bool, error) {
     routeValues := make(map[string]string)
     if args.SecurityNamespaceId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "securityNamespaceId"} 
@@ -183,7 +183,7 @@ type RemoveAccessControlListsArgs struct {
 }
 
 // Create or update one or more access control lists. All data that currently exists for the ACLs supplied will be overwritten.
-func (client Client) SetAccessControlLists(ctx context.Context, args SetAccessControlListsArgs) error {
+func (client *Client) SetAccessControlLists(ctx context.Context, args SetAccessControlListsArgs) error {
     if args.AccessControlLists == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "accessControlLists"}
     }
@@ -215,7 +215,7 @@ type SetAccessControlListsArgs struct {
 }
 
 // Evaluates multiple permissions for the calling user.  Note: This method does not aggregate the results, nor does it short-circuit if one of the permissions evaluates to false.
-func (client Client) HasPermissionsBatch(ctx context.Context, args HasPermissionsBatchArgs) (*PermissionEvaluationBatch, error) {
+func (client *Client) HasPermissionsBatch(ctx context.Context, args HasPermissionsBatchArgs) (*PermissionEvaluationBatch, error) {
     if args.EvalBatch == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "evalBatch"}
     }
@@ -241,7 +241,7 @@ type HasPermissionsBatchArgs struct {
 }
 
 // Evaluates whether the caller has the specified permissions on the specified set of security tokens.
-func (client Client) HasPermissions(ctx context.Context, args HasPermissionsArgs) (*[]bool, error) {
+func (client *Client) HasPermissions(ctx context.Context, args HasPermissionsArgs) (*[]bool, error) {
     routeValues := make(map[string]string)
     if args.SecurityNamespaceId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "securityNamespaceId"} 
@@ -287,7 +287,7 @@ type HasPermissionsArgs struct {
 }
 
 // Removes the specified permissions on a security token for a user or group.
-func (client Client) RemovePermission(ctx context.Context, args RemovePermissionArgs) (*AccessControlEntry, error) {
+func (client *Client) RemovePermission(ctx context.Context, args RemovePermissionArgs) (*AccessControlEntry, error) {
     routeValues := make(map[string]string)
     if args.SecurityNamespaceId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "securityNamespaceId"} 
@@ -329,7 +329,7 @@ type RemovePermissionArgs struct {
 }
 
 // List all security namespaces or just the specified namespace.
-func (client Client) QuerySecurityNamespaces(ctx context.Context, args QuerySecurityNamespacesArgs) (*[]SecurityNamespaceDescription, error) {
+func (client *Client) QuerySecurityNamespaces(ctx context.Context, args QuerySecurityNamespacesArgs) (*[]SecurityNamespaceDescription, error) {
     routeValues := make(map[string]string)
     if args.SecurityNamespaceId != nil {
         routeValues["securityNamespaceId"] = (*args.SecurityNamespaceId).String()

@@ -27,7 +27,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -38,7 +38,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // [Preview API] Revokes the listed OAuth authorizations.
-func (client Client) ListIdentitiesWithGlobalAccessTokens(ctx context.Context, args ListIdentitiesWithGlobalAccessTokensArgs) (*[]uuid.UUID, error) {
+func (client *Client) ListIdentitiesWithGlobalAccessTokens(ctx context.Context, args ListIdentitiesWithGlobalAccessTokensArgs) (*[]uuid.UUID, error) {
     if args.Revocations == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "revocations"}
     }
@@ -70,7 +70,7 @@ type ListIdentitiesWithGlobalAccessTokensArgs struct {
 }
 
 // [Preview API] Lists of all the session token details of the personal access tokens (PATs) for a particular user.
-func (client Client) ListPersonalAccessTokens(ctx context.Context, args ListPersonalAccessTokensArgs) (*tokenAdmin.TokenAdminPagedSessionTokens, error) {
+func (client *Client) ListPersonalAccessTokens(ctx context.Context, args ListPersonalAccessTokensArgs) (*tokenAdmin.TokenAdminPagedSessionTokens, error) {
     if args.Audience == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "audience"}
     }
@@ -120,7 +120,7 @@ type ListPersonalAccessTokensArgs struct {
 }
 
 // [Preview API] Revokes the listed OAuth authorizations.
-func (client Client) RevokeAuthorizations(ctx context.Context, args RevokeAuthorizationsArgs) (*[]delegatedAuthorization.SessionToken, error) {
+func (client *Client) RevokeAuthorizations(ctx context.Context, args RevokeAuthorizationsArgs) (*[]delegatedAuthorization.SessionToken, error) {
     if args.Revocations == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "revocations"}
     }

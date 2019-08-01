@@ -29,7 +29,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -40,7 +40,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // Associates an artifact with a build.
-func (client Client) CreateArtifact(ctx context.Context, args CreateArtifactArgs) (*BuildArtifact, error) {
+func (client *Client) CreateArtifact(ctx context.Context, args CreateArtifactArgs) (*BuildArtifact, error) {
     if args.Artifact == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "artifact"}
     }
@@ -80,7 +80,7 @@ type CreateArtifactArgs struct {
 }
 
 // Gets a specific artifact for a build.
-func (client Client) GetArtifact(ctx context.Context, args GetArtifactArgs) (*BuildArtifact, error) {
+func (client *Client) GetArtifact(ctx context.Context, args GetArtifactArgs) (*BuildArtifact, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -118,7 +118,7 @@ type GetArtifactArgs struct {
 }
 
 // Gets a specific artifact for a build.
-func (client Client) GetArtifactContentZip(ctx context.Context, args GetArtifactContentZipArgs) (io.ReadCloser, error) {
+func (client *Client) GetArtifactContentZip(ctx context.Context, args GetArtifactContentZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -154,7 +154,7 @@ type GetArtifactContentZipArgs struct {
 }
 
 // Gets all artifacts for a build.
-func (client Client) GetArtifacts(ctx context.Context, args GetArtifactsArgs) (*[]BuildArtifact, error) {
+func (client *Client) GetArtifacts(ctx context.Context, args GetArtifactsArgs) (*[]BuildArtifact, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -185,7 +185,7 @@ type GetArtifactsArgs struct {
 }
 
 // Gets a file from the build.
-func (client Client) GetFile(ctx context.Context, args GetFileArgs) (io.ReadCloser, error) {
+func (client *Client) GetFile(ctx context.Context, args GetFileArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -233,7 +233,7 @@ type GetFileArgs struct {
 }
 
 // [Preview API] Gets the list of attachments of a specific type that are associated with a build.
-func (client Client) GetAttachments(ctx context.Context, args GetAttachmentsArgs) (*[]Attachment, error) {
+func (client *Client) GetAttachments(ctx context.Context, args GetAttachmentsArgs) (*[]Attachment, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -270,7 +270,7 @@ type GetAttachmentsArgs struct {
 }
 
 // [Preview API] Gets a specific attachment.
-func (client Client) GetAttachment(ctx context.Context, args GetAttachmentArgs) (io.ReadCloser, error) {
+func (client *Client) GetAttachment(ctx context.Context, args GetAttachmentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -323,7 +323,7 @@ type GetAttachmentArgs struct {
 }
 
 // [Preview API]
-func (client Client) AuthorizeProjectResources(ctx context.Context, args AuthorizeProjectResourcesArgs) (*[]DefinitionResourceReference, error) {
+func (client *Client) AuthorizeProjectResources(ctx context.Context, args AuthorizeProjectResourcesArgs) (*[]DefinitionResourceReference, error) {
     if args.Resources == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "resources"}
     }
@@ -357,7 +357,7 @@ type AuthorizeProjectResourcesArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetProjectResources(ctx context.Context, args GetProjectResourcesArgs) (*[]DefinitionResourceReference, error) {
+func (client *Client) GetProjectResources(ctx context.Context, args GetProjectResourcesArgs) (*[]DefinitionResourceReference, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -393,7 +393,7 @@ type GetProjectResourcesArgs struct {
 }
 
 // [Preview API] Gets a list of branches for the given source code repository.
-func (client Client) ListBranches(ctx context.Context, args ListBranchesArgs) (*[]string, error) {
+func (client *Client) ListBranches(ctx context.Context, args ListBranchesArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -440,7 +440,7 @@ type ListBranchesArgs struct {
 }
 
 // [Preview API] Gets a badge that indicates the status of the most recent build for the specified branch.
-func (client Client) GetBuildBadge(ctx context.Context, args GetBuildBadgeArgs) (*BuildBadge, error) {
+func (client *Client) GetBuildBadge(ctx context.Context, args GetBuildBadgeArgs) (*BuildBadge, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -482,7 +482,7 @@ type GetBuildBadgeArgs struct {
 }
 
 // [Preview API] Gets a badge that indicates the status of the most recent build for the specified branch.
-func (client Client) GetBuildBadgeData(ctx context.Context, args GetBuildBadgeDataArgs) (*string, error) {
+func (client *Client) GetBuildBadgeData(ctx context.Context, args GetBuildBadgeDataArgs) (*string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -524,7 +524,7 @@ type GetBuildBadgeDataArgs struct {
 }
 
 // Deletes a build.
-func (client Client) DeleteBuild(ctx context.Context, args DeleteBuildArgs) error {
+func (client *Client) DeleteBuild(ctx context.Context, args DeleteBuildArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -553,7 +553,7 @@ type DeleteBuildArgs struct {
 }
 
 // Gets a build
-func (client Client) GetBuild(ctx context.Context, args GetBuildArgs) (*Build, error) {
+func (client *Client) GetBuild(ctx context.Context, args GetBuildArgs) (*Build, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -590,7 +590,7 @@ type GetBuildArgs struct {
 }
 
 // Gets a list of builds.
-func (client Client) GetBuilds(ctx context.Context, args GetBuildsArgs) (*[]Build, error) {
+func (client *Client) GetBuilds(ctx context.Context, args GetBuildsArgs) (*[]Build, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -733,7 +733,7 @@ type GetBuildsArgs struct {
 }
 
 // Queues a build
-func (client Client) QueueBuild(ctx context.Context, args QueueBuildArgs) (*Build, error) {
+func (client *Client) QueueBuild(ctx context.Context, args QueueBuildArgs) (*Build, error) {
     if args.Build == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "build"}
     }
@@ -783,7 +783,7 @@ type QueueBuildArgs struct {
 }
 
 // Updates a build.
-func (client Client) UpdateBuild(ctx context.Context, args UpdateBuildArgs) (*Build, error) {
+func (client *Client) UpdateBuild(ctx context.Context, args UpdateBuildArgs) (*Build, error) {
     if args.Build == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "build"}
     }
@@ -829,7 +829,7 @@ type UpdateBuildArgs struct {
 }
 
 // Updates multiple builds.
-func (client Client) UpdateBuilds(ctx context.Context, args UpdateBuildsArgs) (*[]Build, error) {
+func (client *Client) UpdateBuilds(ctx context.Context, args UpdateBuildsArgs) (*[]Build, error) {
     if args.Builds == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "builds"}
     }
@@ -863,7 +863,7 @@ type UpdateBuildsArgs struct {
 }
 
 // Gets the changes associated with a build
-func (client Client) GetBuildChanges(ctx context.Context, args GetBuildChangesArgs) (*[]Change, error) {
+func (client *Client) GetBuildChanges(ctx context.Context, args GetBuildChangesArgs) (*[]Change, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -910,7 +910,7 @@ type GetBuildChangesArgs struct {
 }
 
 // [Preview API] Gets the changes made to the repository between two given builds.
-func (client Client) GetChangesBetweenBuilds(ctx context.Context, args GetChangesBetweenBuildsArgs) (*[]Change, error) {
+func (client *Client) GetChangesBetweenBuilds(ctx context.Context, args GetChangesBetweenBuildsArgs) (*[]Change, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -951,7 +951,7 @@ type GetChangesBetweenBuildsArgs struct {
 }
 
 // Gets a controller
-func (client Client) GetBuildController(ctx context.Context, args GetBuildControllerArgs) (*BuildController, error) {
+func (client *Client) GetBuildController(ctx context.Context, args GetBuildControllerArgs) (*BuildController, error) {
     routeValues := make(map[string]string)
     if args.ControllerId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "controllerId"} 
@@ -976,7 +976,7 @@ type GetBuildControllerArgs struct {
 }
 
 // Gets controller, optionally filtered by name
-func (client Client) GetBuildControllers(ctx context.Context, args GetBuildControllersArgs) (*[]BuildController, error) {
+func (client *Client) GetBuildControllers(ctx context.Context, args GetBuildControllersArgs) (*[]BuildController, error) {
     queryParams := url.Values{}
     if args.Name != nil {
         queryParams.Add("name", *args.Name)
@@ -999,7 +999,7 @@ type GetBuildControllersArgs struct {
 }
 
 // Creates a new definition.
-func (client Client) CreateDefinition(ctx context.Context, args CreateDefinitionArgs) (*BuildDefinition, error) {
+func (client *Client) CreateDefinition(ctx context.Context, args CreateDefinitionArgs) (*BuildDefinition, error) {
     if args.Definition == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "definition"}
     }
@@ -1044,7 +1044,7 @@ type CreateDefinitionArgs struct {
 }
 
 // Deletes a definition and all associated builds.
-func (client Client) DeleteDefinition(ctx context.Context, args DeleteDefinitionArgs) error {
+func (client *Client) DeleteDefinition(ctx context.Context, args DeleteDefinitionArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1073,7 +1073,7 @@ type DeleteDefinitionArgs struct {
 }
 
 // Gets a definition, optionally at a specific revision.
-func (client Client) GetDefinition(ctx context.Context, args GetDefinitionArgs) (*BuildDefinition, error) {
+func (client *Client) GetDefinition(ctx context.Context, args GetDefinitionArgs) (*BuildDefinition, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1126,7 +1126,7 @@ type GetDefinitionArgs struct {
 }
 
 // Gets a list of definitions.
-func (client Client) GetDefinitions(ctx context.Context, args GetDefinitionsArgs) (*[]BuildDefinitionReference, error) {
+func (client *Client) GetDefinitions(ctx context.Context, args GetDefinitionsArgs) (*[]BuildDefinitionReference, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1237,7 +1237,7 @@ type GetDefinitionsArgs struct {
 }
 
 // Restores a deleted definition
-func (client Client) RestoreDefinition(ctx context.Context, args RestoreDefinitionArgs) (*BuildDefinition, error) {
+func (client *Client) RestoreDefinition(ctx context.Context, args RestoreDefinitionArgs) (*BuildDefinition, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1275,7 +1275,7 @@ type RestoreDefinitionArgs struct {
 }
 
 // Updates an existing definition.
-func (client Client) UpdateDefinition(ctx context.Context, args UpdateDefinitionArgs) (*BuildDefinition, error) {
+func (client *Client) UpdateDefinition(ctx context.Context, args UpdateDefinitionArgs) (*BuildDefinition, error) {
     if args.Definition == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "definition"}
     }
@@ -1326,7 +1326,7 @@ type UpdateDefinitionArgs struct {
 }
 
 // [Preview API] Gets the contents of a file in the given source code repository.
-func (client Client) GetFileContents(ctx context.Context, args GetFileContentsArgs) (io.ReadCloser, error) {
+func (client *Client) GetFileContents(ctx context.Context, args GetFileContentsArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1376,7 +1376,7 @@ type GetFileContentsArgs struct {
 }
 
 // [Preview API] Creates a new folder.
-func (client Client) CreateFolder(ctx context.Context, args CreateFolderArgs) (*Folder, error) {
+func (client *Client) CreateFolder(ctx context.Context, args CreateFolderArgs) (*Folder, error) {
     if args.Folder == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "folder"}
     }
@@ -1417,7 +1417,7 @@ type CreateFolderArgs struct {
 }
 
 // [Preview API] Deletes a definition folder. Definitions and their corresponding builds will also be deleted.
-func (client Client) DeleteFolder(ctx context.Context, args DeleteFolderArgs) error {
+func (client *Client) DeleteFolder(ctx context.Context, args DeleteFolderArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1447,7 +1447,7 @@ type DeleteFolderArgs struct {
 }
 
 // [Preview API] Gets a list of build definition folders.
-func (client Client) GetFolders(ctx context.Context, args GetFoldersArgs) (*[]Folder, error) {
+func (client *Client) GetFolders(ctx context.Context, args GetFoldersArgs) (*[]Folder, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1483,7 +1483,7 @@ type GetFoldersArgs struct {
 }
 
 // [Preview API] Updates an existing folder at given  existing path
-func (client Client) UpdateFolder(ctx context.Context, args UpdateFolderArgs) (*Folder, error) {
+func (client *Client) UpdateFolder(ctx context.Context, args UpdateFolderArgs) (*Folder, error) {
     if args.Folder == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "folder"}
     }
@@ -1524,7 +1524,7 @@ type UpdateFolderArgs struct {
 }
 
 // [Preview API] Gets the latest build for a definition, optionally scoped to a specific branch.
-func (client Client) GetLatestBuild(ctx context.Context, args GetLatestBuildArgs) (*Build, error) {
+func (client *Client) GetLatestBuild(ctx context.Context, args GetLatestBuildArgs) (*Build, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1561,7 +1561,7 @@ type GetLatestBuildArgs struct {
 }
 
 // Gets an individual log file for a build.
-func (client Client) GetBuildLog(ctx context.Context, args GetBuildLogArgs) (io.ReadCloser, error) {
+func (client *Client) GetBuildLog(ctx context.Context, args GetBuildLogArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1607,7 +1607,7 @@ type GetBuildLogArgs struct {
 }
 
 // Gets an individual log file for a build.
-func (client Client) GetBuildLogLines(ctx context.Context, args GetBuildLogLinesArgs) (*[]string, error) {
+func (client *Client) GetBuildLogLines(ctx context.Context, args GetBuildLogLinesArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1655,7 +1655,7 @@ type GetBuildLogLinesArgs struct {
 }
 
 // Gets the logs for a build.
-func (client Client) GetBuildLogs(ctx context.Context, args GetBuildLogsArgs) (*[]BuildLog, error) {
+func (client *Client) GetBuildLogs(ctx context.Context, args GetBuildLogsArgs) (*[]BuildLog, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1686,7 +1686,7 @@ type GetBuildLogsArgs struct {
 }
 
 // Gets the logs for a build.
-func (client Client) GetBuildLogsZip(ctx context.Context, args GetBuildLogsZipArgs) (io.ReadCloser, error) {
+func (client *Client) GetBuildLogsZip(ctx context.Context, args GetBuildLogsZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1715,7 +1715,7 @@ type GetBuildLogsZipArgs struct {
 }
 
 // Gets an individual log file for a build.
-func (client Client) GetBuildLogZip(ctx context.Context, args GetBuildLogZipArgs) (io.ReadCloser, error) {
+func (client *Client) GetBuildLogZip(ctx context.Context, args GetBuildLogZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1761,7 +1761,7 @@ type GetBuildLogZipArgs struct {
 }
 
 // [Preview API] Gets build metrics for a project.
-func (client Client) GetProjectMetrics(ctx context.Context, args GetProjectMetricsArgs) (*[]BuildMetric, error) {
+func (client *Client) GetProjectMetrics(ctx context.Context, args GetProjectMetricsArgs) (*[]BuildMetric, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1797,7 +1797,7 @@ type GetProjectMetricsArgs struct {
 }
 
 // [Preview API] Gets build metrics for a definition.
-func (client Client) GetDefinitionMetrics(ctx context.Context, args GetDefinitionMetricsArgs) (*[]BuildMetric, error) {
+func (client *Client) GetDefinitionMetrics(ctx context.Context, args GetDefinitionMetricsArgs) (*[]BuildMetric, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1834,7 +1834,7 @@ type GetDefinitionMetricsArgs struct {
 }
 
 // Gets all build definition options supported by the system.
-func (client Client) GetBuildOptionDefinitions(ctx context.Context, args GetBuildOptionDefinitionsArgs) (*[]BuildOptionDefinition, error) {
+func (client *Client) GetBuildOptionDefinitions(ctx context.Context, args GetBuildOptionDefinitionsArgs) (*[]BuildOptionDefinition, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -1858,7 +1858,7 @@ type GetBuildOptionDefinitionsArgs struct {
 }
 
 // [Preview API] Gets the contents of a directory in the given source code repository.
-func (client Client) GetPathContents(ctx context.Context, args GetPathContentsArgs) (*[]SourceRepositoryItem, error) {
+func (client *Client) GetPathContents(ctx context.Context, args GetPathContentsArgs) (*[]SourceRepositoryItem, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1910,7 +1910,7 @@ type GetPathContentsArgs struct {
 }
 
 // [Preview API] Gets properties for a build.
-func (client Client) GetBuildProperties(ctx context.Context, args GetBuildPropertiesArgs) (interface{}, error) {
+func (client *Client) GetBuildProperties(ctx context.Context, args GetBuildPropertiesArgs) (interface{}, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1948,7 +1948,7 @@ type GetBuildPropertiesArgs struct {
 }
 
 // [Preview API] Updates properties for a build.
-func (client Client) UpdateBuildProperties(ctx context.Context, args UpdateBuildPropertiesArgs) (interface{}, error) {
+func (client *Client) UpdateBuildProperties(ctx context.Context, args UpdateBuildPropertiesArgs) (interface{}, error) {
     if args.Document == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "document"}
     }
@@ -1988,7 +1988,7 @@ type UpdateBuildPropertiesArgs struct {
 }
 
 // [Preview API] Gets properties for a definition.
-func (client Client) GetDefinitionProperties(ctx context.Context, args GetDefinitionPropertiesArgs) (interface{}, error) {
+func (client *Client) GetDefinitionProperties(ctx context.Context, args GetDefinitionPropertiesArgs) (interface{}, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2026,7 +2026,7 @@ type GetDefinitionPropertiesArgs struct {
 }
 
 // [Preview API] Updates properties for a definition.
-func (client Client) UpdateDefinitionProperties(ctx context.Context, args UpdateDefinitionPropertiesArgs) (interface{}, error) {
+func (client *Client) UpdateDefinitionProperties(ctx context.Context, args UpdateDefinitionPropertiesArgs) (interface{}, error) {
     if args.Document == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "document"}
     }
@@ -2066,7 +2066,7 @@ type UpdateDefinitionPropertiesArgs struct {
 }
 
 // [Preview API] Gets a pull request object from source provider.
-func (client Client) GetPullRequest(ctx context.Context, args GetPullRequestArgs) (*PullRequest, error) {
+func (client *Client) GetPullRequest(ctx context.Context, args GetPullRequestArgs) (*PullRequest, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2114,7 +2114,7 @@ type GetPullRequestArgs struct {
 }
 
 // [Preview API] Gets a build report.
-func (client Client) GetBuildReport(ctx context.Context, args GetBuildReportArgs) (*BuildReportMetadata, error) {
+func (client *Client) GetBuildReport(ctx context.Context, args GetBuildReportArgs) (*BuildReportMetadata, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2151,7 +2151,7 @@ type GetBuildReportArgs struct {
 }
 
 // [Preview API] Gets a build report.
-func (client Client) GetBuildReportHtmlContent(ctx context.Context, args GetBuildReportHtmlContentArgs) (io.ReadCloser, error) {
+func (client *Client) GetBuildReportHtmlContent(ctx context.Context, args GetBuildReportHtmlContentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2186,7 +2186,7 @@ type GetBuildReportHtmlContentArgs struct {
 }
 
 // [Preview API] Gets a list of source code repositories.
-func (client Client) ListRepositories(ctx context.Context, args ListRepositoriesArgs) (*SourceRepositories, error) {
+func (client *Client) ListRepositories(ctx context.Context, args ListRepositoriesArgs) (*SourceRepositories, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2243,7 +2243,7 @@ type ListRepositoriesArgs struct {
 }
 
 // [Preview API]
-func (client Client) AuthorizeDefinitionResources(ctx context.Context, args AuthorizeDefinitionResourcesArgs) (*[]DefinitionResourceReference, error) {
+func (client *Client) AuthorizeDefinitionResources(ctx context.Context, args AuthorizeDefinitionResourcesArgs) (*[]DefinitionResourceReference, error) {
     if args.Resources == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "resources"}
     }
@@ -2283,7 +2283,7 @@ type AuthorizeDefinitionResourcesArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetDefinitionResources(ctx context.Context, args GetDefinitionResourcesArgs) (*[]DefinitionResourceReference, error) {
+func (client *Client) GetDefinitionResources(ctx context.Context, args GetDefinitionResourcesArgs) (*[]DefinitionResourceReference, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2314,7 +2314,7 @@ type GetDefinitionResourcesArgs struct {
 }
 
 // [Preview API] Gets information about build resources in the system.
-func (client Client) GetResourceUsage(ctx context.Context, args GetResourceUsageArgs) (*BuildResourceUsage, error) {
+func (client *Client) GetResourceUsage(ctx context.Context, args GetResourceUsageArgs) (*BuildResourceUsage, error) {
     locationId, _ := uuid.Parse("3813d06c-9e36-4ea1-aac3-61a485d60e3d")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", nil, nil, nil, "", "application/json", nil)
     if err != nil {
@@ -2331,7 +2331,7 @@ type GetResourceUsageArgs struct {
 }
 
 // Gets all revisions of a definition.
-func (client Client) GetDefinitionRevisions(ctx context.Context, args GetDefinitionRevisionsArgs) (*[]BuildDefinitionRevision, error) {
+func (client *Client) GetDefinitionRevisions(ctx context.Context, args GetDefinitionRevisionsArgs) (*[]BuildDefinitionRevision, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2362,7 +2362,7 @@ type GetDefinitionRevisionsArgs struct {
 }
 
 // Gets the build settings.
-func (client Client) GetBuildSettings(ctx context.Context, args GetBuildSettingsArgs) (*BuildSettings, error) {
+func (client *Client) GetBuildSettings(ctx context.Context, args GetBuildSettingsArgs) (*BuildSettings, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2386,7 +2386,7 @@ type GetBuildSettingsArgs struct {
 }
 
 // Updates the build settings.
-func (client Client) UpdateBuildSettings(ctx context.Context, args UpdateBuildSettingsArgs) (*BuildSettings, error) {
+func (client *Client) UpdateBuildSettings(ctx context.Context, args UpdateBuildSettingsArgs) (*BuildSettings, error) {
     if args.Settings == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "settings"}
     }
@@ -2419,7 +2419,7 @@ type UpdateBuildSettingsArgs struct {
 }
 
 // [Preview API] Get a list of source providers and their capabilities.
-func (client Client) ListSourceProviders(ctx context.Context, args ListSourceProvidersArgs) (*[]SourceProviderAttributes, error) {
+func (client *Client) ListSourceProviders(ctx context.Context, args ListSourceProvidersArgs) (*[]SourceProviderAttributes, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2444,7 +2444,7 @@ type ListSourceProvidersArgs struct {
 }
 
 // [Preview API] <p>Gets the build status for a definition, optionally scoped to a specific branch, stage, job, and configuration.</p> <p>If there are more than one, then it is required to pass in a stageName value when specifying a jobName, and the same rule then applies for both if passing a configuration parameter.</p>
-func (client Client) GetStatusBadge(ctx context.Context, args GetStatusBadgeArgs) (*string, error) {
+func (client *Client) GetStatusBadge(ctx context.Context, args GetStatusBadgeArgs) (*string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2501,7 +2501,7 @@ type GetStatusBadgeArgs struct {
 }
 
 // Adds a tag to a build.
-func (client Client) AddBuildTag(ctx context.Context, args AddBuildTagArgs) (*[]string, error) {
+func (client *Client) AddBuildTag(ctx context.Context, args AddBuildTagArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2538,7 +2538,7 @@ type AddBuildTagArgs struct {
 }
 
 // Adds tags to a build.
-func (client Client) AddBuildTags(ctx context.Context, args AddBuildTagsArgs) (*[]string, error) {
+func (client *Client) AddBuildTags(ctx context.Context, args AddBuildTagsArgs) (*[]string, error) {
     if args.Tags == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "tags"}
     }
@@ -2578,7 +2578,7 @@ type AddBuildTagsArgs struct {
 }
 
 // Removes a tag from a build.
-func (client Client) DeleteBuildTag(ctx context.Context, args DeleteBuildTagArgs) (*[]string, error) {
+func (client *Client) DeleteBuildTag(ctx context.Context, args DeleteBuildTagArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2615,7 +2615,7 @@ type DeleteBuildTagArgs struct {
 }
 
 // Gets the tags for a build.
-func (client Client) GetBuildTags(ctx context.Context, args GetBuildTagsArgs) (*[]string, error) {
+func (client *Client) GetBuildTags(ctx context.Context, args GetBuildTagsArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2646,7 +2646,7 @@ type GetBuildTagsArgs struct {
 }
 
 // Gets a list of all build and definition tags in the project.
-func (client Client) GetTags(ctx context.Context, args GetTagsArgs) (*[]string, error) {
+func (client *Client) GetTags(ctx context.Context, args GetTagsArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2671,7 +2671,7 @@ type GetTagsArgs struct {
 }
 
 // [Preview API] Adds a tag to a definition
-func (client Client) AddDefinitionTag(ctx context.Context, args AddDefinitionTagArgs) (*[]string, error) {
+func (client *Client) AddDefinitionTag(ctx context.Context, args AddDefinitionTagArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2708,7 +2708,7 @@ type AddDefinitionTagArgs struct {
 }
 
 // [Preview API] Adds multiple tags to a definition.
-func (client Client) AddDefinitionTags(ctx context.Context, args AddDefinitionTagsArgs) (*[]string, error) {
+func (client *Client) AddDefinitionTags(ctx context.Context, args AddDefinitionTagsArgs) (*[]string, error) {
     if args.Tags == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "tags"}
     }
@@ -2748,7 +2748,7 @@ type AddDefinitionTagsArgs struct {
 }
 
 // [Preview API] Removes a tag from a definition.
-func (client Client) DeleteDefinitionTag(ctx context.Context, args DeleteDefinitionTagArgs) (*[]string, error) {
+func (client *Client) DeleteDefinitionTag(ctx context.Context, args DeleteDefinitionTagArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2785,7 +2785,7 @@ type DeleteDefinitionTagArgs struct {
 }
 
 // [Preview API] Gets the tags for a definition.
-func (client Client) GetDefinitionTags(ctx context.Context, args GetDefinitionTagsArgs) (*[]string, error) {
+func (client *Client) GetDefinitionTags(ctx context.Context, args GetDefinitionTagsArgs) (*[]string, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2822,7 +2822,7 @@ type GetDefinitionTagsArgs struct {
 }
 
 // Deletes a build definition template.
-func (client Client) DeleteTemplate(ctx context.Context, args DeleteTemplateArgs) error {
+func (client *Client) DeleteTemplate(ctx context.Context, args DeleteTemplateArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2851,7 +2851,7 @@ type DeleteTemplateArgs struct {
 }
 
 // Gets a specific build definition template.
-func (client Client) GetTemplate(ctx context.Context, args GetTemplateArgs) (*BuildDefinitionTemplate, error) {
+func (client *Client) GetTemplate(ctx context.Context, args GetTemplateArgs) (*BuildDefinitionTemplate, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2882,7 +2882,7 @@ type GetTemplateArgs struct {
 }
 
 // Gets all definition templates.
-func (client Client) GetTemplates(ctx context.Context, args GetTemplatesArgs) (*[]BuildDefinitionTemplate, error) {
+func (client *Client) GetTemplates(ctx context.Context, args GetTemplatesArgs) (*[]BuildDefinitionTemplate, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2907,7 +2907,7 @@ type GetTemplatesArgs struct {
 }
 
 // Updates an existing build definition template.
-func (client Client) SaveTemplate(ctx context.Context, args SaveTemplateArgs) (*BuildDefinitionTemplate, error) {
+func (client *Client) SaveTemplate(ctx context.Context, args SaveTemplateArgs) (*BuildDefinitionTemplate, error) {
     if args.Template == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "template"}
     }
@@ -2947,7 +2947,7 @@ type SaveTemplateArgs struct {
 }
 
 // Gets details for a build
-func (client Client) GetBuildTimeline(ctx context.Context, args GetBuildTimelineArgs) (*Timeline, error) {
+func (client *Client) GetBuildTimeline(ctx context.Context, args GetBuildTimelineArgs) (*Timeline, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2994,7 +2994,7 @@ type GetBuildTimelineArgs struct {
 }
 
 // [Preview API] Recreates the webhooks for the specified triggers in the given source code repository.
-func (client Client) RestoreWebhooks(ctx context.Context, args RestoreWebhooksArgs) error {
+func (client *Client) RestoreWebhooks(ctx context.Context, args RestoreWebhooksArgs) error {
     if args.TriggerTypes == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "triggerTypes"}
     }
@@ -3043,7 +3043,7 @@ type RestoreWebhooksArgs struct {
 }
 
 // [Preview API] Gets a list of webhooks installed in the given source code repository.
-func (client Client) ListWebhooks(ctx context.Context, args ListWebhooksArgs) (*[]RepositoryWebhook, error) {
+func (client *Client) ListWebhooks(ctx context.Context, args ListWebhooksArgs) (*[]RepositoryWebhook, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -3085,7 +3085,7 @@ type ListWebhooksArgs struct {
 }
 
 // Gets the work items associated with a build.
-func (client Client) GetBuildWorkItemsRefs(ctx context.Context, args GetBuildWorkItemsRefsArgs) (*[]webApi.ResourceRef, error) {
+func (client *Client) GetBuildWorkItemsRefs(ctx context.Context, args GetBuildWorkItemsRefsArgs) (*[]webApi.ResourceRef, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -3122,7 +3122,7 @@ type GetBuildWorkItemsRefsArgs struct {
 }
 
 // Gets the work items associated with a build, filtered to specific commits.
-func (client Client) GetBuildWorkItemsRefsFromCommits(ctx context.Context, args GetBuildWorkItemsRefsFromCommitsArgs) (*[]webApi.ResourceRef, error) {
+func (client *Client) GetBuildWorkItemsRefsFromCommits(ctx context.Context, args GetBuildWorkItemsRefsFromCommitsArgs) (*[]webApi.ResourceRef, error) {
     if args.CommitIds == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "commitIds"}
     }
@@ -3168,7 +3168,7 @@ type GetBuildWorkItemsRefsFromCommitsArgs struct {
 }
 
 // [Preview API] Gets all the work items between two builds.
-func (client Client) GetWorkItemsBetweenBuilds(ctx context.Context, args GetWorkItemsBetweenBuildsArgs) (*[]webApi.ResourceRef, error) {
+func (client *Client) GetWorkItemsBetweenBuilds(ctx context.Context, args GetWorkItemsBetweenBuildsArgs) (*[]webApi.ResourceRef, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
