@@ -27,7 +27,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -38,7 +38,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // Get a single branch hierarchy at the given path with parents or children as specified.
-func (client Client) GetBranch(ctx context.Context, args GetBranchArgs) (*git.TfvcBranch, error) {
+func (client *Client) GetBranch(ctx context.Context, args GetBranchArgs) (*git.TfvcBranch, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -79,7 +79,7 @@ type GetBranchArgs struct {
 }
 
 // Get a collection of branch roots -- first-level children, branches with no parents.
-func (client Client) GetBranches(ctx context.Context, args GetBranchesArgs) (*[]git.TfvcBranch, error) {
+func (client *Client) GetBranches(ctx context.Context, args GetBranchesArgs) (*[]git.TfvcBranch, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -124,7 +124,7 @@ type GetBranchesArgs struct {
 }
 
 // Get branch hierarchies below the specified scopePath
-func (client Client) GetBranchRefs(ctx context.Context, args GetBranchRefsArgs) (*[]git.TfvcBranchRef, error) {
+func (client *Client) GetBranchRefs(ctx context.Context, args GetBranchRefsArgs) (*[]git.TfvcBranchRef, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -165,7 +165,7 @@ type GetBranchRefsArgs struct {
 }
 
 // Retrieve Tfvc changes for a given changeset.
-func (client Client) GetChangesetChanges(ctx context.Context, args GetChangesetChangesArgs) (*[]git.TfvcChange, error) {
+func (client *Client) GetChangesetChanges(ctx context.Context, args GetChangesetChangesArgs) (*[]git.TfvcChange, error) {
     routeValues := make(map[string]string)
     if args.Id != nil {
         routeValues["id"] = strconv.Itoa(*args.Id)
@@ -200,7 +200,7 @@ type GetChangesetChangesArgs struct {
 }
 
 // Create a new changeset.
-func (client Client) CreateChangeset(ctx context.Context, args CreateChangesetArgs) (*git.TfvcChangesetRef, error) {
+func (client *Client) CreateChangeset(ctx context.Context, args CreateChangesetArgs) (*git.TfvcChangesetRef, error) {
     if args.Changeset == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "changeset"}
     }
@@ -233,7 +233,7 @@ type CreateChangesetArgs struct {
 }
 
 // Retrieve a Tfvc Changeset
-func (client Client) GetChangeset(ctx context.Context, args GetChangesetArgs) (*git.TfvcChangeset, error) {
+func (client *Client) GetChangeset(ctx context.Context, args GetChangesetArgs) (*git.TfvcChangeset, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -332,7 +332,7 @@ type GetChangesetArgs struct {
 }
 
 // Retrieve Tfvc Changesets
-func (client Client) GetChangesets(ctx context.Context, args GetChangesetsArgs) (*[]git.TfvcChangesetRef, error) {
+func (client *Client) GetChangesets(ctx context.Context, args GetChangesetsArgs) (*[]git.TfvcChangesetRef, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -405,7 +405,7 @@ type GetChangesetsArgs struct {
 }
 
 // Returns changesets for a given list of changeset Ids.
-func (client Client) GetBatchedChangesets(ctx context.Context, args GetBatchedChangesetsArgs) (*[]git.TfvcChangesetRef, error) {
+func (client *Client) GetBatchedChangesets(ctx context.Context, args GetBatchedChangesetsArgs) (*[]git.TfvcChangesetRef, error) {
     if args.ChangesetsRequestData == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "changesetsRequestData"}
     }
@@ -431,7 +431,7 @@ type GetBatchedChangesetsArgs struct {
 }
 
 // Retrieves the work items associated with a particular changeset.
-func (client Client) GetChangesetWorkItems(ctx context.Context, args GetChangesetWorkItemsArgs) (*[]git.AssociatedWorkItem, error) {
+func (client *Client) GetChangesetWorkItems(ctx context.Context, args GetChangesetWorkItemsArgs) (*[]git.AssociatedWorkItem, error) {
     routeValues := make(map[string]string)
     if args.Id != nil {
         routeValues["id"] = strconv.Itoa(*args.Id)
@@ -455,7 +455,7 @@ type GetChangesetWorkItemsArgs struct {
 }
 
 // Post for retrieving a set of items given a list of paths or a long path. Allows for specifying the recursionLevel and version descriptors for each path.
-func (client Client) GetItemsBatch(ctx context.Context, args GetItemsBatchArgs) (*[][]git.TfvcItem, error) {
+func (client *Client) GetItemsBatch(ctx context.Context, args GetItemsBatchArgs) (*[][]git.TfvcItem, error) {
     if args.ItemRequestData == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "itemRequestData"}
     }
@@ -488,7 +488,7 @@ type GetItemsBatchArgs struct {
 }
 
 // Post for retrieving a set of items given a list of paths or a long path. Allows for specifying the recursionLevel and version descriptors for each path.
-func (client Client) GetItemsBatchZip(ctx context.Context, args GetItemsBatchZipArgs) (io.ReadCloser, error) {
+func (client *Client) GetItemsBatchZip(ctx context.Context, args GetItemsBatchZipArgs) (io.ReadCloser, error) {
     if args.ItemRequestData == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "itemRequestData"}
     }
@@ -519,7 +519,7 @@ type GetItemsBatchZipArgs struct {
 }
 
 // Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content which is always returned as a download.
-func (client Client) GetItem(ctx context.Context, args GetItemArgs) (*git.TfvcItem, error) {
+func (client *Client) GetItem(ctx context.Context, args GetItemArgs) (*git.TfvcItem, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -588,7 +588,7 @@ type GetItemArgs struct {
 }
 
 // Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content which is always returned as a download.
-func (client Client) GetItemContent(ctx context.Context, args GetItemContentArgs) (io.ReadCloser, error) {
+func (client *Client) GetItemContent(ctx context.Context, args GetItemContentArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -655,7 +655,7 @@ type GetItemContentArgs struct {
 }
 
 // Get a list of Tfvc items
-func (client Client) GetItems(ctx context.Context, args GetItemsArgs) (*[]git.TfvcItem, error) {
+func (client *Client) GetItems(ctx context.Context, args GetItemsArgs) (*[]git.TfvcItem, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -708,7 +708,7 @@ type GetItemsArgs struct {
 }
 
 // Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content which is always returned as a download.
-func (client Client) GetItemText(ctx context.Context, args GetItemTextArgs) (io.ReadCloser, error) {
+func (client *Client) GetItemText(ctx context.Context, args GetItemTextArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -775,7 +775,7 @@ type GetItemTextArgs struct {
 }
 
 // Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content which is always returned as a download.
-func (client Client) GetItemZip(ctx context.Context, args GetItemZipArgs) (io.ReadCloser, error) {
+func (client *Client) GetItemZip(ctx context.Context, args GetItemZipArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -842,7 +842,7 @@ type GetItemZipArgs struct {
 }
 
 // Get items under a label.
-func (client Client) GetLabelItems(ctx context.Context, args GetLabelItemsArgs) (*[]git.TfvcItem, error) {
+func (client *Client) GetLabelItems(ctx context.Context, args GetLabelItemsArgs) (*[]git.TfvcItem, error) {
     routeValues := make(map[string]string)
     if args.LabelId == nil || *args.LabelId == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "labelId"} 
@@ -878,7 +878,7 @@ type GetLabelItemsArgs struct {
 }
 
 // Get a single deep label.
-func (client Client) GetLabel(ctx context.Context, args GetLabelArgs) (*git.TfvcLabel, error) {
+func (client *Client) GetLabel(ctx context.Context, args GetLabelArgs) (*git.TfvcLabel, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -932,7 +932,7 @@ type GetLabelArgs struct {
 }
 
 // Get a collection of shallow label references.
-func (client Client) GetLabels(ctx context.Context, args GetLabelsArgs) (*[]git.TfvcLabelRef, error) {
+func (client *Client) GetLabels(ctx context.Context, args GetLabelsArgs) (*[]git.TfvcLabelRef, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -990,7 +990,7 @@ type GetLabelsArgs struct {
 }
 
 // Get changes included in a shelveset.
-func (client Client) GetShelvesetChanges(ctx context.Context, args GetShelvesetChangesArgs) (*[]git.TfvcChange, error) {
+func (client *Client) GetShelvesetChanges(ctx context.Context, args GetShelvesetChangesArgs) (*[]git.TfvcChange, error) {
     queryParams := url.Values{}
     if args.ShelvesetId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "shelvesetId"}
@@ -1024,7 +1024,7 @@ type GetShelvesetChangesArgs struct {
 }
 
 // Get a single deep shelveset.
-func (client Client) GetShelveset(ctx context.Context, args GetShelvesetArgs) (*git.TfvcShelveset, error) {
+func (client *Client) GetShelveset(ctx context.Context, args GetShelvesetArgs) (*git.TfvcShelveset, error) {
     queryParams := url.Values{}
     if args.ShelvesetId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "shelvesetId"}
@@ -1073,7 +1073,7 @@ type GetShelvesetArgs struct {
 }
 
 // Return a collection of shallow shelveset references.
-func (client Client) GetShelvesets(ctx context.Context, args GetShelvesetsArgs) (*[]git.TfvcShelvesetRef, error) {
+func (client *Client) GetShelvesets(ctx context.Context, args GetShelvesetsArgs) (*[]git.TfvcShelvesetRef, error) {
     queryParams := url.Values{}
     if args.RequestData != nil {
         if args.RequestData.Name != nil {
@@ -1126,7 +1126,7 @@ type GetShelvesetsArgs struct {
 }
 
 // Get work items associated with a shelveset.
-func (client Client) GetShelvesetWorkItems(ctx context.Context, args GetShelvesetWorkItemsArgs) (*[]git.AssociatedWorkItem, error) {
+func (client *Client) GetShelvesetWorkItems(ctx context.Context, args GetShelvesetWorkItemsArgs) (*[]git.AssociatedWorkItem, error) {
     queryParams := url.Values{}
     if args.ShelvesetId == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "shelvesetId"}

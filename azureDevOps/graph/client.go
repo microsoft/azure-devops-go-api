@@ -28,7 +28,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -39,7 +39,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // [Preview API]
-func (client Client) DeleteAvatar(ctx context.Context, args DeleteAvatarArgs) error {
+func (client *Client) DeleteAvatar(ctx context.Context, args DeleteAvatarArgs) error {
     routeValues := make(map[string]string)
     if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"} 
@@ -62,7 +62,7 @@ type DeleteAvatarArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetAvatar(ctx context.Context, args GetAvatarArgs) (*profile.Avatar, error) {
+func (client *Client) GetAvatar(ctx context.Context, args GetAvatarArgs) (*profile.Avatar, error) {
     routeValues := make(map[string]string)
     if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"} 
@@ -98,7 +98,7 @@ type GetAvatarArgs struct {
 }
 
 // [Preview API]
-func (client Client) SetAvatar(ctx context.Context, args SetAvatarArgs) error {
+func (client *Client) SetAvatar(ctx context.Context, args SetAvatarArgs) error {
     if args.Avatar == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "avatar"}
     }
@@ -130,7 +130,7 @@ type SetAvatarArgs struct {
 }
 
 // [Preview API] Resolve a storage key to a descriptor
-func (client Client) GetDescriptor(ctx context.Context, args GetDescriptorArgs) (*GraphDescriptorResult, error) {
+func (client *Client) GetDescriptor(ctx context.Context, args GetDescriptorArgs) (*GraphDescriptorResult, error) {
     routeValues := make(map[string]string)
     if args.StorageKey == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "storageKey"} 
@@ -155,7 +155,7 @@ type GetDescriptorArgs struct {
 }
 
 // [Preview API] Create a new Azure DevOps group or materialize an existing AAD group.
-func (client Client) CreateGroup(ctx context.Context, args CreateGroupArgs) (*GraphGroup, error) {
+func (client *Client) CreateGroup(ctx context.Context, args CreateGroupArgs) (*GraphGroup, error) {
     if args.CreationContext == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "creationContext"}
     }
@@ -193,7 +193,7 @@ type CreateGroupArgs struct {
 }
 
 // [Preview API] Removes an Azure DevOps group from all of its parent groups.
-func (client Client) DeleteGroup(ctx context.Context, args DeleteGroupArgs) error {
+func (client *Client) DeleteGroup(ctx context.Context, args DeleteGroupArgs) error {
     routeValues := make(map[string]string)
     if args.GroupDescriptor == nil || *args.GroupDescriptor == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "groupDescriptor"} 
@@ -216,7 +216,7 @@ type DeleteGroupArgs struct {
 }
 
 // [Preview API] Get a group by its descriptor.
-func (client Client) GetGroup(ctx context.Context, args GetGroupArgs) (*GraphGroup, error) {
+func (client *Client) GetGroup(ctx context.Context, args GetGroupArgs) (*GraphGroup, error) {
     routeValues := make(map[string]string)
     if args.GroupDescriptor == nil || *args.GroupDescriptor == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "groupDescriptor"} 
@@ -241,7 +241,7 @@ type GetGroupArgs struct {
 }
 
 // [Preview API] Gets a list of all groups in the current scope (usually organization or account).
-func (client Client) ListGroups(ctx context.Context, args ListGroupsArgs) (*PagedGraphGroups, error) {
+func (client *Client) ListGroups(ctx context.Context, args ListGroupsArgs) (*PagedGraphGroups, error) {
     queryParams := url.Values{}
     if args.ScopeDescriptor != nil {
         queryParams.Add("scopeDescriptor", *args.ScopeDescriptor)
@@ -284,7 +284,7 @@ type ListGroupsArgs struct {
 }
 
 // [Preview API] Update the properties of an Azure DevOps group.
-func (client Client) UpdateGroup(ctx context.Context, args UpdateGroupArgs) (*GraphGroup, error) {
+func (client *Client) UpdateGroup(ctx context.Context, args UpdateGroupArgs) (*GraphGroup, error) {
     if args.PatchDocument == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "patchDocument"}
     }
@@ -318,7 +318,7 @@ type UpdateGroupArgs struct {
 }
 
 // [Preview API] Create a new membership between a container and subject.
-func (client Client) AddMembership(ctx context.Context, args AddMembershipArgs) (*GraphMembership, error) {
+func (client *Client) AddMembership(ctx context.Context, args AddMembershipArgs) (*GraphMembership, error) {
     routeValues := make(map[string]string)
     if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"} 
@@ -349,7 +349,7 @@ type AddMembershipArgs struct {
 }
 
 // [Preview API] Check to see if a membership relationship between a container and subject exists.
-func (client Client) CheckMembershipExistence(ctx context.Context, args CheckMembershipExistenceArgs) error {
+func (client *Client) CheckMembershipExistence(ctx context.Context, args CheckMembershipExistenceArgs) error {
     routeValues := make(map[string]string)
     if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"} 
@@ -378,7 +378,7 @@ type CheckMembershipExistenceArgs struct {
 }
 
 // [Preview API] Get a membership relationship between a container and subject.
-func (client Client) GetMembership(ctx context.Context, args GetMembershipArgs) (*GraphMembership, error) {
+func (client *Client) GetMembership(ctx context.Context, args GetMembershipArgs) (*GraphMembership, error) {
     routeValues := make(map[string]string)
     if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"} 
@@ -409,7 +409,7 @@ type GetMembershipArgs struct {
 }
 
 // [Preview API] Deletes a membership between a container and subject.
-func (client Client) RemoveMembership(ctx context.Context, args RemoveMembershipArgs) error {
+func (client *Client) RemoveMembership(ctx context.Context, args RemoveMembershipArgs) error {
     routeValues := make(map[string]string)
     if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"} 
@@ -438,7 +438,7 @@ type RemoveMembershipArgs struct {
 }
 
 // [Preview API] Get all the memberships where this descriptor is a member in the relationship.
-func (client Client) ListMemberships(ctx context.Context, args ListMembershipsArgs) (*[]GraphMembership, error) {
+func (client *Client) ListMemberships(ctx context.Context, args ListMembershipsArgs) (*[]GraphMembership, error) {
     routeValues := make(map[string]string)
     if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"} 
@@ -474,7 +474,7 @@ type ListMembershipsArgs struct {
 }
 
 // [Preview API] Check whether a subject is active or inactive.
-func (client Client) GetMembershipState(ctx context.Context, args GetMembershipStateArgs) (*GraphMembershipState, error) {
+func (client *Client) GetMembershipState(ctx context.Context, args GetMembershipStateArgs) (*GraphMembershipState, error) {
     routeValues := make(map[string]string)
     if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"} 
@@ -499,7 +499,7 @@ type GetMembershipStateArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetProviderInfo(ctx context.Context, args GetProviderInfoArgs) (*GraphProviderInfo, error) {
+func (client *Client) GetProviderInfo(ctx context.Context, args GetProviderInfoArgs) (*GraphProviderInfo, error) {
     routeValues := make(map[string]string)
     if args.UserDescriptor == nil || *args.UserDescriptor == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "userDescriptor"} 
@@ -524,7 +524,7 @@ type GetProviderInfoArgs struct {
 }
 
 // [Preview API]
-func (client Client) RequestAccess(ctx context.Context, args RequestAccessArgs) error {
+func (client *Client) RequestAccess(ctx context.Context, args RequestAccessArgs) error {
     if args.Message == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "message"}
     }
@@ -548,7 +548,7 @@ type RequestAccessArgs struct {
 }
 
 // [Preview API] Resolve a descriptor to a storage key.
-func (client Client) GetStorageKey(ctx context.Context, args GetStorageKeyArgs) (*GraphStorageKeyResult, error) {
+func (client *Client) GetStorageKey(ctx context.Context, args GetStorageKeyArgs) (*GraphStorageKeyResult, error) {
     routeValues := make(map[string]string)
     if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"} 
@@ -573,7 +573,7 @@ type GetStorageKeyArgs struct {
 }
 
 // [Preview API] Resolve descriptors to users, groups or scopes (Subjects) in a batch.
-func (client Client) LookupSubjects(ctx context.Context, args LookupSubjectsArgs) (*map[string]GraphSubject, error) {
+func (client *Client) LookupSubjects(ctx context.Context, args LookupSubjectsArgs) (*map[string]GraphSubject, error) {
     if args.SubjectLookup == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "subjectLookup"}
     }
@@ -599,7 +599,7 @@ type LookupSubjectsArgs struct {
 }
 
 // [Preview API] Materialize an existing AAD or MSA user into the VSTS account.
-func (client Client) CreateUser(ctx context.Context, args CreateUserArgs) (*GraphUser, error) {
+func (client *Client) CreateUser(ctx context.Context, args CreateUserArgs) (*GraphUser, error) {
     if args.CreationContext == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "creationContext"}
     }
@@ -632,7 +632,7 @@ type CreateUserArgs struct {
 }
 
 // [Preview API] Disables a user.
-func (client Client) DeleteUser(ctx context.Context, args DeleteUserArgs) error {
+func (client *Client) DeleteUser(ctx context.Context, args DeleteUserArgs) error {
     routeValues := make(map[string]string)
     if args.UserDescriptor == nil || *args.UserDescriptor == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "userDescriptor"} 
@@ -655,7 +655,7 @@ type DeleteUserArgs struct {
 }
 
 // [Preview API] Get a user by its descriptor.
-func (client Client) GetUser(ctx context.Context, args GetUserArgs) (*GraphUser, error) {
+func (client *Client) GetUser(ctx context.Context, args GetUserArgs) (*GraphUser, error) {
     routeValues := make(map[string]string)
     if args.UserDescriptor == nil || *args.UserDescriptor == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "userDescriptor"} 
@@ -680,7 +680,7 @@ type GetUserArgs struct {
 }
 
 // [Preview API] Get a list of all users in a given scope.
-func (client Client) ListUsers(ctx context.Context, args ListUsersArgs) (*PagedGraphUsers, error) {
+func (client *Client) ListUsers(ctx context.Context, args ListUsersArgs) (*PagedGraphUsers, error) {
     queryParams := url.Values{}
     if args.SubjectTypes != nil {
         listAsString := strings.Join((*args.SubjectTypes)[:], ",")
@@ -718,7 +718,7 @@ type ListUsersArgs struct {
 }
 
 // [Preview API] Map an existing user to a different identity
-func (client Client) UpdateUser(ctx context.Context, args UpdateUserArgs) (*GraphUser, error) {
+func (client *Client) UpdateUser(ctx context.Context, args UpdateUserArgs) (*GraphUser, error) {
     if args.UpdateContext == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "updateContext"}
     }

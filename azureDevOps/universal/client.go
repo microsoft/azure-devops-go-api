@@ -25,7 +25,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -36,7 +36,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // [Preview API] Delete a package version from the recycle bin.
-func (client Client) DeletePackageVersionFromRecycleBin(ctx context.Context, args DeletePackageVersionFromRecycleBinArgs) error {
+func (client *Client) DeletePackageVersionFromRecycleBin(ctx context.Context, args DeletePackageVersionFromRecycleBinArgs) error {
     routeValues := make(map[string]string)
     if args.FeedId == nil || *args.FeedId == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
@@ -71,7 +71,7 @@ type DeletePackageVersionFromRecycleBinArgs struct {
 }
 
 // [Preview API] Get information about a package version in the recycle bin.
-func (client Client) GetPackageVersionMetadataFromRecycleBin(ctx context.Context, args GetPackageVersionMetadataFromRecycleBinArgs) (*UPackPackageVersionDeletionState, error) {
+func (client *Client) GetPackageVersionMetadataFromRecycleBin(ctx context.Context, args GetPackageVersionMetadataFromRecycleBinArgs) (*UPackPackageVersionDeletionState, error) {
     routeValues := make(map[string]string)
     if args.FeedId == nil || *args.FeedId == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
@@ -108,7 +108,7 @@ type GetPackageVersionMetadataFromRecycleBinArgs struct {
 }
 
 // [Preview API] Restore a package version from the recycle bin to its associated feed.
-func (client Client) RestorePackageVersionFromRecycleBin(ctx context.Context, args RestorePackageVersionFromRecycleBinArgs) error {
+func (client *Client) RestorePackageVersionFromRecycleBin(ctx context.Context, args RestorePackageVersionFromRecycleBinArgs) error {
     if args.PackageVersionDetails == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "packageVersionDetails"}
     }
@@ -152,7 +152,7 @@ type RestorePackageVersionFromRecycleBinArgs struct {
 }
 
 // [Preview API] Delete a package version from a feed's recycle bin.
-func (client Client) DeletePackageVersion(ctx context.Context, args DeletePackageVersionArgs) (*Package, error) {
+func (client *Client) DeletePackageVersion(ctx context.Context, args DeletePackageVersionArgs) (*Package, error) {
     routeValues := make(map[string]string)
     if args.FeedId == nil || *args.FeedId == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
@@ -189,7 +189,7 @@ type DeletePackageVersionArgs struct {
 }
 
 // [Preview API] Show information about a package version.
-func (client Client) GetPackageVersion(ctx context.Context, args GetPackageVersionArgs) (*Package, error) {
+func (client *Client) GetPackageVersion(ctx context.Context, args GetPackageVersionArgs) (*Package, error) {
     routeValues := make(map[string]string)
     if args.FeedId == nil || *args.FeedId == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
@@ -232,7 +232,7 @@ type GetPackageVersionArgs struct {
 }
 
 // [Preview API] Update information for a package version.
-func (client Client) UpdatePackageVersion(ctx context.Context, args UpdatePackageVersionArgs) error {
+func (client *Client) UpdatePackageVersion(ctx context.Context, args UpdatePackageVersionArgs) error {
     if args.PackageVersionDetails == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "packageVersionDetails"}
     }

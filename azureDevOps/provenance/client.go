@@ -23,7 +23,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -34,7 +34,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // [Preview API] Creates a session, a wrapper around a feed that can store additional metadata on the packages published to it.
-func (client Client) CreateSession(ctx context.Context, args CreateSessionArgs) (*SessionResponse, error) {
+func (client *Client) CreateSession(ctx context.Context, args CreateSessionArgs) (*SessionResponse, error) {
     if args.SessionRequest == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "sessionRequest"}
     }

@@ -24,7 +24,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -35,7 +35,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // [Preview API]
-func (client Client) AddPackage(ctx context.Context, args AddPackageArgs) error {
+func (client *Client) AddPackage(ctx context.Context, args AddPackageArgs) error {
     if args.Metadata == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "metadata"}
     }
@@ -79,7 +79,7 @@ type AddPackageArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetPackageMetadata(ctx context.Context, args GetPackageMetadataArgs) (*UPackPackageMetadata, error) {
+func (client *Client) GetPackageMetadata(ctx context.Context, args GetPackageMetadataArgs) (*UPackPackageMetadata, error) {
     routeValues := make(map[string]string)
     if args.FeedId == nil || *args.FeedId == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
@@ -122,7 +122,7 @@ type GetPackageMetadataArgs struct {
 }
 
 // [Preview API]
-func (client Client) GetPackageVersionsMetadata(ctx context.Context, args GetPackageVersionsMetadataArgs) (*UPackLimitedPackageMetadataListResponse, error) {
+func (client *Client) GetPackageVersionsMetadata(ctx context.Context, args GetPackageVersionsMetadataArgs) (*UPackLimitedPackageMetadataListResponse, error) {
     routeValues := make(map[string]string)
     if args.FeedId == nil || *args.FeedId == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 

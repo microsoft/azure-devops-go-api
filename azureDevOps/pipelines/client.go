@@ -23,7 +23,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) *Client {
     client := connection.GetClientByUrl(connection.BaseUrl)
     return &Client {
         Client: *client,
@@ -31,7 +31,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) *Client {
 }
 
 // [Preview API]
-func (client Client) GetLog(ctx context.Context, args GetLogArgs) (*Log, error) {
+func (client *Client) GetLog(ctx context.Context, args GetLogArgs) (*Log, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -80,7 +80,7 @@ type GetLogArgs struct {
 }
 
 // [Preview API]
-func (client Client) ListLogs(ctx context.Context, args ListLogsArgs) (*LogCollection, error) {
+func (client *Client) ListLogs(ctx context.Context, args ListLogsArgs) (*LogCollection, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -123,7 +123,7 @@ type ListLogsArgs struct {
 }
 
 // [Preview API]
-func (client Client) CreatePipeline(ctx context.Context, args CreatePipelineArgs) (*Pipeline, error) {
+func (client *Client) CreatePipeline(ctx context.Context, args CreatePipelineArgs) (*Pipeline, error) {
     if args.InputParameters == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "inputParameters"}
     }
@@ -157,7 +157,7 @@ type CreatePipelineArgs struct {
 }
 
 // [Preview API] Gets a pipeline, optionally at the specified version
-func (client Client) GetPipeline(ctx context.Context, args GetPipelineArgs) (*Pipeline, error) {
+func (client *Client) GetPipeline(ctx context.Context, args GetPipelineArgs) (*Pipeline, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -194,7 +194,7 @@ type GetPipelineArgs struct {
 }
 
 // [Preview API] Gets a list of pipelines.
-func (client Client) ListPipelines(ctx context.Context, args ListPipelinesArgs) (*[]Pipeline, error) {
+func (client *Client) ListPipelines(ctx context.Context, args ListPipelinesArgs) (*[]Pipeline, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -235,7 +235,7 @@ type ListPipelinesArgs struct {
 }
 
 // [Preview API] Gets a run for a particular pipeline.
-func (client Client) GetRun(ctx context.Context, args GetRunArgs) (*Run, error) {
+func (client *Client) GetRun(ctx context.Context, args GetRunArgs) (*Run, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -272,7 +272,7 @@ type GetRunArgs struct {
 }
 
 // [Preview API] Gets top 10000 runs for a particular pipeline.
-func (client Client) ListRuns(ctx context.Context, args ListRunsArgs) (*[]Run, error) {
+func (client *Client) ListRuns(ctx context.Context, args ListRunsArgs) (*[]Run, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -303,7 +303,7 @@ type ListRunsArgs struct {
 }
 
 // [Preview API] Runs a pipeline.
-func (client Client) RunPipeline(ctx context.Context, args RunPipelineArgs) (*Run, error) {
+func (client *Client) RunPipeline(ctx context.Context, args RunPipelineArgs) (*Run, error) {
     if args.RunParameters == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "runParameters"}
     }

@@ -24,7 +24,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -35,7 +35,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // [Preview API]
-func (client Client) GetContentScopedPackage(ctx context.Context, args GetContentScopedPackageArgs) (io.ReadCloser, error) {
+func (client *Client) GetContentScopedPackage(ctx context.Context, args GetContentScopedPackageArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.FeedId == nil || *args.FeedId == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
@@ -76,7 +76,7 @@ type GetContentScopedPackageArgs struct {
 }
 
 // [Preview API] Get an unscoped npm package.
-func (client Client) GetContentUnscopedPackage(ctx context.Context, args GetContentUnscopedPackageArgs) (io.ReadCloser, error) {
+func (client *Client) GetContentUnscopedPackage(ctx context.Context, args GetContentUnscopedPackageArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.FeedId == nil || *args.FeedId == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
@@ -111,7 +111,7 @@ type GetContentUnscopedPackageArgs struct {
 }
 
 // [Preview API] Update several packages from a single feed in a single request. The updates to the packages do not happen atomically.
-func (client Client) UpdatePackages(ctx context.Context, args UpdatePackagesArgs) error {
+func (client *Client) UpdatePackages(ctx context.Context, args UpdatePackagesArgs) error {
     if args.BatchRequest == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "batchRequest"}
     }
@@ -143,7 +143,7 @@ type UpdatePackagesArgs struct {
 }
 
 // [Preview API] Get the Readme for a package version with an npm scope.
-func (client Client) GetReadmeScopedPackage(ctx context.Context, args GetReadmeScopedPackageArgs) (io.ReadCloser, error) {
+func (client *Client) GetReadmeScopedPackage(ctx context.Context, args GetReadmeScopedPackageArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.FeedId == nil || *args.FeedId == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
@@ -184,7 +184,7 @@ type GetReadmeScopedPackageArgs struct {
 }
 
 // [Preview API] Get the Readme for a package version that has no npm scope.
-func (client Client) GetReadmeUnscopedPackage(ctx context.Context, args GetReadmeUnscopedPackageArgs) (io.ReadCloser, error) {
+func (client *Client) GetReadmeUnscopedPackage(ctx context.Context, args GetReadmeUnscopedPackageArgs) (io.ReadCloser, error) {
     routeValues := make(map[string]string)
     if args.FeedId == nil || *args.FeedId == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
@@ -219,7 +219,7 @@ type GetReadmeUnscopedPackageArgs struct {
 }
 
 // [Preview API] Delete a package version with an npm scope from the recycle bin.
-func (client Client) DeleteScopedPackageVersionFromRecycleBin(ctx context.Context, args DeleteScopedPackageVersionFromRecycleBinArgs) error {
+func (client *Client) DeleteScopedPackageVersionFromRecycleBin(ctx context.Context, args DeleteScopedPackageVersionFromRecycleBinArgs) error {
     routeValues := make(map[string]string)
     if args.FeedId == nil || *args.FeedId == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
@@ -260,7 +260,7 @@ type DeleteScopedPackageVersionFromRecycleBinArgs struct {
 }
 
 // [Preview API] Get information about a scoped package version in the recycle bin.
-func (client Client) GetScopedPackageVersionMetadataFromRecycleBin(ctx context.Context, args GetScopedPackageVersionMetadataFromRecycleBinArgs) (*NpmPackageVersionDeletionState, error) {
+func (client *Client) GetScopedPackageVersionMetadataFromRecycleBin(ctx context.Context, args GetScopedPackageVersionMetadataFromRecycleBinArgs) (*NpmPackageVersionDeletionState, error) {
     routeValues := make(map[string]string)
     if args.FeedId == nil || *args.FeedId == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
@@ -303,7 +303,7 @@ type GetScopedPackageVersionMetadataFromRecycleBinArgs struct {
 }
 
 // [Preview API] Restore a package version with an npm scope from the recycle bin to its feed.
-func (client Client) RestoreScopedPackageVersionFromRecycleBin(ctx context.Context, args RestoreScopedPackageVersionFromRecycleBinArgs) error {
+func (client *Client) RestoreScopedPackageVersionFromRecycleBin(ctx context.Context, args RestoreScopedPackageVersionFromRecycleBinArgs) error {
     if args.PackageVersionDetails == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "packageVersionDetails"}
     }
@@ -353,7 +353,7 @@ type RestoreScopedPackageVersionFromRecycleBinArgs struct {
 }
 
 // [Preview API] Delete a package version without an npm scope from the recycle bin.
-func (client Client) DeletePackageVersionFromRecycleBin(ctx context.Context, args DeletePackageVersionFromRecycleBinArgs) error {
+func (client *Client) DeletePackageVersionFromRecycleBin(ctx context.Context, args DeletePackageVersionFromRecycleBinArgs) error {
     routeValues := make(map[string]string)
     if args.FeedId == nil || *args.FeedId == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
@@ -388,7 +388,7 @@ type DeletePackageVersionFromRecycleBinArgs struct {
 }
 
 // [Preview API] Get information about an unscoped package version in the recycle bin.
-func (client Client) GetPackageVersionMetadataFromRecycleBin(ctx context.Context, args GetPackageVersionMetadataFromRecycleBinArgs) (*NpmPackageVersionDeletionState, error) {
+func (client *Client) GetPackageVersionMetadataFromRecycleBin(ctx context.Context, args GetPackageVersionMetadataFromRecycleBinArgs) (*NpmPackageVersionDeletionState, error) {
     routeValues := make(map[string]string)
     if args.FeedId == nil || *args.FeedId == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
@@ -425,7 +425,7 @@ type GetPackageVersionMetadataFromRecycleBinArgs struct {
 }
 
 // [Preview API] Restore a package version without an npm scope from the recycle bin to its feed.
-func (client Client) RestorePackageVersionFromRecycleBin(ctx context.Context, args RestorePackageVersionFromRecycleBinArgs) error {
+func (client *Client) RestorePackageVersionFromRecycleBin(ctx context.Context, args RestorePackageVersionFromRecycleBinArgs) error {
     if args.PackageVersionDetails == nil {
         return &azureDevOps.ArgumentNilError{ArgumentName: "packageVersionDetails"}
     }
@@ -469,7 +469,7 @@ type RestorePackageVersionFromRecycleBinArgs struct {
 }
 
 // [Preview API] Get information about a scoped package version (such as @scope/name).
-func (client Client) GetScopedPackageInfo(ctx context.Context, args GetScopedPackageInfoArgs) (*Package, error) {
+func (client *Client) GetScopedPackageInfo(ctx context.Context, args GetScopedPackageInfoArgs) (*Package, error) {
     routeValues := make(map[string]string)
     if args.FeedId == nil || *args.FeedId == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
@@ -512,7 +512,7 @@ type GetScopedPackageInfoArgs struct {
 }
 
 // [Preview API] Unpublish a scoped package version (such as @scope/name).
-func (client Client) UnpublishScopedPackage(ctx context.Context, args UnpublishScopedPackageArgs) (*Package, error) {
+func (client *Client) UnpublishScopedPackage(ctx context.Context, args UnpublishScopedPackageArgs) (*Package, error) {
     routeValues := make(map[string]string)
     if args.FeedId == nil || *args.FeedId == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
@@ -555,7 +555,7 @@ type UnpublishScopedPackageArgs struct {
 }
 
 // [Preview API]
-func (client Client) UpdateScopedPackage(ctx context.Context, args UpdateScopedPackageArgs) (*Package, error) {
+func (client *Client) UpdateScopedPackage(ctx context.Context, args UpdateScopedPackageArgs) (*Package, error) {
     if args.PackageVersionDetails == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "packageVersionDetails"}
     }
@@ -607,7 +607,7 @@ type UpdateScopedPackageArgs struct {
 }
 
 // [Preview API] Get information about an unscoped package version.
-func (client Client) GetPackageInfo(ctx context.Context, args GetPackageInfoArgs) (*Package, error) {
+func (client *Client) GetPackageInfo(ctx context.Context, args GetPackageInfoArgs) (*Package, error) {
     routeValues := make(map[string]string)
     if args.FeedId == nil || *args.FeedId == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
@@ -644,7 +644,7 @@ type GetPackageInfoArgs struct {
 }
 
 // [Preview API] Unpublish an unscoped package version.
-func (client Client) UnpublishPackage(ctx context.Context, args UnpublishPackageArgs) (*Package, error) {
+func (client *Client) UnpublishPackage(ctx context.Context, args UnpublishPackageArgs) (*Package, error) {
     routeValues := make(map[string]string)
     if args.FeedId == nil || *args.FeedId == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "feedId"} 
@@ -681,7 +681,7 @@ type UnpublishPackageArgs struct {
 }
 
 // [Preview API]
-func (client Client) UpdatePackage(ctx context.Context, args UpdatePackageArgs) (*Package, error) {
+func (client *Client) UpdatePackage(ctx context.Context, args UpdatePackageArgs) (*Package, error) {
     if args.PackageVersionDetails == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "packageVersionDetails"}
     }

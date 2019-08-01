@@ -24,7 +24,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -35,7 +35,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // [Preview API] Create the supplied dashboard.
-func (client Client) CreateDashboard(ctx context.Context, args CreateDashboardArgs) (*Dashboard, error) {
+func (client *Client) CreateDashboard(ctx context.Context, args CreateDashboardArgs) (*Dashboard, error) {
     if args.Dashboard == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "dashboard"}
     }
@@ -74,7 +74,7 @@ type CreateDashboardArgs struct {
 }
 
 // [Preview API] Delete a dashboard given its ID. This also deletes the widgets associated with this dashboard.
-func (client Client) DeleteDashboard(ctx context.Context, args DeleteDashboardArgs) error {
+func (client *Client) DeleteDashboard(ctx context.Context, args DeleteDashboardArgs) error {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -108,7 +108,7 @@ type DeleteDashboardArgs struct {
 }
 
 // [Preview API] Get a dashboard by its ID.
-func (client Client) GetDashboard(ctx context.Context, args GetDashboardArgs) (*Dashboard, error) {
+func (client *Client) GetDashboard(ctx context.Context, args GetDashboardArgs) (*Dashboard, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -144,7 +144,7 @@ type GetDashboardArgs struct {
 }
 
 // [Preview API] Get a list of dashboards.
-func (client Client) GetDashboards(ctx context.Context, args GetDashboardsArgs) (*DashboardGroup, error) {
+func (client *Client) GetDashboards(ctx context.Context, args GetDashboardsArgs) (*DashboardGroup, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -174,7 +174,7 @@ type GetDashboardsArgs struct {
 }
 
 // [Preview API] Replace configuration for the specified dashboard. Replaces Widget list on Dashboard, only if property is supplied.
-func (client Client) ReplaceDashboard(ctx context.Context, args ReplaceDashboardArgs) (*Dashboard, error) {
+func (client *Client) ReplaceDashboard(ctx context.Context, args ReplaceDashboardArgs) (*Dashboard, error) {
     if args.Dashboard == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "dashboard"}
     }
@@ -219,7 +219,7 @@ type ReplaceDashboardArgs struct {
 }
 
 // [Preview API] Update the name and position of dashboards in the supplied group, and remove omitted dashboards. Does not modify dashboard content.
-func (client Client) ReplaceDashboards(ctx context.Context, args ReplaceDashboardsArgs) (*DashboardGroup, error) {
+func (client *Client) ReplaceDashboards(ctx context.Context, args ReplaceDashboardsArgs) (*DashboardGroup, error) {
     if args.Group == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "group"}
     }
@@ -258,7 +258,7 @@ type ReplaceDashboardsArgs struct {
 }
 
 // [Preview API] Create a widget on the specified dashboard.
-func (client Client) CreateWidget(ctx context.Context, args CreateWidgetArgs) (*Widget, error) {
+func (client *Client) CreateWidget(ctx context.Context, args CreateWidgetArgs) (*Widget, error) {
     if args.Widget == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "widget"}
     }
@@ -303,7 +303,7 @@ type CreateWidgetArgs struct {
 }
 
 // [Preview API] Delete the specified widget.
-func (client Client) DeleteWidget(ctx context.Context, args DeleteWidgetArgs) (*Dashboard, error) {
+func (client *Client) DeleteWidget(ctx context.Context, args DeleteWidgetArgs) (*Dashboard, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -345,7 +345,7 @@ type DeleteWidgetArgs struct {
 }
 
 // [Preview API] Get the current state of the specified widget.
-func (client Client) GetWidget(ctx context.Context, args GetWidgetArgs) (*Widget, error) {
+func (client *Client) GetWidget(ctx context.Context, args GetWidgetArgs) (*Widget, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -387,7 +387,7 @@ type GetWidgetArgs struct {
 }
 
 // [Preview API] Get widgets contained on the specified dashboard.
-func (client Client) GetWidgets(ctx context.Context, args GetWidgetsArgs) (*WidgetsVersionedList, error) {
+func (client *Client) GetWidgets(ctx context.Context, args GetWidgetsArgs) (*WidgetsVersionedList, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -438,7 +438,7 @@ type GetWidgetsArgs struct {
 }
 
 // [Preview API] Override the  state of the specified widget.
-func (client Client) ReplaceWidget(ctx context.Context, args ReplaceWidgetArgs) (*Widget, error) {
+func (client *Client) ReplaceWidget(ctx context.Context, args ReplaceWidgetArgs) (*Widget, error) {
     if args.Widget == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "widget"}
     }
@@ -489,7 +489,7 @@ type ReplaceWidgetArgs struct {
 }
 
 // [Preview API] Replace the widgets on specified dashboard with the supplied widgets.
-func (client Client) ReplaceWidgets(ctx context.Context, args ReplaceWidgetsArgs) (*WidgetsVersionedList, error) {
+func (client *Client) ReplaceWidgets(ctx context.Context, args ReplaceWidgetsArgs) (*WidgetsVersionedList, error) {
     if args.Widgets == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "widgets"}
     }
@@ -549,7 +549,7 @@ type ReplaceWidgetsArgs struct {
 }
 
 // [Preview API] Perform a partial update of the specified widget.
-func (client Client) UpdateWidget(ctx context.Context, args UpdateWidgetArgs) (*Widget, error) {
+func (client *Client) UpdateWidget(ctx context.Context, args UpdateWidgetArgs) (*Widget, error) {
     if args.Widget == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "widget"}
     }
@@ -600,7 +600,7 @@ type UpdateWidgetArgs struct {
 }
 
 // [Preview API] Update the supplied widgets on the dashboard using supplied state. State of existing Widgets not passed in the widget list is preserved.
-func (client Client) UpdateWidgets(ctx context.Context, args UpdateWidgetsArgs) (*WidgetsVersionedList, error) {
+func (client *Client) UpdateWidgets(ctx context.Context, args UpdateWidgetsArgs) (*WidgetsVersionedList, error) {
     if args.Widgets == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "widgets"}
     }
@@ -660,7 +660,7 @@ type UpdateWidgetsArgs struct {
 }
 
 // [Preview API] Get the widget metadata satisfying the specified contribution ID.
-func (client Client) GetWidgetMetadata(ctx context.Context, args GetWidgetMetadataArgs) (*WidgetMetadataResponse, error) {
+func (client *Client) GetWidgetMetadata(ctx context.Context, args GetWidgetMetadataArgs) (*WidgetMetadataResponse, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -690,7 +690,7 @@ type GetWidgetMetadataArgs struct {
 }
 
 // [Preview API] Get all available widget metadata in alphabetical order.
-func (client Client) GetWidgetTypes(ctx context.Context, args GetWidgetTypesArgs) (*WidgetTypesResponse, error) {
+func (client *Client) GetWidgetTypes(ctx context.Context, args GetWidgetTypesArgs) (*WidgetTypesResponse, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project

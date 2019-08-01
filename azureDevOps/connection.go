@@ -38,8 +38,10 @@ type Connection struct {
 	SuppressFedAuthRedirect bool
 	ForceMsaPassThrough     bool
 	Timeout                 *time.Duration
-	clientCache             map[string] *Client
+	clientCache             map[string] Client
 	clientCacheLock         sync.RWMutex
+	resourceAreaCache       map[uuid.UUID] ResourceAreaInfo
+	resourceAreaCacheLock   sync.RWMutex
 }
 
 func CreateBasicAuthHeaderValue(username, password string) string {
@@ -51,7 +53,7 @@ func normalizeUrl(url string) string {
 	return strings.ToLower(strings.TrimRight(url, "/"))
 }
 
-func (connection Connection) GetClientByResourceAreaId(ctx context.Context, resourceAreaID uuid.UUID) (*Client, error) {
+func (connection *Connection) GetClientByResourceAreaId(ctx context.Context, resourceAreaID uuid.UUID) (*Client, error) {
 	resourceAreaInfo, err := connection.getResourceAreaInfo(ctx, resourceAreaID)
 	if err != nil {
 		return nil, err
@@ -66,7 +68,7 @@ func (connection Connection) GetClientByResourceAreaId(ctx context.Context, reso
 	return client, nil
 }
 
-func (connection Connection) GetClientByUrl(baseUrl string) *Client {
+func (connection *Connection) GetClientByUrl(baseUrl string) *Client {
 	normalizedUrl := normalizeUrl(baseUrl)
 	azureDevOpsClient, ok := connection.getClientCacheEntry(normalizedUrl)
 	if !ok {
@@ -76,8 +78,8 @@ func (connection Connection) GetClientByUrl(baseUrl string) *Client {
 	return azureDevOpsClient
 }
 
-func (connection Connection) getResourceAreaInfo(ctx context.Context, resourceAreaId uuid.UUID) (*ResourceAreaInfo, error) {
-	resourceAreaInfo, ok := getResourceAreaCacheEntry(resourceAreaId)
+func (connection *Connection) getResourceAreaInfo(ctx context.Context, resourceAreaId uuid.UUID) (*ResourceAreaInfo, error) {
+	resourceAreaInfo, ok := connection.getResourceAreaCacheEntry(resourceAreaId)
 	if !ok {
 		client := connection.GetClientByUrl(connection.BaseUrl)
 		resourceAreaInfos, err := client.GetResourceAreas(ctx)
@@ -87,9 +89,9 @@ func (connection Connection) getResourceAreaInfo(ctx context.Context, resourceAr
 
 		if len(*resourceAreaInfos) > 0 {
 			for _, resourceEntry := range *resourceAreaInfos {
-				setResourceAreaCacheEntry(*resourceEntry.Id, resourceEntry)
+				connection.setResourceAreaCacheEntry(*resourceEntry.Id, &resourceEntry)
 			}
-			resourceAreaInfo, ok = getResourceAreaCacheEntry(resourceAreaId)
+			resourceAreaInfo, ok = connection.getResourceAreaCacheEntry(resourceAreaId)
 		} else {
 			// on prem servers return an empty list
 			return nil, nil
@@ -97,47 +99,49 @@ func (connection Connection) getResourceAreaInfo(ctx context.Context, resourceAr
 	}
 
 	if ok {
-		return &resourceAreaInfo, nil
+		return resourceAreaInfo, nil
 	}
 
 	return nil, &ResourceAreaIdNotRegisteredError { resourceAreaId, connection.BaseUrl }
 }
 
 // Client Cache by Url
-func (connection Connection) getClientCacheEntry(url string) (*Client, bool) {
+func (connection *Connection) getClientCacheEntry(url string) (*Client, bool) {
 	if connection.clientCache == nil {
 		return nil, false
 	}
 	connection.clientCacheLock.RLock()
 	defer connection.clientCacheLock.RUnlock()
-	locationsMap, ok := connection.clientCache[url]
-	return locationsMap, ok
+	client, ok := connection.clientCache[url]
+	return &client, ok
 }
 
-func (connection Connection) setClientCacheEntry(url string, client *Client) {
+func (connection *Connection) setClientCacheEntry(url string, client *Client) {
 	connection.clientCacheLock.Lock()
 	defer connection.clientCacheLock.Unlock()
 	if connection.clientCache == nil {
-		connection.clientCache = make(map[string] *Client)
+		connection.clientCache = make(map[string] Client)
 	}
-	connection.clientCache[url] = client
+	connection.clientCache[url] = *client
 }
 
-// Resource Area Cache by Url
-var resourceAreaCache = make(map[uuid.UUID] ResourceAreaInfo)
-var resourceAreaCacheLock = sync.RWMutex{}
-
-func getResourceAreaCacheEntry(resourceAreaId uuid.UUID) (ResourceAreaInfo, bool) {
-	resourceAreaCacheLock.RLock()
-	defer resourceAreaCacheLock.RUnlock()
-	resourceAreaInfo, ok := resourceAreaCache[resourceAreaId]
-	return resourceAreaInfo, ok
+func (connection *Connection) getResourceAreaCacheEntry(resourceAreaId uuid.UUID) (*ResourceAreaInfo, bool) {
+	if connection.resourceAreaCache == nil {
+		return nil, false
+	}
+	connection.resourceAreaCacheLock.RLock()
+	defer connection.resourceAreaCacheLock.RUnlock()
+	resourceAreaInfo, ok := connection.resourceAreaCache[resourceAreaId]
+	return &resourceAreaInfo, ok
 }
 
-func setResourceAreaCacheEntry(resourceAreaId uuid.UUID, resourceAreaInfo ResourceAreaInfo) {
-	resourceAreaCacheLock.Lock()
-	defer resourceAreaCacheLock.Unlock()
-	resourceAreaCache[resourceAreaId] = resourceAreaInfo
+func (connection *Connection) setResourceAreaCacheEntry(resourceAreaId uuid.UUID, resourceAreaInfo *ResourceAreaInfo) {
+	connection.resourceAreaCacheLock.Lock()
+	defer connection.resourceAreaCacheLock.Unlock()
+	if connection.resourceAreaCache == nil {
+		connection.resourceAreaCache = make(map[uuid.UUID] ResourceAreaInfo)
+	}
+	connection.resourceAreaCache[resourceAreaId] = *resourceAreaInfo
 }
 
 type ResourceAreaIdNotRegisteredError struct {

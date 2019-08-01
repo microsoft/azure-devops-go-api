@@ -23,7 +23,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -34,7 +34,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // Gets a user profile.
-func (client Client) GetProfile(ctx context.Context, args GetProfileArgs) (*Profile, error) {
+func (client *Client) GetProfile(ctx context.Context, args GetProfileArgs) (*Profile, error) {
     routeValues := make(map[string]string)
     if args.Id == nil || *args.Id == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "id"} 

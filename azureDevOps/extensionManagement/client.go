@@ -26,7 +26,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -37,7 +37,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // [Preview API] List the installed extensions in the account / project collection.
-func (client Client) GetInstalledExtensions(ctx context.Context, args GetInstalledExtensionsArgs) (*[]InstalledExtension, error) {
+func (client *Client) GetInstalledExtensions(ctx context.Context, args GetInstalledExtensionsArgs) (*[]InstalledExtension, error) {
     queryParams := url.Values{}
     if args.IncludeDisabledExtensions != nil {
         queryParams.Add("includeDisabledExtensions", strconv.FormatBool(*args.IncludeDisabledExtensions))
@@ -76,7 +76,7 @@ type GetInstalledExtensionsArgs struct {
 }
 
 // [Preview API] Update an installed extension. Typically this API is used to enable or disable an extension.
-func (client Client) UpdateInstalledExtension(ctx context.Context, args UpdateInstalledExtensionArgs) (*InstalledExtension, error) {
+func (client *Client) UpdateInstalledExtension(ctx context.Context, args UpdateInstalledExtensionArgs) (*InstalledExtension, error) {
     if args.Extension == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "extension"}
     }
@@ -102,7 +102,7 @@ type UpdateInstalledExtensionArgs struct {
 }
 
 // [Preview API] Get an installed extension by its publisher and extension name.
-func (client Client) GetInstalledExtensionByName(ctx context.Context, args GetInstalledExtensionByNameArgs) (*InstalledExtension, error) {
+func (client *Client) GetInstalledExtensionByName(ctx context.Context, args GetInstalledExtensionByNameArgs) (*InstalledExtension, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -140,7 +140,7 @@ type GetInstalledExtensionByNameArgs struct {
 }
 
 // [Preview API] Install the specified extension into the account / project collection.
-func (client Client) InstallExtensionByName(ctx context.Context, args InstallExtensionByNameArgs) (*InstalledExtension, error) {
+func (client *Client) InstallExtensionByName(ctx context.Context, args InstallExtensionByNameArgs) (*InstalledExtension, error) {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 
@@ -176,7 +176,7 @@ type InstallExtensionByNameArgs struct {
 }
 
 // [Preview API] Uninstall the specified extension from the account / project collection.
-func (client Client) UninstallExtensionByName(ctx context.Context, args UninstallExtensionByNameArgs) error {
+func (client *Client) UninstallExtensionByName(ctx context.Context, args UninstallExtensionByNameArgs) error {
     routeValues := make(map[string]string)
     if args.PublisherName == nil || *args.PublisherName == "" {
         return &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "publisherName"} 

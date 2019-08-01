@@ -25,7 +25,7 @@ type Client struct {
     Client azureDevOps.Client
 }
 
-func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azureDevOps.Connection) (*Client, error) {
     client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
     if err != nil {
         return nil, err
@@ -36,7 +36,7 @@ func NewClient(ctx context.Context, connection azureDevOps.Connection) (*Client,
 }
 
 // [Preview API] Queries audit log entries
-func (client Client) QueryLog(ctx context.Context, args QueryLogArgs) (*AuditLogQueryResult, error) {
+func (client *Client) QueryLog(ctx context.Context, args QueryLogArgs) (*AuditLogQueryResult, error) {
     queryParams := url.Values{}
     if args.StartTime != nil {
         queryParams.Add("startTime", (*args.StartTime).String())
@@ -79,7 +79,7 @@ type QueryLogArgs struct {
 }
 
 // [Preview API] Downloads audit log entries.
-func (client Client) DownloadLog(ctx context.Context, args DownloadLogArgs) (io.ReadCloser, error) {
+func (client *Client) DownloadLog(ctx context.Context, args DownloadLogArgs) (io.ReadCloser, error) {
     queryParams := url.Values{}
     if args.Format == nil {
         return nil, &azureDevOps.ArgumentNilError{ArgumentName: "format"}
