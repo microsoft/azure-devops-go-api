@@ -24,6 +24,7 @@ const (
 	headerKeyAccept = "Accept"
 	headerKeyAuthorization = "Authorization"
 	headerKeyContentType = "Content-Type"
+	HeaderKeyContinuationToken = "X-MS-ContinuationToken"
 	headerKeyFedAuthRedirect = "X-TFS-FedAuthRedirect"
 	headerKeyForceMsaPassThrough = "X-VSS-ForceMsaPassThrough"
 	headerKeySession = "X-TFS-Session"

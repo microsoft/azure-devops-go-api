@@ -590,7 +590,7 @@ type GetBuildArgs struct {
 }
 
 // Gets a list of builds.
-func (client *Client) GetBuilds(ctx context.Context, args GetBuildsArgs) (*[]Build, error) {
+func (client *Client) GetBuilds(ctx context.Context, args GetBuildsArgs) (*GetBuildsResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azureDevOps.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -681,8 +681,9 @@ func (client *Client) GetBuilds(ctx context.Context, args GetBuildsArgs) (*[]Bui
         return nil, err
     }
 
-    var responseValue []Build
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetBuildsResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azureDevOps.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -730,6 +731,12 @@ type GetBuildsArgs struct {
     RepositoryId *string
     // (optional) If specified, filters to builds that built from repositories of this type.
     RepositoryType *string
+}
+
+// Return type for the GetBuilds function
+type GetBuildsResponseValue struct {
+    Value []Build
+    ContinuationToken string
 }
 
 // Queues a build

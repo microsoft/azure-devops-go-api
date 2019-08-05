@@ -30,7 +30,7 @@ type CodeResult struct {
     // Repository of the result file.
     Repository *searchShared.Repository `json:"repository,omitempty"`
     // Versions of the result file.
-    Versions *[]string `json:"versions,omitempty"`
+    Versions *[]searchShared.Version `json:"versions,omitempty"`
 }
 
 // Defines a code search request.
