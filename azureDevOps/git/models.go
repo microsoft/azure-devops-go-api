@@ -120,7 +120,7 @@ type ChangeCountDictionary struct {
 type ChangeList struct {
     AllChangesIncluded *bool `json:"allChangesIncluded,omitempty"`
     ChangeCounts *map[VersionControlChangeType]int `json:"changeCounts,omitempty"`
-    Changes *[]Change `json:"changes,omitempty"`
+    Changes *[]interface{} `json:"changes,omitempty"`
     Comment *string `json:"comment,omitempty"`
     CommentTruncated *bool `json:"commentTruncated,omitempty"`
     CreationDate *time.Time `json:"creationDate,omitempty"`
@@ -2285,7 +2285,7 @@ type GlobalGitRepositoryKey struct {
 
 type HistoryEntry struct {
     // The Change list (changeset/commit/shelveset) for this point in history
-    ChangeList *ChangeList `json:"changeList,omitempty"`
+    ChangeList interface{} `json:"changeList,omitempty"`
     // The change made to the item from this change list (only relevant for File history, not folders)
     ItemChangeType *VersionControlChangeType `json:"itemChangeType,omitempty"`
     // The path of the item at this point in history (only relevant for File history, not folders)

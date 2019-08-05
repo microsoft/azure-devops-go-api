@@ -277,6 +277,14 @@ var SortOrderValues = sortOrderValuesType{
     Descending: "descending",
 }
 
+// Describes the details pertaining to a version of the result file.
+type Version struct {
+    // Name of the branch.
+    BranchName *string `json:"branchName,omitempty"`
+    // ChangeId in the given branch associated with this match.
+    ChangeId *string `json:"changeId,omitempty"`
+}
+
 // Version control of the repository.
 type VersionControlType string
 
