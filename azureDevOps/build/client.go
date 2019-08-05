@@ -738,6 +738,7 @@ type GetBuildsResponseValue struct {
     Value []Build
     ContinuationToken string
 }
+
 // Queues a build
 func (client *Client) QueueBuild(ctx context.Context, args QueueBuildArgs) (*Build, error) {
     if args.Build == nil {
