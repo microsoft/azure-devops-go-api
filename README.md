@@ -10,8 +10,8 @@ package main
 
 import (
     "context"
-    "github.com/microsoft/azure-devops-go-api/azureDevOps"
-    "github.com/microsoft/azure-devops-go-api/azureDevOps/core"
+    "github.com/microsoft/azure-devops-go-api/azuredevops"
+    "github.com/microsoft/azure-devops-go-api/azuredevops/core"
     "log"
 )
 
@@ -20,7 +20,7 @@ func main() {
     personalAccessToken := "XXXXXXXXXXXXXXXXXXXXXXX"  // todo: replace value with your PAT
 
     // Create a connection to your organization
-    connection := azureDevOps.NewPatConnection(organizationUrl, personalAccessToken)
+    connection := azuredevops.NewPatConnection(organizationUrl, personalAccessToken)
 
     ctx := context.Background()
 
