@@ -38,9 +38,9 @@ type Connection struct {
 	SuppressFedAuthRedirect bool
 	ForceMsaPassThrough     bool
 	Timeout                 *time.Duration
-	clientCache             map[string] Client
+	clientCache             map[string]Client
 	clientCacheLock         sync.RWMutex
-	resourceAreaCache       map[uuid.UUID] ResourceAreaInfo
+	resourceAreaCache       map[uuid.UUID]ResourceAreaInfo
 	resourceAreaCacheLock   sync.RWMutex
 }
 
@@ -62,7 +62,7 @@ func (connection *Connection) GetClientByResourceAreaId(ctx context.Context, res
 	if resourceAreaInfo != nil {
 		client = connection.GetClientByUrl(*resourceAreaInfo.LocationUrl)
 	} else {
-        // resourceAreaInfo will be nil for on prem servers
+		// resourceAreaInfo will be nil for on prem servers
 		client = connection.GetClientByUrl(connection.BaseUrl)
 	}
 	return client, nil
@@ -102,7 +102,7 @@ func (connection *Connection) getResourceAreaInfo(ctx context.Context, resourceA
 		return resourceAreaInfo, nil
 	}
 
-	return nil, &ResourceAreaIdNotRegisteredError { resourceAreaId, connection.BaseUrl }
+	return nil, &ResourceAreaIdNotRegisteredError{resourceAreaId, connection.BaseUrl}
 }
 
 // Client Cache by Url
@@ -120,7 +120,7 @@ func (connection *Connection) setClientCacheEntry(url string, client *Client) {
 	connection.clientCacheLock.Lock()
 	defer connection.clientCacheLock.Unlock()
 	if connection.clientCache == nil {
-		connection.clientCache = make(map[string] Client)
+		connection.clientCache = make(map[string]Client)
 	}
 	connection.clientCache[url] = *client
 }
@@ -139,14 +139,14 @@ func (connection *Connection) setResourceAreaCacheEntry(resourceAreaId uuid.UUID
 	connection.resourceAreaCacheLock.Lock()
 	defer connection.resourceAreaCacheLock.Unlock()
 	if connection.resourceAreaCache == nil {
-		connection.resourceAreaCache = make(map[uuid.UUID] ResourceAreaInfo)
+		connection.resourceAreaCache = make(map[uuid.UUID]ResourceAreaInfo)
 	}
 	connection.resourceAreaCache[resourceAreaId] = *resourceAreaInfo
 }
 
 type ResourceAreaIdNotRegisteredError struct {
 	ResourceAreaId uuid.UUID
-	Url string
+	Url            string
 }
 
 func (e ResourceAreaIdNotRegisteredError) Error() string {

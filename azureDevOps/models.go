@@ -29,7 +29,7 @@ type ApiResourceLocation struct {
 }
 
 type WrappedImproperError struct {
-	Count *int `json:"count,omitEmpty"`
+	Count *int           `json:"count,omitEmpty"`
 	Value *ImproperError `json:"value,omitEmpty"`
 }
 
@@ -38,20 +38,20 @@ type ImproperError struct {
 }
 
 type KeyValuePair struct {
-	Key *interface{} `json:"key,omitEmpty"`
+	Key   *interface{} `json:"key,omitEmpty"`
 	Value *interface{} `json:"value,omitEmpty"`
 }
 
 type ResourceAreaInfo struct {
-	Id *uuid.UUID `json:"id,omitempty"`
-	LocationUrl *string `json:"locationUrl,omitempty"`
-	Name *string `json:"name,omitempty"`
+	Id          *uuid.UUID `json:"id,omitempty"`
+	LocationUrl *string    `json:"locationUrl,omitempty"`
+	Name        *string    `json:"name,omitempty"`
 }
 
 type ServerSystemError struct {
-	ClassName *string `json:"className,omitempty"`
+	ClassName      *string            `json:"className,omitempty"`
 	InnerException *ServerSystemError `json:"innerException,omitempty"`
-	Message *string `json:"message,omitempty"`
+	Message        *string            `json:"message,omitempty"`
 }
 
 func (e ServerSystemError) Error() string {
@@ -59,20 +59,20 @@ func (e ServerSystemError) Error() string {
 }
 
 type VssJsonCollectionWrapper struct {
-	Count *int `json:"count"`
+	Count *int           `json:"count"`
 	Value *[]interface{} `json:"value"`
 }
 
 type WrappedError struct {
-	ExceptionId *string                      `json:"$id,omitempty"`
-	InnerError *WrappedError                 `json:"innerException,omitempty"`
-	Message *string                          `json:"message,omitempty"`
-	TypeName *string                         `json:"typeName,omitempty"`
-	TypeKey *string                          `json:"typeKey,omitempty"`
-	ErrorCode *int                           `json:"errorCode,omitempty"`
-	EventId *int                             `json:"eventId,omitempty"`
+	ExceptionId      *string                 `json:"$id,omitempty"`
+	InnerError       *WrappedError           `json:"innerException,omitempty"`
+	Message          *string                 `json:"message,omitempty"`
+	TypeName         *string                 `json:"typeName,omitempty"`
+	TypeKey          *string                 `json:"typeKey,omitempty"`
+	ErrorCode        *int                    `json:"errorCode,omitempty"`
+	EventId          *int                    `json:"eventId,omitempty"`
 	CustomProperties *map[string]interface{} `json:"customProperties,omitempty"`
-	StatusCode *int
+	StatusCode       *int
 }
 
 func (e WrappedError) Error() string {
@@ -84,4 +84,3 @@ func (e WrappedError) Error() string {
 	}
 	return *e.Message
 }
-

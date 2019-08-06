@@ -21,17 +21,17 @@ import (
 
 const (
 	// header keys
-	headerKeyAccept = "Accept"
-	headerKeyAuthorization = "Authorization"
-	headerKeyContentType = "Content-Type"
-	HeaderKeyContinuationToken = "X-MS-ContinuationToken"
-	headerKeyFedAuthRedirect = "X-TFS-FedAuthRedirect"
+	headerKeyAccept              = "Accept"
+	headerKeyAuthorization       = "Authorization"
+	headerKeyContentType         = "Content-Type"
+	HeaderKeyContinuationToken   = "X-MS-ContinuationToken"
+	headerKeyFedAuthRedirect     = "X-TFS-FedAuthRedirect"
 	headerKeyForceMsaPassThrough = "X-VSS-ForceMsaPassThrough"
-	headerKeySession = "X-TFS-Session"
-	headerUserAgent = "User-Agent"
+	headerKeySession             = "X-TFS-Session"
+	headerUserAgent              = "User-Agent"
 
 	// media types
-	MediaTypeTextPlain = "text/plain"
+	MediaTypeTextPlain       = "text/plain"
 	MediaTypeApplicationJson = "application/json"
 )
 
@@ -39,38 +39,38 @@ const (
 var SessionId = uuid.New().String()
 
 // ApiResourceLocation Cache by Url
-var apiResourceLocationCache = make(map[string] *map[uuid.UUID] ApiResourceLocation)
+var apiResourceLocationCache = make(map[string]*map[uuid.UUID]ApiResourceLocation)
 var apiResourceLocationCacheLock = sync.RWMutex{}
 
 // Base user agent string.  The UserAgent set on the connection will be appended to this.
-var baseUserAgent = "go/" + runtime.Version() + " (" + runtime.GOOS + " " + runtime.GOARCH + ") azure-devops-go-api/0.0.0"  // todo: get real version
+var baseUserAgent = "go/" + runtime.Version() + " (" + runtime.GOOS + " " + runtime.GOARCH + ") azure-devops-go-api/0.0.0" // todo: get real version
 
 func NewClient(connection *Connection, baseUrl string) *Client {
 	client := &http.Client{}
 	if connection.Timeout != nil {
 		client.Timeout = *connection.Timeout
 	}
-	return &Client {
-		baseUrl: baseUrl,
-		client: client,
-		authorization: connection.AuthorizationString,
+	return &Client{
+		baseUrl:                 baseUrl,
+		client:                  client,
+		authorization:           connection.AuthorizationString,
 		suppressFedAuthRedirect: connection.SuppressFedAuthRedirect,
-		forceMsaPassThrough: connection.ForceMsaPassThrough,
-		userAgent: connection.UserAgent,
+		forceMsaPassThrough:     connection.ForceMsaPassThrough,
+		userAgent:               connection.UserAgent,
 	}
 }
 
 type Client struct {
-	baseUrl string
-	client *http.Client
-	authorization string
+	baseUrl                 string
+	client                  *http.Client
+	authorization           string
 	suppressFedAuthRedirect bool
-	forceMsaPassThrough bool
-	userAgent string
+	forceMsaPassThrough     bool
+	userAgent               string
 }
 
 func (client *Client) SendRequest(request *http.Request) (response *http.Response, err error) {
-	resp, err := client.client.Do(request)  // todo: add retry logic
+	resp, err := client.client.Do(request) // todo: add retry logic
 	if resp != nil && (resp.StatusCode < 200 || resp.StatusCode >= 300) {
 		err = client.UnwrapError(resp)
 	}
@@ -78,15 +78,15 @@ func (client *Client) SendRequest(request *http.Request) (response *http.Respons
 }
 
 func (client *Client) Send(ctx context.Context,
-						  httpMethod string,
-						  locationId uuid.UUID,
-						  apiVersion string,
-						  routeValues map[string]string,
-						  queryParameters url.Values,
-						  body io.Reader,
-						  mediaType string,
-						  acceptMediaType string,
-						  additionalHeaders map[string]string) (response *http.Response, err error) {
+	httpMethod string,
+	locationId uuid.UUID,
+	apiVersion string,
+	routeValues map[string]string,
+	queryParameters url.Values,
+	body io.Reader,
+	mediaType string,
+	acceptMediaType string,
+	additionalHeaders map[string]string) (response *http.Response, err error) {
 	location, err := client.getResourceLocation(ctx, locationId)
 	if err != nil {
 		return nil, err
@@ -132,13 +132,13 @@ func (client *Client) GenerateUrl(apiResourceLocation *ApiResourceLocation, rout
 }
 
 func (client *Client) CreateRequestMessage(ctx context.Context,
-											httpMethod string,
-											url string,
-											apiVersion string,
-											body io.Reader,
-											mediaType string,
-											acceptMediaType string,
-											additionalHeaders map[string]string) (request *http.Request, err error) {
+	httpMethod string,
+	url string,
+	apiVersion string,
+	body io.Reader,
+	mediaType string,
+	acceptMediaType string,
+	additionalHeaders map[string]string) (request *http.Request, err error) {
 	req, err := http.NewRequest(httpMethod, url, body)
 	if err != nil {
 		return nil, err
@@ -206,23 +206,23 @@ func (client *Client) getResourceLocation(ctx context.Context, locationId uuid.U
 		return &location, nil
 	}
 
-	return nil, &LocationIdNotRegisteredError { locationId, client.baseUrl }
+	return nil, &LocationIdNotRegisteredError{locationId, client.baseUrl}
 }
 
-func getApiResourceLocationCache(url string) (*map[uuid.UUID] ApiResourceLocation, bool) {
+func getApiResourceLocationCache(url string) (*map[uuid.UUID]ApiResourceLocation, bool) {
 	apiResourceLocationCacheLock.RLock()
 	defer apiResourceLocationCacheLock.RUnlock()
 	locationsMap, ok := apiResourceLocationCache[url]
 	return locationsMap, ok
 }
 
-func setApiResourceLocationCache(url string, locationsMap *map[uuid.UUID] ApiResourceLocation) {
+func setApiResourceLocationCache(url string, locationsMap *map[uuid.UUID]ApiResourceLocation) {
 	apiResourceLocationCacheLock.Lock()
 	defer apiResourceLocationCacheLock.Unlock()
 	apiResourceLocationCache[url] = locationsMap
 }
 
-func (client *Client) getResourceLocationsFromServer(ctx context.Context,) ([]ApiResourceLocation, error) {
+func (client *Client) getResourceLocationsFromServer(ctx context.Context) ([]ApiResourceLocation, error) {
 	optionsUri := combineUrl(client.baseUrl, "_apis")
 	request, err := client.CreateRequestMessage(ctx, http.MethodOptions, optionsUri, "", nil, "", MediaTypeApplicationJson, nil)
 	if err != nil {
@@ -262,7 +262,7 @@ func negotiateRequestVersion(location *ApiResourceLocation, apiVersion string) (
 
 	matches := apiVersionRegEx.FindStringSubmatch(apiVersion)
 	if len(matches) == 0 && matches[0] != "" {
-		return apiVersion, &InvalidApiVersion { apiVersion }
+		return apiVersion, &InvalidApiVersion{apiVersion}
 	}
 
 	requestedApiVersion, err := NewVersion(matches[1])
@@ -402,7 +402,7 @@ func (client *Client) UnwrapError(response *http.Response) (err error) {
 	if response.ContentLength == 0 {
 		message := "Request returned status: " + response.Status
 		return &WrappedError{
-			Message: &message,
+			Message:    &message,
 			StatusCode: &response.StatusCode,
 		}
 	}
@@ -424,7 +424,7 @@ func (client *Client) UnwrapError(response *http.Response) (err error) {
 	if ok && len(contentType) > 0 && strings.Index(contentType[0], MediaTypeTextPlain) >= 0 {
 		message := string(body)
 		statusCode := response.StatusCode
-		return WrappedError{ Message: &message, StatusCode: &statusCode }
+		return WrappedError{Message: &message, StatusCode: &statusCode}
 	}
 
 	var wrappedError WrappedError
@@ -438,8 +438,8 @@ func (client *Client) UnwrapError(response *http.Response) (err error) {
 		err = json.Unmarshal(body, &wrappedImproperError)
 		if err == nil && wrappedImproperError.Value != nil && wrappedImproperError.Value.Message != nil {
 			statusCode := response.StatusCode
-			return &WrappedError {
-				Message: wrappedImproperError.Value.Message,
+			return &WrappedError{
+				Message:    wrappedImproperError.Value.Message,
 				StatusCode: &statusCode,
 			}
 		}
@@ -448,7 +448,7 @@ func (client *Client) UnwrapError(response *http.Response) (err error) {
 	return wrappedError
 }
 
-func (client *Client) GetResourceAreas(ctx context.Context,) (*[]ResourceAreaInfo, error) {
+func (client *Client) GetResourceAreas(ctx context.Context) (*[]ResourceAreaInfo, error) {
 	queryParams := url.Values{}
 	locationId, _ := uuid.Parse("e81700f7-3be2-46de-8624-2eb35882fcaa")
 	resp, err := client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
