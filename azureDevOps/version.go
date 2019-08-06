@@ -29,7 +29,7 @@ func NewVersion(version string) (*Version, error) {
 			Minor: minor,
 		}, nil
 	}
-	return nil, &InvalidVersionStringError{ version: version }
+	return nil, &InvalidVersionStringError{version: version}
 }
 
 func (version Version) CompareTo(compareToVersion Version) int {

@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 // --------------------------------------------------------------------------------------------
@@ -8,25 +8,24 @@
 
 package profileRegions
 
-
 type GeoRegion struct {
-    RegionCode *string `json:"regionCode,omitempty"`
+	RegionCode *string `json:"regionCode,omitempty"`
 }
 
 // Country/region information
 type ProfileRegion struct {
-    // The two-letter code defined in ISO 3166 for the country/region.
-    Code *string `json:"code,omitempty"`
-    // Localized country/region name
-    Name *string `json:"name,omitempty"`
+	// The two-letter code defined in ISO 3166 for the country/region.
+	Code *string `json:"code,omitempty"`
+	// Localized country/region name
+	Name *string `json:"name,omitempty"`
 }
 
 // Container of country/region information
 type ProfileRegions struct {
-    // List of country/region code with contact consent requirement type of notice
-    NoticeContactConsentRequirementRegions *[]string `json:"noticeContactConsentRequirementRegions,omitempty"`
-    // List of country/region code with contact consent requirement type of opt-out
-    OptOutContactConsentRequirementRegions *[]string `json:"optOutContactConsentRequirementRegions,omitempty"`
-    // List of country/regions
-    Regions *[]ProfileRegion `json:"regions,omitempty"`
+	// List of country/region code with contact consent requirement type of notice
+	NoticeContactConsentRequirementRegions *[]string `json:"noticeContactConsentRequirementRegions,omitempty"`
+	// List of country/region code with contact consent requirement type of opt-out
+	OptOutContactConsentRequirementRegions *[]string `json:"optOutContactConsentRequirementRegions,omitempty"`
+	// List of country/regions
+	Regions *[]ProfileRegion `json:"regions,omitempty"`
 }

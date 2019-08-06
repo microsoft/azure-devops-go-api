@@ -6,7 +6,7 @@ import (
 
 func TestNegotiateRequestVersion_NonReleasedApi(t *testing.T) {
 	// key is requested version, value is expected negotiated version
-	tests := make(map[string] string)
+	tests := make(map[string]string)
 	tests[""] = ""
 	tests["2.2-preview.4"] = "2.2-preview.3"
 	tests["2.2-preview"] = "2.2-preview"
@@ -22,14 +22,14 @@ func TestNegotiateRequestVersion_NonReleasedApi(t *testing.T) {
 	tests["2.3-preview"] = "2.2-preview"
 	tests["3.0-preview"] = "2.2-preview"
 
-	for requested, expected := range tests{
+	for requested, expected := range tests {
 		compareVersions(t, unreleasedApiResourceLocation, requested, expected)
 	}
 }
 
 func TestNegotiateRequestVersion_ReleasedApi(t *testing.T) {
 	// key is requested version, value is expected negotiated version
-	tests := make(map[string] string)
+	tests := make(map[string]string)
 	tests[""] = ""
 	tests["2.2-preview.4"] = "2.2-preview.3"
 	tests["2.2-preview"] = "2.2-preview"
@@ -49,7 +49,7 @@ func TestNegotiateRequestVersion_ReleasedApi(t *testing.T) {
 	tests["2.0"] = "2.0"
 	tests["1.0"] = "1.0"
 
-	for requested, expected := range tests{
+	for requested, expected := range tests {
 		compareVersions(t, releasedApiResourceLocation, requested, expected)
 	}
 }
@@ -71,16 +71,16 @@ var version20 = "2.0"
 var version21 = "2.1"
 var version22 = "2.2"
 
-var unreleasedApiResourceLocation = &ApiResourceLocation {
+var unreleasedApiResourceLocation = &ApiResourceLocation{
 	ResourceVersion: &resourceVersionThree,
-	MinVersion: &version10,
-	MaxVersion: &version22,
+	MinVersion:      &version10,
+	MaxVersion:      &version22,
 	ReleasedVersion: &version00,
 }
 
-var releasedApiResourceLocation = &ApiResourceLocation {
+var releasedApiResourceLocation = &ApiResourceLocation{
 	ResourceVersion: &resourceVersionThree,
-	MinVersion: &version20,
-	MaxVersion: &version22,
+	MinVersion:      &version20,
+	MaxVersion:      &version22,
 	ReleasedVersion: &version21,
 }
