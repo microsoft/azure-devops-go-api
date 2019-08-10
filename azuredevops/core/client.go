@@ -363,7 +363,7 @@ type GetProjectArgs struct {
 }
 
 // Get all projects in the organization that the authenticated user has access to.
-func (client *Client) GetProjects(ctx context.Context, args GetProjectsArgs) (*[]TeamProjectReference, error) {
+func (client *Client) GetProjects(ctx context.Context, args GetProjectsArgs) (*GetProjectsResponseValue, error) {
     queryParams := url.Values{}
     if args.StateFilter != nil {
         queryParams.Add("stateFilter", string(*args.StateFilter))
@@ -386,8 +386,9 @@ func (client *Client) GetProjects(ctx context.Context, args GetProjectsArgs) (*[
         return nil, err
     }
 
-    var responseValue []TeamProjectReference
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetProjectsResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -403,6 +404,13 @@ type GetProjectsArgs struct {
     ContinuationToken *string
     // (optional)
     GetDefaultTeamImageUrl *bool
+}
+
+// Return type for the GetProjects function
+type GetProjectsResponseValue struct {
+    Value []TeamProjectReference
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // Queues a project to be created. Use the [GetOperation](../../operations/operations/get) to periodically check for create project status.

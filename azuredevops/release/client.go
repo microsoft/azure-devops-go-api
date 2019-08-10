@@ -39,7 +39,7 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client
 }
 
 // Get a list of approvals
-func (client *Client) GetApprovals(ctx context.Context, args GetApprovalsArgs) (*[]ReleaseApproval, error) {
+func (client *Client) GetApprovals(ctx context.Context, args GetApprovalsArgs) (*GetApprovalsResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -82,8 +82,9 @@ func (client *Client) GetApprovals(ctx context.Context, args GetApprovalsArgs) (
         return nil, err
     }
 
-    var responseValue []ReleaseApproval
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetApprovalsResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -107,6 +108,13 @@ type GetApprovalsArgs struct {
     QueryOrder *ReleaseQueryOrder
     // (optional) 'true' to include my group approvals. Default is 'false'.
     IncludeMyGroupApprovals *bool
+}
+
+// Return type for the GetApprovals function
+type GetApprovalsResponseValue struct {
+    Value []ReleaseApproval
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // Update status of an approval
@@ -388,7 +396,7 @@ type GetReleaseDefinitionArgs struct {
 }
 
 // Get a list of release definitions.
-func (client *Client) GetReleaseDefinitions(ctx context.Context, args GetReleaseDefinitionsArgs) (*[]ReleaseDefinition, error) {
+func (client *Client) GetReleaseDefinitions(ctx context.Context, args GetReleaseDefinitionsArgs) (*GetReleaseDefinitionsResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -447,8 +455,9 @@ func (client *Client) GetReleaseDefinitions(ctx context.Context, args GetRelease
         return nil, err
     }
 
-    var responseValue []ReleaseDefinition
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetReleaseDefinitionsResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -486,6 +495,13 @@ type GetReleaseDefinitionsArgs struct {
     SearchTextContainsFolderName *bool
 }
 
+// Return type for the GetReleaseDefinitions function
+type GetReleaseDefinitionsResponseValue struct {
+    Value []ReleaseDefinition
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
+}
+
 // Update a release definition.
 func (client *Client) UpdateReleaseDefinition(ctx context.Context, args UpdateReleaseDefinitionArgs) (*ReleaseDefinition, error) {
     if args.ReleaseDefinition == nil {
@@ -520,7 +536,7 @@ type UpdateReleaseDefinitionArgs struct {
     Project *string
 }
 
-func (client *Client) GetDeployments(ctx context.Context, args GetDeploymentsArgs) (*[]Deployment, error) {
+func (client *Client) GetDeployments(ctx context.Context, args GetDeploymentsArgs) (*GetDeploymentsResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -579,8 +595,9 @@ func (client *Client) GetDeployments(ctx context.Context, args GetDeploymentsArg
         return nil, err
     }
 
-    var responseValue []Deployment
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetDeploymentsResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -618,6 +635,13 @@ type GetDeploymentsArgs struct {
     MaxStartedTime *time.Time
     // (optional)
     SourceBranch *string
+}
+
+// Return type for the GetDeployments function
+type GetDeploymentsResponseValue struct {
+    Value []Deployment
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // [Preview API] Get a release environment.
@@ -1084,7 +1108,7 @@ type UpdateManualInterventionArgs struct {
 }
 
 // Get a list of releases
-func (client *Client) GetReleases(ctx context.Context, args GetReleasesArgs) (*[]Release, error) {
+func (client *Client) GetReleases(ctx context.Context, args GetReleasesArgs) (*GetReleasesResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -1167,8 +1191,9 @@ func (client *Client) GetReleases(ctx context.Context, args GetReleasesArgs) (*[
         return nil, err
     }
 
-    var responseValue []Release
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetReleasesResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -1218,6 +1243,13 @@ type GetReleasesArgs struct {
     ReleaseIdFilter *[]int
     // (optional) Releases under this folder path will be returned
     Path *string
+}
+
+// Return type for the GetReleases function
+type GetReleasesResponseValue struct {
+    Value []Release
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // Create a release.

@@ -379,7 +379,7 @@ type UpdateServiceEndpointsArgs struct {
 }
 
 // [Preview API] Get service endpoint execution records.
-func (client *Client) GetServiceEndpointExecutionRecords(ctx context.Context, args GetServiceEndpointExecutionRecordsArgs) (*[]ServiceEndpointExecutionRecord, error) {
+func (client *Client) GetServiceEndpointExecutionRecords(ctx context.Context, args GetServiceEndpointExecutionRecordsArgs) (*GetServiceEndpointExecutionRecordsResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -403,8 +403,9 @@ func (client *Client) GetServiceEndpointExecutionRecords(ctx context.Context, ar
         return nil, err
     }
 
-    var responseValue []ServiceEndpointExecutionRecord
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetServiceEndpointExecutionRecordsResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -418,6 +419,13 @@ type GetServiceEndpointExecutionRecordsArgs struct {
     Top *int
     // (optional) A continuation token, returned by a previous call to this method, that can be used to return the next set of records
     ContinuationToken *uint64
+}
+
+// Return type for the GetServiceEndpointExecutionRecords function
+type GetServiceEndpointExecutionRecordsResponseValue struct {
+    Value []ServiceEndpointExecutionRecord
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // [Preview API] Get service endpoint types.

@@ -1458,7 +1458,7 @@ type GetTestRunsArgs struct {
 }
 
 // Query Test Runs based on filters. Mandatory fields are minLastUpdatedDate and maxLastUpdatedDate.
-func (client *Client) QueryTestRuns(ctx context.Context, args QueryTestRunsArgs) (*[]TestRun, error) {
+func (client *Client) QueryTestRuns(ctx context.Context, args QueryTestRunsArgs) (*QueryTestRunsResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1557,8 +1557,9 @@ func (client *Client) QueryTestRuns(ctx context.Context, args QueryTestRunsArgs)
         return nil, err
     }
 
-    var responseValue []TestRun
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue QueryTestRunsResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -1598,6 +1599,13 @@ type QueryTestRunsArgs struct {
     Top *int
     // (optional) continuationToken received from previous batch or null for first batch. It is not supposed to be created (or altered, if received from last batch) by user.
     ContinuationToken *string
+}
+
+// Return type for the QueryTestRuns function
+type QueryTestRunsResponseValue struct {
+    Value []TestRun
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // Update test run by its ID.

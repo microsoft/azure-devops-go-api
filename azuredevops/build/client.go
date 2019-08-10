@@ -736,6 +736,7 @@ type GetBuildsArgs struct {
 // Return type for the GetBuilds function
 type GetBuildsResponseValue struct {
     Value []Build
+    // The continuation token to be used to get the next page of results.
     ContinuationToken string
 }
 
@@ -870,7 +871,7 @@ type UpdateBuildsArgs struct {
 }
 
 // Gets the changes associated with a build
-func (client *Client) GetBuildChanges(ctx context.Context, args GetBuildChangesArgs) (*[]Change, error) {
+func (client *Client) GetBuildChanges(ctx context.Context, args GetBuildChangesArgs) (*GetBuildChangesResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -897,8 +898,9 @@ func (client *Client) GetBuildChanges(ctx context.Context, args GetBuildChangesA
         return nil, err
     }
 
-    var responseValue []Change
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetBuildChangesResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -914,6 +916,13 @@ type GetBuildChangesArgs struct {
     Top *int
     // (optional)
     IncludeSourceChange *bool
+}
+
+// Return type for the GetBuildChanges function
+type GetBuildChangesResponseValue struct {
+    Value []Change
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // [Preview API] Gets the changes made to the repository between two given builds.
@@ -1133,7 +1142,7 @@ type GetDefinitionArgs struct {
 }
 
 // Gets a list of definitions.
-func (client *Client) GetDefinitions(ctx context.Context, args GetDefinitionsArgs) (*[]BuildDefinitionReference, error) {
+func (client *Client) GetDefinitions(ctx context.Context, args GetDefinitionsArgs) (*GetDefinitionsResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1200,8 +1209,9 @@ func (client *Client) GetDefinitions(ctx context.Context, args GetDefinitionsArg
         return nil, err
     }
 
-    var responseValue []BuildDefinitionReference
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetDefinitionsResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -1241,6 +1251,13 @@ type GetDefinitionsArgs struct {
     ProcessType *int
     // (optional) If specified, filters to YAML definitions that match the given filename.
     YamlFilename *string
+}
+
+// Return type for the GetDefinitions function
+type GetDefinitionsResponseValue struct {
+    Value []BuildDefinitionReference
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // Restores a deleted definition

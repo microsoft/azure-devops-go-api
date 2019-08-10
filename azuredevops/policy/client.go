@@ -135,7 +135,7 @@ type GetPolicyConfigurationArgs struct {
 }
 
 // Get a list of policy configurations in a project.
-func (client *Client) GetPolicyConfigurations(ctx context.Context, args GetPolicyConfigurationsArgs) (*[]PolicyConfiguration, error) {
+func (client *Client) GetPolicyConfigurations(ctx context.Context, args GetPolicyConfigurationsArgs) (*GetPolicyConfigurationsResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -155,8 +155,9 @@ func (client *Client) GetPolicyConfigurations(ctx context.Context, args GetPolic
         return nil, err
     }
 
-    var responseValue []PolicyConfiguration
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetPolicyConfigurationsResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -168,6 +169,13 @@ type GetPolicyConfigurationsArgs struct {
     Scope *string
     // (optional) Filter returned policies to only this type
     PolicyType *uuid.UUID
+}
+
+// Return type for the GetPolicyConfigurations function
+type GetPolicyConfigurationsResponseValue struct {
+    Value []PolicyConfiguration
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // Update a policy configuration by its ID.

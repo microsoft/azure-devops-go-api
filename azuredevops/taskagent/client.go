@@ -507,7 +507,7 @@ type GetDeploymentGroupArgs struct {
 }
 
 // [Preview API] Get a list of deployment groups by name or IDs.
-func (client *Client) GetDeploymentGroups(ctx context.Context, args GetDeploymentGroupsArgs) (*[]DeploymentGroup, error) {
+func (client *Client) GetDeploymentGroups(ctx context.Context, args GetDeploymentGroupsArgs) (*GetDeploymentGroupsResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -544,8 +544,9 @@ func (client *Client) GetDeploymentGroups(ctx context.Context, args GetDeploymen
         return nil, err
     }
 
-    var responseValue []DeploymentGroup
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetDeploymentGroupsResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -565,6 +566,13 @@ type GetDeploymentGroupsArgs struct {
     Top *int
     // (optional) Comma separated list of IDs of the deployment groups.
     Ids *[]int
+}
+
+// Return type for the GetDeploymentGroups function
+type GetDeploymentGroupsResponseValue struct {
+    Value []DeploymentGroup
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // [Preview API] Update a deployment group.
@@ -1120,7 +1128,7 @@ type GetDeploymentTargetArgs struct {
 }
 
 // [Preview API] Get a list of deployment targets in a deployment group.
-func (client *Client) GetDeploymentTargets(ctx context.Context, args GetDeploymentTargetsArgs) (*[]DeploymentMachine, error) {
+func (client *Client) GetDeploymentTargets(ctx context.Context, args GetDeploymentTargetsArgs) (*GetDeploymentTargetsResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1170,8 +1178,9 @@ func (client *Client) GetDeploymentTargets(ctx context.Context, args GetDeployme
         return nil, err
     }
 
-    var responseValue []DeploymentMachine
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetDeploymentTargetsResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -1201,6 +1210,13 @@ type GetDeploymentTargetsArgs struct {
     Enabled *bool
     // (optional)
     PropertyFilters *[]string
+}
+
+// Return type for the GetDeploymentTargets function
+type GetDeploymentTargetsResponseValue struct {
+    Value []DeploymentMachine
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // [Preview API] Update tags of a list of deployment targets in a deployment group.

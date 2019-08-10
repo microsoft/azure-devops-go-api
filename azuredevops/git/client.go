@@ -768,6 +768,12 @@ func (client *Client) GetCommits(ctx context.Context, args GetCommitsArgs) (*[]G
     if args.SearchCriteria.HistoryMode != nil {
         queryParams.Add("searchCriteria.historyMode", string(*args.SearchCriteria.HistoryMode))
     }
+    if args.Skip != nil {
+        queryParams.Add("$skip", strconv.Itoa(*args.Skip))
+    }
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
+    }
     locationId, _ := uuid.Parse("c2570c3b-5b3f-41b8-98bf-5407bfde8d58")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
@@ -787,6 +793,10 @@ type GetCommitsArgs struct {
     SearchCriteria *GitQueryCommitsCriteria
     // (optional) Project ID or project name
     Project *string
+    // (optional)
+    Skip *int
+    // (optional)
+    Top *int
 }
 
 // Retrieve a list of commits associated with a particular push.
@@ -2298,7 +2308,7 @@ type GetPullRequestIterationCommitsArgs struct {
 }
 
 // Get the commits for the specified pull request.
-func (client *Client) GetPullRequestCommits(ctx context.Context, args GetPullRequestCommitsArgs) (*[]GitCommitRef, error) {
+func (client *Client) GetPullRequestCommits(ctx context.Context, args GetPullRequestCommitsArgs) (*GetPullRequestCommitsResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -2318,8 +2328,9 @@ func (client *Client) GetPullRequestCommits(ctx context.Context, args GetPullReq
         return nil, err
     }
 
-    var responseValue []GitCommitRef
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetPullRequestCommitsResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -2331,6 +2342,13 @@ type GetPullRequestCommitsArgs struct {
     PullRequestId *int
     // (optional) Project ID or project name
     Project *string
+}
+
+// Return type for the GetPullRequestCommits function
+type GetPullRequestCommitsResponseValue struct {
+    Value []GitCommitRef
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // Retrieve the changes made in a pull request between two iterations.
@@ -4571,7 +4589,7 @@ type RestoreRepositoryFromRecycleBinArgs struct {
 }
 
 // Queries the provided repository for its refs and returns them.
-func (client *Client) GetRefs(ctx context.Context, args GetRefsArgs) (*[]GitRef, error) {
+func (client *Client) GetRefs(ctx context.Context, args GetRefsArgs) (*GetRefsResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project != nil && *args.Project != "" {
         routeValues["project"] = *args.Project
@@ -4603,14 +4621,21 @@ func (client *Client) GetRefs(ctx context.Context, args GetRefsArgs) (*[]GitRef,
     if args.FilterContains != nil {
         queryParams.Add("filterContains", *args.FilterContains)
     }
+    if args.Top != nil {
+        queryParams.Add("$top", strconv.Itoa(*args.Top))
+    }
+    if args.ContinuationToken != nil {
+        queryParams.Add("continuationToken", *args.ContinuationToken)
+    }
     locationId, _ := uuid.Parse("2d874a60-a811-4f62-9c9f-963a6ea0a55b")
     resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
     if err != nil {
         return nil, err
     }
 
-    var responseValue []GitRef
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetRefsResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -4634,6 +4659,17 @@ type GetRefsArgs struct {
     PeelTags *bool
     // (optional) [optional] A filter to apply to the refs (contains).
     FilterContains *string
+    // (optional) [optional] Maximum number of refs to return. It cannot be bigger than 1000. If it is not provided but continuationToken is, top will default to 100.
+    Top *int
+    // (optional) The continuation token used for pagination.
+    ContinuationToken *string
+}
+
+// Return type for the GetRefs function
+type GetRefsResponseValue struct {
+    Value []GitRef
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // Lock or Unlock a branch.

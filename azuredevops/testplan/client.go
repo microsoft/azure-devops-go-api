@@ -126,7 +126,7 @@ type GetTestConfigurationByIdArgs struct {
 }
 
 // [Preview API] Get a list of test configurations.
-func (client *Client) GetTestConfigurations(ctx context.Context, args GetTestConfigurationsArgs) (*[]TestConfiguration, error) {
+func (client *Client) GetTestConfigurations(ctx context.Context, args GetTestConfigurationsArgs) (*GetTestConfigurationsResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -143,8 +143,9 @@ func (client *Client) GetTestConfigurations(ctx context.Context, args GetTestCon
         return nil, err
     }
 
-    var responseValue []TestConfiguration
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetTestConfigurationsResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -154,6 +155,13 @@ type GetTestConfigurationsArgs struct {
     Project *string
     // (optional) If the list of configurations returned is not complete, a continuation token to query next batch of configurations is included in the response header as "x-ms-continuationtoken". Omit this parameter to get the first batch of test configurations.
     ContinuationToken *string
+}
+
+// Return type for the GetTestConfigurations function
+type GetTestConfigurationsResponseValue struct {
+    Value []TestConfiguration
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // [Preview API] Update a test configuration by its ID.
@@ -292,7 +300,7 @@ type GetTestPlanByIdArgs struct {
 }
 
 // [Preview API] Get a list of test plans
-func (client *Client) GetTestPlans(ctx context.Context, args GetTestPlansArgs) (*[]TestPlan, error) {
+func (client *Client) GetTestPlans(ctx context.Context, args GetTestPlansArgs) (*GetTestPlansResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -318,8 +326,9 @@ func (client *Client) GetTestPlans(ctx context.Context, args GetTestPlansArgs) (
         return nil, err
     }
 
-    var responseValue []TestPlan
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetTestPlansResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -335,6 +344,13 @@ type GetTestPlansArgs struct {
     IncludePlanDetails *bool
     // (optional) Get just the active plans
     FilterActivePlans *bool
+}
+
+// Return type for the GetTestPlans function
+type GetTestPlansResponseValue struct {
+    Value []TestPlan
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // [Preview API] Update a test plan.
@@ -573,7 +589,7 @@ type GetTestSuiteByIdArgs struct {
 }
 
 // [Preview API] Get test suites for plan.
-func (client *Client) GetTestSuitesForPlan(ctx context.Context, args GetTestSuitesForPlanArgs) (*[]TestSuite, error) {
+func (client *Client) GetTestSuitesForPlan(ctx context.Context, args GetTestSuitesForPlanArgs) (*GetTestSuitesForPlanResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -600,8 +616,9 @@ func (client *Client) GetTestSuitesForPlan(ctx context.Context, args GetTestSuit
         return nil, err
     }
 
-    var responseValue []TestSuite
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetTestSuitesForPlanResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -617,6 +634,13 @@ type GetTestSuitesForPlanArgs struct {
     ContinuationToken *string
     // (optional) If the suites returned should be in a tree structure.
     AsTreeView *bool
+}
+
+// Return type for the GetTestSuitesForPlan function
+type GetTestSuitesForPlanResponseValue struct {
+    Value []TestSuite
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // [Preview API] Update test suite.
@@ -790,7 +814,7 @@ type GetTestCaseArgs struct {
 }
 
 // [Preview API] Get Test Case List return those test cases which have all the configuration Ids as mentioned in the optional paramter. If configuration Ids is null, it return all the test cases
-func (client *Client) GetTestCaseList(ctx context.Context, args GetTestCaseListArgs) (*[]TestCase, error) {
+func (client *Client) GetTestCaseList(ctx context.Context, args GetTestCaseListArgs) (*GetTestCaseListResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -830,8 +854,9 @@ func (client *Client) GetTestCaseList(ctx context.Context, args GetTestCaseListA
         return nil, err
     }
 
-    var responseValue []TestCase
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetTestCaseListResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -855,6 +880,13 @@ type GetTestCaseListArgs struct {
     ReturnIdentityRef *bool
     // (optional) If set to false, will get a smaller payload containing only basic details about the suite test case object
     Expand *bool
+}
+
+// Return type for the GetTestCaseList function
+type GetTestCaseListResponseValue struct {
+    Value []TestCase
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // [Preview API] Removes test cases from a suite based on the list of test case Ids provided.
@@ -1094,7 +1126,7 @@ type GetPointsArgs struct {
 }
 
 // [Preview API] Get all the points inside a suite based on some filters
-func (client *Client) GetPointsList(ctx context.Context, args GetPointsListArgs) (*[]TestPoint, error) {
+func (client *Client) GetPointsList(ctx context.Context, args GetPointsListArgs) (*GetPointsListResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1131,8 +1163,9 @@ func (client *Client) GetPointsList(ctx context.Context, args GetPointsListArgs)
         return nil, err
     }
 
-    var responseValue []TestPoint
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetPointsListResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -1154,6 +1187,13 @@ type GetPointsListArgs struct {
     ReturnIdentityRef *bool
     // (optional) If set to false, returns only necessary information
     IncludePointDetails *bool
+}
+
+// Return type for the GetPointsList function
+type GetPointsListResponseValue struct {
+    Value []TestPoint
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // [Preview API] Update Test Points. This is used to Reset test point to active, update the outcome of a test point or update the tester of a test point
@@ -1368,7 +1408,7 @@ type GetTestVariableByIdArgs struct {
 }
 
 // [Preview API] Get a list of test variables.
-func (client *Client) GetTestVariables(ctx context.Context, args GetTestVariablesArgs) (*[]TestVariable, error) {
+func (client *Client) GetTestVariables(ctx context.Context, args GetTestVariablesArgs) (*GetTestVariablesResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1385,8 +1425,9 @@ func (client *Client) GetTestVariables(ctx context.Context, args GetTestVariable
         return nil, err
     }
 
-    var responseValue []TestVariable
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetTestVariablesResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -1396,6 +1437,13 @@ type GetTestVariablesArgs struct {
     Project *string
     // (optional) If the list of variables returned is not complete, a continuation token to query next batch of variables is included in the response header as "x-ms-continuationtoken". Omit this parameter to get the first batch of test variables.
     ContinuationToken *string
+}
+
+// Return type for the GetTestVariables function
+type GetTestVariablesResponseValue struct {
+    Value []TestVariable
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // [Preview API] Update a test variable by its ID.

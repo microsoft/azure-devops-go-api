@@ -194,7 +194,7 @@ type GetPipelineArgs struct {
 }
 
 // [Preview API] Gets a list of pipelines.
-func (client *Client) ListPipelines(ctx context.Context, args ListPipelinesArgs) (*[]Pipeline, error) {
+func (client *Client) ListPipelines(ctx context.Context, args ListPipelinesArgs) (*ListPipelinesResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -217,8 +217,9 @@ func (client *Client) ListPipelines(ctx context.Context, args ListPipelinesArgs)
         return nil, err
     }
 
-    var responseValue []Pipeline
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue ListPipelinesResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -232,6 +233,13 @@ type ListPipelinesArgs struct {
     Top *int
     // (optional) A continuation token from a previous request, to retrieve the next page of results
     ContinuationToken *string
+}
+
+// Return type for the ListPipelines function
+type ListPipelinesResponseValue struct {
+    Value []Pipeline
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // [Preview API] Gets a run for a particular pipeline.

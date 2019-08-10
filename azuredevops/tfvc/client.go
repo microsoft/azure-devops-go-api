@@ -165,7 +165,7 @@ type GetBranchRefsArgs struct {
 }
 
 // Retrieve Tfvc changes for a given changeset.
-func (client *Client) GetChangesetChanges(ctx context.Context, args GetChangesetChangesArgs) (*[]git.TfvcChange, error) {
+func (client *Client) GetChangesetChanges(ctx context.Context, args GetChangesetChangesArgs) (*GetChangesetChangesResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Id != nil {
         routeValues["id"] = strconv.Itoa(*args.Id)
@@ -184,8 +184,9 @@ func (client *Client) GetChangesetChanges(ctx context.Context, args GetChangeset
         return nil, err
     }
 
-    var responseValue []git.TfvcChange
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetChangesetChangesResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -197,6 +198,13 @@ type GetChangesetChangesArgs struct {
     Skip *int
     // (optional) The maximum number of results to return. Default: null
     Top *int
+}
+
+// Return type for the GetChangesetChanges function
+type GetChangesetChangesResponseValue struct {
+    Value []git.TfvcChange
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // Create a new changeset.

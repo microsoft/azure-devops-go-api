@@ -1754,7 +1754,7 @@ type GetTestRunsArgs struct {
 }
 
 // [Preview API] Query Test Runs based on filters. Mandatory fields are minLastUpdatedDate and maxLastUpdatedDate.
-func (client *Client) QueryTestRuns(ctx context.Context, args QueryTestRunsArgs) (*[]test.TestRun, error) {
+func (client *Client) QueryTestRuns(ctx context.Context, args QueryTestRunsArgs) (*QueryTestRunsResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -1853,8 +1853,9 @@ func (client *Client) QueryTestRuns(ctx context.Context, args QueryTestRunsArgs)
         return nil, err
     }
 
-    var responseValue []test.TestRun
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue QueryTestRunsResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -1894,6 +1895,13 @@ type QueryTestRunsArgs struct {
     Top *int
     // (optional) continuationToken received from previous batch or null for first batch. It is not supposed to be created (or altered, if received from last batch) by user.
     ContinuationToken *string
+}
+
+// Return type for the QueryTestRuns function
+type QueryTestRunsResponseValue struct {
+    Value []test.TestRun
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // [Preview API]
@@ -2067,7 +2075,7 @@ type QueryTestHistoryArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetTestLogsForBuild(ctx context.Context, args GetTestLogsForBuildArgs) (*[]test.TestLog, error) {
+func (client *Client) GetTestLogsForBuild(ctx context.Context, args GetTestLogsForBuildArgs) (*GetTestLogsForBuildResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2105,8 +2113,9 @@ func (client *Client) GetTestLogsForBuild(ctx context.Context, args GetTestLogsF
         return nil, err
     }
 
-    var responseValue []test.TestLog
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetTestLogsForBuildResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -2130,8 +2139,15 @@ type GetTestLogsForBuildArgs struct {
     ContinuationToken *string
 }
 
+// Return type for the GetTestLogsForBuild function
+type GetTestLogsForBuildResponseValue struct {
+    Value []test.TestLog
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
+}
+
 // [Preview API]
-func (client *Client) GetTestResultLogs(ctx context.Context, args GetTestResultLogsArgs) (*[]test.TestLog, error) {
+func (client *Client) GetTestResultLogs(ctx context.Context, args GetTestResultLogsArgs) (*GetTestResultLogsResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2173,8 +2189,9 @@ func (client *Client) GetTestResultLogs(ctx context.Context, args GetTestResultL
         return nil, err
     }
 
-    var responseValue []test.TestLog
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetTestResultLogsResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -2200,8 +2217,15 @@ type GetTestResultLogsArgs struct {
     ContinuationToken *string
 }
 
+// Return type for the GetTestResultLogs function
+type GetTestResultLogsResponseValue struct {
+    Value []test.TestLog
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
+}
+
 // [Preview API]
-func (client *Client) GetTestSubResultLogs(ctx context.Context, args GetTestSubResultLogsArgs) (*[]test.TestLog, error) {
+func (client *Client) GetTestSubResultLogs(ctx context.Context, args GetTestSubResultLogsArgs) (*GetTestSubResultLogsResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2247,8 +2271,9 @@ func (client *Client) GetTestSubResultLogs(ctx context.Context, args GetTestSubR
         return nil, err
     }
 
-    var responseValue []test.TestLog
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetTestSubResultLogsResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -2276,8 +2301,15 @@ type GetTestSubResultLogsArgs struct {
     ContinuationToken *string
 }
 
+// Return type for the GetTestSubResultLogs function
+type GetTestSubResultLogsResponseValue struct {
+    Value []test.TestLog
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
+}
+
 // [Preview API]
-func (client *Client) GetTestRunLogs(ctx context.Context, args GetTestRunLogsArgs) (*[]test.TestLog, error) {
+func (client *Client) GetTestRunLogs(ctx context.Context, args GetTestRunLogsArgs) (*GetTestRunLogsResponseValue, error) {
     routeValues := make(map[string]string)
     if args.Project == nil || *args.Project == "" {
         return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"} 
@@ -2315,8 +2347,9 @@ func (client *Client) GetTestRunLogs(ctx context.Context, args GetTestRunLogsArg
         return nil, err
     }
 
-    var responseValue []test.TestLog
-    err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+    var responseValue GetTestRunLogsResponseValue
+    responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+    err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
     return &responseValue, err
 }
 
@@ -2338,6 +2371,13 @@ type GetTestRunLogsArgs struct {
     Top *int
     // (optional) Header to pass the continuationToken
     ContinuationToken *string
+}
+
+// Return type for the GetTestRunLogs function
+type GetTestRunLogsResponseValue struct {
+    Value []test.TestLog
+    // The continuation token to be used to get the next page of results.
+    ContinuationToken string
 }
 
 // [Preview API]
