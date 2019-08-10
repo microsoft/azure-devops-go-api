@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 // --------------------------------------------------------------------------------------------
@@ -9,12 +9,12 @@
 package tokenadministration
 
 import (
-    "github.com/google/uuid"
+	"github.com/google/uuid"
 )
 
 type TokenAdministrationRevocation struct {
-    // A list of audience (target accounts) to limit the revocations to
-    Audience *[]string `json:"audience,omitempty"`
-    // A list of authorization ID of the OAuth authorization to revoke.
-    AuthorizationIds *[]uuid.UUID `json:"authorizationIds,omitempty"`
+	// A list of audience (target accounts) to limit the revocations to
+	Audience *[]string `json:"audience,omitempty"`
+	// A list of authorization ID of the OAuth authorization to revoke.
+	AuthorizationIds *[]uuid.UUID `json:"authorizationIds,omitempty"`
 }
