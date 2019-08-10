@@ -44,7 +44,7 @@ func main() {
 			index++
 		}
 
-		// if continuationToken has a value, then there is atleast one more page of projects to get
+		// if continuationToken has a value, then there is at least one more page of projects to get
 		if responseValue.ContinuationToken != "" {
 			// Get next page of team projects
 			projectArgs := core.GetProjectsArgs{
