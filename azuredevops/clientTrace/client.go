@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 // --------------------------------------------------------------------------------------------
@@ -9,46 +9,45 @@
 package clienttrace
 
 import (
-    "bytes"
-    "context"
-    "encoding/json"
-    "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azuredevops"
-    "net/http"
+	"bytes"
+	"context"
+	"encoding/json"
+	"github.com/google/uuid"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
+	"net/http"
 )
 
 type Client struct {
-    Client azuredevops.Client
+	Client azuredevops.Client
 }
 
 func NewClient(ctx context.Context, connection *azuredevops.Connection) *Client {
-    client := connection.GetClientByUrl(connection.BaseUrl)
-    return &Client{
-        Client: *client,
-    }
+	client := connection.GetClientByUrl(connection.BaseUrl)
+	return &Client{
+		Client: *client,
+	}
 }
 
 // [Preview API]
 func (client *Client) PublishEvents(ctx context.Context, args PublishEventsArgs) error {
-    if args.Events == nil {
-        return &azuredevops.ArgumentNilError{ArgumentName: "events"}
-    }
-    body, marshalErr := json.Marshal(*args.Events)
-    if marshalErr != nil {
-        return marshalErr
-    }
-    locationId, _ := uuid.Parse("06bcc74a-1491-4eb8-a0eb-704778f9d041")
-    _, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-    if err != nil {
-        return err
-    }
+	if args.Events == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "events"}
+	}
+	body, marshalErr := json.Marshal(*args.Events)
+	if marshalErr != nil {
+		return marshalErr
+	}
+	locationId, _ := uuid.Parse("06bcc74a-1491-4eb8-a0eb-704778f9d041")
+	_, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return err
+	}
 
-    return nil
+	return nil
 }
 
 // Arguments for the PublishEvents function
 type PublishEventsArgs struct {
-    // (required)
-    Events *[]ClientTraceEvent
+	// (required)
+	Events *[]ClientTraceEvent
 }
-
