@@ -39,11 +39,11 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client
 // [Preview API] Proxy for a GET request defined by a service endpoint.
 func (client *Client) ExecuteServiceEndpointRequest(ctx context.Context, args ExecuteServiceEndpointRequestArgs) (*ServiceEndpointRequestResult, error) {
 	if args.ServiceEndpointRequest == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "serviceEndpointRequest"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ServiceEndpointRequest"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -80,11 +80,11 @@ type ExecuteServiceEndpointRequestArgs struct {
 // [Preview API] Create a service endpoint.
 func (client *Client) CreateServiceEndpoint(ctx context.Context, args CreateServiceEndpointArgs) (*ServiceEndpoint, error) {
 	if args.Endpoint == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "endpoint"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Endpoint"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -115,11 +115,11 @@ type CreateServiceEndpointArgs struct {
 func (client *Client) DeleteServiceEndpoint(ctx context.Context, args DeleteServiceEndpointArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.EndpointId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "endpointId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.EndpointId"}
 	}
 	routeValues["endpointId"] = (*args.EndpointId).String()
 
@@ -150,11 +150,11 @@ type DeleteServiceEndpointArgs struct {
 func (client *Client) GetServiceEndpointDetails(ctx context.Context, args GetServiceEndpointDetailsArgs) (*ServiceEndpoint, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.EndpointId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "endpointId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.EndpointId"}
 	}
 	routeValues["endpointId"] = (*args.EndpointId).String()
 
@@ -181,7 +181,7 @@ type GetServiceEndpointDetailsArgs struct {
 func (client *Client) GetServiceEndpoints(ctx context.Context, args GetServiceEndpointsArgs) (*[]ServiceEndpoint, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -243,7 +243,7 @@ type GetServiceEndpointsArgs struct {
 func (client *Client) GetServiceEndpointsByNames(ctx context.Context, args GetServiceEndpointsByNamesArgs) (*[]ServiceEndpoint, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -301,15 +301,15 @@ type GetServiceEndpointsByNamesArgs struct {
 // [Preview API] Update a service endpoint.
 func (client *Client) UpdateServiceEndpoint(ctx context.Context, args UpdateServiceEndpointArgs) (*ServiceEndpoint, error) {
 	if args.Endpoint == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "endpoint"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Endpoint"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.EndpointId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "endpointId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.EndpointId"}
 	}
 	routeValues["endpointId"] = (*args.EndpointId).String()
 
@@ -347,11 +347,11 @@ type UpdateServiceEndpointArgs struct {
 // [Preview API] Update the service endpoints.
 func (client *Client) UpdateServiceEndpoints(ctx context.Context, args UpdateServiceEndpointsArgs) (*[]ServiceEndpoint, error) {
 	if args.Endpoints == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "endpoints"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Endpoints"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -382,11 +382,11 @@ type UpdateServiceEndpointsArgs struct {
 func (client *Client) GetServiceEndpointExecutionRecords(ctx context.Context, args GetServiceEndpointExecutionRecordsArgs) (*GetServiceEndpointExecutionRecordsResponseValue, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.EndpointId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "endpointId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.EndpointId"}
 	}
 	routeValues["endpointId"] = (*args.EndpointId).String()
 

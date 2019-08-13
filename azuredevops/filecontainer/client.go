@@ -33,11 +33,11 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) *Client 
 // [Preview API] Creates the specified items in in the referenced container.
 func (client *Client) CreateItems(ctx context.Context, args CreateItemsArgs) (*[]FileContainerItem, error) {
 	if args.Items == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "items"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Items"}
 	}
 	routeValues := make(map[string]string)
 	if args.ContainerId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "containerId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ContainerId"}
 	}
 	routeValues["containerId"] = strconv.Itoa(*args.ContainerId)
 
@@ -74,7 +74,7 @@ type CreateItemsArgs struct {
 func (client *Client) DeleteItem(ctx context.Context, args DeleteItemArgs) error {
 	routeValues := make(map[string]string)
 	if args.ContainerId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "containerId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.ContainerId"}
 	}
 	routeValues["containerId"] = strconv.FormatUint(*args.ContainerId, 10)
 
@@ -137,7 +137,7 @@ type GetContainersArgs struct {
 func (client *Client) GetItems(ctx context.Context, args GetItemsArgs) (*[]FileContainerItem, error) {
 	routeValues := make(map[string]string)
 	if args.ContainerId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "containerId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ContainerId"}
 	}
 	routeValues["containerId"] = strconv.FormatUint(*args.ContainerId, 10)
 

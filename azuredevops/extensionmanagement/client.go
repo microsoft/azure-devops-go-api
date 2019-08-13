@@ -78,7 +78,7 @@ type GetInstalledExtensionsArgs struct {
 // [Preview API] Update an installed extension. Typically this API is used to enable or disable an extension.
 func (client *Client) UpdateInstalledExtension(ctx context.Context, args UpdateInstalledExtensionArgs) (*InstalledExtension, error) {
 	if args.Extension == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "extension"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Extension"}
 	}
 	body, marshalErr := json.Marshal(*args.Extension)
 	if marshalErr != nil {
@@ -105,11 +105,11 @@ type UpdateInstalledExtensionArgs struct {
 func (client *Client) GetInstalledExtensionByName(ctx context.Context, args GetInstalledExtensionByNameArgs) (*InstalledExtension, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
 	}
 	routeValues["publisherName"] = *args.PublisherName
 	if args.ExtensionName == nil || *args.ExtensionName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ExtensionName"}
 	}
 	routeValues["extensionName"] = *args.ExtensionName
 
@@ -143,11 +143,11 @@ type GetInstalledExtensionByNameArgs struct {
 func (client *Client) InstallExtensionByName(ctx context.Context, args InstallExtensionByNameArgs) (*InstalledExtension, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
 	}
 	routeValues["publisherName"] = *args.PublisherName
 	if args.ExtensionName == nil || *args.ExtensionName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ExtensionName"}
 	}
 	routeValues["extensionName"] = *args.ExtensionName
 	if args.Version != nil && *args.Version != "" {
@@ -179,11 +179,11 @@ type InstallExtensionByNameArgs struct {
 func (client *Client) UninstallExtensionByName(ctx context.Context, args UninstallExtensionByNameArgs) error {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
 	}
 	routeValues["publisherName"] = *args.PublisherName
 	if args.ExtensionName == nil || *args.ExtensionName == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ExtensionName"}
 	}
 	routeValues["extensionName"] = *args.ExtensionName
 

@@ -68,7 +68,7 @@ type GetConnectionDataArgs struct {
 func (client *Client) GetResourceArea(ctx context.Context, args GetResourceAreaArgs) (*ResourceAreaInfo, error) {
 	routeValues := make(map[string]string)
 	if args.AreaId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "areaId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.AreaId"}
 	}
 	routeValues["areaId"] = (*args.AreaId).String()
 
@@ -104,7 +104,7 @@ type GetResourceAreaArgs struct {
 func (client *Client) GetResourceAreaByHost(ctx context.Context, args GetResourceAreaByHostArgs) (*ResourceAreaInfo, error) {
 	routeValues := make(map[string]string)
 	if args.AreaId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "areaId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.AreaId"}
 	}
 	routeValues["areaId"] = (*args.AreaId).String()
 
@@ -188,11 +188,11 @@ type GetResourceAreasByHostArgs struct {
 func (client *Client) DeleteServiceDefinition(ctx context.Context, args DeleteServiceDefinitionArgs) error {
 	routeValues := make(map[string]string)
 	if args.ServiceType == nil || *args.ServiceType == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "serviceType"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ServiceType"}
 	}
 	routeValues["serviceType"] = *args.ServiceType
 	if args.Identifier == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "identifier"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.Identifier"}
 	}
 	routeValues["identifier"] = (*args.Identifier).String()
 
@@ -217,11 +217,11 @@ type DeleteServiceDefinitionArgs struct {
 func (client *Client) GetServiceDefinition(ctx context.Context, args GetServiceDefinitionArgs) (*ServiceDefinition, error) {
 	routeValues := make(map[string]string)
 	if args.ServiceType == nil || *args.ServiceType == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "serviceType"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ServiceType"}
 	}
 	routeValues["serviceType"] = *args.ServiceType
 	if args.Identifier == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "identifier"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Identifier"}
 	}
 	routeValues["identifier"] = (*args.Identifier).String()
 
@@ -282,7 +282,7 @@ type GetServiceDefinitionsArgs struct {
 // [Preview API]
 func (client *Client) UpdateServiceDefinitions(ctx context.Context, args UpdateServiceDefinitionsArgs) error {
 	if args.ServiceDefinitions == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "serviceDefinitions"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.ServiceDefinitions"}
 	}
 	body, marshalErr := json.Marshal(*args.ServiceDefinitions)
 	if marshalErr != nil {

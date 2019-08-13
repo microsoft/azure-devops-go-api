@@ -38,7 +38,7 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client
 func (client *Client) GetProjectLanguageAnalytics(ctx context.Context, args GetProjectLanguageAnalyticsArgs) (*ProjectLanguageAnalytics, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -63,7 +63,7 @@ type GetProjectLanguageAnalyticsArgs struct {
 func (client *Client) GetProjectActivityMetrics(ctx context.Context, args GetProjectActivityMetricsArgs) (*ProjectActivityMetrics, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -101,7 +101,7 @@ type GetProjectActivityMetricsArgs struct {
 func (client *Client) GetGitRepositoriesActivityMetrics(ctx context.Context, args GetGitRepositoriesActivityMetricsArgs) (*[]RepositoryActivityMetrics, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -151,11 +151,11 @@ type GetGitRepositoriesActivityMetricsArgs struct {
 func (client *Client) GetRepositoryActivityMetrics(ctx context.Context, args GetRepositoryActivityMetricsArgs) (*RepositoryActivityMetrics, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RepositoryId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "repositoryId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RepositoryId"}
 	}
 	routeValues["repositoryId"] = (*args.RepositoryId).String()
 

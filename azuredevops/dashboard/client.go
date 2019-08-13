@@ -37,11 +37,11 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client
 // [Preview API] Create the supplied dashboard.
 func (client *Client) CreateDashboard(ctx context.Context, args CreateDashboardArgs) (*Dashboard, error) {
 	if args.Dashboard == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "dashboard"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Dashboard"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Team != nil && *args.Team != "" {
@@ -77,14 +77,14 @@ type CreateDashboardArgs struct {
 func (client *Client) DeleteDashboard(ctx context.Context, args DeleteDashboardArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Team != nil && *args.Team != "" {
 		routeValues["team"] = *args.Team
 	}
 	if args.DashboardId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "dashboardId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.DashboardId"}
 	}
 	routeValues["dashboardId"] = (*args.DashboardId).String()
 
@@ -111,14 +111,14 @@ type DeleteDashboardArgs struct {
 func (client *Client) GetDashboard(ctx context.Context, args GetDashboardArgs) (*Dashboard, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Team != nil && *args.Team != "" {
 		routeValues["team"] = *args.Team
 	}
 	if args.DashboardId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "dashboardId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.DashboardId"}
 	}
 	routeValues["dashboardId"] = (*args.DashboardId).String()
 
@@ -147,7 +147,7 @@ type GetDashboardArgs struct {
 func (client *Client) GetDashboards(ctx context.Context, args GetDashboardsArgs) (*DashboardGroup, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Team != nil && *args.Team != "" {
@@ -176,18 +176,18 @@ type GetDashboardsArgs struct {
 // [Preview API] Replace configuration for the specified dashboard. Replaces Widget list on Dashboard, only if property is supplied.
 func (client *Client) ReplaceDashboard(ctx context.Context, args ReplaceDashboardArgs) (*Dashboard, error) {
 	if args.Dashboard == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "dashboard"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Dashboard"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Team != nil && *args.Team != "" {
 		routeValues["team"] = *args.Team
 	}
 	if args.DashboardId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "dashboardId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.DashboardId"}
 	}
 	routeValues["dashboardId"] = (*args.DashboardId).String()
 
@@ -221,11 +221,11 @@ type ReplaceDashboardArgs struct {
 // [Preview API] Update the name and position of dashboards in the supplied group, and remove omitted dashboards. Does not modify dashboard content.
 func (client *Client) ReplaceDashboards(ctx context.Context, args ReplaceDashboardsArgs) (*DashboardGroup, error) {
 	if args.Group == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "group"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Group"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Team != nil && *args.Team != "" {
@@ -260,18 +260,18 @@ type ReplaceDashboardsArgs struct {
 // [Preview API] Create a widget on the specified dashboard.
 func (client *Client) CreateWidget(ctx context.Context, args CreateWidgetArgs) (*Widget, error) {
 	if args.Widget == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "widget"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Widget"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Team != nil && *args.Team != "" {
 		routeValues["team"] = *args.Team
 	}
 	if args.DashboardId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "dashboardId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.DashboardId"}
 	}
 	routeValues["dashboardId"] = (*args.DashboardId).String()
 
@@ -306,18 +306,18 @@ type CreateWidgetArgs struct {
 func (client *Client) DeleteWidget(ctx context.Context, args DeleteWidgetArgs) (*Dashboard, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Team != nil && *args.Team != "" {
 		routeValues["team"] = *args.Team
 	}
 	if args.DashboardId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "dashboardId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.DashboardId"}
 	}
 	routeValues["dashboardId"] = (*args.DashboardId).String()
 	if args.WidgetId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "widgetId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WidgetId"}
 	}
 	routeValues["widgetId"] = (*args.WidgetId).String()
 
@@ -348,18 +348,18 @@ type DeleteWidgetArgs struct {
 func (client *Client) GetWidget(ctx context.Context, args GetWidgetArgs) (*Widget, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Team != nil && *args.Team != "" {
 		routeValues["team"] = *args.Team
 	}
 	if args.DashboardId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "dashboardId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.DashboardId"}
 	}
 	routeValues["dashboardId"] = (*args.DashboardId).String()
 	if args.WidgetId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "widgetId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WidgetId"}
 	}
 	routeValues["widgetId"] = (*args.WidgetId).String()
 
@@ -390,14 +390,14 @@ type GetWidgetArgs struct {
 func (client *Client) GetWidgets(ctx context.Context, args GetWidgetsArgs) (*WidgetsVersionedList, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Team != nil && *args.Team != "" {
 		routeValues["team"] = *args.Team
 	}
 	if args.DashboardId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "dashboardId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.DashboardId"}
 	}
 	routeValues["dashboardId"] = (*args.DashboardId).String()
 
@@ -440,22 +440,22 @@ type GetWidgetsArgs struct {
 // [Preview API] Override the  state of the specified widget.
 func (client *Client) ReplaceWidget(ctx context.Context, args ReplaceWidgetArgs) (*Widget, error) {
 	if args.Widget == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "widget"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Widget"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Team != nil && *args.Team != "" {
 		routeValues["team"] = *args.Team
 	}
 	if args.DashboardId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "dashboardId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.DashboardId"}
 	}
 	routeValues["dashboardId"] = (*args.DashboardId).String()
 	if args.WidgetId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "widgetId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WidgetId"}
 	}
 	routeValues["widgetId"] = (*args.WidgetId).String()
 
@@ -491,18 +491,18 @@ type ReplaceWidgetArgs struct {
 // [Preview API] Replace the widgets on specified dashboard with the supplied widgets.
 func (client *Client) ReplaceWidgets(ctx context.Context, args ReplaceWidgetsArgs) (*WidgetsVersionedList, error) {
 	if args.Widgets == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "widgets"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Widgets"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Team != nil && *args.Team != "" {
 		routeValues["team"] = *args.Team
 	}
 	if args.DashboardId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "dashboardId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.DashboardId"}
 	}
 	routeValues["dashboardId"] = (*args.DashboardId).String()
 
@@ -551,22 +551,22 @@ type ReplaceWidgetsArgs struct {
 // [Preview API] Perform a partial update of the specified widget.
 func (client *Client) UpdateWidget(ctx context.Context, args UpdateWidgetArgs) (*Widget, error) {
 	if args.Widget == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "widget"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Widget"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Team != nil && *args.Team != "" {
 		routeValues["team"] = *args.Team
 	}
 	if args.DashboardId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "dashboardId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.DashboardId"}
 	}
 	routeValues["dashboardId"] = (*args.DashboardId).String()
 	if args.WidgetId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "widgetId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WidgetId"}
 	}
 	routeValues["widgetId"] = (*args.WidgetId).String()
 
@@ -602,18 +602,18 @@ type UpdateWidgetArgs struct {
 // [Preview API] Update the supplied widgets on the dashboard using supplied state. State of existing Widgets not passed in the widget list is preserved.
 func (client *Client) UpdateWidgets(ctx context.Context, args UpdateWidgetsArgs) (*WidgetsVersionedList, error) {
 	if args.Widgets == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "widgets"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Widgets"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Team != nil && *args.Team != "" {
 		routeValues["team"] = *args.Team
 	}
 	if args.DashboardId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "dashboardId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.DashboardId"}
 	}
 	routeValues["dashboardId"] = (*args.DashboardId).String()
 
@@ -666,7 +666,7 @@ func (client *Client) GetWidgetMetadata(ctx context.Context, args GetWidgetMetad
 		routeValues["project"] = *args.Project
 	}
 	if args.ContributionId == nil || *args.ContributionId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "contributionId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ContributionId"}
 	}
 	routeValues["contributionId"] = *args.ContributionId
 

@@ -36,14 +36,14 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client
 // [Preview API] Creates a session, a wrapper around a feed that can store additional metadata on the packages published to it.
 func (client *Client) CreateSession(ctx context.Context, args CreateSessionArgs) (*SessionResponse, error) {
 	if args.SessionRequest == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "sessionRequest"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SessionRequest"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
 	}
 	if args.Protocol == nil || *args.Protocol == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "protocol"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Protocol"}
 	}
 	routeValues["protocol"] = *args.Protocol
 

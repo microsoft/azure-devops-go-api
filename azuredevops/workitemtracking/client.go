@@ -76,7 +76,7 @@ type GetWorkArtifactLinkTypesArgs struct {
 // [Preview API] Queries work items linked to a given list of artifact URI.
 func (client *Client) QueryWorkItemsForArtifactUris(ctx context.Context, args QueryWorkItemsForArtifactUrisArgs) (*ArtifactUriQueryResult, error) {
 	if args.ArtifactUriQuery == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "artifactUriQuery"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ArtifactUriQuery"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
@@ -109,7 +109,7 @@ type QueryWorkItemsForArtifactUrisArgs struct {
 // Uploads an attachment.
 func (client *Client) CreateAttachment(ctx context.Context, args CreateAttachmentArgs) (*AttachmentReference, error) {
 	if args.UploadStream == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "uploadStream"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UploadStream"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
@@ -158,7 +158,7 @@ func (client *Client) GetAttachmentContent(ctx context.Context, args GetAttachme
 		routeValues["project"] = *args.Project
 	}
 	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = (*args.Id).String()
 
@@ -197,7 +197,7 @@ func (client *Client) GetAttachmentZip(ctx context.Context, args GetAttachmentZi
 		routeValues["project"] = *args.Project
 	}
 	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = (*args.Id).String()
 
@@ -233,7 +233,7 @@ type GetAttachmentZipArgs struct {
 func (client *Client) GetClassificationNodes(ctx context.Context, args GetClassificationNodesArgs) (*[]WorkItemClassificationNode, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -280,7 +280,7 @@ type GetClassificationNodesArgs struct {
 func (client *Client) GetRootNodes(ctx context.Context, args GetRootNodesArgs) (*[]WorkItemClassificationNode, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -310,15 +310,15 @@ type GetRootNodesArgs struct {
 // Create new or update an existing classification node.
 func (client *Client) CreateOrUpdateClassificationNode(ctx context.Context, args CreateOrUpdateClassificationNodeArgs) (*WorkItemClassificationNode, error) {
 	if args.PostedNode == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "postedNode"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PostedNode"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.StructureGroup == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "structureGroup"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.StructureGroup"}
 	}
 	routeValues["structureGroup"] = string(*args.StructureGroup)
 	if args.Path != nil && *args.Path != "" {
@@ -356,11 +356,11 @@ type CreateOrUpdateClassificationNodeArgs struct {
 func (client *Client) DeleteClassificationNode(ctx context.Context, args DeleteClassificationNodeArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.StructureGroup == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "structureGroup"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.StructureGroup"}
 	}
 	routeValues["structureGroup"] = string(*args.StructureGroup)
 	if args.Path != nil && *args.Path != "" {
@@ -396,11 +396,11 @@ type DeleteClassificationNodeArgs struct {
 func (client *Client) GetClassificationNode(ctx context.Context, args GetClassificationNodeArgs) (*WorkItemClassificationNode, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.StructureGroup == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "structureGroup"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.StructureGroup"}
 	}
 	routeValues["structureGroup"] = string(*args.StructureGroup)
 	if args.Path != nil && *args.Path != "" {
@@ -437,15 +437,15 @@ type GetClassificationNodeArgs struct {
 // Update an existing classification node.
 func (client *Client) UpdateClassificationNode(ctx context.Context, args UpdateClassificationNodeArgs) (*WorkItemClassificationNode, error) {
 	if args.PostedNode == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "postedNode"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PostedNode"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.StructureGroup == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "structureGroup"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.StructureGroup"}
 	}
 	routeValues["structureGroup"] = string(*args.StructureGroup)
 	if args.Path != nil && *args.Path != "" {
@@ -483,19 +483,19 @@ type UpdateClassificationNodeArgs struct {
 func (client *Client) GetEngagedUsers(ctx context.Context, args GetEngagedUsersArgs) (*[]webapi.IdentityRef, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WorkItemId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "workItemId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WorkItemId"}
 	}
 	routeValues["workItemId"] = strconv.Itoa(*args.WorkItemId)
 	if args.CommentId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "commentId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CommentId"}
 	}
 	routeValues["commentId"] = strconv.Itoa(*args.CommentId)
 	if args.ReactionType == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "reactionType"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ReactionType"}
 	}
 	routeValues["reactionType"] = string(*args.ReactionType)
 
@@ -536,15 +536,15 @@ type GetEngagedUsersArgs struct {
 // [Preview API] Add a comment on a work item.
 func (client *Client) AddComment(ctx context.Context, args AddCommentArgs) (*Comment, error) {
 	if args.Request == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "request"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Request"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WorkItemId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "workItemId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WorkItemId"}
 	}
 	routeValues["workItemId"] = strconv.Itoa(*args.WorkItemId)
 
@@ -577,15 +577,15 @@ type AddCommentArgs struct {
 func (client *Client) DeleteComment(ctx context.Context, args DeleteCommentArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WorkItemId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "workItemId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.WorkItemId"}
 	}
 	routeValues["workItemId"] = strconv.Itoa(*args.WorkItemId)
 	if args.CommentId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "commentId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.CommentId"}
 	}
 	routeValues["commentId"] = strconv.Itoa(*args.CommentId)
 
@@ -612,15 +612,15 @@ type DeleteCommentArgs struct {
 func (client *Client) GetComment(ctx context.Context, args GetCommentArgs) (*Comment, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WorkItemId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "workItemId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WorkItemId"}
 	}
 	routeValues["workItemId"] = strconv.Itoa(*args.WorkItemId)
 	if args.CommentId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "commentId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CommentId"}
 	}
 	routeValues["commentId"] = strconv.Itoa(*args.CommentId)
 
@@ -660,11 +660,11 @@ type GetCommentArgs struct {
 func (client *Client) GetComments(ctx context.Context, args GetCommentsArgs) (*CommentList, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WorkItemId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "workItemId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WorkItemId"}
 	}
 	routeValues["workItemId"] = strconv.Itoa(*args.WorkItemId)
 
@@ -717,11 +717,11 @@ type GetCommentsArgs struct {
 func (client *Client) GetCommentsBatch(ctx context.Context, args GetCommentsBatchArgs) (*CommentList, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WorkItemId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "workItemId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WorkItemId"}
 	}
 	routeValues["workItemId"] = strconv.Itoa(*args.WorkItemId)
 
@@ -769,19 +769,19 @@ type GetCommentsBatchArgs struct {
 // [Preview API] Update a comment on a work item.
 func (client *Client) UpdateComment(ctx context.Context, args UpdateCommentArgs) (*Comment, error) {
 	if args.Request == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "request"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Request"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WorkItemId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "workItemId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WorkItemId"}
 	}
 	routeValues["workItemId"] = strconv.Itoa(*args.WorkItemId)
 	if args.CommentId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "commentId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CommentId"}
 	}
 	routeValues["commentId"] = strconv.Itoa(*args.CommentId)
 
@@ -816,19 +816,19 @@ type UpdateCommentArgs struct {
 func (client *Client) CreateCommentReaction(ctx context.Context, args CreateCommentReactionArgs) (*CommentReaction, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WorkItemId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "workItemId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WorkItemId"}
 	}
 	routeValues["workItemId"] = strconv.Itoa(*args.WorkItemId)
 	if args.CommentId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "commentId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CommentId"}
 	}
 	routeValues["commentId"] = strconv.Itoa(*args.CommentId)
 	if args.ReactionType == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "reactionType"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ReactionType"}
 	}
 	routeValues["reactionType"] = string(*args.ReactionType)
 
@@ -859,19 +859,19 @@ type CreateCommentReactionArgs struct {
 func (client *Client) DeleteCommentReaction(ctx context.Context, args DeleteCommentReactionArgs) (*CommentReaction, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WorkItemId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "workItemId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WorkItemId"}
 	}
 	routeValues["workItemId"] = strconv.Itoa(*args.WorkItemId)
 	if args.CommentId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "commentId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CommentId"}
 	}
 	routeValues["commentId"] = strconv.Itoa(*args.CommentId)
 	if args.ReactionType == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "reactionType"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ReactionType"}
 	}
 	routeValues["reactionType"] = string(*args.ReactionType)
 
@@ -902,15 +902,15 @@ type DeleteCommentReactionArgs struct {
 func (client *Client) GetCommentReactions(ctx context.Context, args GetCommentReactionsArgs) (*[]CommentReaction, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WorkItemId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "workItemId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WorkItemId"}
 	}
 	routeValues["workItemId"] = strconv.Itoa(*args.WorkItemId)
 	if args.CommentId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "commentId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CommentId"}
 	}
 	routeValues["commentId"] = strconv.Itoa(*args.CommentId)
 
@@ -939,19 +939,19 @@ type GetCommentReactionsArgs struct {
 func (client *Client) GetCommentVersion(ctx context.Context, args GetCommentVersionArgs) (*CommentVersion, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WorkItemId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "workItemId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WorkItemId"}
 	}
 	routeValues["workItemId"] = strconv.Itoa(*args.WorkItemId)
 	if args.CommentId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "commentId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CommentId"}
 	}
 	routeValues["commentId"] = strconv.Itoa(*args.CommentId)
 	if args.Version == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "version"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Version"}
 	}
 	routeValues["version"] = strconv.Itoa(*args.Version)
 
@@ -982,15 +982,15 @@ type GetCommentVersionArgs struct {
 func (client *Client) GetCommentVersions(ctx context.Context, args GetCommentVersionsArgs) (*[]CommentVersion, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WorkItemId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "workItemId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WorkItemId"}
 	}
 	routeValues["workItemId"] = strconv.Itoa(*args.WorkItemId)
 	if args.CommentId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "commentId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CommentId"}
 	}
 	routeValues["commentId"] = strconv.Itoa(*args.CommentId)
 
@@ -1018,7 +1018,7 @@ type GetCommentVersionsArgs struct {
 // Create a new field.
 func (client *Client) CreateField(ctx context.Context, args CreateFieldArgs) (*WorkItemField, error) {
 	if args.WorkItemField == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "workItemField"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WorkItemField"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
@@ -1055,7 +1055,7 @@ func (client *Client) DeleteField(ctx context.Context, args DeleteFieldArgs) err
 		routeValues["project"] = *args.Project
 	}
 	if args.FieldNameOrRefName == nil || *args.FieldNameOrRefName == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "fieldNameOrRefName"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FieldNameOrRefName"}
 	}
 	routeValues["fieldNameOrRefName"] = *args.FieldNameOrRefName
 
@@ -1083,7 +1083,7 @@ func (client *Client) GetField(ctx context.Context, args GetFieldArgs) (*WorkIte
 		routeValues["project"] = *args.Project
 	}
 	if args.FieldNameOrRefName == nil || *args.FieldNameOrRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "fieldNameOrRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FieldNameOrRefName"}
 	}
 	routeValues["fieldNameOrRefName"] = *args.FieldNameOrRefName
 
@@ -1139,15 +1139,15 @@ type GetFieldsArgs struct {
 // Creates a query, or moves a query.
 func (client *Client) CreateQuery(ctx context.Context, args CreateQueryArgs) (*QueryHierarchyItem, error) {
 	if args.PostedQuery == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "postedQuery"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PostedQuery"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Query == nil || *args.Query == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "query"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Query"}
 	}
 	routeValues["query"] = *args.Query
 
@@ -1186,11 +1186,11 @@ type CreateQueryArgs struct {
 func (client *Client) DeleteQuery(ctx context.Context, args DeleteQueryArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Query == nil || *args.Query == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "query"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Query"}
 	}
 	routeValues["query"] = *args.Query
 
@@ -1215,7 +1215,7 @@ type DeleteQueryArgs struct {
 func (client *Client) GetQueries(ctx context.Context, args GetQueriesArgs) (*[]QueryHierarchyItem, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -1256,11 +1256,11 @@ type GetQueriesArgs struct {
 func (client *Client) GetQuery(ctx context.Context, args GetQueryArgs) (*QueryHierarchyItem, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Query == nil || *args.Query == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "query"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Query"}
 	}
 	routeValues["query"] = *args.Query
 
@@ -1303,7 +1303,7 @@ type GetQueryArgs struct {
 func (client *Client) SearchQueries(ctx context.Context, args SearchQueriesArgs) (*QueryHierarchyItemsResult, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -1349,15 +1349,15 @@ type SearchQueriesArgs struct {
 // Update a query or a folder. This allows you to update, rename and move queries and folders.
 func (client *Client) UpdateQuery(ctx context.Context, args UpdateQueryArgs) (*QueryHierarchyItem, error) {
 	if args.QueryUpdate == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "queryUpdate"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.QueryUpdate"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Query == nil || *args.Query == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "query"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Query"}
 	}
 	routeValues["query"] = *args.Query
 
@@ -1395,11 +1395,11 @@ type UpdateQueryArgs struct {
 // Gets a list of queries by ids (Maximum 1000)
 func (client *Client) GetQueriesBatch(ctx context.Context, args GetQueriesBatchArgs) (*[]QueryHierarchyItem, error) {
 	if args.QueryGetRequest == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "queryGetRequest"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.QueryGetRequest"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -1433,7 +1433,7 @@ func (client *Client) DestroyWorkItem(ctx context.Context, args DestroyWorkItemA
 		routeValues["project"] = *args.Project
 	}
 	if args.Id == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = strconv.Itoa(*args.Id)
 
@@ -1461,7 +1461,7 @@ func (client *Client) GetDeletedWorkItem(ctx context.Context, args GetDeletedWor
 		routeValues["project"] = *args.Project
 	}
 	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = strconv.Itoa(*args.Id)
 
@@ -1547,14 +1547,14 @@ type GetDeletedWorkItemShallowReferencesArgs struct {
 // Restores the deleted work item from Recycle Bin.
 func (client *Client) RestoreWorkItem(ctx context.Context, args RestoreWorkItemArgs) (*WorkItemDelete, error) {
 	if args.Payload == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "payload"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Payload"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
 	}
 	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = strconv.Itoa(*args.Id)
 
@@ -1590,11 +1590,11 @@ func (client *Client) GetRevision(ctx context.Context, args GetRevisionArgs) (*W
 		routeValues["project"] = *args.Project
 	}
 	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = strconv.Itoa(*args.Id)
 	if args.RevisionNumber == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "revisionNumber"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RevisionNumber"}
 	}
 	routeValues["revisionNumber"] = strconv.Itoa(*args.RevisionNumber)
 
@@ -1632,7 +1632,7 @@ func (client *Client) GetRevisions(ctx context.Context, args GetRevisionsArgs) (
 		routeValues["project"] = *args.Project
 	}
 	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = strconv.Itoa(*args.Id)
 
@@ -1674,15 +1674,15 @@ type GetRevisionsArgs struct {
 // [Preview API] Creates a template
 func (client *Client) CreateTemplate(ctx context.Context, args CreateTemplateArgs) (*WorkItemTemplate, error) {
 	if args.Template == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "template"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Template"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Team == nil || *args.Team == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "team"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Team"}
 	}
 	routeValues["team"] = *args.Team
 
@@ -1715,11 +1715,11 @@ type CreateTemplateArgs struct {
 func (client *Client) GetTemplates(ctx context.Context, args GetTemplatesArgs) (*[]WorkItemTemplateReference, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Team == nil || *args.Team == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "team"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Team"}
 	}
 	routeValues["team"] = *args.Team
 
@@ -1752,15 +1752,15 @@ type GetTemplatesArgs struct {
 func (client *Client) DeleteTemplate(ctx context.Context, args DeleteTemplateArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Team == nil || *args.Team == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "team"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Team"}
 	}
 	routeValues["team"] = *args.Team
 	if args.TemplateId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "templateId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.TemplateId"}
 	}
 	routeValues["templateId"] = (*args.TemplateId).String()
 
@@ -1787,15 +1787,15 @@ type DeleteTemplateArgs struct {
 func (client *Client) GetTemplate(ctx context.Context, args GetTemplateArgs) (*WorkItemTemplate, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Team == nil || *args.Team == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "team"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Team"}
 	}
 	routeValues["team"] = *args.Team
 	if args.TemplateId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "templateId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TemplateId"}
 	}
 	routeValues["templateId"] = (*args.TemplateId).String()
 
@@ -1823,19 +1823,19 @@ type GetTemplateArgs struct {
 // [Preview API] Replace template contents
 func (client *Client) ReplaceTemplate(ctx context.Context, args ReplaceTemplateArgs) (*WorkItemTemplate, error) {
 	if args.TemplateContent == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "templateContent"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TemplateContent"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Team == nil || *args.Team == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "team"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Team"}
 	}
 	routeValues["team"] = *args.Team
 	if args.TemplateId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "templateId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TemplateId"}
 	}
 	routeValues["templateId"] = (*args.TemplateId).String()
 
@@ -1873,11 +1873,11 @@ func (client *Client) GetUpdate(ctx context.Context, args GetUpdateArgs) (*WorkI
 		routeValues["project"] = *args.Project
 	}
 	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = strconv.Itoa(*args.Id)
 	if args.UpdateNumber == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "updateNumber"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UpdateNumber"}
 	}
 	routeValues["updateNumber"] = strconv.Itoa(*args.UpdateNumber)
 
@@ -1909,7 +1909,7 @@ func (client *Client) GetUpdates(ctx context.Context, args GetUpdatesArgs) (*[]W
 		routeValues["project"] = *args.Project
 	}
 	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = strconv.Itoa(*args.Id)
 
@@ -1946,7 +1946,7 @@ type GetUpdatesArgs struct {
 // Gets the results of the query given its WIQL.
 func (client *Client) QueryByWiql(ctx context.Context, args QueryByWiqlArgs) (*WorkItemQueryResult, error) {
 	if args.Wiql == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "wiql"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Wiql"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
@@ -2002,7 +2002,7 @@ func (client *Client) GetQueryResultCount(ctx context.Context, args GetQueryResu
 		routeValues["team"] = *args.Team
 	}
 	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = (*args.Id).String()
 
@@ -2048,7 +2048,7 @@ func (client *Client) QueryById(ctx context.Context, args QueryByIdArgs) (*WorkI
 		routeValues["team"] = *args.Team
 	}
 	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = (*args.Id).String()
 
@@ -2088,7 +2088,7 @@ type QueryByIdArgs struct {
 func (client *Client) GetWorkItemIconJson(ctx context.Context, args GetWorkItemIconJsonArgs) (*WorkItemIcon, error) {
 	routeValues := make(map[string]string)
 	if args.Icon == nil || *args.Icon == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "icon"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Icon"}
 	}
 	routeValues["icon"] = *args.Icon
 
@@ -2141,7 +2141,7 @@ type GetWorkItemIconsArgs struct {
 func (client *Client) GetWorkItemIconSvg(ctx context.Context, args GetWorkItemIconSvgArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.Icon == nil || *args.Icon == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "icon"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Icon"}
 	}
 	routeValues["icon"] = *args.Icon
 
@@ -2175,7 +2175,7 @@ type GetWorkItemIconSvgArgs struct {
 func (client *Client) GetWorkItemIconXaml(ctx context.Context, args GetWorkItemIconXamlArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.Icon == nil || *args.Icon == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "icon"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Icon"}
 	}
 	routeValues["icon"] = *args.Icon
 
@@ -2256,7 +2256,7 @@ type GetReportingLinksByLinkTypeArgs struct {
 func (client *Client) GetRelationType(ctx context.Context, args GetRelationTypeArgs) (*WorkItemRelationType, error) {
 	routeValues := make(map[string]string)
 	if args.Relation == nil || *args.Relation == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "relation"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Relation"}
 	}
 	routeValues["relation"] = *args.Relation
 
@@ -2379,7 +2379,7 @@ type ReadReportingRevisionsGetArgs struct {
 // Get a batch of work item revisions. This request may be used if your list of fields is large enough that it may run the URL over the length limit.
 func (client *Client) ReadReportingRevisionsPost(ctx context.Context, args ReadReportingRevisionsPostArgs) (*ReportingWorkItemRevisionsBatch, error) {
 	if args.Filter == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "filter"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Filter"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
@@ -2463,15 +2463,15 @@ type ReadReportingDiscussionsArgs struct {
 // Creates a single work item.
 func (client *Client) CreateWorkItem(ctx context.Context, args CreateWorkItemArgs) (*WorkItem, error) {
 	if args.Document == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "document"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Document"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Type == nil || *args.Type == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Type"}
 	}
 	routeValues["type"] = *args.Type
 
@@ -2525,11 +2525,11 @@ type CreateWorkItemArgs struct {
 func (client *Client) GetWorkItemTemplate(ctx context.Context, args GetWorkItemTemplateArgs) (*WorkItem, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Type == nil || *args.Type == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Type"}
 	}
 	routeValues["type"] = *args.Type
 
@@ -2575,7 +2575,7 @@ func (client *Client) DeleteWorkItem(ctx context.Context, args DeleteWorkItemArg
 		routeValues["project"] = *args.Project
 	}
 	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = strconv.Itoa(*args.Id)
 
@@ -2611,7 +2611,7 @@ func (client *Client) GetWorkItem(ctx context.Context, args GetWorkItemArgs) (*W
 		routeValues["project"] = *args.Project
 	}
 	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = strconv.Itoa(*args.Id)
 
@@ -2711,14 +2711,14 @@ type GetWorkItemsArgs struct {
 // Updates a single work item.
 func (client *Client) UpdateWorkItem(ctx context.Context, args UpdateWorkItemArgs) (*WorkItem, error) {
 	if args.Document == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "document"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Document"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
 	}
 	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = strconv.Itoa(*args.Id)
 
@@ -2771,7 +2771,7 @@ type UpdateWorkItemArgs struct {
 // Gets work items for a list of work item ids (Maximum 200)
 func (client *Client) GetWorkItemsBatch(ctx context.Context, args GetWorkItemsBatchArgs) (*[]WorkItem, error) {
 	if args.WorkItemGetRequest == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "workItemGetRequest"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WorkItemGetRequest"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
@@ -2839,7 +2839,7 @@ type GetWorkItemNextStatesOnCheckinActionArgs struct {
 func (client *Client) GetWorkItemTypeCategories(ctx context.Context, args GetWorkItemTypeCategoriesArgs) (*[]WorkItemTypeCategory, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -2864,11 +2864,11 @@ type GetWorkItemTypeCategoriesArgs struct {
 func (client *Client) GetWorkItemTypeCategory(ctx context.Context, args GetWorkItemTypeCategoryArgs) (*WorkItemTypeCategory, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Category == nil || *args.Category == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "category"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Category"}
 	}
 	routeValues["category"] = *args.Category
 
@@ -2895,11 +2895,11 @@ type GetWorkItemTypeCategoryArgs struct {
 func (client *Client) GetWorkItemType(ctx context.Context, args GetWorkItemTypeArgs) (*WorkItemType, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Type == nil || *args.Type == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Type"}
 	}
 	routeValues["type"] = *args.Type
 
@@ -2926,7 +2926,7 @@ type GetWorkItemTypeArgs struct {
 func (client *Client) GetWorkItemTypes(ctx context.Context, args GetWorkItemTypesArgs) (*[]WorkItemType, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -2951,11 +2951,11 @@ type GetWorkItemTypesArgs struct {
 func (client *Client) GetWorkItemTypeFieldsWithReferences(ctx context.Context, args GetWorkItemTypeFieldsWithReferencesArgs) (*[]WorkItemTypeFieldWithReferences, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Type == nil || *args.Type == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Type"}
 	}
 	routeValues["type"] = *args.Type
 
@@ -2988,15 +2988,15 @@ type GetWorkItemTypeFieldsWithReferencesArgs struct {
 func (client *Client) GetWorkItemTypeFieldWithReferences(ctx context.Context, args GetWorkItemTypeFieldWithReferencesArgs) (*WorkItemTypeFieldWithReferences, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Type == nil || *args.Type == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Type"}
 	}
 	routeValues["type"] = *args.Type
 	if args.Field == nil || *args.Field == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "field"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Field"}
 	}
 	routeValues["field"] = *args.Field
 
@@ -3031,11 +3031,11 @@ type GetWorkItemTypeFieldWithReferencesArgs struct {
 func (client *Client) GetWorkItemTypeStates(ctx context.Context, args GetWorkItemTypeStatesArgs) (*[]WorkItemStateColor, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.Type == nil || *args.Type == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Type"}
 	}
 	routeValues["type"] = *args.Type
 

@@ -37,19 +37,19 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) *Client 
 // [Preview API]
 func (client *Client) CreateTestIterationResultAttachment(ctx context.Context, args CreateTestIterationResultAttachmentArgs) (*test.TestAttachmentReference, error) {
 	if args.AttachmentRequestModel == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "attachmentRequestModel"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.AttachmentRequestModel"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 	if args.TestCaseResultId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "testCaseResultId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestCaseResultId"}
 	}
 	routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
 
@@ -95,19 +95,19 @@ type CreateTestIterationResultAttachmentArgs struct {
 // [Preview API]
 func (client *Client) CreateTestResultAttachment(ctx context.Context, args CreateTestResultAttachmentArgs) (*test.TestAttachmentReference, error) {
 	if args.AttachmentRequestModel == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "attachmentRequestModel"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.AttachmentRequestModel"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 	if args.TestCaseResultId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "testCaseResultId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestCaseResultId"}
 	}
 	routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
 
@@ -141,19 +141,19 @@ type CreateTestResultAttachmentArgs struct {
 // [Preview API]
 func (client *Client) CreateTestSubResultAttachment(ctx context.Context, args CreateTestSubResultAttachmentArgs) (*test.TestAttachmentReference, error) {
 	if args.AttachmentRequestModel == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "attachmentRequestModel"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.AttachmentRequestModel"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 	if args.TestCaseResultId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "testCaseResultId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestCaseResultId"}
 	}
 	routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
 
@@ -195,19 +195,19 @@ type CreateTestSubResultAttachmentArgs struct {
 func (client *Client) DeleteTestResultAttachment(ctx context.Context, args DeleteTestResultAttachmentArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 	if args.TestCaseResultId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "testCaseResultId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.TestCaseResultId"}
 	}
 	routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
 	if args.AttachmentId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "attachmentId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.AttachmentId"}
 	}
 	routeValues["attachmentId"] = strconv.Itoa(*args.AttachmentId)
 
@@ -236,19 +236,19 @@ type DeleteTestResultAttachmentArgs struct {
 func (client *Client) GetTestResultAttachmentContent(ctx context.Context, args GetTestResultAttachmentContentArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 	if args.TestCaseResultId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "testCaseResultId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestCaseResultId"}
 	}
 	routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
 	if args.AttachmentId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "attachmentId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.AttachmentId"}
 	}
 	routeValues["attachmentId"] = strconv.Itoa(*args.AttachmentId)
 
@@ -277,15 +277,15 @@ type GetTestResultAttachmentContentArgs struct {
 func (client *Client) GetTestResultAttachments(ctx context.Context, args GetTestResultAttachmentsArgs) (*[]test.TestAttachment, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 	if args.TestCaseResultId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "testCaseResultId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestCaseResultId"}
 	}
 	routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
 
@@ -314,19 +314,19 @@ type GetTestResultAttachmentsArgs struct {
 func (client *Client) GetTestResultAttachmentZip(ctx context.Context, args GetTestResultAttachmentZipArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 	if args.TestCaseResultId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "testCaseResultId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestCaseResultId"}
 	}
 	routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
 	if args.AttachmentId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "attachmentId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.AttachmentId"}
 	}
 	routeValues["attachmentId"] = strconv.Itoa(*args.AttachmentId)
 
@@ -355,19 +355,19 @@ type GetTestResultAttachmentZipArgs struct {
 func (client *Client) GetTestSubResultAttachmentContent(ctx context.Context, args GetTestSubResultAttachmentContentArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 	if args.TestCaseResultId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "testCaseResultId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestCaseResultId"}
 	}
 	routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
 	if args.AttachmentId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "attachmentId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.AttachmentId"}
 	}
 	routeValues["attachmentId"] = strconv.Itoa(*args.AttachmentId)
 
@@ -403,15 +403,15 @@ type GetTestSubResultAttachmentContentArgs struct {
 func (client *Client) GetTestSubResultAttachments(ctx context.Context, args GetTestSubResultAttachmentsArgs) (*[]test.TestAttachment, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 	if args.TestCaseResultId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "testCaseResultId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestCaseResultId"}
 	}
 	routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
 
@@ -447,19 +447,19 @@ type GetTestSubResultAttachmentsArgs struct {
 func (client *Client) GetTestSubResultAttachmentZip(ctx context.Context, args GetTestSubResultAttachmentZipArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 	if args.TestCaseResultId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "testCaseResultId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestCaseResultId"}
 	}
 	routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
 	if args.AttachmentId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "attachmentId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.AttachmentId"}
 	}
 	routeValues["attachmentId"] = strconv.Itoa(*args.AttachmentId)
 
@@ -494,15 +494,15 @@ type GetTestSubResultAttachmentZipArgs struct {
 // [Preview API]
 func (client *Client) CreateTestRunAttachment(ctx context.Context, args CreateTestRunAttachmentArgs) (*test.TestAttachmentReference, error) {
 	if args.AttachmentRequestModel == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "attachmentRequestModel"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.AttachmentRequestModel"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 
@@ -535,15 +535,15 @@ type CreateTestRunAttachmentArgs struct {
 func (client *Client) DeleteTestRunAttachment(ctx context.Context, args DeleteTestRunAttachmentArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 	if args.AttachmentId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "attachmentId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.AttachmentId"}
 	}
 	routeValues["attachmentId"] = strconv.Itoa(*args.AttachmentId)
 
@@ -570,15 +570,15 @@ type DeleteTestRunAttachmentArgs struct {
 func (client *Client) GetTestRunAttachmentContent(ctx context.Context, args GetTestRunAttachmentContentArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 	if args.AttachmentId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "attachmentId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.AttachmentId"}
 	}
 	routeValues["attachmentId"] = strconv.Itoa(*args.AttachmentId)
 
@@ -605,11 +605,11 @@ type GetTestRunAttachmentContentArgs struct {
 func (client *Client) GetTestRunAttachments(ctx context.Context, args GetTestRunAttachmentsArgs) (*[]test.TestAttachment, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 
@@ -636,15 +636,15 @@ type GetTestRunAttachmentsArgs struct {
 func (client *Client) GetTestRunAttachmentZip(ctx context.Context, args GetTestRunAttachmentZipArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 	if args.AttachmentId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "attachmentId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.AttachmentId"}
 	}
 	routeValues["attachmentId"] = strconv.Itoa(*args.AttachmentId)
 
@@ -671,15 +671,15 @@ type GetTestRunAttachmentZipArgs struct {
 func (client *Client) GetBugsLinkedToTestResult(ctx context.Context, args GetBugsLinkedToTestResultArgs) (*[]test.WorkItemReference, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 	if args.TestCaseResultId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "testCaseResultId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestCaseResultId"}
 	}
 	routeValues["testCaseResultId"] = strconv.Itoa(*args.TestCaseResultId)
 
@@ -708,7 +708,7 @@ type GetBugsLinkedToTestResultArgs struct {
 func (client *Client) GetBuildCodeCoverage(ctx context.Context, args GetBuildCodeCoverageArgs) (*[]test.BuildCoverage, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -746,7 +746,7 @@ type GetBuildCodeCoverageArgs struct {
 func (client *Client) GetCodeCoverageSummary(ctx context.Context, args GetCodeCoverageSummaryArgs) (*test.CodeCoverageSummary, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -783,7 +783,7 @@ type GetCodeCoverageSummaryArgs struct {
 func (client *Client) UpdateCodeCoverageSummary(ctx context.Context, args UpdateCodeCoverageSummaryArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -819,11 +819,11 @@ type UpdateCodeCoverageSummaryArgs struct {
 func (client *Client) GetTestRunCodeCoverage(ctx context.Context, args GetTestRunCodeCoverageArgs) (*[]test.TestRunCoverage, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 
@@ -856,11 +856,11 @@ type GetTestRunCodeCoverageArgs struct {
 // [Preview API]
 func (client *Client) QueryTestResultHistory(ctx context.Context, args QueryTestResultHistoryArgs) (*test.TestResultHistory, error) {
 	if args.Filter == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "filter"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Filter"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -891,7 +891,7 @@ type QueryTestResultHistoryArgs struct {
 func (client *Client) GetTestResultDetailsForBuild(ctx context.Context, args GetTestResultDetailsForBuildArgs) (*test.TestResultsDetails, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -953,7 +953,7 @@ type GetTestResultDetailsForBuildArgs struct {
 func (client *Client) GetTestResultDetailsForRelease(ctx context.Context, args GetTestResultDetailsForReleaseArgs) (*test.TestResultsDetails, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -1020,11 +1020,11 @@ type GetTestResultDetailsForReleaseArgs struct {
 // [Preview API]
 func (client *Client) GetTestResultsByQuery(ctx context.Context, args GetTestResultsByQueryArgs) (*test.TestResultsQuery, error) {
 	if args.Query == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "query"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Query"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -1054,11 +1054,11 @@ type GetTestResultsByQueryArgs struct {
 // [Preview API]
 func (client *Client) GetTestResultsByQueryWiql(ctx context.Context, args GetTestResultsByQueryWiqlArgs) (*[]test.TestCaseResult, error) {
 	if args.QueryModel == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "queryModel"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.QueryModel"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -1109,15 +1109,15 @@ type GetTestResultsByQueryWiqlArgs struct {
 // [Preview API]
 func (client *Client) AddTestResultsToTestRun(ctx context.Context, args AddTestResultsToTestRunArgs) (*[]test.TestCaseResult, error) {
 	if args.Results == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "results"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Results"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 
@@ -1150,15 +1150,15 @@ type AddTestResultsToTestRunArgs struct {
 func (client *Client) GetTestResultById(ctx context.Context, args GetTestResultByIdArgs) (*test.TestCaseResult, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 	if args.TestResultId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "testResultId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestResultId"}
 	}
 	routeValues["testResultId"] = strconv.Itoa(*args.TestResultId)
 
@@ -1193,11 +1193,11 @@ type GetTestResultByIdArgs struct {
 func (client *Client) GetTestResults(ctx context.Context, args GetTestResultsArgs) (*[]test.TestCaseResult, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 
@@ -1249,15 +1249,15 @@ type GetTestResultsArgs struct {
 // [Preview API]
 func (client *Client) UpdateTestResults(ctx context.Context, args UpdateTestResultsArgs) (*[]test.TestCaseResult, error) {
 	if args.Results == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "results"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Results"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 
@@ -1290,7 +1290,7 @@ type UpdateTestResultsArgs struct {
 func (client *Client) QueryTestResultsReportForBuild(ctx context.Context, args QueryTestResultsReportForBuildArgs) (*test.TestResultSummary, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -1357,7 +1357,7 @@ type QueryTestResultsReportForBuildArgs struct {
 func (client *Client) QueryTestResultsReportForRelease(ctx context.Context, args QueryTestResultsReportForReleaseArgs) (*test.TestResultSummary, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -1438,11 +1438,11 @@ type QueryTestResultsReportForReleaseArgs struct {
 // [Preview API]
 func (client *Client) QueryTestResultsSummaryForReleases(ctx context.Context, args QueryTestResultsSummaryForReleasesArgs) (*[]test.TestResultSummary, error) {
 	if args.Releases == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "releases"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Releases"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -1472,11 +1472,11 @@ type QueryTestResultsSummaryForReleasesArgs struct {
 // [Preview API]
 func (client *Client) QueryTestSummaryByRequirement(ctx context.Context, args QueryTestSummaryByRequirementArgs) (*[]test.TestSummaryForWorkItem, error) {
 	if args.ResultsContext == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "resultsContext"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ResultsContext"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -1517,11 +1517,11 @@ type QueryTestSummaryByRequirementArgs struct {
 // [Preview API]
 func (client *Client) QueryResultTrendForBuild(ctx context.Context, args QueryResultTrendForBuildArgs) (*[]test.AggregatedDataForResultTrend, error) {
 	if args.Filter == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "filter"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Filter"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -1551,11 +1551,11 @@ type QueryResultTrendForBuildArgs struct {
 // [Preview API]
 func (client *Client) QueryResultTrendForRelease(ctx context.Context, args QueryResultTrendForReleaseArgs) (*[]test.AggregatedDataForResultTrend, error) {
 	if args.Filter == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "filter"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Filter"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -1585,11 +1585,11 @@ type QueryResultTrendForReleaseArgs struct {
 // [Preview API]
 func (client *Client) CreateTestRun(ctx context.Context, args CreateTestRunArgs) (*test.TestRun, error) {
 	if args.TestRun == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "testRun"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestRun"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -1620,11 +1620,11 @@ type CreateTestRunArgs struct {
 func (client *Client) DeleteTestRun(ctx context.Context, args DeleteTestRunArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 
@@ -1649,11 +1649,11 @@ type DeleteTestRunArgs struct {
 func (client *Client) GetTestRunById(ctx context.Context, args GetTestRunByIdArgs) (*test.TestRun, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 
@@ -1691,7 +1691,7 @@ type GetTestRunByIdArgs struct {
 func (client *Client) GetTestRuns(ctx context.Context, args GetTestRunsArgs) (*[]test.TestRun, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -1757,7 +1757,7 @@ type GetTestRunsArgs struct {
 func (client *Client) QueryTestRuns(ctx context.Context, args QueryTestRunsArgs) (*QueryTestRunsResponseValue, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -1907,15 +1907,15 @@ type QueryTestRunsResponseValue struct {
 // [Preview API]
 func (client *Client) UpdateTestRun(ctx context.Context, args UpdateTestRunArgs) (*test.TestRun, error) {
 	if args.RunUpdateModel == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runUpdateModel"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunUpdateModel"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 
@@ -1948,11 +1948,11 @@ type UpdateTestRunArgs struct {
 func (client *Client) GetTestRunStatistics(ctx context.Context, args GetTestRunStatisticsArgs) (*test.TestRunStatistic, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 
@@ -1979,7 +1979,7 @@ type GetTestRunStatisticsArgs struct {
 func (client *Client) GetTestResultsSettings(ctx context.Context, args GetTestResultsSettingsArgs) (*test.TestResultsSettings, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -2009,11 +2009,11 @@ type GetTestResultsSettingsArgs struct {
 // [Preview API] Update project settings of test results
 func (client *Client) UpdatePipelinesTestSettings(ctx context.Context, args UpdatePipelinesTestSettingsArgs) (*test.TestResultsSettings, error) {
 	if args.TestResultsUpdateSettings == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "testResultsUpdateSettings"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestResultsUpdateSettings"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -2043,11 +2043,11 @@ type UpdatePipelinesTestSettingsArgs struct {
 // [Preview API] Get history of a test method using TestHistoryQuery
 func (client *Client) QueryTestHistory(ctx context.Context, args QueryTestHistoryArgs) (*test.TestHistoryQuery, error) {
 	if args.Filter == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "filter"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Filter"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -2078,7 +2078,7 @@ type QueryTestHistoryArgs struct {
 func (client *Client) GetTestLogsForBuild(ctx context.Context, args GetTestLogsForBuildArgs) (*GetTestLogsForBuildResponseValue, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -2150,15 +2150,15 @@ type GetTestLogsForBuildResponseValue struct {
 func (client *Client) GetTestResultLogs(ctx context.Context, args GetTestResultLogsArgs) (*GetTestResultLogsResponseValue, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 	if args.ResultId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "resultId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ResultId"}
 	}
 	routeValues["resultId"] = strconv.Itoa(*args.ResultId)
 
@@ -2228,15 +2228,15 @@ type GetTestResultLogsResponseValue struct {
 func (client *Client) GetTestSubResultLogs(ctx context.Context, args GetTestSubResultLogsArgs) (*GetTestSubResultLogsResponseValue, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 	if args.ResultId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "resultId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ResultId"}
 	}
 	routeValues["resultId"] = strconv.Itoa(*args.ResultId)
 
@@ -2312,11 +2312,11 @@ type GetTestSubResultLogsResponseValue struct {
 func (client *Client) GetTestRunLogs(ctx context.Context, args GetTestRunLogsArgs) (*GetTestRunLogsResponseValue, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 
@@ -2384,7 +2384,7 @@ type GetTestRunLogsResponseValue struct {
 func (client *Client) GetTestLogStoreEndpointDetailsForBuildLog(ctx context.Context, args GetTestLogStoreEndpointDetailsForBuildLogArgs) (*test.TestLogStoreEndpointDetails, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -2428,7 +2428,7 @@ type GetTestLogStoreEndpointDetailsForBuildLogArgs struct {
 func (client *Client) TestLogStoreEndpointDetailsForBuild(ctx context.Context, args TestLogStoreEndpointDetailsForBuildArgs) (*test.TestLogStoreEndpointDetails, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -2466,15 +2466,15 @@ type TestLogStoreEndpointDetailsForBuildArgs struct {
 func (client *Client) GetTestLogStoreEndpointDetailsForResultLog(ctx context.Context, args GetTestLogStoreEndpointDetailsForResultLogArgs) (*test.TestLogStoreEndpointDetails, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 	if args.ResultId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "resultId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ResultId"}
 	}
 	routeValues["resultId"] = strconv.Itoa(*args.ResultId)
 
@@ -2516,15 +2516,15 @@ type GetTestLogStoreEndpointDetailsForResultLogArgs struct {
 func (client *Client) GetTestLogStoreEndpointDetailsForSubResultLog(ctx context.Context, args GetTestLogStoreEndpointDetailsForSubResultLogArgs) (*test.TestLogStoreEndpointDetails, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 	if args.ResultId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "resultId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ResultId"}
 	}
 	routeValues["resultId"] = strconv.Itoa(*args.ResultId)
 
@@ -2572,15 +2572,15 @@ type GetTestLogStoreEndpointDetailsForSubResultLogArgs struct {
 func (client *Client) TestLogStoreEndpointDetailsForResult(ctx context.Context, args TestLogStoreEndpointDetailsForResultArgs) (*test.TestLogStoreEndpointDetails, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 	if args.ResultId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "resultId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ResultId"}
 	}
 	routeValues["resultId"] = strconv.Itoa(*args.ResultId)
 
@@ -2628,11 +2628,11 @@ type TestLogStoreEndpointDetailsForResultArgs struct {
 func (client *Client) GetTestLogStoreEndpointDetailsForRunLog(ctx context.Context, args GetTestLogStoreEndpointDetailsForRunLogArgs) (*test.TestLogStoreEndpointDetails, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 
@@ -2672,11 +2672,11 @@ type GetTestLogStoreEndpointDetailsForRunLogArgs struct {
 func (client *Client) TestLogStoreEndpointDetailsForRun(ctx context.Context, args TestLogStoreEndpointDetailsForRunArgs) (*test.TestLogStoreEndpointDetails, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.RunId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "runId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunId"}
 	}
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 
@@ -2719,11 +2719,11 @@ type TestLogStoreEndpointDetailsForRunArgs struct {
 // [Preview API]
 func (client *Client) CreateTestSettings(ctx context.Context, args CreateTestSettingsArgs) (*int, error) {
 	if args.TestSettings == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "testSettings"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestSettings"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -2754,7 +2754,7 @@ type CreateTestSettingsArgs struct {
 func (client *Client) DeleteTestSettings(ctx context.Context, args DeleteTestSettingsArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -2784,7 +2784,7 @@ type DeleteTestSettingsArgs struct {
 func (client *Client) GetTestSettingsById(ctx context.Context, args GetTestSettingsByIdArgs) (*test.TestSettings, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -2815,11 +2815,11 @@ type GetTestSettingsByIdArgs struct {
 // [Preview API]
 func (client *Client) AddWorkItemToTestLinks(ctx context.Context, args AddWorkItemToTestLinksArgs) (*test.WorkItemToTestLinks, error) {
 	if args.WorkItemToTestLinks == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "workItemToTestLinks"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WorkItemToTestLinks"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -2850,7 +2850,7 @@ type AddWorkItemToTestLinksArgs struct {
 func (client *Client) DeleteTestMethodToWorkItemLink(ctx context.Context, args DeleteTestMethodToWorkItemLinkArgs) (*bool, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -2888,7 +2888,7 @@ type DeleteTestMethodToWorkItemLinkArgs struct {
 func (client *Client) QueryTestMethodLinkedWorkItems(ctx context.Context, args QueryTestMethodLinkedWorkItemsArgs) (*test.TestToWorkItemLinks, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -2920,7 +2920,7 @@ type QueryTestMethodLinkedWorkItemsArgs struct {
 func (client *Client) QueryTestResultWorkItems(ctx context.Context, args QueryTestResultWorkItemsArgs) (*[]test.WorkItemReference, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 

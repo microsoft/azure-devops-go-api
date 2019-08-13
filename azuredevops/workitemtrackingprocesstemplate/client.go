@@ -38,7 +38,7 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client
 func (client *Client) GetBehavior(ctx context.Context, args GetBehaviorArgs) (*AdminBehavior, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 
@@ -70,7 +70,7 @@ type GetBehaviorArgs struct {
 func (client *Client) GetBehaviors(ctx context.Context, args GetBehaviorsArgs) (*[]AdminBehavior, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 
@@ -95,7 +95,7 @@ type GetBehaviorsArgs struct {
 func (client *Client) ExportProcessTemplate(ctx context.Context, args ExportProcessTemplateArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = (*args.Id).String()
 	routeValues["action"] = "Export"
@@ -118,7 +118,7 @@ type ExportProcessTemplateArgs struct {
 // [Preview API] Imports a process from zip file.
 func (client *Client) ImportProcessTemplate(ctx context.Context, args ImportProcessTemplateArgs) (*ProcessImportResult, error) {
 	if args.UploadStream == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "uploadStream"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UploadStream"}
 	}
 	routeValues := make(map[string]string)
 	routeValues["action"] = "Import"
@@ -155,7 +155,7 @@ type ImportProcessTemplateArgs struct {
 func (client *Client) ImportProcessTemplateStatus(ctx context.Context, args ImportProcessTemplateStatusArgs) (*ProcessPromoteStatus, error) {
 	routeValues := make(map[string]string)
 	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = (*args.Id).String()
 	routeValues["action"] = "Status"

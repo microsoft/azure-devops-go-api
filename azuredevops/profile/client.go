@@ -37,7 +37,7 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client
 func (client *Client) GetProfile(ctx context.Context, args GetProfileArgs) (*Profile, error) {
 	routeValues := make(map[string]string)
 	if args.Id == nil || *args.Id == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = *args.Id
 

@@ -57,7 +57,7 @@ type GetAllFeatureFlagsArgs struct {
 func (client *Client) GetFeatureFlagByName(ctx context.Context, args GetFeatureFlagByNameArgs) (*FeatureFlag, error) {
 	routeValues := make(map[string]string)
 	if args.Name == nil || *args.Name == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "name"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Name"}
 	}
 	routeValues["name"] = *args.Name
 
@@ -88,7 +88,7 @@ type GetFeatureFlagByNameArgs struct {
 func (client *Client) GetFeatureFlagByNameAndUserEmail(ctx context.Context, args GetFeatureFlagByNameAndUserEmailArgs) (*FeatureFlag, error) {
 	routeValues := make(map[string]string)
 	if args.Name == nil || *args.Name == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "name"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Name"}
 	}
 	routeValues["name"] = *args.Name
 
@@ -125,7 +125,7 @@ type GetFeatureFlagByNameAndUserEmailArgs struct {
 func (client *Client) GetFeatureFlagByNameAndUserId(ctx context.Context, args GetFeatureFlagByNameAndUserIdArgs) (*FeatureFlag, error) {
 	routeValues := make(map[string]string)
 	if args.Name == nil || *args.Name == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "name"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Name"}
 	}
 	routeValues["name"] = *args.Name
 
@@ -161,11 +161,11 @@ type GetFeatureFlagByNameAndUserIdArgs struct {
 // [Preview API] Change the state of an individual feature flag for a name
 func (client *Client) UpdateFeatureFlag(ctx context.Context, args UpdateFeatureFlagArgs) (*FeatureFlag, error) {
 	if args.State == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "state"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.State"}
 	}
 	routeValues := make(map[string]string)
 	if args.Name == nil || *args.Name == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "name"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Name"}
 	}
 	routeValues["name"] = *args.Name
 

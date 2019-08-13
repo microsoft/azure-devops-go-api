@@ -341,7 +341,7 @@ func transformRouteTemplate(routeTemplate string, routeValues map[string]string)
 	}
 	// following covers oddball templates with segments that include the token and additional constants
 	for key, value := range routeValues {
-		newTemplate = strings.Replace(newTemplate, "{" + key + "}", value, -1)
+		newTemplate = strings.Replace(newTemplate, "{"+key+"}", value, -1)
 	}
 	return newTemplate
 }

@@ -39,15 +39,15 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client
 func (client *Client) DeletePackageVersionFromRecycleBin(ctx context.Context, args DeletePackageVersionFromRecycleBinArgs) error {
 	routeValues := make(map[string]string)
 	if args.FeedId == nil || *args.FeedId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FeedId"}
 	}
 	routeValues["feedId"] = *args.FeedId
 	if args.PackageName == nil || *args.PackageName == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PackageName"}
 	}
 	routeValues["packageName"] = *args.PackageName
 	if args.PackageVersion == nil || *args.PackageVersion == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "packageVersion"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PackageVersion"}
 	}
 	routeValues["packageVersion"] = *args.PackageVersion
 
@@ -74,15 +74,15 @@ type DeletePackageVersionFromRecycleBinArgs struct {
 func (client *Client) GetPackageVersionMetadataFromRecycleBin(ctx context.Context, args GetPackageVersionMetadataFromRecycleBinArgs) (*UPackPackageVersionDeletionState, error) {
 	routeValues := make(map[string]string)
 	if args.FeedId == nil || *args.FeedId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FeedId"}
 	}
 	routeValues["feedId"] = *args.FeedId
 	if args.PackageName == nil || *args.PackageName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PackageName"}
 	}
 	routeValues["packageName"] = *args.PackageName
 	if args.PackageVersion == nil || *args.PackageVersion == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "packageVersion"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PackageVersion"}
 	}
 	routeValues["packageVersion"] = *args.PackageVersion
 
@@ -110,19 +110,19 @@ type GetPackageVersionMetadataFromRecycleBinArgs struct {
 // [Preview API] Restore a package version from the recycle bin to its associated feed.
 func (client *Client) RestorePackageVersionFromRecycleBin(ctx context.Context, args RestorePackageVersionFromRecycleBinArgs) error {
 	if args.PackageVersionDetails == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "packageVersionDetails"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.PackageVersionDetails"}
 	}
 	routeValues := make(map[string]string)
 	if args.FeedId == nil || *args.FeedId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FeedId"}
 	}
 	routeValues["feedId"] = *args.FeedId
 	if args.PackageName == nil || *args.PackageName == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PackageName"}
 	}
 	routeValues["packageName"] = *args.PackageName
 	if args.PackageVersion == nil || *args.PackageVersion == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "packageVersion"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PackageVersion"}
 	}
 	routeValues["packageVersion"] = *args.PackageVersion
 
@@ -155,15 +155,15 @@ type RestorePackageVersionFromRecycleBinArgs struct {
 func (client *Client) DeletePackageVersion(ctx context.Context, args DeletePackageVersionArgs) (*Package, error) {
 	routeValues := make(map[string]string)
 	if args.FeedId == nil || *args.FeedId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FeedId"}
 	}
 	routeValues["feedId"] = *args.FeedId
 	if args.PackageName == nil || *args.PackageName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PackageName"}
 	}
 	routeValues["packageName"] = *args.PackageName
 	if args.PackageVersion == nil || *args.PackageVersion == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "packageVersion"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PackageVersion"}
 	}
 	routeValues["packageVersion"] = *args.PackageVersion
 
@@ -192,15 +192,15 @@ type DeletePackageVersionArgs struct {
 func (client *Client) GetPackageVersion(ctx context.Context, args GetPackageVersionArgs) (*Package, error) {
 	routeValues := make(map[string]string)
 	if args.FeedId == nil || *args.FeedId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FeedId"}
 	}
 	routeValues["feedId"] = *args.FeedId
 	if args.PackageName == nil || *args.PackageName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PackageName"}
 	}
 	routeValues["packageName"] = *args.PackageName
 	if args.PackageVersion == nil || *args.PackageVersion == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "packageVersion"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PackageVersion"}
 	}
 	routeValues["packageVersion"] = *args.PackageVersion
 
@@ -234,19 +234,19 @@ type GetPackageVersionArgs struct {
 // [Preview API] Update information for a package version.
 func (client *Client) UpdatePackageVersion(ctx context.Context, args UpdatePackageVersionArgs) error {
 	if args.PackageVersionDetails == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "packageVersionDetails"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.PackageVersionDetails"}
 	}
 	routeValues := make(map[string]string)
 	if args.FeedId == nil || *args.FeedId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FeedId"}
 	}
 	routeValues["feedId"] = *args.FeedId
 	if args.PackageName == nil || *args.PackageName == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PackageName"}
 	}
 	routeValues["packageName"] = *args.PackageName
 	if args.PackageVersion == nil || *args.PackageVersion == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "packageVersion"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PackageVersion"}
 	}
 	routeValues["packageVersion"] = *args.PackageVersion
 

@@ -32,7 +32,7 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) *Client 
 func (client *Client) GetEntries(ctx context.Context, args GetEntriesArgs) (*map[string]interface{}, error) {
 	routeValues := make(map[string]string)
 	if args.UserScope == nil || *args.UserScope == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "userScope"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.UserScope"}
 	}
 	routeValues["userScope"] = *args.UserScope
 	if args.Key != nil && *args.Key != "" {
@@ -62,11 +62,11 @@ type GetEntriesArgs struct {
 func (client *Client) RemoveEntries(ctx context.Context, args RemoveEntriesArgs) error {
 	routeValues := make(map[string]string)
 	if args.UserScope == nil || *args.UserScope == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "userScope"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.UserScope"}
 	}
 	routeValues["userScope"] = *args.UserScope
 	if args.Key == nil || *args.Key == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "key"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Key"}
 	}
 	routeValues["key"] = *args.Key
 
@@ -90,11 +90,11 @@ type RemoveEntriesArgs struct {
 // [Preview API] Set the specified setting entry values for the given user/all-users scope
 func (client *Client) SetEntries(ctx context.Context, args SetEntriesArgs) error {
 	if args.Entries == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "entries"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.Entries"}
 	}
 	routeValues := make(map[string]string)
 	if args.UserScope == nil || *args.UserScope == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "userScope"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.UserScope"}
 	}
 	routeValues["userScope"] = *args.UserScope
 
@@ -123,15 +123,15 @@ type SetEntriesArgs struct {
 func (client *Client) GetEntriesForScope(ctx context.Context, args GetEntriesForScopeArgs) (*map[string]interface{}, error) {
 	routeValues := make(map[string]string)
 	if args.UserScope == nil || *args.UserScope == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "userScope"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.UserScope"}
 	}
 	routeValues["userScope"] = *args.UserScope
 	if args.ScopeName == nil || *args.ScopeName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "scopeName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ScopeName"}
 	}
 	routeValues["scopeName"] = *args.ScopeName
 	if args.ScopeValue == nil || *args.ScopeValue == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "scopeValue"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ScopeValue"}
 	}
 	routeValues["scopeValue"] = *args.ScopeValue
 	if args.Key != nil && *args.Key != "" {
@@ -165,19 +165,19 @@ type GetEntriesForScopeArgs struct {
 func (client *Client) RemoveEntriesForScope(ctx context.Context, args RemoveEntriesForScopeArgs) error {
 	routeValues := make(map[string]string)
 	if args.UserScope == nil || *args.UserScope == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "userScope"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.UserScope"}
 	}
 	routeValues["userScope"] = *args.UserScope
 	if args.ScopeName == nil || *args.ScopeName == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "scopeName"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ScopeName"}
 	}
 	routeValues["scopeName"] = *args.ScopeName
 	if args.ScopeValue == nil || *args.ScopeValue == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "scopeValue"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ScopeValue"}
 	}
 	routeValues["scopeValue"] = *args.ScopeValue
 	if args.Key == nil || *args.Key == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "key"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Key"}
 	}
 	routeValues["key"] = *args.Key
 
@@ -205,19 +205,19 @@ type RemoveEntriesForScopeArgs struct {
 // [Preview API] Set the specified entries for the given named scope
 func (client *Client) SetEntriesForScope(ctx context.Context, args SetEntriesForScopeArgs) error {
 	if args.Entries == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "entries"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.Entries"}
 	}
 	routeValues := make(map[string]string)
 	if args.UserScope == nil || *args.UserScope == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "userScope"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.UserScope"}
 	}
 	routeValues["userScope"] = *args.UserScope
 	if args.ScopeName == nil || *args.ScopeName == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "scopeName"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ScopeName"}
 	}
 	routeValues["scopeName"] = *args.ScopeName
 	if args.ScopeValue == nil || *args.ScopeValue == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "scopeValue"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ScopeValue"}
 	}
 	routeValues["scopeValue"] = *args.ScopeValue
 

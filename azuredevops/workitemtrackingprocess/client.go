@@ -37,11 +37,11 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client
 // [Preview API] Creates a single behavior in the given process.
 func (client *Client) CreateProcessBehavior(ctx context.Context, args CreateProcessBehaviorArgs) (*ProcessBehavior, error) {
 	if args.Behavior == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "behavior"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Behavior"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 
@@ -72,11 +72,11 @@ type CreateProcessBehaviorArgs struct {
 func (client *Client) DeleteProcessBehavior(ctx context.Context, args DeleteProcessBehaviorArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.BehaviorRefName == nil || *args.BehaviorRefName == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "behaviorRefName"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.BehaviorRefName"}
 	}
 	routeValues["behaviorRefName"] = *args.BehaviorRefName
 
@@ -101,11 +101,11 @@ type DeleteProcessBehaviorArgs struct {
 func (client *Client) GetProcessBehavior(ctx context.Context, args GetProcessBehaviorArgs) (*ProcessBehavior, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.BehaviorRefName == nil || *args.BehaviorRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "behaviorRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.BehaviorRefName"}
 	}
 	routeValues["behaviorRefName"] = *args.BehaviorRefName
 
@@ -138,7 +138,7 @@ type GetProcessBehaviorArgs struct {
 func (client *Client) GetProcessBehaviors(ctx context.Context, args GetProcessBehaviorsArgs) (*[]ProcessBehavior, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 
@@ -168,15 +168,15 @@ type GetProcessBehaviorsArgs struct {
 // [Preview API] Replaces a behavior in the process.
 func (client *Client) UpdateProcessBehavior(ctx context.Context, args UpdateProcessBehaviorArgs) (*ProcessBehavior, error) {
 	if args.BehaviorData == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "behaviorData"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.BehaviorData"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.BehaviorRefName == nil || *args.BehaviorRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "behaviorRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.BehaviorRefName"}
 	}
 	routeValues["behaviorRefName"] = *args.BehaviorRefName
 
@@ -208,19 +208,19 @@ type UpdateProcessBehaviorArgs struct {
 // [Preview API] Creates a control in a group.
 func (client *Client) CreateControlInGroup(ctx context.Context, args CreateControlInGroupArgs) (*Control, error) {
 	if args.Control == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "control"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Control"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 	if args.GroupId == nil || *args.GroupId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.GroupId"}
 	}
 	routeValues["groupId"] = *args.GroupId
 
@@ -254,23 +254,23 @@ type CreateControlInGroupArgs struct {
 // [Preview API] Moves a control to a specified group.
 func (client *Client) MoveControlToGroup(ctx context.Context, args MoveControlToGroupArgs) (*Control, error) {
 	if args.Control == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "control"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Control"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 	if args.GroupId == nil || *args.GroupId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.GroupId"}
 	}
 	routeValues["groupId"] = *args.GroupId
 	if args.ControlId == nil || *args.ControlId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "controlId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ControlId"}
 	}
 	routeValues["controlId"] = *args.ControlId
 
@@ -313,19 +313,19 @@ type MoveControlToGroupArgs struct {
 func (client *Client) RemoveControlFromGroup(ctx context.Context, args RemoveControlFromGroupArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 	if args.GroupId == nil || *args.GroupId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.GroupId"}
 	}
 	routeValues["groupId"] = *args.GroupId
 	if args.ControlId == nil || *args.ControlId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "controlId"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ControlId"}
 	}
 	routeValues["controlId"] = *args.ControlId
 
@@ -353,23 +353,23 @@ type RemoveControlFromGroupArgs struct {
 // [Preview API] Updates a control on the work item form.
 func (client *Client) UpdateControl(ctx context.Context, args UpdateControlArgs) (*Control, error) {
 	if args.Control == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "control"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Control"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 	if args.GroupId == nil || *args.GroupId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.GroupId"}
 	}
 	routeValues["groupId"] = *args.GroupId
 	if args.ControlId == nil || *args.ControlId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "controlId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ControlId"}
 	}
 	routeValues["controlId"] = *args.ControlId
 
@@ -405,15 +405,15 @@ type UpdateControlArgs struct {
 // [Preview API] Adds a field to a work item type.
 func (client *Client) AddFieldToWorkItemType(ctx context.Context, args AddFieldToWorkItemTypeArgs) (*ProcessWorkItemTypeField, error) {
 	if args.Field == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "field"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Field"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 
@@ -446,11 +446,11 @@ type AddFieldToWorkItemTypeArgs struct {
 func (client *Client) GetAllWorkItemTypeFields(ctx context.Context, args GetAllWorkItemTypeFieldsArgs) (*[]ProcessWorkItemTypeField, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 
@@ -477,15 +477,15 @@ type GetAllWorkItemTypeFieldsArgs struct {
 func (client *Client) GetWorkItemTypeField(ctx context.Context, args GetWorkItemTypeFieldArgs) (*ProcessWorkItemTypeField, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 	if args.FieldRefName == nil || *args.FieldRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "fieldRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FieldRefName"}
 	}
 	routeValues["fieldRefName"] = *args.FieldRefName
 
@@ -514,15 +514,15 @@ type GetWorkItemTypeFieldArgs struct {
 func (client *Client) RemoveWorkItemTypeField(ctx context.Context, args RemoveWorkItemTypeFieldArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 	if args.FieldRefName == nil || *args.FieldRefName == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "fieldRefName"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FieldRefName"}
 	}
 	routeValues["fieldRefName"] = *args.FieldRefName
 
@@ -548,19 +548,19 @@ type RemoveWorkItemTypeFieldArgs struct {
 // [Preview API] Updates a field in a work item type.
 func (client *Client) UpdateWorkItemTypeField(ctx context.Context, args UpdateWorkItemTypeFieldArgs) (*ProcessWorkItemTypeField, error) {
 	if args.Field == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "field"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Field"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 	if args.FieldRefName == nil || *args.FieldRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "fieldRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FieldRefName"}
 	}
 	routeValues["fieldRefName"] = *args.FieldRefName
 
@@ -594,23 +594,23 @@ type UpdateWorkItemTypeFieldArgs struct {
 // [Preview API] Adds a group to the work item form.
 func (client *Client) AddGroup(ctx context.Context, args AddGroupArgs) (*Group, error) {
 	if args.Group == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "group"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Group"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 	if args.PageId == nil || *args.PageId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "pageId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PageId"}
 	}
 	routeValues["pageId"] = *args.PageId
 	if args.SectionId == nil || *args.SectionId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "sectionId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SectionId"}
 	}
 	routeValues["sectionId"] = *args.SectionId
 
@@ -646,27 +646,27 @@ type AddGroupArgs struct {
 // [Preview API] Moves a group to a different page and section.
 func (client *Client) MoveGroupToPage(ctx context.Context, args MoveGroupToPageArgs) (*Group, error) {
 	if args.Group == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "group"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Group"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 	if args.PageId == nil || *args.PageId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "pageId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PageId"}
 	}
 	routeValues["pageId"] = *args.PageId
 	if args.SectionId == nil || *args.SectionId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "sectionId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SectionId"}
 	}
 	routeValues["sectionId"] = *args.SectionId
 	if args.GroupId == nil || *args.GroupId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.GroupId"}
 	}
 	routeValues["groupId"] = *args.GroupId
 
@@ -717,27 +717,27 @@ type MoveGroupToPageArgs struct {
 // [Preview API] Moves a group to a different section.
 func (client *Client) MoveGroupToSection(ctx context.Context, args MoveGroupToSectionArgs) (*Group, error) {
 	if args.Group == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "group"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Group"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 	if args.PageId == nil || *args.PageId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "pageId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PageId"}
 	}
 	routeValues["pageId"] = *args.PageId
 	if args.SectionId == nil || *args.SectionId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "sectionId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SectionId"}
 	}
 	routeValues["sectionId"] = *args.SectionId
 	if args.GroupId == nil || *args.GroupId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.GroupId"}
 	}
 	routeValues["groupId"] = *args.GroupId
 
@@ -783,23 +783,23 @@ type MoveGroupToSectionArgs struct {
 func (client *Client) RemoveGroup(ctx context.Context, args RemoveGroupArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 	if args.PageId == nil || *args.PageId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "pageId"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PageId"}
 	}
 	routeValues["pageId"] = *args.PageId
 	if args.SectionId == nil || *args.SectionId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "sectionId"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SectionId"}
 	}
 	routeValues["sectionId"] = *args.SectionId
 	if args.GroupId == nil || *args.GroupId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.GroupId"}
 	}
 	routeValues["groupId"] = *args.GroupId
 
@@ -829,27 +829,27 @@ type RemoveGroupArgs struct {
 // [Preview API] Updates a group in the work item form.
 func (client *Client) UpdateGroup(ctx context.Context, args UpdateGroupArgs) (*Group, error) {
 	if args.Group == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "group"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Group"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 	if args.PageId == nil || *args.PageId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "pageId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PageId"}
 	}
 	routeValues["pageId"] = *args.PageId
 	if args.SectionId == nil || *args.SectionId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "sectionId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SectionId"}
 	}
 	routeValues["sectionId"] = *args.SectionId
 	if args.GroupId == nil || *args.GroupId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "groupId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.GroupId"}
 	}
 	routeValues["groupId"] = *args.GroupId
 
@@ -888,11 +888,11 @@ type UpdateGroupArgs struct {
 func (client *Client) GetFormLayout(ctx context.Context, args GetFormLayoutArgs) (*FormLayout, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 
@@ -918,7 +918,7 @@ type GetFormLayoutArgs struct {
 // [Preview API] Creates a picklist.
 func (client *Client) CreateList(ctx context.Context, args CreateListArgs) (*PickList, error) {
 	if args.Picklist == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "picklist"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Picklist"}
 	}
 	body, marshalErr := json.Marshal(*args.Picklist)
 	if marshalErr != nil {
@@ -945,7 +945,7 @@ type CreateListArgs struct {
 func (client *Client) DeleteList(ctx context.Context, args DeleteListArgs) error {
 	routeValues := make(map[string]string)
 	if args.ListId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "listId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.ListId"}
 	}
 	routeValues["listId"] = (*args.ListId).String()
 
@@ -968,7 +968,7 @@ type DeleteListArgs struct {
 func (client *Client) GetList(ctx context.Context, args GetListArgs) (*PickList, error) {
 	routeValues := make(map[string]string)
 	if args.ListId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "listId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ListId"}
 	}
 	routeValues["listId"] = (*args.ListId).String()
 
@@ -1009,11 +1009,11 @@ type GetListsMetadataArgs struct {
 // [Preview API] Updates a list.
 func (client *Client) UpdateList(ctx context.Context, args UpdateListArgs) (*PickList, error) {
 	if args.Picklist == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "picklist"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Picklist"}
 	}
 	routeValues := make(map[string]string)
 	if args.ListId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "listId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ListId"}
 	}
 	routeValues["listId"] = (*args.ListId).String()
 
@@ -1043,15 +1043,15 @@ type UpdateListArgs struct {
 // [Preview API] Adds a page to the work item form.
 func (client *Client) AddPage(ctx context.Context, args AddPageArgs) (*Page, error) {
 	if args.Page == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "page"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Page"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 
@@ -1084,15 +1084,15 @@ type AddPageArgs struct {
 func (client *Client) RemovePage(ctx context.Context, args RemovePageArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 	if args.PageId == nil || *args.PageId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "pageId"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PageId"}
 	}
 	routeValues["pageId"] = *args.PageId
 
@@ -1118,15 +1118,15 @@ type RemovePageArgs struct {
 // [Preview API] Updates a page on the work item form
 func (client *Client) UpdatePage(ctx context.Context, args UpdatePageArgs) (*Page, error) {
 	if args.Page == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "page"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Page"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 
@@ -1158,7 +1158,7 @@ type UpdatePageArgs struct {
 // [Preview API] Creates a process.
 func (client *Client) CreateNewProcess(ctx context.Context, args CreateNewProcessArgs) (*ProcessInfo, error) {
 	if args.CreateRequest == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "createRequest"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CreateRequest"}
 	}
 	body, marshalErr := json.Marshal(*args.CreateRequest)
 	if marshalErr != nil {
@@ -1185,7 +1185,7 @@ type CreateNewProcessArgs struct {
 func (client *Client) DeleteProcessById(ctx context.Context, args DeleteProcessByIdArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProcessTypeId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "processTypeId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessTypeId"}
 	}
 	routeValues["processTypeId"] = (*args.ProcessTypeId).String()
 
@@ -1207,11 +1207,11 @@ type DeleteProcessByIdArgs struct {
 // [Preview API] Edit a process of a specific ID.
 func (client *Client) EditProcess(ctx context.Context, args EditProcessArgs) (*ProcessInfo, error) {
 	if args.UpdateRequest == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "updateRequest"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UpdateRequest"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessTypeId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processTypeId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessTypeId"}
 	}
 	routeValues["processTypeId"] = (*args.ProcessTypeId).String()
 
@@ -1265,7 +1265,7 @@ type GetListOfProcessesArgs struct {
 func (client *Client) GetProcessByItsId(ctx context.Context, args GetProcessByItsIdArgs) (*ProcessInfo, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessTypeId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processTypeId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessTypeId"}
 	}
 	routeValues["processTypeId"] = (*args.ProcessTypeId).String()
 
@@ -1295,15 +1295,15 @@ type GetProcessByItsIdArgs struct {
 // [Preview API] Adds a rule to work item type in the process.
 func (client *Client) AddProcessWorkItemTypeRule(ctx context.Context, args AddProcessWorkItemTypeRuleArgs) (*ProcessRule, error) {
 	if args.ProcessRuleCreate == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processRuleCreate"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessRuleCreate"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 
@@ -1336,15 +1336,15 @@ type AddProcessWorkItemTypeRuleArgs struct {
 func (client *Client) DeleteProcessWorkItemTypeRule(ctx context.Context, args DeleteProcessWorkItemTypeRuleArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 	if args.RuleId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "ruleId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.RuleId"}
 	}
 	routeValues["ruleId"] = (*args.RuleId).String()
 
@@ -1371,15 +1371,15 @@ type DeleteProcessWorkItemTypeRuleArgs struct {
 func (client *Client) GetProcessWorkItemTypeRule(ctx context.Context, args GetProcessWorkItemTypeRuleArgs) (*ProcessRule, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 	if args.RuleId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "ruleId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RuleId"}
 	}
 	routeValues["ruleId"] = (*args.RuleId).String()
 
@@ -1408,11 +1408,11 @@ type GetProcessWorkItemTypeRuleArgs struct {
 func (client *Client) GetProcessWorkItemTypeRules(ctx context.Context, args GetProcessWorkItemTypeRulesArgs) (*[]ProcessRule, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 
@@ -1438,19 +1438,19 @@ type GetProcessWorkItemTypeRulesArgs struct {
 // [Preview API] Updates a rule in the work item type of the process.
 func (client *Client) UpdateProcessWorkItemTypeRule(ctx context.Context, args UpdateProcessWorkItemTypeRuleArgs) (*ProcessRule, error) {
 	if args.ProcessRule == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processRule"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessRule"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 	if args.RuleId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "ruleId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RuleId"}
 	}
 	routeValues["ruleId"] = (*args.RuleId).String()
 
@@ -1484,15 +1484,15 @@ type UpdateProcessWorkItemTypeRuleArgs struct {
 // [Preview API] Creates a state definition in the work item type of the process.
 func (client *Client) CreateStateDefinition(ctx context.Context, args CreateStateDefinitionArgs) (*WorkItemStateResultModel, error) {
 	if args.StateModel == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "stateModel"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.StateModel"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 
@@ -1525,15 +1525,15 @@ type CreateStateDefinitionArgs struct {
 func (client *Client) DeleteStateDefinition(ctx context.Context, args DeleteStateDefinitionArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 	if args.StateId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "stateId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.StateId"}
 	}
 	routeValues["stateId"] = (*args.StateId).String()
 
@@ -1560,15 +1560,15 @@ type DeleteStateDefinitionArgs struct {
 func (client *Client) GetStateDefinition(ctx context.Context, args GetStateDefinitionArgs) (*WorkItemStateResultModel, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 	if args.StateId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "stateId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.StateId"}
 	}
 	routeValues["stateId"] = (*args.StateId).String()
 
@@ -1597,11 +1597,11 @@ type GetStateDefinitionArgs struct {
 func (client *Client) GetStateDefinitions(ctx context.Context, args GetStateDefinitionsArgs) (*[]WorkItemStateResultModel, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 
@@ -1627,19 +1627,19 @@ type GetStateDefinitionsArgs struct {
 // [Preview API] Hides a state definition in the work item type of the process.Only states with customizationType:System can be hidden.
 func (client *Client) HideStateDefinition(ctx context.Context, args HideStateDefinitionArgs) (*WorkItemStateResultModel, error) {
 	if args.HideStateModel == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "hideStateModel"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.HideStateModel"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 	if args.StateId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "stateId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.StateId"}
 	}
 	routeValues["stateId"] = (*args.StateId).String()
 
@@ -1673,19 +1673,19 @@ type HideStateDefinitionArgs struct {
 // [Preview API] Updates a given state definition in the work item type of the process.
 func (client *Client) UpdateStateDefinition(ctx context.Context, args UpdateStateDefinitionArgs) (*WorkItemStateResultModel, error) {
 	if args.StateModel == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "stateModel"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.StateModel"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 	if args.StateId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "stateId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.StateId"}
 	}
 	routeValues["stateId"] = (*args.StateId).String()
 
@@ -1719,11 +1719,11 @@ type UpdateStateDefinitionArgs struct {
 // [Preview API] Creates a work item type in the process.
 func (client *Client) CreateProcessWorkItemType(ctx context.Context, args CreateProcessWorkItemTypeArgs) (*ProcessWorkItemType, error) {
 	if args.WorkItemType == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "workItemType"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WorkItemType"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 
@@ -1754,11 +1754,11 @@ type CreateProcessWorkItemTypeArgs struct {
 func (client *Client) DeleteProcessWorkItemType(ctx context.Context, args DeleteProcessWorkItemTypeArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 
@@ -1783,11 +1783,11 @@ type DeleteProcessWorkItemTypeArgs struct {
 func (client *Client) GetProcessWorkItemType(ctx context.Context, args GetProcessWorkItemTypeArgs) (*ProcessWorkItemType, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 
@@ -1820,7 +1820,7 @@ type GetProcessWorkItemTypeArgs struct {
 func (client *Client) GetProcessWorkItemTypes(ctx context.Context, args GetProcessWorkItemTypesArgs) (*[]ProcessWorkItemType, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 
@@ -1850,15 +1850,15 @@ type GetProcessWorkItemTypesArgs struct {
 // [Preview API] Updates a work item type of the process.
 func (client *Client) UpdateProcessWorkItemType(ctx context.Context, args UpdateProcessWorkItemTypeArgs) (*ProcessWorkItemType, error) {
 	if args.WorkItemTypeUpdate == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "workItemTypeUpdate"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WorkItemTypeUpdate"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefName == nil || *args.WitRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefName"}
 	}
 	routeValues["witRefName"] = *args.WitRefName
 
@@ -1890,15 +1890,15 @@ type UpdateProcessWorkItemTypeArgs struct {
 // [Preview API] Adds a behavior to the work item type of the process.
 func (client *Client) AddBehaviorToWorkItemType(ctx context.Context, args AddBehaviorToWorkItemTypeArgs) (*WorkItemTypeBehavior, error) {
 	if args.Behavior == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "behavior"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Behavior"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefNameForBehaviors == nil || *args.WitRefNameForBehaviors == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefNameForBehaviors"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefNameForBehaviors"}
 	}
 	routeValues["witRefNameForBehaviors"] = *args.WitRefNameForBehaviors
 
@@ -1931,15 +1931,15 @@ type AddBehaviorToWorkItemTypeArgs struct {
 func (client *Client) GetBehaviorForWorkItemType(ctx context.Context, args GetBehaviorForWorkItemTypeArgs) (*WorkItemTypeBehavior, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefNameForBehaviors == nil || *args.WitRefNameForBehaviors == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefNameForBehaviors"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefNameForBehaviors"}
 	}
 	routeValues["witRefNameForBehaviors"] = *args.WitRefNameForBehaviors
 	if args.BehaviorRefName == nil || *args.BehaviorRefName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "behaviorRefName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.BehaviorRefName"}
 	}
 	routeValues["behaviorRefName"] = *args.BehaviorRefName
 
@@ -1968,11 +1968,11 @@ type GetBehaviorForWorkItemTypeArgs struct {
 func (client *Client) GetBehaviorsForWorkItemType(ctx context.Context, args GetBehaviorsForWorkItemTypeArgs) (*[]WorkItemTypeBehavior, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefNameForBehaviors == nil || *args.WitRefNameForBehaviors == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefNameForBehaviors"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefNameForBehaviors"}
 	}
 	routeValues["witRefNameForBehaviors"] = *args.WitRefNameForBehaviors
 
@@ -1999,15 +1999,15 @@ type GetBehaviorsForWorkItemTypeArgs struct {
 func (client *Client) RemoveBehaviorFromWorkItemType(ctx context.Context, args RemoveBehaviorFromWorkItemTypeArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefNameForBehaviors == nil || *args.WitRefNameForBehaviors == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefNameForBehaviors"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefNameForBehaviors"}
 	}
 	routeValues["witRefNameForBehaviors"] = *args.WitRefNameForBehaviors
 	if args.BehaviorRefName == nil || *args.BehaviorRefName == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "behaviorRefName"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.BehaviorRefName"}
 	}
 	routeValues["behaviorRefName"] = *args.BehaviorRefName
 
@@ -2033,15 +2033,15 @@ type RemoveBehaviorFromWorkItemTypeArgs struct {
 // [Preview API] Updates a behavior for the work item type of the process.
 func (client *Client) UpdateBehaviorToWorkItemType(ctx context.Context, args UpdateBehaviorToWorkItemTypeArgs) (*WorkItemTypeBehavior, error) {
 	if args.Behavior == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "behavior"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Behavior"}
 	}
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "processId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
 	}
 	routeValues["processId"] = (*args.ProcessId).String()
 	if args.WitRefNameForBehaviors == nil || *args.WitRefNameForBehaviors == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "witRefNameForBehaviors"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WitRefNameForBehaviors"}
 	}
 	routeValues["witRefNameForBehaviors"] = *args.WitRefNameForBehaviors
 

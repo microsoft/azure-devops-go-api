@@ -39,7 +39,7 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client
 func (client *Client) ListPersonalAccessTokens(ctx context.Context, args ListPersonalAccessTokensArgs) (*TokenAdminPagedSessionTokens, error) {
 	routeValues := make(map[string]string)
 	if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubjectDescriptor"}
 	}
 	routeValues["subjectDescriptor"] = *args.SubjectDescriptor
 
@@ -79,7 +79,7 @@ type ListPersonalAccessTokensArgs struct {
 // [Preview API] Creates a revocation rule to prevent the further usage of any OAuth authorizations that were created before the current point in time and which match the conditions in the rule.
 func (client *Client) CreateRevocationRule(ctx context.Context, args CreateRevocationRuleArgs) error {
 	if args.RevocationRule == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "revocationRule"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.RevocationRule"}
 	}
 	body, marshalErr := json.Marshal(*args.RevocationRule)
 	if marshalErr != nil {
@@ -103,7 +103,7 @@ type CreateRevocationRuleArgs struct {
 // [Preview API] Revokes the listed OAuth authorizations.
 func (client *Client) RevokeAuthorizations(ctx context.Context, args RevokeAuthorizationsArgs) error {
 	if args.Revocations == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "revocations"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.Revocations"}
 	}
 	queryParams := url.Values{}
 	if args.IsPublic != nil {

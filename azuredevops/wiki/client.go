@@ -40,15 +40,15 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client
 // Creates an attachment in the wiki.
 func (client *Client) CreateAttachment(ctx context.Context, args CreateAttachmentArgs) (*WikiAttachmentResponse, error) {
 	if args.UploadStream == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "uploadStream"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UploadStream"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WikiIdentifier"}
 	}
 	routeValues["wikiIdentifier"] = *args.WikiIdentifier
 
@@ -105,15 +105,15 @@ type CreateAttachmentArgs struct {
 // Creates a page move operation that updates the path and order of the page as provided in the parameters.
 func (client *Client) CreatePageMove(ctx context.Context, args CreatePageMoveArgs) (*WikiPageMoveResponse, error) {
 	if args.PageMoveParameters == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "pageMoveParameters"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PageMoveParameters"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WikiIdentifier"}
 	}
 	routeValues["wikiIdentifier"] = *args.WikiIdentifier
 
@@ -174,15 +174,15 @@ type CreatePageMoveArgs struct {
 func (client *Client) DeletePageById(ctx context.Context, args DeletePageByIdArgs) (*WikiPageResponse, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WikiIdentifier"}
 	}
 	routeValues["wikiIdentifier"] = *args.WikiIdentifier
 	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = strconv.Itoa(*args.Id)
 
@@ -226,15 +226,15 @@ type DeletePageByIdArgs struct {
 func (client *Client) GetPageById(ctx context.Context, args GetPageByIdArgs) (*WikiPageResponse, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WikiIdentifier"}
 	}
 	routeValues["wikiIdentifier"] = *args.WikiIdentifier
 	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = strconv.Itoa(*args.Id)
 
@@ -283,15 +283,15 @@ type GetPageByIdArgs struct {
 func (client *Client) GetPageByIdText(ctx context.Context, args GetPageByIdTextArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WikiIdentifier"}
 	}
 	routeValues["wikiIdentifier"] = *args.WikiIdentifier
 	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = strconv.Itoa(*args.Id)
 
@@ -329,15 +329,15 @@ type GetPageByIdTextArgs struct {
 func (client *Client) GetPageByIdZip(ctx context.Context, args GetPageByIdZipArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WikiIdentifier"}
 	}
 	routeValues["wikiIdentifier"] = *args.WikiIdentifier
 	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = strconv.Itoa(*args.Id)
 
@@ -374,19 +374,19 @@ type GetPageByIdZipArgs struct {
 // [Preview API] Edits a wiki page.
 func (client *Client) UpdatePageById(ctx context.Context, args UpdatePageByIdArgs) (*WikiPageResponse, error) {
 	if args.Parameters == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "parameters"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Parameters"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WikiIdentifier"}
 	}
 	routeValues["wikiIdentifier"] = *args.WikiIdentifier
 	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = strconv.Itoa(*args.Id)
 
@@ -441,15 +441,15 @@ type UpdatePageByIdArgs struct {
 // Creates or edits a wiki page.
 func (client *Client) CreateOrUpdatePage(ctx context.Context, args CreateOrUpdatePageArgs) (*WikiPageResponse, error) {
 	if args.Parameters == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "parameters"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Parameters"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WikiIdentifier"}
 	}
 	routeValues["wikiIdentifier"] = *args.WikiIdentifier
 
@@ -522,11 +522,11 @@ type CreateOrUpdatePageArgs struct {
 func (client *Client) DeletePage(ctx context.Context, args DeletePageArgs) (*WikiPageResponse, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WikiIdentifier"}
 	}
 	routeValues["wikiIdentifier"] = *args.WikiIdentifier
 
@@ -587,11 +587,11 @@ type DeletePageArgs struct {
 func (client *Client) GetPage(ctx context.Context, args GetPageArgs) (*WikiPageResponse, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WikiIdentifier"}
 	}
 	routeValues["wikiIdentifier"] = *args.WikiIdentifier
 
@@ -656,11 +656,11 @@ type GetPageArgs struct {
 func (client *Client) GetPageText(ctx context.Context, args GetPageTextArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WikiIdentifier"}
 	}
 	routeValues["wikiIdentifier"] = *args.WikiIdentifier
 
@@ -714,11 +714,11 @@ type GetPageTextArgs struct {
 func (client *Client) GetPageZip(ctx context.Context, args GetPageZipArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WikiIdentifier"}
 	}
 	routeValues["wikiIdentifier"] = *args.WikiIdentifier
 
@@ -771,7 +771,7 @@ type GetPageZipArgs struct {
 // Creates the wiki resource.
 func (client *Client) CreateWiki(ctx context.Context, args CreateWikiArgs) (*WikiV2, error) {
 	if args.WikiCreateParams == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "wikiCreateParams"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WikiCreateParams"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
@@ -808,7 +808,7 @@ func (client *Client) DeleteWiki(ctx context.Context, args DeleteWikiArgs) (*Wik
 		routeValues["project"] = *args.Project
 	}
 	if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WikiIdentifier"}
 	}
 	routeValues["wikiIdentifier"] = *args.WikiIdentifier
 
@@ -862,7 +862,7 @@ func (client *Client) GetWiki(ctx context.Context, args GetWikiArgs) (*WikiV2, e
 		routeValues["project"] = *args.Project
 	}
 	if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WikiIdentifier"}
 	}
 	routeValues["wikiIdentifier"] = *args.WikiIdentifier
 
@@ -888,14 +888,14 @@ type GetWikiArgs struct {
 // Updates the wiki corresponding to the wiki Id or name provided using the update parameters.
 func (client *Client) UpdateWiki(ctx context.Context, args UpdateWikiArgs) (*WikiV2, error) {
 	if args.UpdateParameters == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "updateParameters"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UpdateParameters"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
 	}
 	if args.WikiIdentifier == nil || *args.WikiIdentifier == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "wikiIdentifier"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.WikiIdentifier"}
 	}
 	routeValues["wikiIdentifier"] = *args.WikiIdentifier
 
