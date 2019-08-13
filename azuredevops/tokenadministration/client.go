@@ -40,7 +40,7 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client
 // [Preview API] Revokes the listed OAuth authorizations.
 func (client *Client) ListIdentitiesWithGlobalAccessTokens(ctx context.Context, args ListIdentitiesWithGlobalAccessTokensArgs) (*[]uuid.UUID, error) {
 	if args.Revocations == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "revocations"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Revocations"}
 	}
 	queryParams := url.Values{}
 	if args.IsPublic != nil {
@@ -72,11 +72,11 @@ type ListIdentitiesWithGlobalAccessTokensArgs struct {
 // [Preview API] Lists of all the session token details of the personal access tokens (PATs) for a particular user.
 func (client *Client) ListPersonalAccessTokens(ctx context.Context, args ListPersonalAccessTokensArgs) (*tokenadmin.TokenAdminPagedSessionTokens, error) {
 	if args.Audience == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "audience"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Audience"}
 	}
 	routeValues := make(map[string]string)
 	if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubjectDescriptor"}
 	}
 	routeValues["subjectDescriptor"] = *args.SubjectDescriptor
 
@@ -122,7 +122,7 @@ type ListPersonalAccessTokensArgs struct {
 // [Preview API] Revokes the listed OAuth authorizations.
 func (client *Client) RevokeAuthorizations(ctx context.Context, args RevokeAuthorizationsArgs) (*[]delegatedauthorization.SessionToken, error) {
 	if args.Revocations == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "revocations"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Revocations"}
 	}
 	queryParams := url.Values{}
 	if args.HostId == nil {

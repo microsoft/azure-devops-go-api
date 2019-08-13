@@ -210,7 +210,7 @@ type GetChangesetChangesResponseValue struct {
 // Create a new changeset.
 func (client *Client) CreateChangeset(ctx context.Context, args CreateChangesetArgs) (*git.TfvcChangesetRef, error) {
 	if args.Changeset == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "changeset"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Changeset"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
@@ -247,7 +247,7 @@ func (client *Client) GetChangeset(ctx context.Context, args GetChangesetArgs) (
 		routeValues["project"] = *args.Project
 	}
 	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "id"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
 	}
 	routeValues["id"] = strconv.Itoa(*args.Id)
 
@@ -415,7 +415,7 @@ type GetChangesetsArgs struct {
 // Returns changesets for a given list of changeset Ids.
 func (client *Client) GetBatchedChangesets(ctx context.Context, args GetBatchedChangesetsArgs) (*[]git.TfvcChangesetRef, error) {
 	if args.ChangesetsRequestData == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "changesetsRequestData"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ChangesetsRequestData"}
 	}
 	body, marshalErr := json.Marshal(*args.ChangesetsRequestData)
 	if marshalErr != nil {
@@ -465,7 +465,7 @@ type GetChangesetWorkItemsArgs struct {
 // Post for retrieving a set of items given a list of paths or a long path. Allows for specifying the recursionLevel and version descriptors for each path.
 func (client *Client) GetItemsBatch(ctx context.Context, args GetItemsBatchArgs) (*[][]git.TfvcItem, error) {
 	if args.ItemRequestData == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "itemRequestData"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ItemRequestData"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
@@ -498,7 +498,7 @@ type GetItemsBatchArgs struct {
 // Post for retrieving a set of items given a list of paths or a long path. Allows for specifying the recursionLevel and version descriptors for each path.
 func (client *Client) GetItemsBatchZip(ctx context.Context, args GetItemsBatchZipArgs) (io.ReadCloser, error) {
 	if args.ItemRequestData == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "itemRequestData"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ItemRequestData"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
@@ -853,7 +853,7 @@ type GetItemZipArgs struct {
 func (client *Client) GetLabelItems(ctx context.Context, args GetLabelItemsArgs) (*[]git.TfvcItem, error) {
 	routeValues := make(map[string]string)
 	if args.LabelId == nil || *args.LabelId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "labelId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.LabelId"}
 	}
 	routeValues["labelId"] = *args.LabelId
 
@@ -892,7 +892,7 @@ func (client *Client) GetLabel(ctx context.Context, args GetLabelArgs) (*git.Tfv
 		routeValues["project"] = *args.Project
 	}
 	if args.LabelId == nil || *args.LabelId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "labelId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.LabelId"}
 	}
 	routeValues["labelId"] = *args.LabelId
 

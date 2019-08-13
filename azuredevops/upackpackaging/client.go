@@ -37,19 +37,19 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client
 // [Preview API]
 func (client *Client) AddPackage(ctx context.Context, args AddPackageArgs) error {
 	if args.Metadata == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "metadata"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.Metadata"}
 	}
 	routeValues := make(map[string]string)
 	if args.FeedId == nil || *args.FeedId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FeedId"}
 	}
 	routeValues["feedId"] = *args.FeedId
 	if args.PackageName == nil || *args.PackageName == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PackageName"}
 	}
 	routeValues["packageName"] = *args.PackageName
 	if args.PackageVersion == nil || *args.PackageVersion == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "packageVersion"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PackageVersion"}
 	}
 	routeValues["packageVersion"] = *args.PackageVersion
 
@@ -82,15 +82,15 @@ type AddPackageArgs struct {
 func (client *Client) GetPackageMetadata(ctx context.Context, args GetPackageMetadataArgs) (*UPackPackageMetadata, error) {
 	routeValues := make(map[string]string)
 	if args.FeedId == nil || *args.FeedId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FeedId"}
 	}
 	routeValues["feedId"] = *args.FeedId
 	if args.PackageName == nil || *args.PackageName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PackageName"}
 	}
 	routeValues["packageName"] = *args.PackageName
 	if args.PackageVersion == nil || *args.PackageVersion == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "packageVersion"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PackageVersion"}
 	}
 	routeValues["packageVersion"] = *args.PackageVersion
 
@@ -125,11 +125,11 @@ type GetPackageMetadataArgs struct {
 func (client *Client) GetPackageVersionsMetadata(ctx context.Context, args GetPackageVersionsMetadataArgs) (*UPackLimitedPackageMetadataListResponse, error) {
 	routeValues := make(map[string]string)
 	if args.FeedId == nil || *args.FeedId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "feedId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FeedId"}
 	}
 	routeValues["feedId"] = *args.FeedId
 	if args.PackageName == nil || *args.PackageName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "packageName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PackageName"}
 	}
 	routeValues["packageName"] = *args.PackageName
 

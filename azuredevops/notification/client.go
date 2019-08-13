@@ -35,7 +35,7 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) *Client 
 func (client *Client) ListLogs(ctx context.Context, args ListLogsArgs) (*[]INotificationDiagnosticLog, error) {
 	routeValues := make(map[string]string)
 	if args.Source == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "source"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Source"}
 	}
 	routeValues["source"] = (*args.Source).String()
 	if args.EntryId != nil {
@@ -75,7 +75,7 @@ type ListLogsArgs struct {
 func (client *Client) GetSubscriptionDiagnostics(ctx context.Context, args GetSubscriptionDiagnosticsArgs) (*SubscriptionDiagnostics, error) {
 	routeValues := make(map[string]string)
 	if args.SubscriptionId == nil || *args.SubscriptionId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "subscriptionId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubscriptionId"}
 	}
 	routeValues["subscriptionId"] = *args.SubscriptionId
 
@@ -98,11 +98,11 @@ type GetSubscriptionDiagnosticsArgs struct {
 
 func (client *Client) UpdateSubscriptionDiagnostics(ctx context.Context, args UpdateSubscriptionDiagnosticsArgs) (*SubscriptionDiagnostics, error) {
 	if args.UpdateParameters == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "updateParameters"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UpdateParameters"}
 	}
 	routeValues := make(map[string]string)
 	if args.SubscriptionId == nil || *args.SubscriptionId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "subscriptionId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubscriptionId"}
 	}
 	routeValues["subscriptionId"] = *args.SubscriptionId
 
@@ -133,7 +133,7 @@ type UpdateSubscriptionDiagnosticsArgs struct {
 func (client *Client) GetEventType(ctx context.Context, args GetEventTypeArgs) (*NotificationEventType, error) {
 	routeValues := make(map[string]string)
 	if args.EventType == nil || *args.EventType == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "eventType"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.EventType"}
 	}
 	routeValues["eventType"] = *args.EventType
 
@@ -195,7 +195,7 @@ type GetSettingsArgs struct {
 
 func (client *Client) UpdateSettings(ctx context.Context, args UpdateSettingsArgs) (*NotificationAdminSettings, error) {
 	if args.UpdateParameters == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "updateParameters"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UpdateParameters"}
 	}
 	body, marshalErr := json.Marshal(*args.UpdateParameters)
 	if marshalErr != nil {
@@ -221,7 +221,7 @@ type UpdateSettingsArgs struct {
 func (client *Client) GetSubscriber(ctx context.Context, args GetSubscriberArgs) (*NotificationSubscriber, error) {
 	routeValues := make(map[string]string)
 	if args.SubscriberId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "subscriberId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SubscriberId"}
 	}
 	routeValues["subscriberId"] = (*args.SubscriberId).String()
 
@@ -244,11 +244,11 @@ type GetSubscriberArgs struct {
 
 func (client *Client) UpdateSubscriber(ctx context.Context, args UpdateSubscriberArgs) (*NotificationSubscriber, error) {
 	if args.UpdateParameters == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "updateParameters"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UpdateParameters"}
 	}
 	routeValues := make(map[string]string)
 	if args.SubscriberId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "subscriberId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SubscriberId"}
 	}
 	routeValues["subscriberId"] = (*args.SubscriberId).String()
 
@@ -278,7 +278,7 @@ type UpdateSubscriberArgs struct {
 // Query for subscriptions. A subscription is returned if it matches one or more of the specified conditions.
 func (client *Client) QuerySubscriptions(ctx context.Context, args QuerySubscriptionsArgs) (*[]NotificationSubscription, error) {
 	if args.SubscriptionQuery == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "subscriptionQuery"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SubscriptionQuery"}
 	}
 	body, marshalErr := json.Marshal(*args.SubscriptionQuery)
 	if marshalErr != nil {
@@ -304,7 +304,7 @@ type QuerySubscriptionsArgs struct {
 // Create a new subscription.
 func (client *Client) CreateSubscription(ctx context.Context, args CreateSubscriptionArgs) (*NotificationSubscription, error) {
 	if args.CreateParameters == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "createParameters"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CreateParameters"}
 	}
 	body, marshalErr := json.Marshal(*args.CreateParameters)
 	if marshalErr != nil {
@@ -331,7 +331,7 @@ type CreateSubscriptionArgs struct {
 func (client *Client) DeleteSubscription(ctx context.Context, args DeleteSubscriptionArgs) error {
 	routeValues := make(map[string]string)
 	if args.SubscriptionId == nil || *args.SubscriptionId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "subscriptionId"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubscriptionId"}
 	}
 	routeValues["subscriptionId"] = *args.SubscriptionId
 
@@ -354,7 +354,7 @@ type DeleteSubscriptionArgs struct {
 func (client *Client) GetSubscription(ctx context.Context, args GetSubscriptionArgs) (*NotificationSubscription, error) {
 	routeValues := make(map[string]string)
 	if args.SubscriptionId == nil || *args.SubscriptionId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "subscriptionId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubscriptionId"}
 	}
 	routeValues["subscriptionId"] = *args.SubscriptionId
 
@@ -418,11 +418,11 @@ type ListSubscriptionsArgs struct {
 // Update an existing subscription. Depending on the type of subscription and permissions, the caller can update the description, filter settings, channel (delivery) settings and more.
 func (client *Client) UpdateSubscription(ctx context.Context, args UpdateSubscriptionArgs) (*NotificationSubscription, error) {
 	if args.UpdateParameters == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "updateParameters"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UpdateParameters"}
 	}
 	routeValues := make(map[string]string)
 	if args.SubscriptionId == nil || *args.SubscriptionId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "subscriptionId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubscriptionId"}
 	}
 	routeValues["subscriptionId"] = *args.SubscriptionId
 
@@ -469,15 +469,15 @@ type GetSubscriptionTemplatesArgs struct {
 // Update the specified user's settings for the specified subscription. This API is typically used to opt in or out of a shared subscription. User settings can only be applied to shared subscriptions, like team subscriptions or default subscriptions.
 func (client *Client) UpdateSubscriptionUserSettings(ctx context.Context, args UpdateSubscriptionUserSettingsArgs) (*SubscriptionUserSettings, error) {
 	if args.UserSettings == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "userSettings"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UserSettings"}
 	}
 	routeValues := make(map[string]string)
 	if args.SubscriptionId == nil || *args.SubscriptionId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "subscriptionId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubscriptionId"}
 	}
 	routeValues["subscriptionId"] = *args.SubscriptionId
 	if args.UserId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "userId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UserId"}
 	}
 	routeValues["userId"] = (*args.UserId).String()
 

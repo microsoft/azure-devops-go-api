@@ -40,7 +40,7 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client
 // [Preview API] Create a group entitlement with license rule, extension rule.
 func (client *Client) AddGroupEntitlement(ctx context.Context, args AddGroupEntitlementArgs) (*GroupEntitlementOperationReference, error) {
 	if args.GroupEntitlement == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "groupEntitlement"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.GroupEntitlement"}
 	}
 	queryParams := url.Values{}
 	if args.RuleOption != nil {
@@ -73,7 +73,7 @@ type AddGroupEntitlementArgs struct {
 func (client *Client) DeleteGroupEntitlement(ctx context.Context, args DeleteGroupEntitlementArgs) (*GroupEntitlementOperationReference, error) {
 	routeValues := make(map[string]string)
 	if args.GroupId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "groupId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.GroupId"}
 	}
 	routeValues["groupId"] = (*args.GroupId).String()
 
@@ -109,7 +109,7 @@ type DeleteGroupEntitlementArgs struct {
 func (client *Client) GetGroupEntitlement(ctx context.Context, args GetGroupEntitlementArgs) (*GroupEntitlement, error) {
 	routeValues := make(map[string]string)
 	if args.GroupId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "groupId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.GroupId"}
 	}
 	routeValues["groupId"] = (*args.GroupId).String()
 
@@ -150,11 +150,11 @@ type GetGroupEntitlementsArgs struct {
 // [Preview API] Update entitlements (License Rule, Extensions Rule, Project memberships etc.) for a group.
 func (client *Client) UpdateGroupEntitlement(ctx context.Context, args UpdateGroupEntitlementArgs) (*GroupEntitlementOperationReference, error) {
 	if args.Document == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "document"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Document"}
 	}
 	routeValues := make(map[string]string)
 	if args.GroupId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "groupId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.GroupId"}
 	}
 	routeValues["groupId"] = (*args.GroupId).String()
 
@@ -191,11 +191,11 @@ type UpdateGroupEntitlementArgs struct {
 func (client *Client) AddMemberToGroup(ctx context.Context, args AddMemberToGroupArgs) error {
 	routeValues := make(map[string]string)
 	if args.GroupId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "groupId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.GroupId"}
 	}
 	routeValues["groupId"] = (*args.GroupId).String()
 	if args.MemberId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "memberId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.MemberId"}
 	}
 	routeValues["memberId"] = (*args.MemberId).String()
 
@@ -220,7 +220,7 @@ type AddMemberToGroupArgs struct {
 func (client *Client) GetGroupMembers(ctx context.Context, args GetGroupMembersArgs) (*PagedGraphMemberList, error) {
 	routeValues := make(map[string]string)
 	if args.GroupId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "groupId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.GroupId"}
 	}
 	routeValues["groupId"] = (*args.GroupId).String()
 
@@ -256,11 +256,11 @@ type GetGroupMembersArgs struct {
 func (client *Client) RemoveMemberFromGroup(ctx context.Context, args RemoveMemberFromGroupArgs) error {
 	routeValues := make(map[string]string)
 	if args.GroupId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "groupId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.GroupId"}
 	}
 	routeValues["groupId"] = (*args.GroupId).String()
 	if args.MemberId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "memberId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.MemberId"}
 	}
 	routeValues["memberId"] = (*args.MemberId).String()
 
@@ -284,7 +284,7 @@ type RemoveMemberFromGroupArgs struct {
 // [Preview API] Add a user, assign license and extensions and make them a member of a project group in an account.
 func (client *Client) AddUserEntitlement(ctx context.Context, args AddUserEntitlementArgs) (*UserEntitlementsPostResponse, error) {
 	if args.UserEntitlement == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "userEntitlement"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UserEntitlement"}
 	}
 	body, marshalErr := json.Marshal(*args.UserEntitlement)
 	if marshalErr != nil {
@@ -348,7 +348,7 @@ type GetUserEntitlementsArgs struct {
 // [Preview API] Edit the entitlements (License, Extensions, Projects, Teams etc) for one or more users.
 func (client *Client) UpdateUserEntitlements(ctx context.Context, args UpdateUserEntitlementsArgs) (*UserEntitlementOperationReference, error) {
 	if args.Document == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "document"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Document"}
 	}
 	queryParams := url.Values{}
 	if args.DoNotSendInviteForNewUsers != nil {
@@ -381,7 +381,7 @@ type UpdateUserEntitlementsArgs struct {
 func (client *Client) DeleteUserEntitlement(ctx context.Context, args DeleteUserEntitlementArgs) error {
 	routeValues := make(map[string]string)
 	if args.UserId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "userId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.UserId"}
 	}
 	routeValues["userId"] = (*args.UserId).String()
 
@@ -404,7 +404,7 @@ type DeleteUserEntitlementArgs struct {
 func (client *Client) GetUserEntitlement(ctx context.Context, args GetUserEntitlementArgs) (*UserEntitlement, error) {
 	routeValues := make(map[string]string)
 	if args.UserId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "userId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UserId"}
 	}
 	routeValues["userId"] = (*args.UserId).String()
 
@@ -428,11 +428,11 @@ type GetUserEntitlementArgs struct {
 // [Preview API] Edit the entitlements (License, Extensions, Projects, Teams etc) for a user.
 func (client *Client) UpdateUserEntitlement(ctx context.Context, args UpdateUserEntitlementArgs) (*UserEntitlementsPatchResponse, error) {
 	if args.Document == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "document"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Document"}
 	}
 	routeValues := make(map[string]string)
 	if args.UserId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "userId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UserId"}
 	}
 	routeValues["userId"] = (*args.UserId).String()
 
@@ -462,8 +462,8 @@ type UpdateUserEntitlementArgs struct {
 // [Preview API] Get summary of Licenses, Extension, Projects, Groups and their assignments in the collection.
 func (client *Client) GetUsersSummary(ctx context.Context, args GetUsersSummaryArgs) (*UsersSummary, error) {
 	queryParams := url.Values{}
-	if args.Select_ != nil {
-		queryParams.Add("select_", *args.Select_)
+	if args.Select != nil {
+		queryParams.Add("select", *args.Select)
 	}
 	locationId, _ := uuid.Parse("5ae55b13-c9dd-49d1-957e-6e76c152e3d9")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
@@ -479,5 +479,5 @@ func (client *Client) GetUsersSummary(ctx context.Context, args GetUsersSummaryA
 // Arguments for the GetUsersSummary function
 type GetUsersSummaryArgs struct {
 	// (optional) Comma (",") separated list of properties to select. Supported property names are {AccessLevels, Licenses, Extensions, Projects, Groups}.
-	Select_ *string
+	Select *string
 }

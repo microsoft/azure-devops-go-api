@@ -38,11 +38,11 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client
 // Create a policy configuration of a given policy type.
 func (client *Client) CreatePolicyConfiguration(ctx context.Context, args CreatePolicyConfigurationArgs) (*PolicyConfiguration, error) {
 	if args.Configuration == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "configuration"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Configuration"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.ConfigurationId != nil {
@@ -78,11 +78,11 @@ type CreatePolicyConfigurationArgs struct {
 func (client *Client) DeletePolicyConfiguration(ctx context.Context, args DeletePolicyConfigurationArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.ConfigurationId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "configurationId"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.ConfigurationId"}
 	}
 	routeValues["configurationId"] = strconv.Itoa(*args.ConfigurationId)
 
@@ -107,11 +107,11 @@ type DeletePolicyConfigurationArgs struct {
 func (client *Client) GetPolicyConfiguration(ctx context.Context, args GetPolicyConfigurationArgs) (*PolicyConfiguration, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.ConfigurationId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "configurationId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ConfigurationId"}
 	}
 	routeValues["configurationId"] = strconv.Itoa(*args.ConfigurationId)
 
@@ -138,7 +138,7 @@ type GetPolicyConfigurationArgs struct {
 func (client *Client) GetPolicyConfigurations(ctx context.Context, args GetPolicyConfigurationsArgs) (*GetPolicyConfigurationsResponseValue, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -181,15 +181,15 @@ type GetPolicyConfigurationsResponseValue struct {
 // Update a policy configuration by its ID.
 func (client *Client) UpdatePolicyConfiguration(ctx context.Context, args UpdatePolicyConfigurationArgs) (*PolicyConfiguration, error) {
 	if args.Configuration == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "configuration"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Configuration"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.ConfigurationId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "configurationId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ConfigurationId"}
 	}
 	routeValues["configurationId"] = strconv.Itoa(*args.ConfigurationId)
 
@@ -222,11 +222,11 @@ type UpdatePolicyConfigurationArgs struct {
 func (client *Client) GetPolicyEvaluation(ctx context.Context, args GetPolicyEvaluationArgs) (*PolicyEvaluationRecord, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.EvaluationId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "evaluationId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.EvaluationId"}
 	}
 	routeValues["evaluationId"] = (*args.EvaluationId).String()
 
@@ -253,11 +253,11 @@ type GetPolicyEvaluationArgs struct {
 func (client *Client) RequeuePolicyEvaluation(ctx context.Context, args RequeuePolicyEvaluationArgs) (*PolicyEvaluationRecord, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.EvaluationId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "evaluationId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.EvaluationId"}
 	}
 	routeValues["evaluationId"] = (*args.EvaluationId).String()
 
@@ -284,7 +284,7 @@ type RequeuePolicyEvaluationArgs struct {
 func (client *Client) GetPolicyEvaluations(ctx context.Context, args GetPolicyEvaluationsArgs) (*[]PolicyEvaluationRecord, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -331,15 +331,15 @@ type GetPolicyEvaluationsArgs struct {
 func (client *Client) GetPolicyConfigurationRevision(ctx context.Context, args GetPolicyConfigurationRevisionArgs) (*PolicyConfiguration, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.ConfigurationId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "configurationId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ConfigurationId"}
 	}
 	routeValues["configurationId"] = strconv.Itoa(*args.ConfigurationId)
 	if args.RevisionId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "revisionId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RevisionId"}
 	}
 	routeValues["revisionId"] = strconv.Itoa(*args.RevisionId)
 
@@ -368,11 +368,11 @@ type GetPolicyConfigurationRevisionArgs struct {
 func (client *Client) GetPolicyConfigurationRevisions(ctx context.Context, args GetPolicyConfigurationRevisionsArgs) (*[]PolicyConfiguration, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.ConfigurationId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "configurationId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ConfigurationId"}
 	}
 	routeValues["configurationId"] = strconv.Itoa(*args.ConfigurationId)
 
@@ -410,11 +410,11 @@ type GetPolicyConfigurationRevisionsArgs struct {
 func (client *Client) GetPolicyType(ctx context.Context, args GetPolicyTypeArgs) (*PolicyType, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 	if args.TypeId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "typeId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TypeId"}
 	}
 	routeValues["typeId"] = (*args.TypeId).String()
 
@@ -441,7 +441,7 @@ type GetPolicyTypeArgs struct {
 func (client *Client) GetPolicyTypes(ctx context.Context, args GetPolicyTypesArgs) (*[]PolicyType, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 

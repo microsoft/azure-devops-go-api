@@ -31,7 +31,7 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) *Client 
 func (client *Client) GetOperation(ctx context.Context, args GetOperationArgs) (*Operation, error) {
 	routeValues := make(map[string]string)
 	if args.OperationId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "operationId"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.OperationId"}
 	}
 	routeValues["operationId"] = (*args.OperationId).String()
 

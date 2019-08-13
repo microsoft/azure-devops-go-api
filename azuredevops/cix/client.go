@@ -33,7 +33,7 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) *Client 
 func (client *Client) GetConfigurations(ctx context.Context, args GetConfigurationsArgs) (*[]ConfigurationFile, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -78,7 +78,7 @@ type GetConfigurationsArgs struct {
 // [Preview API] Creates a new Pipeline connection between the provider installation and the specified project. Returns the PipelineConnection object created.
 func (client *Client) CreateProjectConnection(ctx context.Context, args CreateProjectConnectionArgs) (*PipelineConnection, error) {
 	if args.CreateConnectionInputs == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "createConnectionInputs"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CreateConnectionInputs"}
 	}
 	queryParams := url.Values{}
 	if args.Project == nil {
@@ -112,7 +112,7 @@ type CreateProjectConnectionArgs struct {
 func (client *Client) GetDetectedBuildFrameworks(ctx context.Context, args GetDetectedBuildFrameworksArgs) (*[]DetectedBuildFramework, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -163,7 +163,7 @@ type GetDetectedBuildFrameworksArgs struct {
 func (client *Client) GetTemplateRecommendations(ctx context.Context, args GetTemplateRecommendationsArgs) (*[]Template, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -208,11 +208,11 @@ type GetTemplateRecommendationsArgs struct {
 // [Preview API]
 func (client *Client) CreateResources(ctx context.Context, args CreateResourcesArgs) (*CreatedResources, error) {
 	if args.CreationParameters == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "creationParameters"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CreationParameters"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
 
@@ -242,11 +242,11 @@ type CreateResourcesArgs struct {
 // [Preview API]
 func (client *Client) RenderTemplate(ctx context.Context, args RenderTemplateArgs) (*Template, error) {
 	if args.TemplateParameters == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "templateParameters"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TemplateParameters"}
 	}
 	routeValues := make(map[string]string)
 	if args.TemplateId == nil || *args.TemplateId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "templateId"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.TemplateId"}
 	}
 	routeValues["templateId"] = *args.TemplateId
 

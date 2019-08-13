@@ -31,7 +31,7 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) *Client 
 // [Preview API]
 func (client *Client) PublishEvents(ctx context.Context, args PublishEventsArgs) error {
 	if args.Events == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "events"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.Events"}
 	}
 	body, marshalErr := json.Marshal(*args.Events)
 	if marshalErr != nil {

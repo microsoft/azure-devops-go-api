@@ -42,7 +42,7 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client
 func (client *Client) DeleteAvatar(ctx context.Context, args DeleteAvatarArgs) error {
 	routeValues := make(map[string]string)
 	if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubjectDescriptor"}
 	}
 	routeValues["subjectDescriptor"] = *args.SubjectDescriptor
 
@@ -65,7 +65,7 @@ type DeleteAvatarArgs struct {
 func (client *Client) GetAvatar(ctx context.Context, args GetAvatarArgs) (*profile.Avatar, error) {
 	routeValues := make(map[string]string)
 	if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubjectDescriptor"}
 	}
 	routeValues["subjectDescriptor"] = *args.SubjectDescriptor
 
@@ -100,11 +100,11 @@ type GetAvatarArgs struct {
 // [Preview API]
 func (client *Client) SetAvatar(ctx context.Context, args SetAvatarArgs) error {
 	if args.Avatar == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "avatar"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.Avatar"}
 	}
 	routeValues := make(map[string]string)
 	if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubjectDescriptor"}
 	}
 	routeValues["subjectDescriptor"] = *args.SubjectDescriptor
 
@@ -133,7 +133,7 @@ type SetAvatarArgs struct {
 func (client *Client) GetDescriptor(ctx context.Context, args GetDescriptorArgs) (*GraphDescriptorResult, error) {
 	routeValues := make(map[string]string)
 	if args.StorageKey == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "storageKey"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.StorageKey"}
 	}
 	routeValues["storageKey"] = (*args.StorageKey).String()
 
@@ -157,7 +157,7 @@ type GetDescriptorArgs struct {
 // [Preview API] Create a new Azure DevOps group or materialize an existing AAD group.
 func (client *Client) CreateGroup(ctx context.Context, args CreateGroupArgs) (*GraphGroup, error) {
 	if args.CreationContext == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "creationContext"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CreationContext"}
 	}
 	queryParams := url.Values{}
 	if args.ScopeDescriptor != nil {
@@ -196,7 +196,7 @@ type CreateGroupArgs struct {
 func (client *Client) DeleteGroup(ctx context.Context, args DeleteGroupArgs) error {
 	routeValues := make(map[string]string)
 	if args.GroupDescriptor == nil || *args.GroupDescriptor == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "groupDescriptor"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.GroupDescriptor"}
 	}
 	routeValues["groupDescriptor"] = *args.GroupDescriptor
 
@@ -219,7 +219,7 @@ type DeleteGroupArgs struct {
 func (client *Client) GetGroup(ctx context.Context, args GetGroupArgs) (*GraphGroup, error) {
 	routeValues := make(map[string]string)
 	if args.GroupDescriptor == nil || *args.GroupDescriptor == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "groupDescriptor"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.GroupDescriptor"}
 	}
 	routeValues["groupDescriptor"] = *args.GroupDescriptor
 
@@ -286,11 +286,11 @@ type ListGroupsArgs struct {
 // [Preview API] Update the properties of an Azure DevOps group.
 func (client *Client) UpdateGroup(ctx context.Context, args UpdateGroupArgs) (*GraphGroup, error) {
 	if args.PatchDocument == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "patchDocument"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PatchDocument"}
 	}
 	routeValues := make(map[string]string)
 	if args.GroupDescriptor == nil || *args.GroupDescriptor == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "groupDescriptor"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.GroupDescriptor"}
 	}
 	routeValues["groupDescriptor"] = *args.GroupDescriptor
 
@@ -321,11 +321,11 @@ type UpdateGroupArgs struct {
 func (client *Client) AddMembership(ctx context.Context, args AddMembershipArgs) (*GraphMembership, error) {
 	routeValues := make(map[string]string)
 	if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubjectDescriptor"}
 	}
 	routeValues["subjectDescriptor"] = *args.SubjectDescriptor
 	if args.ContainerDescriptor == nil || *args.ContainerDescriptor == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "containerDescriptor"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ContainerDescriptor"}
 	}
 	routeValues["containerDescriptor"] = *args.ContainerDescriptor
 
@@ -352,11 +352,11 @@ type AddMembershipArgs struct {
 func (client *Client) CheckMembershipExistence(ctx context.Context, args CheckMembershipExistenceArgs) error {
 	routeValues := make(map[string]string)
 	if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubjectDescriptor"}
 	}
 	routeValues["subjectDescriptor"] = *args.SubjectDescriptor
 	if args.ContainerDescriptor == nil || *args.ContainerDescriptor == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "containerDescriptor"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ContainerDescriptor"}
 	}
 	routeValues["containerDescriptor"] = *args.ContainerDescriptor
 
@@ -381,11 +381,11 @@ type CheckMembershipExistenceArgs struct {
 func (client *Client) GetMembership(ctx context.Context, args GetMembershipArgs) (*GraphMembership, error) {
 	routeValues := make(map[string]string)
 	if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubjectDescriptor"}
 	}
 	routeValues["subjectDescriptor"] = *args.SubjectDescriptor
 	if args.ContainerDescriptor == nil || *args.ContainerDescriptor == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "containerDescriptor"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ContainerDescriptor"}
 	}
 	routeValues["containerDescriptor"] = *args.ContainerDescriptor
 
@@ -412,11 +412,11 @@ type GetMembershipArgs struct {
 func (client *Client) RemoveMembership(ctx context.Context, args RemoveMembershipArgs) error {
 	routeValues := make(map[string]string)
 	if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubjectDescriptor"}
 	}
 	routeValues["subjectDescriptor"] = *args.SubjectDescriptor
 	if args.ContainerDescriptor == nil || *args.ContainerDescriptor == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "containerDescriptor"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ContainerDescriptor"}
 	}
 	routeValues["containerDescriptor"] = *args.ContainerDescriptor
 
@@ -441,7 +441,7 @@ type RemoveMembershipArgs struct {
 func (client *Client) ListMemberships(ctx context.Context, args ListMembershipsArgs) (*[]GraphMembership, error) {
 	routeValues := make(map[string]string)
 	if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubjectDescriptor"}
 	}
 	routeValues["subjectDescriptor"] = *args.SubjectDescriptor
 
@@ -477,7 +477,7 @@ type ListMembershipsArgs struct {
 func (client *Client) GetMembershipState(ctx context.Context, args GetMembershipStateArgs) (*GraphMembershipState, error) {
 	routeValues := make(map[string]string)
 	if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubjectDescriptor"}
 	}
 	routeValues["subjectDescriptor"] = *args.SubjectDescriptor
 
@@ -502,7 +502,7 @@ type GetMembershipStateArgs struct {
 func (client *Client) GetProviderInfo(ctx context.Context, args GetProviderInfoArgs) (*GraphProviderInfo, error) {
 	routeValues := make(map[string]string)
 	if args.UserDescriptor == nil || *args.UserDescriptor == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "userDescriptor"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.UserDescriptor"}
 	}
 	routeValues["userDescriptor"] = *args.UserDescriptor
 
@@ -526,7 +526,7 @@ type GetProviderInfoArgs struct {
 // [Preview API]
 func (client *Client) RequestAccess(ctx context.Context, args RequestAccessArgs) error {
 	if args.Message == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "message"}
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.Message"}
 	}
 	body, marshalErr := json.Marshal(*args.Message)
 	if marshalErr != nil {
@@ -551,7 +551,7 @@ type RequestAccessArgs struct {
 func (client *Client) GetStorageKey(ctx context.Context, args GetStorageKeyArgs) (*GraphStorageKeyResult, error) {
 	routeValues := make(map[string]string)
 	if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "subjectDescriptor"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubjectDescriptor"}
 	}
 	routeValues["subjectDescriptor"] = *args.SubjectDescriptor
 
@@ -575,7 +575,7 @@ type GetStorageKeyArgs struct {
 // [Preview API] Resolve descriptors to users, groups or scopes (Subjects) in a batch.
 func (client *Client) LookupSubjects(ctx context.Context, args LookupSubjectsArgs) (*map[string]GraphSubject, error) {
 	if args.SubjectLookup == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "subjectLookup"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SubjectLookup"}
 	}
 	body, marshalErr := json.Marshal(*args.SubjectLookup)
 	if marshalErr != nil {
@@ -601,7 +601,7 @@ type LookupSubjectsArgs struct {
 // [Preview API] Materialize an existing AAD or MSA user into the VSTS account.
 func (client *Client) CreateUser(ctx context.Context, args CreateUserArgs) (*GraphUser, error) {
 	if args.CreationContext == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "creationContext"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CreationContext"}
 	}
 	queryParams := url.Values{}
 	if args.GroupDescriptors != nil {
@@ -635,7 +635,7 @@ type CreateUserArgs struct {
 func (client *Client) DeleteUser(ctx context.Context, args DeleteUserArgs) error {
 	routeValues := make(map[string]string)
 	if args.UserDescriptor == nil || *args.UserDescriptor == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "userDescriptor"}
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.UserDescriptor"}
 	}
 	routeValues["userDescriptor"] = *args.UserDescriptor
 
@@ -658,7 +658,7 @@ type DeleteUserArgs struct {
 func (client *Client) GetUser(ctx context.Context, args GetUserArgs) (*GraphUser, error) {
 	routeValues := make(map[string]string)
 	if args.UserDescriptor == nil || *args.UserDescriptor == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "userDescriptor"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.UserDescriptor"}
 	}
 	routeValues["userDescriptor"] = *args.UserDescriptor
 
@@ -720,11 +720,11 @@ type ListUsersArgs struct {
 // [Preview API] Map an existing user to a different identity
 func (client *Client) UpdateUser(ctx context.Context, args UpdateUserArgs) (*GraphUser, error) {
 	if args.UpdateContext == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "updateContext"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UpdateContext"}
 	}
 	routeValues := make(map[string]string)
 	if args.UserDescriptor == nil || *args.UserDescriptor == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "userDescriptor"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.UserDescriptor"}
 	}
 	routeValues["userDescriptor"] = *args.UserDescriptor
 

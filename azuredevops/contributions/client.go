@@ -39,7 +39,7 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client
 // [Preview API] Query for contribution nodes and provider details according the parameters in the passed in query object.
 func (client *Client) QueryContributionNodes(ctx context.Context, args QueryContributionNodesArgs) (*ContributionNodeQueryResult, error) {
 	if args.Query == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "query"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Query"}
 	}
 	body, marshalErr := json.Marshal(*args.Query)
 	if marshalErr != nil {
@@ -65,7 +65,7 @@ type QueryContributionNodesArgs struct {
 // [Preview API]
 func (client *Client) QueryDataProviders(ctx context.Context, args QueryDataProvidersArgs) (*DataProviderResult, error) {
 	if args.Query == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "query"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Query"}
 	}
 	routeValues := make(map[string]string)
 	if args.ScopeName != nil && *args.ScopeName != "" {
@@ -139,11 +139,11 @@ type GetInstalledExtensionsArgs struct {
 func (client *Client) GetInstalledExtensionByName(ctx context.Context, args GetInstalledExtensionByNameArgs) (*InstalledExtension, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "publisherName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
 	}
 	routeValues["publisherName"] = *args.PublisherName
 	if args.ExtensionName == nil || *args.ExtensionName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "extensionName"}
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ExtensionName"}
 	}
 	routeValues["extensionName"] = *args.ExtensionName
 

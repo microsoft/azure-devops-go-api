@@ -37,7 +37,7 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client
 // [Preview API] Provides a set of results for the search text.
 func (client *Client) FetchScrollCodeSearchResults(ctx context.Context, args FetchScrollCodeSearchResultsArgs) (*CodeSearchResponse, error) {
 	if args.Request == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "request"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Request"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
@@ -70,7 +70,7 @@ type FetchScrollCodeSearchResultsArgs struct {
 // [Preview API] Provides a set of results for the search text.
 func (client *Client) FetchCodeSearchResults(ctx context.Context, args FetchCodeSearchResultsArgs) (*CodeSearchResponse, error) {
 	if args.Request == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "request"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Request"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
@@ -103,7 +103,7 @@ type FetchCodeSearchResultsArgs struct {
 // [Preview API] Provides a set of results for the search text.
 func (client *Client) FetchPackageSearchResults(ctx context.Context, args FetchPackageSearchResultsArgs) (*searchshared.PackageSearchResponse, error) {
 	if args.Request == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "request"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Request"}
 	}
 	body, marshalErr := json.Marshal(*args.Request)
 	if marshalErr != nil {
@@ -138,7 +138,7 @@ type FetchPackageSearchResultsArgs struct {
 // [Preview API] Provides a set of results for the search request.
 func (client *Client) FetchWikiSearchResults(ctx context.Context, args FetchWikiSearchResultsArgs) (*searchshared.WikiSearchResponse, error) {
 	if args.Request == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "request"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Request"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
@@ -171,7 +171,7 @@ type FetchWikiSearchResultsArgs struct {
 // [Preview API] Provides a set of results for the search text.
 func (client *Client) FetchWorkItemSearchResults(ctx context.Context, args FetchWorkItemSearchResultsArgs) (*WorkItemSearchResponse, error) {
 	if args.Request == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "request"}
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Request"}
 	}
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
