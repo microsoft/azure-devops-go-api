@@ -2087,10 +2087,10 @@ func (client *Client) GetTestLogsForBuild(ctx context.Context, args GetTestLogsF
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "buildId"}
 	}
 	queryParams.Add("buildId", strconv.Itoa(*args.BuildId))
-	if args.Type_ == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "type_"}
+	if args.Type == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "type"}
 	}
-	queryParams.Add("type_", string(*args.Type_))
+	queryParams.Add("type", string(*args.Type))
 	if args.DirectoryPath != nil {
 		queryParams.Add("directoryPath", *args.DirectoryPath)
 	}
@@ -2126,7 +2126,7 @@ type GetTestLogsForBuildArgs struct {
 	// (required)
 	BuildId *int
 	// (required)
-	Type_ *test.TestLogType
+	Type *test.TestLogType
 	// (optional)
 	DirectoryPath *string
 	// (optional)
@@ -2163,10 +2163,10 @@ func (client *Client) GetTestResultLogs(ctx context.Context, args GetTestResultL
 	routeValues["resultId"] = strconv.Itoa(*args.ResultId)
 
 	queryParams := url.Values{}
-	if args.Type_ == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "type_"}
+	if args.Type == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "type"}
 	}
-	queryParams.Add("type_", string(*args.Type_))
+	queryParams.Add("type", string(*args.Type))
 	if args.DirectoryPath != nil {
 		queryParams.Add("directoryPath", *args.DirectoryPath)
 	}
@@ -2204,7 +2204,7 @@ type GetTestResultLogsArgs struct {
 	// (required)
 	ResultId *int
 	// (required)
-	Type_ *test.TestLogType
+	Type *test.TestLogType
 	// (optional)
 	DirectoryPath *string
 	// (optional)
@@ -2245,10 +2245,10 @@ func (client *Client) GetTestSubResultLogs(ctx context.Context, args GetTestSubR
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "subResultId"}
 	}
 	queryParams.Add("subResultId", strconv.Itoa(*args.SubResultId))
-	if args.Type_ == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "type_"}
+	if args.Type == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "type"}
 	}
-	queryParams.Add("type_", string(*args.Type_))
+	queryParams.Add("type", string(*args.Type))
 	if args.DirectoryPath != nil {
 		queryParams.Add("directoryPath", *args.DirectoryPath)
 	}
@@ -2288,7 +2288,7 @@ type GetTestSubResultLogsArgs struct {
 	// (required)
 	SubResultId *int
 	// (required)
-	Type_ *test.TestLogType
+	Type *test.TestLogType
 	// (optional)
 	DirectoryPath *string
 	// (optional)
@@ -2321,10 +2321,10 @@ func (client *Client) GetTestRunLogs(ctx context.Context, args GetTestRunLogsArg
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 
 	queryParams := url.Values{}
-	if args.Type_ == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "type_"}
+	if args.Type == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "type"}
 	}
-	queryParams.Add("type_", string(*args.Type_))
+	queryParams.Add("type", string(*args.Type))
 	if args.DirectoryPath != nil {
 		queryParams.Add("directoryPath", *args.DirectoryPath)
 	}
@@ -2360,7 +2360,7 @@ type GetTestRunLogsArgs struct {
 	// (required)
 	RunId *int
 	// (required)
-	Type_ *test.TestLogType
+	Type *test.TestLogType
 	// (optional)
 	DirectoryPath *string
 	// (optional)
@@ -2393,10 +2393,10 @@ func (client *Client) GetTestLogStoreEndpointDetailsForBuildLog(ctx context.Cont
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "build"}
 	}
 	queryParams.Add("build", strconv.Itoa(*args.Build))
-	if args.Type_ == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "type_"}
+	if args.Type == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "type"}
 	}
-	queryParams.Add("type_", string(*args.Type_))
+	queryParams.Add("type", string(*args.Type))
 	if args.FilePath == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "filePath"}
 	}
@@ -2419,7 +2419,7 @@ type GetTestLogStoreEndpointDetailsForBuildLogArgs struct {
 	// (required)
 	Build *int
 	// (required)
-	Type_ *test.TestLogType
+	Type *test.TestLogType
 	// (required)
 	FilePath *string
 }
@@ -2479,10 +2479,10 @@ func (client *Client) GetTestLogStoreEndpointDetailsForResultLog(ctx context.Con
 	routeValues["resultId"] = strconv.Itoa(*args.ResultId)
 
 	queryParams := url.Values{}
-	if args.Type_ == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "type_"}
+	if args.Type == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "type"}
 	}
-	queryParams.Add("type_", string(*args.Type_))
+	queryParams.Add("type", string(*args.Type))
 	if args.FilePath == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "filePath"}
 	}
@@ -2507,7 +2507,7 @@ type GetTestLogStoreEndpointDetailsForResultLogArgs struct {
 	// (required)
 	ResultId *int
 	// (required)
-	Type_ *test.TestLogType
+	Type *test.TestLogType
 	// (required)
 	FilePath *string
 }
@@ -2533,10 +2533,10 @@ func (client *Client) GetTestLogStoreEndpointDetailsForSubResultLog(ctx context.
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "subResultId"}
 	}
 	queryParams.Add("subResultId", strconv.Itoa(*args.SubResultId))
-	if args.Type_ == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "type_"}
+	if args.Type == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "type"}
 	}
-	queryParams.Add("type_", string(*args.Type_))
+	queryParams.Add("type", string(*args.Type))
 	if args.FilePath == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "filePath"}
 	}
@@ -2563,7 +2563,7 @@ type GetTestLogStoreEndpointDetailsForSubResultLogArgs struct {
 	// (required)
 	SubResultId *int
 	// (required)
-	Type_ *test.TestLogType
+	Type *test.TestLogType
 	// (required)
 	FilePath *string
 }
@@ -2593,10 +2593,10 @@ func (client *Client) TestLogStoreEndpointDetailsForResult(ctx context.Context, 
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "filePath"}
 	}
 	queryParams.Add("filePath", *args.FilePath)
-	if args.Type_ == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "type_"}
+	if args.Type == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "type"}
 	}
-	queryParams.Add("type_", string(*args.Type_))
+	queryParams.Add("type", string(*args.Type))
 	locationId, _ := uuid.Parse("da630b37-1236-45b5-945e-1d7bdb673850")
 	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
 	if err != nil {
@@ -2621,7 +2621,7 @@ type TestLogStoreEndpointDetailsForResultArgs struct {
 	// (required)
 	FilePath *string
 	// (required)
-	Type_ *test.TestLogType
+	Type *test.TestLogType
 }
 
 // [Preview API]
@@ -2637,10 +2637,10 @@ func (client *Client) GetTestLogStoreEndpointDetailsForRunLog(ctx context.Contex
 	routeValues["runId"] = strconv.Itoa(*args.RunId)
 
 	queryParams := url.Values{}
-	if args.Type_ == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "type_"}
+	if args.Type == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "type"}
 	}
-	queryParams.Add("type_", string(*args.Type_))
+	queryParams.Add("type", string(*args.Type))
 	if args.FilePath == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "filePath"}
 	}
@@ -2663,7 +2663,7 @@ type GetTestLogStoreEndpointDetailsForRunLogArgs struct {
 	// (required)
 	RunId *int
 	// (required)
-	Type_ *test.TestLogType
+	Type *test.TestLogType
 	// (required)
 	FilePath *string
 }
@@ -2688,8 +2688,8 @@ func (client *Client) TestLogStoreEndpointDetailsForRun(ctx context.Context, arg
 	if args.FilePath != nil {
 		queryParams.Add("filePath", *args.FilePath)
 	}
-	if args.Type_ != nil {
-		queryParams.Add("type_", string(*args.Type_))
+	if args.Type != nil {
+		queryParams.Add("type", string(*args.Type))
 	}
 	locationId, _ := uuid.Parse("67eb3f92-6c97-4fd9-8b63-6cbdc7e526ea")
 	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -2713,7 +2713,7 @@ type TestLogStoreEndpointDetailsForRunArgs struct {
 	// (optional)
 	FilePath *string
 	// (optional)
-	Type_ *test.TestLogType
+	Type *test.TestLogType
 }
 
 // [Preview API]

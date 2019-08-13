@@ -243,10 +243,10 @@ func (client *Client) GetAttachments(ctx context.Context, args GetAttachmentsArg
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "buildId"}
 	}
 	routeValues["buildId"] = strconv.Itoa(*args.BuildId)
-	if args.Type_ == nil || *args.Type_ == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type_"}
+	if args.Type == nil || *args.Type == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
 	}
-	routeValues["type_"] = *args.Type_
+	routeValues["type"] = *args.Type
 
 	locationId, _ := uuid.Parse("f2192269-89fa-4f94-baf6-8fb128c55159")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/json", nil)
@@ -266,7 +266,7 @@ type GetAttachmentsArgs struct {
 	// (required) The ID of the build.
 	BuildId *int
 	// (required) The type of attachment.
-	Type_ *string
+	Type *string
 }
 
 // [Preview API] Gets a specific attachment.
@@ -288,10 +288,10 @@ func (client *Client) GetAttachment(ctx context.Context, args GetAttachmentArgs)
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "recordId"}
 	}
 	routeValues["recordId"] = (*args.RecordId).String()
-	if args.Type_ == nil || *args.Type_ == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type_"}
+	if args.Type == nil || *args.Type == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
 	}
-	routeValues["type_"] = *args.Type_
+	routeValues["type"] = *args.Type
 	if args.Name == nil || *args.Name == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "name"}
 	}
@@ -317,7 +317,7 @@ type GetAttachmentArgs struct {
 	// (required) The ID of the timeline record.
 	RecordId *uuid.UUID
 	// (required) The type of the attachment.
-	Type_ *string
+	Type *string
 	// (required) The name of the attachment.
 	Name *string
 }
@@ -365,8 +365,8 @@ func (client *Client) GetProjectResources(ctx context.Context, args GetProjectRe
 	routeValues["project"] = *args.Project
 
 	queryParams := url.Values{}
-	if args.Type_ != nil {
-		queryParams.Add("type_", *args.Type_)
+	if args.Type != nil {
+		queryParams.Add("type", *args.Type)
 	}
 	if args.Id != nil {
 		queryParams.Add("id", *args.Id)
@@ -387,7 +387,7 @@ type GetProjectResourcesArgs struct {
 	// (required) Project ID or project name
 	Project *string
 	// (optional)
-	Type_ *string
+	Type *string
 	// (optional)
 	Id *string
 }
@@ -2150,8 +2150,8 @@ func (client *Client) GetBuildReport(ctx context.Context, args GetBuildReportArg
 	routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
 	queryParams := url.Values{}
-	if args.Type_ != nil {
-		queryParams.Add("type_", *args.Type_)
+	if args.Type != nil {
+		queryParams.Add("type", *args.Type)
 	}
 	locationId, _ := uuid.Parse("45bcaa88-67e1-4042-a035-56d3b4a7d44c")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "application/json", nil)
@@ -2171,7 +2171,7 @@ type GetBuildReportArgs struct {
 	// (required) The ID of the build.
 	BuildId *int
 	// (optional)
-	Type_ *string
+	Type *string
 }
 
 // [Preview API] Gets a build report.
@@ -2187,8 +2187,8 @@ func (client *Client) GetBuildReportHtmlContent(ctx context.Context, args GetBui
 	routeValues["buildId"] = strconv.Itoa(*args.BuildId)
 
 	queryParams := url.Values{}
-	if args.Type_ != nil {
-		queryParams.Add("type_", *args.Type_)
+	if args.Type != nil {
+		queryParams.Add("type", *args.Type)
 	}
 	locationId, _ := uuid.Parse("45bcaa88-67e1-4042-a035-56d3b4a7d44c")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, queryParams, nil, "", "text/html", nil)
@@ -2206,7 +2206,7 @@ type GetBuildReportHtmlContentArgs struct {
 	// (required) The ID of the build.
 	BuildId *int
 	// (optional)
-	Type_ *string
+	Type *string
 }
 
 // [Preview API] Gets a list of source code repositories.

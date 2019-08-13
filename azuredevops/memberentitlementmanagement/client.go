@@ -462,8 +462,8 @@ type UpdateUserEntitlementArgs struct {
 // [Preview API] Get summary of Licenses, Extension, Projects, Groups and their assignments in the collection.
 func (client *Client) GetUsersSummary(ctx context.Context, args GetUsersSummaryArgs) (*UsersSummary, error) {
 	queryParams := url.Values{}
-	if args.Select_ != nil {
-		queryParams.Add("select_", *args.Select_)
+	if args.Select != nil {
+		queryParams.Add("select", *args.Select)
 	}
 	locationId, _ := uuid.Parse("5ae55b13-c9dd-49d1-957e-6e76c152e3d9")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
@@ -479,5 +479,5 @@ func (client *Client) GetUsersSummary(ctx context.Context, args GetUsersSummaryA
 // Arguments for the GetUsersSummary function
 type GetUsersSummaryArgs struct {
 	// (optional) Comma (",") separated list of properties to select. Supported property names are {AccessLevels, Licenses, Extensions, Projects, Groups}.
-	Select_ *string
+	Select *string
 }

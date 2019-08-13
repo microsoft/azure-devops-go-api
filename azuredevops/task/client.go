@@ -46,10 +46,10 @@ func (client *Client) GetPlanAttachments(ctx context.Context, args GetPlanAttach
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "planId"}
 	}
 	routeValues["planId"] = (*args.PlanId).String()
-	if args.Type_ == nil || *args.Type_ == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type_"}
+	if args.Type == nil || *args.Type == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
 	}
-	routeValues["type_"] = *args.Type_
+	routeValues["type"] = *args.Type
 
 	locationId, _ := uuid.Parse("eb55e5d6-2f30-4295-b5ed-38da50b1fc52")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -71,7 +71,7 @@ type GetPlanAttachmentsArgs struct {
 	// (required)
 	PlanId *uuid.UUID
 	// (required)
-	Type_ *string
+	Type *string
 }
 
 // [Preview API]
@@ -100,10 +100,10 @@ func (client *Client) CreateAttachment(ctx context.Context, args CreateAttachmen
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "recordId"}
 	}
 	routeValues["recordId"] = (*args.RecordId).String()
-	if args.Type_ == nil || *args.Type_ == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type_"}
+	if args.Type == nil || *args.Type == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
 	}
-	routeValues["type_"] = *args.Type_
+	routeValues["type"] = *args.Type
 	if args.Name == nil || *args.Name == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "name"}
 	}
@@ -135,7 +135,7 @@ type CreateAttachmentArgs struct {
 	// (required)
 	RecordId *uuid.UUID
 	// (required)
-	Type_ *string
+	Type *string
 	// (required)
 	Name *string
 }
@@ -163,10 +163,10 @@ func (client *Client) GetAttachment(ctx context.Context, args GetAttachmentArgs)
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "recordId"}
 	}
 	routeValues["recordId"] = (*args.RecordId).String()
-	if args.Type_ == nil || *args.Type_ == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type_"}
+	if args.Type == nil || *args.Type == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
 	}
-	routeValues["type_"] = *args.Type_
+	routeValues["type"] = *args.Type
 	if args.Name == nil || *args.Name == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "name"}
 	}
@@ -196,7 +196,7 @@ type GetAttachmentArgs struct {
 	// (required)
 	RecordId *uuid.UUID
 	// (required)
-	Type_ *string
+	Type *string
 	// (required)
 	Name *string
 }
@@ -224,10 +224,10 @@ func (client *Client) GetAttachmentContent(ctx context.Context, args GetAttachme
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "recordId"}
 	}
 	routeValues["recordId"] = (*args.RecordId).String()
-	if args.Type_ == nil || *args.Type_ == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type_"}
+	if args.Type == nil || *args.Type == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
 	}
-	routeValues["type_"] = *args.Type_
+	routeValues["type"] = *args.Type
 	if args.Name == nil || *args.Name == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "name"}
 	}
@@ -255,7 +255,7 @@ type GetAttachmentContentArgs struct {
 	// (required)
 	RecordId *uuid.UUID
 	// (required)
-	Type_ *string
+	Type *string
 	// (required)
 	Name *string
 }
@@ -283,10 +283,10 @@ func (client *Client) GetAttachments(ctx context.Context, args GetAttachmentsArg
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "recordId"}
 	}
 	routeValues["recordId"] = (*args.RecordId).String()
-	if args.Type_ == nil || *args.Type_ == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type_"}
+	if args.Type == nil || *args.Type == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
 	}
-	routeValues["type_"] = *args.Type_
+	routeValues["type"] = *args.Type
 
 	locationId, _ := uuid.Parse("7898f959-9cdf-4096-b29e-7f293031629e")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -312,7 +312,7 @@ type GetAttachmentsArgs struct {
 	// (required)
 	RecordId *uuid.UUID
 	// (required)
-	Type_ *string
+	Type *string
 }
 
 func (client *Client) AppendLogContent(ctx context.Context, args AppendLogContentArgs) (*TaskLog, error) {

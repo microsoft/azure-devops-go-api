@@ -2470,10 +2470,10 @@ func (client *Client) CreateWorkItem(ctx context.Context, args CreateWorkItemArg
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
 	}
 	routeValues["project"] = *args.Project
-	if args.Type_ == nil || *args.Type_ == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type_"}
+	if args.Type == nil || *args.Type == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
 	}
-	routeValues["type_"] = *args.Type_
+	routeValues["type"] = *args.Type
 
 	queryParams := url.Values{}
 	if args.ValidateOnly != nil {
@@ -2510,7 +2510,7 @@ type CreateWorkItemArgs struct {
 	// (required) Project ID or project name
 	Project *string
 	// (required) The work item type of the work item to create
-	Type_ *string
+	Type *string
 	// (optional) Indicate if you only want to validate the changes without saving the work item
 	ValidateOnly *bool
 	// (optional) Do not enforce the work item type rules on this update
@@ -2528,10 +2528,10 @@ func (client *Client) GetWorkItemTemplate(ctx context.Context, args GetWorkItemT
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
 	}
 	routeValues["project"] = *args.Project
-	if args.Type_ == nil || *args.Type_ == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type_"}
+	if args.Type == nil || *args.Type == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
 	}
-	routeValues["type_"] = *args.Type_
+	routeValues["type"] = *args.Type
 
 	queryParams := url.Values{}
 	if args.Fields != nil {
@@ -2559,7 +2559,7 @@ type GetWorkItemTemplateArgs struct {
 	// (required) Project ID or project name
 	Project *string
 	// (required) The work item type name
-	Type_ *string
+	Type *string
 	// (optional) Comma-separated list of requested fields
 	Fields *string
 	// (optional) AsOf UTC date time string
@@ -2898,10 +2898,10 @@ func (client *Client) GetWorkItemType(ctx context.Context, args GetWorkItemTypeA
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
 	}
 	routeValues["project"] = *args.Project
-	if args.Type_ == nil || *args.Type_ == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type_"}
+	if args.Type == nil || *args.Type == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
 	}
-	routeValues["type_"] = *args.Type_
+	routeValues["type"] = *args.Type
 
 	locationId, _ := uuid.Parse("7c8d7a76-4a09-43e8-b5df-bd792f4ac6aa")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -2919,7 +2919,7 @@ type GetWorkItemTypeArgs struct {
 	// (required) Project ID or project name
 	Project *string
 	// (required) Work item type name
-	Type_ *string
+	Type *string
 }
 
 // Returns the list of work item types
@@ -2954,10 +2954,10 @@ func (client *Client) GetWorkItemTypeFieldsWithReferences(ctx context.Context, a
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
 	}
 	routeValues["project"] = *args.Project
-	if args.Type_ == nil || *args.Type_ == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type_"}
+	if args.Type == nil || *args.Type == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
 	}
-	routeValues["type_"] = *args.Type_
+	routeValues["type"] = *args.Type
 
 	queryParams := url.Values{}
 	if args.Expand != nil {
@@ -2979,7 +2979,7 @@ type GetWorkItemTypeFieldsWithReferencesArgs struct {
 	// (required) Project ID or project name
 	Project *string
 	// (required) Work item type.
-	Type_ *string
+	Type *string
 	// (optional) Expand level for the API response. Properties: to include allowedvalues, default value, isRequired etc. as a part of response; None: to skip these properties.
 	Expand *WorkItemTypeFieldsExpandLevel
 }
@@ -2991,10 +2991,10 @@ func (client *Client) GetWorkItemTypeFieldWithReferences(ctx context.Context, ar
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
 	}
 	routeValues["project"] = *args.Project
-	if args.Type_ == nil || *args.Type_ == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type_"}
+	if args.Type == nil || *args.Type == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
 	}
-	routeValues["type_"] = *args.Type_
+	routeValues["type"] = *args.Type
 	if args.Field == nil || *args.Field == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "field"}
 	}
@@ -3020,7 +3020,7 @@ type GetWorkItemTypeFieldWithReferencesArgs struct {
 	// (required) Project ID or project name
 	Project *string
 	// (required) Work item type.
-	Type_ *string
+	Type *string
 	// (required)
 	Field *string
 	// (optional) Expand level for the API response. Properties: to include allowedvalues, default value, isRequired etc. as a part of response; None: to skip these properties.
@@ -3034,10 +3034,10 @@ func (client *Client) GetWorkItemTypeStates(ctx context.Context, args GetWorkIte
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "project"}
 	}
 	routeValues["project"] = *args.Project
-	if args.Type_ == nil || *args.Type_ == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type_"}
+	if args.Type == nil || *args.Type == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
 	}
-	routeValues["type_"] = *args.Type_
+	routeValues["type"] = *args.Type
 
 	locationId, _ := uuid.Parse("7c9d7a76-4a09-43e8-b5df-bd792f4ac6aa")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -3055,5 +3055,5 @@ type GetWorkItemTypeStatesArgs struct {
 	// (required) Project ID or project name
 	Project *string
 	// (required) The state name
-	Type_ *string
+	Type *string
 }

@@ -188,10 +188,10 @@ func (client *Client) GetReleaseTaskAttachmentContent(ctx context.Context, args 
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "recordId"}
 	}
 	routeValues["recordId"] = (*args.RecordId).String()
-	if args.Type_ == nil || *args.Type_ == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type_"}
+	if args.Type == nil || *args.Type == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
 	}
-	routeValues["type_"] = *args.Type_
+	routeValues["type"] = *args.Type
 	if args.Name == nil || *args.Name == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "name"}
 	}
@@ -223,7 +223,7 @@ type GetReleaseTaskAttachmentContentArgs struct {
 	// (required) Record Id of attachment.
 	RecordId *uuid.UUID
 	// (required) Type of the attachment.
-	Type_ *string
+	Type *string
 	// (required) Name of the attachment.
 	Name *string
 }
@@ -251,10 +251,10 @@ func (client *Client) GetReleaseTaskAttachments(ctx context.Context, args GetRel
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "planId"}
 	}
 	routeValues["planId"] = (*args.PlanId).String()
-	if args.Type_ == nil || *args.Type_ == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type_"}
+	if args.Type == nil || *args.Type == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
 	}
-	routeValues["type_"] = *args.Type_
+	routeValues["type"] = *args.Type
 
 	locationId, _ := uuid.Parse("a4d06688-0dfa-4895-82a5-f43ec9452306")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
@@ -280,7 +280,7 @@ type GetReleaseTaskAttachmentsArgs struct {
 	// (required) Plan Id of the deploy phase.
 	PlanId *uuid.UUID
 	// (required) Type of the attachment.
-	Type_ *string
+	Type *string
 }
 
 // Create a release definition

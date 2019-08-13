@@ -186,8 +186,8 @@ func (client *Client) GetServiceEndpoints(ctx context.Context, args GetServiceEn
 	routeValues["project"] = *args.Project
 
 	queryParams := url.Values{}
-	if args.Type_ != nil {
-		queryParams.Add("type_", *args.Type_)
+	if args.Type != nil {
+		queryParams.Add("type", *args.Type)
 	}
 	if args.AuthSchemes != nil {
 		listAsString := strings.Join((*args.AuthSchemes)[:], ",")
@@ -226,7 +226,7 @@ type GetServiceEndpointsArgs struct {
 	// (required) Project ID or project name
 	Project *string
 	// (optional) Type of the service endpoints.
-	Type_ *string
+	Type *string
 	// (optional) Authorization schemes used for service endpoints.
 	AuthSchemes *[]string
 	// (optional) Ids of the service endpoints.
@@ -253,8 +253,8 @@ func (client *Client) GetServiceEndpointsByNames(ctx context.Context, args GetSe
 	}
 	listAsString := strings.Join((*args.EndpointNames)[:], ",")
 	queryParams.Add("endpointNames", listAsString)
-	if args.Type_ != nil {
-		queryParams.Add("type_", *args.Type_)
+	if args.Type != nil {
+		queryParams.Add("type", *args.Type)
 	}
 	if args.AuthSchemes != nil {
 		listAsString := strings.Join((*args.AuthSchemes)[:], ",")
@@ -287,7 +287,7 @@ type GetServiceEndpointsByNamesArgs struct {
 	// (required) Names of the service endpoints.
 	EndpointNames *[]string
 	// (optional) Type of the service endpoints.
-	Type_ *string
+	Type *string
 	// (optional) Authorization schemes used for service endpoints.
 	AuthSchemes *[]string
 	// (optional) Owner for service endpoints.
@@ -431,8 +431,8 @@ type GetServiceEndpointExecutionRecordsResponseValue struct {
 // [Preview API] Get service endpoint types.
 func (client *Client) GetServiceEndpointTypes(ctx context.Context, args GetServiceEndpointTypesArgs) (*[]ServiceEndpointType, error) {
 	queryParams := url.Values{}
-	if args.Type_ != nil {
-		queryParams.Add("type_", *args.Type_)
+	if args.Type != nil {
+		queryParams.Add("type", *args.Type)
 	}
 	if args.Scheme != nil {
 		queryParams.Add("scheme", *args.Scheme)
@@ -451,7 +451,7 @@ func (client *Client) GetServiceEndpointTypes(ctx context.Context, args GetServi
 // Arguments for the GetServiceEndpointTypes function
 type GetServiceEndpointTypesArgs struct {
 	// (optional) Type of service endpoint.
-	Type_ *string
+	Type *string
 	// (optional) Scheme of service endpoint.
 	Scheme *string
 }

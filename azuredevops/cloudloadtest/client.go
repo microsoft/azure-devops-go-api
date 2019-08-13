@@ -192,8 +192,8 @@ type GetApplicationArgs struct {
 
 func (client *Client) GetApplications(ctx context.Context, args GetApplicationsArgs) (*[]testservice.Application, error) {
 	queryParams := url.Values{}
-	if args.Type_ != nil {
-		queryParams.Add("type_", *args.Type_)
+	if args.Type != nil {
+		queryParams.Add("type", *args.Type)
 	}
 	locationId, _ := uuid.Parse("2c986dce-8e8d-4142-b541-d016d5aff764")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
@@ -209,7 +209,7 @@ func (client *Client) GetApplications(ctx context.Context, args GetApplicationsA
 // Arguments for the GetApplications function
 type GetApplicationsArgs struct {
 	// (optional) Filters the results based on the plugin type.
-	Type_ *string
+	Type *string
 }
 
 func (client *Client) GetCounters(ctx context.Context, args GetCountersArgs) (*[]testservice.TestRunCounterInstance, error) {
@@ -316,8 +316,8 @@ func (client *Client) GetLoadTestRunErrors(ctx context.Context, args GetLoadTest
 	routeValues["testRunId"] = *args.TestRunId
 
 	queryParams := url.Values{}
-	if args.Type_ != nil {
-		queryParams.Add("type_", *args.Type_)
+	if args.Type != nil {
+		queryParams.Add("type", *args.Type)
 	}
 	if args.SubType != nil {
 		queryParams.Add("subType", *args.SubType)
@@ -341,7 +341,7 @@ type GetLoadTestRunErrorsArgs struct {
 	// (required) The test run identifier
 	TestRunId *string
 	// (optional) Filter for the particular type of errors.
-	Type_ *string
+	Type *string
 	// (optional) Filter for a particular subtype of errors. You should not provide error subtype without error type.
 	SubType *string
 	// (optional) To include the details of test errors such as messagetext, request, stacktrace, testcasename, scenarioname, and lasterrordate.
@@ -374,10 +374,10 @@ type GetTestRunMessagesArgs struct {
 
 func (client *Client) GetPlugin(ctx context.Context, args GetPluginArgs) (*testservice.ApplicationType, error) {
 	routeValues := make(map[string]string)
-	if args.Type_ == nil || *args.Type_ == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type_"}
+	if args.Type == nil || *args.Type == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "type"}
 	}
-	routeValues["type_"] = *args.Type_
+	routeValues["type"] = *args.Type
 
 	locationId, _ := uuid.Parse("7dcb0bb2-42d5-4729-9958-c0401d5e7693")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
@@ -393,7 +393,7 @@ func (client *Client) GetPlugin(ctx context.Context, args GetPluginArgs) (*tests
 // Arguments for the GetPlugin function
 type GetPluginArgs struct {
 	// (required) Currently ApplicationInsights is the only available plugin type.
-	Type_ *string
+	Type *string
 }
 
 func (client *Client) GetPlugins(ctx context.Context, args GetPluginsArgs) (*[]testservice.ApplicationType, error) {

@@ -336,7 +336,12 @@ func transformRouteTemplate(routeTemplate string, routeValues map[string]string)
 			if ok {
 				newTemplate += "/" + url.PathEscape(value)
 			}
+			// else this is an optional parameter that has not been supplied, so don't add it back
 		}
+	}
+	// following covers oddball templates with segments that include the token and additional constants
+	for key, value := range routeValues {
+		newTemplate = strings.Replace(newTemplate, "{" + key + "}", value, -1)
 	}
 	return newTemplate
 }
