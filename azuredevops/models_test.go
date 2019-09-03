@@ -34,6 +34,30 @@ func TestModels_Unmarshal_Time(t *testing.T) {
 	}
 }
 
+func TestModels_Marshal_Unmarshal_Time(t *testing.T) {
+	testModel1 := TestModel{}
+	testModel1.Time1 = &Time{}
+	testModel1.Time1.Time = time.Now()
+	b, err := json.Marshal(testModel1)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	testModel2 := TestModel{}
+	err = json.Unmarshal(b, &testModel2)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	if testModel1.Time1 != testModel1.Time1 {
+		t.Errorf("Expected time: %v  Actual time: %v", testModel1.Time1, testModel1.Time2)
+	}
+
+	if testModel1.Time1.Time != testModel1.Time1.Time {
+		t.Errorf("Expected time: %v  Actual time: %v", testModel1.Time1.Time, testModel1.Time2.Time)
+	}
+}
+
 type TestModel struct {
 	Id     *uuid.UUID `json:"id,omitempty"`
 	Time1  *Time      `json:"time1,omitempty"`

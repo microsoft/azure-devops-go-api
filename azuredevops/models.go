@@ -77,7 +77,7 @@ func (t *Time) UnmarshalJSON(b []byte) error {
 	return err
 }
 
-func (t *Time) MarshalJson() ([]byte, error) {
+func (t *Time) MarshalJSON() ([]byte, error) {
 	return json.Marshal(t.Time)
 }
 
