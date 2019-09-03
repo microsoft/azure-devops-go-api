@@ -13,7 +13,6 @@ import (
 	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/forminput"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 type AadLoginPromptOption string
@@ -73,7 +72,7 @@ type AuthConfiguration struct {
 	// Gets or sets the identity who created the config.
 	CreatedBy *webapi.IdentityRef `json:"createdBy,omitempty"`
 	// Gets or sets the time when config was created.
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// Gets or sets the type of the endpoint.
 	EndpointType *string `json:"endpointType,omitempty"`
 	// Gets or sets the unique identifier of this field
@@ -81,7 +80,7 @@ type AuthConfiguration struct {
 	// Gets or sets the identity who modified the config.
 	ModifiedBy *webapi.IdentityRef `json:"modifiedBy,omitempty"`
 	// Gets or sets the time when variable group was modified
-	ModifiedOn *time.Time `json:"modifiedOn,omitempty"`
+	ModifiedOn *azuredevops.Time `json:"modifiedOn,omitempty"`
 	// Gets or sets the name
 	Name *string `json:"name,omitempty"`
 	// Gets or sets the Url
@@ -308,7 +307,7 @@ type OAuthConfiguration struct {
 	// Gets or sets the identity who created the config.
 	CreatedBy *webapi.IdentityRef `json:"createdBy,omitempty"`
 	// Gets or sets the time when config was created.
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// Gets or sets the type of the endpoint.
 	EndpointType *string `json:"endpointType,omitempty"`
 	// Gets or sets the unique identifier of this field
@@ -316,7 +315,7 @@ type OAuthConfiguration struct {
 	// Gets or sets the identity who modified the config.
 	ModifiedBy *webapi.IdentityRef `json:"modifiedBy,omitempty"`
 	// Gets or sets the time when variable group was modified
-	ModifiedOn *time.Time `json:"modifiedOn,omitempty"`
+	ModifiedOn *azuredevops.Time `json:"modifiedOn,omitempty"`
 	// Gets or sets the name
 	Name *string `json:"name,omitempty"`
 	// Gets or sets the Url
@@ -459,7 +458,7 @@ type ServiceEndpointExecutionData struct {
 	// Gets the definition of service endpoint execution owner.
 	Definition *ServiceEndpointExecutionOwner `json:"definition,omitempty"`
 	// Gets the finish time of service endpoint execution.
-	FinishTime *time.Time `json:"finishTime,omitempty"`
+	FinishTime *azuredevops.Time `json:"finishTime,omitempty"`
 	// Gets the Id of service endpoint execution data.
 	Id *uint64 `json:"id,omitempty"`
 	// Gets the owner of service endpoint execution data.
@@ -469,7 +468,7 @@ type ServiceEndpointExecutionData struct {
 	// Gets the result of service endpoint execution.
 	Result *ServiceEndpointExecutionResult `json:"result,omitempty"`
 	// Gets the start time of service endpoint execution.
-	StartTime *time.Time `json:"startTime,omitempty"`
+	StartTime *azuredevops.Time `json:"startTime,omitempty"`
 }
 
 // Represents execution owner of the service endpoint.

@@ -14,7 +14,6 @@ import (
 	"github.com/microsoft/azure-devops-go-api/azuredevops/core"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/system"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 type AbortTestRunRequest struct {
@@ -28,7 +27,7 @@ type AfnStrip struct {
 	// Auxiliary Url to be consumed by MTM
 	AuxiliaryUrl *string `json:"auxiliaryUrl,omitempty"`
 	// Creation date of the AfnStrip
-	CreationDate *time.Time `json:"creationDate,omitempty"`
+	CreationDate *azuredevops.Time `json:"creationDate,omitempty"`
 	// File name of the attachment created
 	FileName *string `json:"fileName,omitempty"`
 	// ID of AfnStrip. This is same as the attachment ID.
@@ -132,7 +131,7 @@ type BuildConfiguration struct {
 	// Build system.
 	BuildSystem *string `json:"buildSystem,omitempty"`
 	// Build Creation Date.
-	CreationDate *time.Time `json:"creationDate,omitempty"`
+	CreationDate *azuredevops.Time `json:"creationDate,omitempty"`
 	// Build flavor (eg Build/Release).
 	Flavor *string `json:"flavor,omitempty"`
 	// BuildConfiguration Id.
@@ -190,22 +189,22 @@ type BuildReference struct {
 }
 
 type BuildReference2 struct {
-	BranchName           *string    `json:"branchName,omitempty"`
-	BuildConfigurationId *int       `json:"buildConfigurationId,omitempty"`
-	BuildDefinitionId    *int       `json:"buildDefinitionId,omitempty"`
-	BuildDeleted         *bool      `json:"buildDeleted,omitempty"`
-	BuildFlavor          *string    `json:"buildFlavor,omitempty"`
-	BuildId              *int       `json:"buildId,omitempty"`
-	BuildNumber          *string    `json:"buildNumber,omitempty"`
-	BuildPlatform        *string    `json:"buildPlatform,omitempty"`
-	BuildSystem          *string    `json:"buildSystem,omitempty"`
-	BuildUri             *string    `json:"buildUri,omitempty"`
-	CoverageId           *int       `json:"coverageId,omitempty"`
-	CreatedDate          *time.Time `json:"createdDate,omitempty"`
-	ProjectId            *uuid.UUID `json:"projectId,omitempty"`
-	RepoId               *string    `json:"repoId,omitempty"`
-	RepoType             *string    `json:"repoType,omitempty"`
-	SourceVersion        *string    `json:"sourceVersion,omitempty"`
+	BranchName           *string           `json:"branchName,omitempty"`
+	BuildConfigurationId *int              `json:"buildConfigurationId,omitempty"`
+	BuildDefinitionId    *int              `json:"buildDefinitionId,omitempty"`
+	BuildDeleted         *bool             `json:"buildDeleted,omitempty"`
+	BuildFlavor          *string           `json:"buildFlavor,omitempty"`
+	BuildId              *int              `json:"buildId,omitempty"`
+	BuildNumber          *string           `json:"buildNumber,omitempty"`
+	BuildPlatform        *string           `json:"buildPlatform,omitempty"`
+	BuildSystem          *string           `json:"buildSystem,omitempty"`
+	BuildUri             *string           `json:"buildUri,omitempty"`
+	CoverageId           *int              `json:"coverageId,omitempty"`
+	CreatedDate          *azuredevops.Time `json:"createdDate,omitempty"`
+	ProjectId            *uuid.UUID        `json:"projectId,omitempty"`
+	RepoId               *string           `json:"repoId,omitempty"`
+	RepoType             *string           `json:"repoType,omitempty"`
+	SourceVersion        *string           `json:"sourceVersion,omitempty"`
 }
 
 type BulkResultUpdateRequest struct {
@@ -218,9 +217,9 @@ type CloneOperationInformation struct {
 	// Clone Statistics
 	CloneStatistics *CloneStatistics `json:"cloneStatistics,omitempty"`
 	// If the operation is complete, the DateTime of completion. If operation is not complete, this is DateTime.MaxValue
-	CompletionDate *time.Time `json:"completionDate,omitempty"`
+	CompletionDate *azuredevops.Time `json:"completionDate,omitempty"`
 	// DateTime when the operation was started
-	CreationDate *time.Time `json:"creationDate,omitempty"`
+	CreationDate *azuredevops.Time `json:"creationDate,omitempty"`
 	// Shallow reference of the destination
 	DestinationObject *ShallowReference `json:"destinationObject,omitempty"`
 	// Shallow reference of the destination
@@ -344,11 +343,11 @@ type CodeCoverageSummary2 struct {
 }
 
 type Coverage2 struct {
-	CoverageId   *int       `json:"coverageId,omitempty"`
-	DateCreated  *time.Time `json:"dateCreated,omitempty"`
-	DateModified *time.Time `json:"dateModified,omitempty"`
-	LastError    *string    `json:"lastError,omitempty"`
-	State        *byte      `json:"state,omitempty"`
+	CoverageId   *int              `json:"coverageId,omitempty"`
+	DateCreated  *azuredevops.Time `json:"dateCreated,omitempty"`
+	DateModified *azuredevops.Time `json:"dateModified,omitempty"`
+	LastError    *string           `json:"lastError,omitempty"`
+	State        *byte             `json:"state,omitempty"`
 }
 
 // [Flags] Used to choose which coverage data is returned by a QueryXXXCoverage() call.
@@ -488,8 +487,8 @@ var CustomTestFieldTypeValues = customTestFieldTypeValuesType{
 }
 
 type DatedTestFieldData struct {
-	Date  *time.Time     `json:"date,omitempty"`
-	Value *TestFieldData `json:"value,omitempty"`
+	Date  *azuredevops.Time `json:"date,omitempty"`
+	Value *TestFieldData    `json:"value,omitempty"`
 }
 
 type DefaultAfnStripBinding struct {
@@ -520,7 +519,7 @@ type FailingSince struct {
 	// Build reference since failing.
 	Build *BuildReference `json:"build,omitempty"`
 	// Time since failing.
-	Date *time.Time `json:"date,omitempty"`
+	Date *azuredevops.Time `json:"date,omitempty"`
 	// Release reference since failing.
 	Release *ReleaseReference `json:"release,omitempty"`
 }
@@ -646,7 +645,7 @@ type JobReference struct {
 // Last result details of test point.
 type LastResultDetails struct {
 	// CompletedDate of LastResult.
-	DateCompleted *time.Time `json:"dateCompleted,omitempty"`
+	DateCompleted *azuredevops.Time `json:"dateCompleted,omitempty"`
 	// Duration of LastResult.
 	Duration *uint64 `json:"duration,omitempty"`
 	// RunBy.
@@ -654,42 +653,42 @@ type LastResultDetails struct {
 }
 
 type LegacyBuildConfiguration struct {
-	BranchName              *string    `json:"branchName,omitempty"`
-	BuildConfigurationId    *int       `json:"buildConfigurationId,omitempty"`
-	BuildDefinitionId       *int       `json:"buildDefinitionId,omitempty"`
-	BuildDefinitionName     *string    `json:"buildDefinitionName,omitempty"`
-	BuildFlavor             *string    `json:"buildFlavor,omitempty"`
-	BuildId                 *int       `json:"buildId,omitempty"`
-	BuildNumber             *string    `json:"buildNumber,omitempty"`
-	BuildPlatform           *string    `json:"buildPlatform,omitempty"`
-	BuildQuality            *string    `json:"buildQuality,omitempty"`
-	BuildSystem             *string    `json:"buildSystem,omitempty"`
-	BuildUri                *string    `json:"buildUri,omitempty"`
-	CompletedDate           *time.Time `json:"completedDate,omitempty"`
-	CreatedDate             *time.Time `json:"createdDate,omitempty"`
-	OldBuildConfigurationId *int       `json:"oldBuildConfigurationId,omitempty"`
-	RepositoryId            *string    `json:"repositoryId,omitempty"`
-	RepositoryType          *string    `json:"repositoryType,omitempty"`
-	SourceVersion           *string    `json:"sourceVersion,omitempty"`
-	TeamProjectName         *string    `json:"teamProjectName,omitempty"`
+	BranchName              *string           `json:"branchName,omitempty"`
+	BuildConfigurationId    *int              `json:"buildConfigurationId,omitempty"`
+	BuildDefinitionId       *int              `json:"buildDefinitionId,omitempty"`
+	BuildDefinitionName     *string           `json:"buildDefinitionName,omitempty"`
+	BuildFlavor             *string           `json:"buildFlavor,omitempty"`
+	BuildId                 *int              `json:"buildId,omitempty"`
+	BuildNumber             *string           `json:"buildNumber,omitempty"`
+	BuildPlatform           *string           `json:"buildPlatform,omitempty"`
+	BuildQuality            *string           `json:"buildQuality,omitempty"`
+	BuildSystem             *string           `json:"buildSystem,omitempty"`
+	BuildUri                *string           `json:"buildUri,omitempty"`
+	CompletedDate           *azuredevops.Time `json:"completedDate,omitempty"`
+	CreatedDate             *azuredevops.Time `json:"createdDate,omitempty"`
+	OldBuildConfigurationId *int              `json:"oldBuildConfigurationId,omitempty"`
+	RepositoryId            *string           `json:"repositoryId,omitempty"`
+	RepositoryType          *string           `json:"repositoryType,omitempty"`
+	SourceVersion           *string           `json:"sourceVersion,omitempty"`
+	TeamProjectName         *string           `json:"teamProjectName,omitempty"`
 }
 
 type LegacyReleaseReference struct {
-	Attempt                  *int       `json:"attempt,omitempty"`
-	EnvironmentCreationDate  *time.Time `json:"environmentCreationDate,omitempty"`
-	PrimaryArtifactBuildId   *int       `json:"primaryArtifactBuildId,omitempty"`
-	PrimaryArtifactProjectId *string    `json:"primaryArtifactProjectId,omitempty"`
-	PrimaryArtifactType      *string    `json:"primaryArtifactType,omitempty"`
-	ReleaseCreationDate      *time.Time `json:"releaseCreationDate,omitempty"`
-	ReleaseDefId             *int       `json:"releaseDefId,omitempty"`
-	ReleaseEnvDefId          *int       `json:"releaseEnvDefId,omitempty"`
-	ReleaseEnvId             *int       `json:"releaseEnvId,omitempty"`
-	ReleaseEnvName           *string    `json:"releaseEnvName,omitempty"`
-	ReleaseEnvUri            *string    `json:"releaseEnvUri,omitempty"`
-	ReleaseId                *int       `json:"releaseId,omitempty"`
-	ReleaseName              *string    `json:"releaseName,omitempty"`
-	ReleaseRefId             *int       `json:"releaseRefId,omitempty"`
-	ReleaseUri               *string    `json:"releaseUri,omitempty"`
+	Attempt                  *int              `json:"attempt,omitempty"`
+	EnvironmentCreationDate  *azuredevops.Time `json:"environmentCreationDate,omitempty"`
+	PrimaryArtifactBuildId   *int              `json:"primaryArtifactBuildId,omitempty"`
+	PrimaryArtifactProjectId *string           `json:"primaryArtifactProjectId,omitempty"`
+	PrimaryArtifactType      *string           `json:"primaryArtifactType,omitempty"`
+	ReleaseCreationDate      *azuredevops.Time `json:"releaseCreationDate,omitempty"`
+	ReleaseDefId             *int              `json:"releaseDefId,omitempty"`
+	ReleaseEnvDefId          *int              `json:"releaseEnvDefId,omitempty"`
+	ReleaseEnvId             *int              `json:"releaseEnvId,omitempty"`
+	ReleaseEnvName           *string           `json:"releaseEnvName,omitempty"`
+	ReleaseEnvUri            *string           `json:"releaseEnvUri,omitempty"`
+	ReleaseId                *int              `json:"releaseId,omitempty"`
+	ReleaseName              *string           `json:"releaseName,omitempty"`
+	ReleaseRefId             *int              `json:"releaseRefId,omitempty"`
+	ReleaseUri               *string           `json:"releaseUri,omitempty"`
 }
 
 type LegacyTestCaseResult struct {
@@ -707,17 +706,17 @@ type LegacyTestCaseResult struct {
 	ComputerName         *string                         `json:"computerName,omitempty"`
 	ConfigurationId      *int                            `json:"configurationId,omitempty"`
 	ConfigurationName    *string                         `json:"configurationName,omitempty"`
-	CreationDate         *time.Time                      `json:"creationDate,omitempty"`
+	CreationDate         *azuredevops.Time               `json:"creationDate,omitempty"`
 	CustomFields         *[]TestExtensionField           `json:"customFields,omitempty"`
-	DateCompleted        *time.Time                      `json:"dateCompleted,omitempty"`
-	DateStarted          *time.Time                      `json:"dateStarted,omitempty"`
+	DateCompleted        *azuredevops.Time               `json:"dateCompleted,omitempty"`
+	DateStarted          *azuredevops.Time               `json:"dateStarted,omitempty"`
 	Duration             *uint64                         `json:"duration,omitempty"`
 	ErrorMessage         *string                         `json:"errorMessage,omitempty"`
 	FailingSince         *FailingSince                   `json:"failingSince,omitempty"`
 	FailureType          *byte                           `json:"failureType,omitempty"`
 	Id                   *LegacyTestCaseResultIdentifier `json:"id,omitempty"`
 	IsRerun              *bool                           `json:"isRerun,omitempty"`
-	LastUpdated          *time.Time                      `json:"lastUpdated,omitempty"`
+	LastUpdated          *azuredevops.Time               `json:"lastUpdated,omitempty"`
 	LastUpdatedBy        *uuid.UUID                      `json:"lastUpdatedBy,omitempty"`
 	LastUpdatedByName    *string                         `json:"lastUpdatedByName,omitempty"`
 	Outcome              *byte                           `json:"outcome,omitempty"`
@@ -765,17 +764,17 @@ type LegacyTestRun struct {
 	BuildReference            *LegacyBuildConfiguration `json:"buildReference,omitempty"`
 	BuildUri                  *string                   `json:"buildUri,omitempty"`
 	Comment                   *string                   `json:"comment,omitempty"`
-	CompleteDate              *time.Time                `json:"completeDate,omitempty"`
+	CompleteDate              *azuredevops.Time         `json:"completeDate,omitempty"`
 	ConfigurationIds          *[]int                    `json:"configurationIds,omitempty"`
 	Controller                *string                   `json:"controller,omitempty"`
-	CreationDate              *time.Time                `json:"creationDate,omitempty"`
+	CreationDate              *azuredevops.Time         `json:"creationDate,omitempty"`
 	CsmContent                *string                   `json:"csmContent,omitempty"`
 	CsmParameters             *string                   `json:"csmParameters,omitempty"`
 	CustomFields              *[]TestExtensionField     `json:"customFields,omitempty"`
 	DropLocation              *string                   `json:"dropLocation,omitempty"`
 	DtlAutEnvironment         *ShallowReference         `json:"dtlAutEnvironment,omitempty"`
 	DtlTestEnvironment        *ShallowReference         `json:"dtlTestEnvironment,omitempty"`
-	DueDate                   *time.Time                `json:"dueDate,omitempty"`
+	DueDate                   *azuredevops.Time         `json:"dueDate,omitempty"`
 	ErrorMessage              *string                   `json:"errorMessage,omitempty"`
 	Filter                    *RunFilter                `json:"filter,omitempty"`
 	IncompleteTests           *int                      `json:"incompleteTests,omitempty"`
@@ -783,7 +782,7 @@ type LegacyTestRun struct {
 	IsBvt                     *bool                     `json:"isBvt,omitempty"`
 	Iteration                 *string                   `json:"iteration,omitempty"`
 	IterationId               *int                      `json:"iterationId,omitempty"`
-	LastUpdated               *time.Time                `json:"lastUpdated,omitempty"`
+	LastUpdated               *azuredevops.Time         `json:"lastUpdated,omitempty"`
 	LastUpdatedBy             *uuid.UUID                `json:"lastUpdatedBy,omitempty"`
 	LastUpdatedByName         *string                   `json:"lastUpdatedByName,omitempty"`
 	LegacySharePath           *string                   `json:"legacySharePath,omitempty"`
@@ -802,7 +801,7 @@ type LegacyTestRun struct {
 	RunTimeout                interface{}               `json:"runTimeout,omitempty"`
 	ServiceVersion            *string                   `json:"serviceVersion,omitempty"`
 	SourceWorkflow            *string                   `json:"sourceWorkflow,omitempty"`
-	StartDate                 *time.Time                `json:"startDate,omitempty"`
+	StartDate                 *azuredevops.Time         `json:"startDate,omitempty"`
 	State                     *byte                     `json:"state,omitempty"`
 	SubscriptionName          *string                   `json:"subscriptionName,omitempty"`
 	Substate                  *byte                     `json:"substate,omitempty"`
@@ -836,12 +835,12 @@ type LegacyTestSettings struct {
 	AreaPath          *string                    `json:"areaPath,omitempty"`
 	CreatedBy         *uuid.UUID                 `json:"createdBy,omitempty"`
 	CreatedByName     *string                    `json:"createdByName,omitempty"`
-	CreatedDate       *time.Time                 `json:"createdDate,omitempty"`
+	CreatedDate       *azuredevops.Time          `json:"createdDate,omitempty"`
 	Description       *string                    `json:"description,omitempty"`
 	Id                *int                       `json:"id,omitempty"`
 	IsAutomated       *bool                      `json:"isAutomated,omitempty"`
 	IsPublic          *bool                      `json:"isPublic,omitempty"`
-	LastUpdated       *time.Time                 `json:"lastUpdated,omitempty"`
+	LastUpdated       *azuredevops.Time          `json:"lastUpdated,omitempty"`
 	LastUpdatedBy     *uuid.UUID                 `json:"lastUpdatedBy,omitempty"`
 	LastUpdatedByName *string                    `json:"lastUpdatedByName,omitempty"`
 	MachineRoles      *[]TestSettingsMachineRole `json:"machineRoles,omitempty"`
@@ -986,8 +985,8 @@ type PointAssignment struct {
 }
 
 type PointLastResult struct {
-	LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
-	PointId         *int       `json:"pointId,omitempty"`
+	LastUpdatedDate *azuredevops.Time `json:"lastUpdatedDate,omitempty"`
+	PointId         *int              `json:"pointId,omitempty"`
 }
 
 // Filter class for test point.
@@ -1006,17 +1005,17 @@ type PointsReference2 struct {
 }
 
 type PointsResults2 struct {
-	ChangeNumber          *int       `json:"changeNumber,omitempty"`
-	LastFailureType       *byte      `json:"lastFailureType,omitempty"`
-	LastResolutionStateId *int       `json:"lastResolutionStateId,omitempty"`
-	LastResultOutcome     *byte      `json:"lastResultOutcome,omitempty"`
-	LastResultState       *byte      `json:"lastResultState,omitempty"`
-	LastTestResultId      *int       `json:"lastTestResultId,omitempty"`
-	LastTestRunId         *int       `json:"lastTestRunId,omitempty"`
-	LastUpdated           *time.Time `json:"lastUpdated,omitempty"`
-	LastUpdatedBy         *uuid.UUID `json:"lastUpdatedBy,omitempty"`
-	PlanId                *int       `json:"planId,omitempty"`
-	PointId               *int       `json:"pointId,omitempty"`
+	ChangeNumber          *int              `json:"changeNumber,omitempty"`
+	LastFailureType       *byte             `json:"lastFailureType,omitempty"`
+	LastResolutionStateId *int              `json:"lastResolutionStateId,omitempty"`
+	LastResultOutcome     *byte             `json:"lastResultOutcome,omitempty"`
+	LastResultState       *byte             `json:"lastResultState,omitempty"`
+	LastTestResultId      *int              `json:"lastTestResultId,omitempty"`
+	LastTestRunId         *int              `json:"lastTestRunId,omitempty"`
+	LastUpdated           *azuredevops.Time `json:"lastUpdated,omitempty"`
+	LastUpdatedBy         *uuid.UUID        `json:"lastUpdatedBy,omitempty"`
+	PlanId                *int              `json:"planId,omitempty"`
+	PointId               *int              `json:"pointId,omitempty"`
 }
 
 // Model to update test point.
@@ -1111,11 +1110,11 @@ type ReleaseReference struct {
 	// Number of Release Attempt.
 	Attempt *int `json:"attempt,omitempty"`
 	// Release Creation Date.
-	CreationDate *time.Time `json:"creationDate,omitempty"`
+	CreationDate *azuredevops.Time `json:"creationDate,omitempty"`
 	// Release definition ID.
 	DefinitionId *int `json:"definitionId,omitempty"`
 	// Environment creation Date.
-	EnvironmentCreationDate *time.Time `json:"environmentCreationDate,omitempty"`
+	EnvironmentCreationDate *azuredevops.Time `json:"environmentCreationDate,omitempty"`
 	// Release environment definition ID.
 	EnvironmentDefinitionId *int `json:"environmentDefinitionId,omitempty"`
 	// Release environment definition name.
@@ -1131,30 +1130,30 @@ type ReleaseReference struct {
 }
 
 type ReleaseReference2 struct {
-	Attempt                 *int       `json:"attempt,omitempty"`
-	EnvironmentCreationDate *time.Time `json:"environmentCreationDate,omitempty"`
-	ProjectId               *uuid.UUID `json:"projectId,omitempty"`
-	ReleaseCreationDate     *time.Time `json:"releaseCreationDate,omitempty"`
-	ReleaseDefId            *int       `json:"releaseDefId,omitempty"`
-	ReleaseEnvDefId         *int       `json:"releaseEnvDefId,omitempty"`
-	ReleaseEnvId            *int       `json:"releaseEnvId,omitempty"`
-	ReleaseEnvName          *string    `json:"releaseEnvName,omitempty"`
-	ReleaseEnvUri           *string    `json:"releaseEnvUri,omitempty"`
-	ReleaseId               *int       `json:"releaseId,omitempty"`
-	ReleaseName             *string    `json:"releaseName,omitempty"`
-	ReleaseRefId            *int       `json:"releaseRefId,omitempty"`
-	ReleaseUri              *string    `json:"releaseUri,omitempty"`
+	Attempt                 *int              `json:"attempt,omitempty"`
+	EnvironmentCreationDate *azuredevops.Time `json:"environmentCreationDate,omitempty"`
+	ProjectId               *uuid.UUID        `json:"projectId,omitempty"`
+	ReleaseCreationDate     *azuredevops.Time `json:"releaseCreationDate,omitempty"`
+	ReleaseDefId            *int              `json:"releaseDefId,omitempty"`
+	ReleaseEnvDefId         *int              `json:"releaseEnvDefId,omitempty"`
+	ReleaseEnvId            *int              `json:"releaseEnvId,omitempty"`
+	ReleaseEnvName          *string           `json:"releaseEnvName,omitempty"`
+	ReleaseEnvUri           *string           `json:"releaseEnvUri,omitempty"`
+	ReleaseId               *int              `json:"releaseId,omitempty"`
+	ReleaseName             *string           `json:"releaseName,omitempty"`
+	ReleaseRefId            *int              `json:"releaseRefId,omitempty"`
+	ReleaseUri              *string           `json:"releaseUri,omitempty"`
 }
 
 type RequirementsToTestsMapping2 struct {
-	CreatedBy       *uuid.UUID `json:"createdBy,omitempty"`
-	CreationDate    *time.Time `json:"creationDate,omitempty"`
-	DeletedBy       *uuid.UUID `json:"deletedBy,omitempty"`
-	DeletionDate    *time.Time `json:"deletionDate,omitempty"`
-	IsMigratedToWIT *bool      `json:"isMigratedToWIT,omitempty"`
-	ProjectId       *uuid.UUID `json:"projectId,omitempty"`
-	TestMetadataId  *int       `json:"testMetadataId,omitempty"`
-	WorkItemId      *int       `json:"workItemId,omitempty"`
+	CreatedBy       *uuid.UUID        `json:"createdBy,omitempty"`
+	CreationDate    *azuredevops.Time `json:"creationDate,omitempty"`
+	DeletedBy       *uuid.UUID        `json:"deletedBy,omitempty"`
+	DeletionDate    *azuredevops.Time `json:"deletionDate,omitempty"`
+	IsMigratedToWIT *bool             `json:"isMigratedToWIT,omitempty"`
+	ProjectId       *uuid.UUID        `json:"projectId,omitempty"`
+	TestMetadataId  *int              `json:"testMetadataId,omitempty"`
+	WorkItemId      *int              `json:"workItemId,omitempty"`
 }
 
 type ResetTestResultsRequest struct {
@@ -1254,7 +1253,7 @@ type ResultRetentionSettings struct {
 	// Last Updated by identity
 	LastUpdatedBy *webapi.IdentityRef `json:"lastUpdatedBy,omitempty"`
 	// Last updated date
-	LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
+	LastUpdatedDate *azuredevops.Time `json:"lastUpdatedDate,omitempty"`
 	// Manual test result retention duration in days
 	ManualResultsRetentionDuration *int `json:"manualResultsRetentionDuration,omitempty"`
 }
@@ -1274,7 +1273,7 @@ type ResultsFilter struct {
 	Branch               *string             `json:"branch,omitempty"`
 	ExecutedIn           *Service            `json:"executedIn,omitempty"`
 	GroupBy              *string             `json:"groupBy,omitempty"`
-	MaxCompleteDate      *time.Time          `json:"maxCompleteDate,omitempty"`
+	MaxCompleteDate      *azuredevops.Time   `json:"maxCompleteDate,omitempty"`
 	ResultsCount         *int                `json:"resultsCount,omitempty"`
 	TestCaseId           *int                `json:"testCaseId,omitempty"`
 	TestCaseReferenceIds *[]int              `json:"testCaseReferenceIds,omitempty"`
@@ -1312,14 +1311,14 @@ type ResultUpdateRequestModel struct {
 }
 
 type ResultUpdateResponse struct {
-	AttachmentIds          *[]int     `json:"attachmentIds,omitempty"`
-	LastUpdated            *time.Time `json:"lastUpdated,omitempty"`
-	LastUpdatedBy          *uuid.UUID `json:"lastUpdatedBy,omitempty"`
-	LastUpdatedByName      *string    `json:"lastUpdatedByName,omitempty"`
-	MaxReservedSubResultId *int       `json:"maxReservedSubResultId,omitempty"`
-	Revision               *int       `json:"revision,omitempty"`
-	TestPlanId             *int       `json:"testPlanId,omitempty"`
-	TestResultId           *int       `json:"testResultId,omitempty"`
+	AttachmentIds          *[]int            `json:"attachmentIds,omitempty"`
+	LastUpdated            *azuredevops.Time `json:"lastUpdated,omitempty"`
+	LastUpdatedBy          *uuid.UUID        `json:"lastUpdatedBy,omitempty"`
+	LastUpdatedByName      *string           `json:"lastUpdatedByName,omitempty"`
+	MaxReservedSubResultId *int              `json:"maxReservedSubResultId,omitempty"`
+	Revision               *int              `json:"revision,omitempty"`
+	TestPlanId             *int              `json:"testPlanId,omitempty"`
+	TestResultId           *int              `json:"testResultId,omitempty"`
 }
 
 type ResultUpdateResponseModel struct {
@@ -1678,14 +1677,14 @@ var TCMServiceDataMigrationStatusValues = tcmServiceDataMigrationStatusValuesTyp
 type TestActionResult struct {
 	ActionPath         *string                         `json:"actionPath,omitempty"`
 	Comment            *string                         `json:"comment,omitempty"`
-	CreationDate       *time.Time                      `json:"creationDate,omitempty"`
-	DateCompleted      *time.Time                      `json:"dateCompleted,omitempty"`
-	DateStarted        *time.Time                      `json:"dateStarted,omitempty"`
+	CreationDate       *azuredevops.Time               `json:"creationDate,omitempty"`
+	DateCompleted      *azuredevops.Time               `json:"dateCompleted,omitempty"`
+	DateStarted        *azuredevops.Time               `json:"dateStarted,omitempty"`
 	Duration           *uint64                         `json:"duration,omitempty"`
 	ErrorMessage       *string                         `json:"errorMessage,omitempty"`
 	Id                 *LegacyTestCaseResultIdentifier `json:"id,omitempty"`
 	IterationId        *int                            `json:"iterationId,omitempty"`
-	LastUpdated        *time.Time                      `json:"lastUpdated,omitempty"`
+	LastUpdated        *azuredevops.Time               `json:"lastUpdated,omitempty"`
 	LastUpdatedBy      *uuid.UUID                      `json:"lastUpdatedBy,omitempty"`
 	Outcome            *byte                           `json:"outcome,omitempty"`
 	SharedStepId       *int                            `json:"sharedStepId,omitempty"`
@@ -1693,20 +1692,20 @@ type TestActionResult struct {
 }
 
 type TestActionResult2 struct {
-	ActionPath         *string    `json:"actionPath,omitempty"`
-	Comment            *string    `json:"comment,omitempty"`
-	CreationDate       *time.Time `json:"creationDate,omitempty"`
-	DateCompleted      *time.Time `json:"dateCompleted,omitempty"`
-	DateStarted        *time.Time `json:"dateStarted,omitempty"`
-	Duration           *uint64    `json:"duration,omitempty"`
-	ErrorMessage       *string    `json:"errorMessage,omitempty"`
-	IterationId        *int       `json:"iterationId,omitempty"`
-	LastUpdated        *time.Time `json:"lastUpdated,omitempty"`
-	Outcome            *byte      `json:"outcome,omitempty"`
-	SharedStepId       *int       `json:"sharedStepId,omitempty"`
-	SharedStepRevision *int       `json:"sharedStepRevision,omitempty"`
-	TestResultId       *int       `json:"testResultId,omitempty"`
-	TestRunId          *int       `json:"testRunId,omitempty"`
+	ActionPath         *string           `json:"actionPath,omitempty"`
+	Comment            *string           `json:"comment,omitempty"`
+	CreationDate       *azuredevops.Time `json:"creationDate,omitempty"`
+	DateCompleted      *azuredevops.Time `json:"dateCompleted,omitempty"`
+	DateStarted        *azuredevops.Time `json:"dateStarted,omitempty"`
+	Duration           *uint64           `json:"duration,omitempty"`
+	ErrorMessage       *string           `json:"errorMessage,omitempty"`
+	IterationId        *int              `json:"iterationId,omitempty"`
+	LastUpdated        *azuredevops.Time `json:"lastUpdated,omitempty"`
+	Outcome            *byte             `json:"outcome,omitempty"`
+	SharedStepId       *int              `json:"sharedStepId,omitempty"`
+	SharedStepRevision *int              `json:"sharedStepRevision,omitempty"`
+	TestResultId       *int              `json:"testResultId,omitempty"`
+	TestRunId          *int              `json:"testRunId,omitempty"`
 }
 
 // Represents a test step result.
@@ -1714,7 +1713,7 @@ type TestActionResultModel struct {
 	// Comment in result.
 	Comment *string `json:"comment,omitempty"`
 	// Time when execution completed.
-	CompletedDate *time.Time `json:"completedDate,omitempty"`
+	CompletedDate *azuredevops.Time `json:"completedDate,omitempty"`
 	// Duration of execution.
 	DurationInMs *float64 `json:"durationInMs,omitempty"`
 	// Error message in result.
@@ -1722,7 +1721,7 @@ type TestActionResultModel struct {
 	// Test outcome of result.
 	Outcome *string `json:"outcome,omitempty"`
 	// Time when execution started.
-	StartedDate *time.Time `json:"startedDate,omitempty"`
+	StartedDate *azuredevops.Time `json:"startedDate,omitempty"`
 	// Path identifier test step in test case workitem.
 	ActionPath *string `json:"actionPath,omitempty"`
 	// Iteration ID of test action result.
@@ -1741,7 +1740,7 @@ type TestAttachment struct {
 	// Comment associated with attachment.
 	Comment *string `json:"comment,omitempty"`
 	// Attachment created date.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// Attachment file name
 	FileName *string `json:"fileName,omitempty"`
 	// ID of the attachment.
@@ -1773,15 +1772,15 @@ type TestAttachmentRequestModel struct {
 }
 
 type TestAuthoringDetails struct {
-	ConfigurationId *int            `json:"configurationId,omitempty"`
-	IsAutomated     *bool           `json:"isAutomated,omitempty"`
-	LastUpdated     *time.Time      `json:"lastUpdated,omitempty"`
-	PointId         *int            `json:"pointId,omitempty"`
-	Priority        *byte           `json:"priority,omitempty"`
-	RunBy           *uuid.UUID      `json:"runBy,omitempty"`
-	State           *TestPointState `json:"state,omitempty"`
-	SuiteId         *int            `json:"suiteId,omitempty"`
-	TesterId        *uuid.UUID      `json:"testerId,omitempty"`
+	ConfigurationId *int              `json:"configurationId,omitempty"`
+	IsAutomated     *bool             `json:"isAutomated,omitempty"`
+	LastUpdated     *azuredevops.Time `json:"lastUpdated,omitempty"`
+	PointId         *int              `json:"pointId,omitempty"`
+	Priority        *byte             `json:"priority,omitempty"`
+	RunBy           *uuid.UUID        `json:"runBy,omitempty"`
+	State           *TestPointState   `json:"state,omitempty"`
+	SuiteId         *int              `json:"suiteId,omitempty"`
+	TesterId        *uuid.UUID        `json:"testerId,omitempty"`
 }
 
 type TestCaseMetadata2 struct {
@@ -1792,25 +1791,25 @@ type TestCaseMetadata2 struct {
 }
 
 type TestCaseReference2 struct {
-	AreaId                   *int       `json:"areaId,omitempty"`
-	AutomatedTestId          *string    `json:"automatedTestId,omitempty"`
-	AutomatedTestName        *string    `json:"automatedTestName,omitempty"`
-	AutomatedTestNameHash    *[]byte    `json:"automatedTestNameHash,omitempty"`
-	AutomatedTestStorage     *string    `json:"automatedTestStorage,omitempty"`
-	AutomatedTestStorageHash *[]byte    `json:"automatedTestStorageHash,omitempty"`
-	AutomatedTestType        *string    `json:"automatedTestType,omitempty"`
-	ConfigurationId          *int       `json:"configurationId,omitempty"`
-	CreatedBy                *uuid.UUID `json:"createdBy,omitempty"`
-	CreationDate             *time.Time `json:"creationDate,omitempty"`
-	LastRefTestRunDate       *time.Time `json:"lastRefTestRunDate,omitempty"`
-	Owner                    *string    `json:"owner,omitempty"`
-	Priority                 *byte      `json:"priority,omitempty"`
-	ProjectId                *uuid.UUID `json:"projectId,omitempty"`
-	TestCaseId               *int       `json:"testCaseId,omitempty"`
-	TestCaseRefId            *int       `json:"testCaseRefId,omitempty"`
-	TestCaseRevision         *int       `json:"testCaseRevision,omitempty"`
-	TestCaseTitle            *string    `json:"testCaseTitle,omitempty"`
-	TestPointId              *int       `json:"testPointId,omitempty"`
+	AreaId                   *int              `json:"areaId,omitempty"`
+	AutomatedTestId          *string           `json:"automatedTestId,omitempty"`
+	AutomatedTestName        *string           `json:"automatedTestName,omitempty"`
+	AutomatedTestNameHash    *[]byte           `json:"automatedTestNameHash,omitempty"`
+	AutomatedTestStorage     *string           `json:"automatedTestStorage,omitempty"`
+	AutomatedTestStorageHash *[]byte           `json:"automatedTestStorageHash,omitempty"`
+	AutomatedTestType        *string           `json:"automatedTestType,omitempty"`
+	ConfigurationId          *int              `json:"configurationId,omitempty"`
+	CreatedBy                *uuid.UUID        `json:"createdBy,omitempty"`
+	CreationDate             *azuredevops.Time `json:"creationDate,omitempty"`
+	LastRefTestRunDate       *azuredevops.Time `json:"lastRefTestRunDate,omitempty"`
+	Owner                    *string           `json:"owner,omitempty"`
+	Priority                 *byte             `json:"priority,omitempty"`
+	ProjectId                *uuid.UUID        `json:"projectId,omitempty"`
+	TestCaseId               *int              `json:"testCaseId,omitempty"`
+	TestCaseRefId            *int              `json:"testCaseRefId,omitempty"`
+	TestCaseRevision         *int              `json:"testCaseRevision,omitempty"`
+	TestCaseTitle            *string           `json:"testCaseTitle,omitempty"`
+	TestPointId              *int              `json:"testPointId,omitempty"`
 }
 
 // Represents a test result.
@@ -1838,13 +1837,13 @@ type TestCaseResult struct {
 	// Comment in a test result with maxSize= 1000 chars.
 	Comment *string `json:"comment,omitempty"`
 	// Time when test execution completed. Completed date should be greater than StartedDate.
-	CompletedDate *time.Time `json:"completedDate,omitempty"`
+	CompletedDate *azuredevops.Time `json:"completedDate,omitempty"`
 	// Machine name where test executed.
 	ComputerName *string `json:"computerName,omitempty"`
 	// Reference to test configuration. Type ShallowReference.
 	Configuration *ShallowReference `json:"configuration,omitempty"`
 	// Timestamp when test result created.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// Additional properties of test result.
 	CustomFields *[]CustomTestField `json:"customFields,omitempty"`
 	// Duration of test execution in milliseconds. If not provided value will be set as CompletedDate - StartedDate
@@ -1862,7 +1861,7 @@ type TestCaseResult struct {
 	// Reference to identity last updated test result.
 	LastUpdatedBy *webapi.IdentityRef `json:"lastUpdatedBy,omitempty"`
 	// Last updated datetime of test result.
-	LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
+	LastUpdatedDate *azuredevops.Time `json:"lastUpdatedDate,omitempty"`
 	// Test outcome of test result. Valid values = (Unspecified, None, Passed, Failed, Inconclusive, Timeout, Aborted, Blocked, NotExecuted, Warning, Error, NotApplicable, Paused, InProgress, NotImpacted)
 	Outcome *string `json:"outcome,omitempty"`
 	// Reference to test owner.
@@ -1890,7 +1889,7 @@ type TestCaseResult struct {
 	// Stacktrace with maxSize= 1000 chars.
 	StackTrace *string `json:"stackTrace,omitempty"`
 	// Time when test execution started.
-	StartedDate *time.Time `json:"startedDate,omitempty"`
+	StartedDate *azuredevops.Time `json:"startedDate,omitempty"`
 	// State of test result. Type TestRunState.
 	State *string `json:"state,omitempty"`
 	// List of sub results inside a test result, if ResultGroupType is not None, it holds corresponding type sub results.
@@ -1978,7 +1977,7 @@ type TestConfiguration struct {
 	// Last Updated By  Reference
 	LastUpdatedBy *webapi.IdentityRef `json:"lastUpdatedBy,omitempty"`
 	// Last Updated Data
-	LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
+	LastUpdatedDate *azuredevops.Time `json:"lastUpdatedDate,omitempty"`
 	// Name of the configuration
 	Name *string `json:"name,omitempty"`
 	// Project to which the configuration belongs
@@ -2080,7 +2079,7 @@ type TestHistoryQuery struct {
 	// Group the result on the basis of TestResultGroupBy. This can be Branch, Environment or null(if results are fetched by BuildDefinitionId)
 	GroupBy *TestResultGroupBy `json:"groupBy,omitempty"`
 	// History to get between time interval MaxCompleteDate and  (MaxCompleteDate - TrendDays). Default is current date time.
-	MaxCompleteDate *time.Time `json:"maxCompleteDate,omitempty"`
+	MaxCompleteDate *azuredevops.Time `json:"maxCompleteDate,omitempty"`
 	// Get the results history only for this ReleaseEnvDefinitionId. This to get used in query GroupBy should be Environment.
 	ReleaseEnvDefinitionId *int `json:"releaseEnvDefinitionId,omitempty"`
 	// List of TestResultHistoryForGroup which are grouped by GroupBy
@@ -2100,7 +2099,7 @@ type TestIterationDetailsModel struct {
 	// Comment in test iteration result.
 	Comment *string `json:"comment,omitempty"`
 	// Time when execution completed.
-	CompletedDate *time.Time `json:"completedDate,omitempty"`
+	CompletedDate *azuredevops.Time `json:"completedDate,omitempty"`
 	// Duration of execution.
 	DurationInMs *float64 `json:"durationInMs,omitempty"`
 	// Error message in test iteration result execution.
@@ -2112,7 +2111,7 @@ type TestIterationDetailsModel struct {
 	// Test parameters in an iteration.
 	Parameters *[]TestResultParameterModel `json:"parameters,omitempty"`
 	// Time when execution started.
-	StartedDate *time.Time `json:"startedDate,omitempty"`
+	StartedDate *azuredevops.Time `json:"startedDate,omitempty"`
 	// Url to test iteration result.
 	Url *string `json:"url,omitempty"`
 }
@@ -2123,7 +2122,7 @@ type TestLog struct {
 	LogReference *TestLogReference  `json:"logReference,omitempty"`
 	MetaData     *map[string]string `json:"metaData,omitempty"`
 	// LastUpdatedDate for Log file
-	ModifiedOn *time.Time `json:"modifiedOn,omitempty"`
+	ModifiedOn *azuredevops.Time `json:"modifiedOn,omitempty"`
 	// Size in Bytes for Log file
 	Size *uint64 `json:"size,omitempty"`
 }
@@ -2282,7 +2281,7 @@ type TestMessageLog2 struct {
 // An abstracted reference to some other resource. This class is used to provide the build data contracts with a uniform way to reference other resources in a way that provides easy traversal through links.
 type TestMessageLogDetails struct {
 	// Date when the resource is created
-	DateCreated *time.Time `json:"dateCreated,omitempty"`
+	DateCreated *azuredevops.Time `json:"dateCreated,omitempty"`
 	// Id of the resource
 	EntryId *int `json:"entryId,omitempty"`
 	// Message of the resource
@@ -2290,22 +2289,22 @@ type TestMessageLogDetails struct {
 }
 
 type TestMessageLogEntry struct {
-	DateCreated      *time.Time `json:"dateCreated,omitempty"`
-	EntryId          *int       `json:"entryId,omitempty"`
-	LogLevel         *byte      `json:"logLevel,omitempty"`
-	LogUser          *uuid.UUID `json:"logUser,omitempty"`
-	LogUserName      *string    `json:"logUserName,omitempty"`
-	Message          *string    `json:"message,omitempty"`
-	TestMessageLogId *int       `json:"testMessageLogId,omitempty"`
+	DateCreated      *azuredevops.Time `json:"dateCreated,omitempty"`
+	EntryId          *int              `json:"entryId,omitempty"`
+	LogLevel         *byte             `json:"logLevel,omitempty"`
+	LogUser          *uuid.UUID        `json:"logUser,omitempty"`
+	LogUserName      *string           `json:"logUserName,omitempty"`
+	Message          *string           `json:"message,omitempty"`
+	TestMessageLogId *int              `json:"testMessageLogId,omitempty"`
 }
 
 type TestMessageLogEntry2 struct {
-	DateCreated      *time.Time `json:"dateCreated,omitempty"`
-	EntryId          *int       `json:"entryId,omitempty"`
-	LogLevel         *byte      `json:"logLevel,omitempty"`
-	LogUser          *uuid.UUID `json:"logUser,omitempty"`
-	Message          *string    `json:"message,omitempty"`
-	TestMessageLogId *int       `json:"testMessageLogId,omitempty"`
+	DateCreated      *azuredevops.Time `json:"dateCreated,omitempty"`
+	EntryId          *int              `json:"entryId,omitempty"`
+	LogLevel         *byte             `json:"logLevel,omitempty"`
+	LogUser          *uuid.UUID        `json:"logUser,omitempty"`
+	Message          *string           `json:"message,omitempty"`
+	TestMessageLogId *int              `json:"testMessageLogId,omitempty"`
 }
 
 type TestMethod struct {
@@ -2381,16 +2380,16 @@ type TestOutcomeSettings struct {
 }
 
 type TestParameter2 struct {
-	ActionPath    *string    `json:"actionPath,omitempty"`
-	Actual        *[]byte    `json:"actual,omitempty"`
-	CreationDate  *time.Time `json:"creationDate,omitempty"`
-	DataType      *byte      `json:"dataType,omitempty"`
-	DateModified  *time.Time `json:"dateModified,omitempty"`
-	Expected      *[]byte    `json:"expected,omitempty"`
-	IterationId   *int       `json:"iterationId,omitempty"`
-	ParameterName *string    `json:"parameterName,omitempty"`
-	TestResultId  *int       `json:"testResultId,omitempty"`
-	TestRunId     *int       `json:"testRunId,omitempty"`
+	ActionPath    *string           `json:"actionPath,omitempty"`
+	Actual        *[]byte           `json:"actual,omitempty"`
+	CreationDate  *azuredevops.Time `json:"creationDate,omitempty"`
+	DataType      *byte             `json:"dataType,omitempty"`
+	DateModified  *azuredevops.Time `json:"dateModified,omitempty"`
+	Expected      *[]byte           `json:"expected,omitempty"`
+	IterationId   *int              `json:"iterationId,omitempty"`
+	ParameterName *string           `json:"parameterName,omitempty"`
+	TestResultId  *int              `json:"testResultId,omitempty"`
+	TestRunId     *int              `json:"testRunId,omitempty"`
 }
 
 // The test plan resource.
@@ -2404,7 +2403,7 @@ type TestPlan struct {
 	// Description of the test plan.
 	Description *string `json:"description,omitempty"`
 	// End date for the test plan.
-	EndDate *time.Time `json:"endDate,omitempty"`
+	EndDate *azuredevops.Time `json:"endDate,omitempty"`
 	// ID of the test plan.
 	Id *int `json:"id,omitempty"`
 	// Iteration path of the test plan.
@@ -2423,13 +2422,13 @@ type TestPlan struct {
 	// Root test suite of the test plan.
 	RootSuite *ShallowReference `json:"rootSuite,omitempty"`
 	// Start date for the test plan.
-	StartDate *time.Time `json:"startDate,omitempty"`
+	StartDate *azuredevops.Time `json:"startDate,omitempty"`
 	// State of the test plan.
 	State *string `json:"state,omitempty"`
 	// Value to configure how same tests across test suites under a test plan need to behave
 	TestOutcomeSettings *TestOutcomeSettings `json:"testOutcomeSettings,omitempty"`
 	UpdatedBy           *webapi.IdentityRef  `json:"updatedBy,omitempty"`
-	UpdatedDate         *time.Time           `json:"updatedDate,omitempty"`
+	UpdatedDate         *azuredevops.Time    `json:"updatedDate,omitempty"`
 	// URL of the test plan resource.
 	Url *string `json:"url,omitempty"`
 }
@@ -2469,7 +2468,7 @@ type TestPoint struct {
 	// ID of the test point.
 	Id *int `json:"id,omitempty"`
 	// Last date when test point was reset to Active.
-	LastResetToActive *time.Time `json:"lastResetToActive,omitempty"`
+	LastResetToActive *azuredevops.Time `json:"lastResetToActive,omitempty"`
 	// Last resolution state id of test point.
 	LastResolutionStateId *int `json:"lastResolutionStateId,omitempty"`
 	// Last result of test point. Type ShallowReference.
@@ -2485,7 +2484,7 @@ type TestPoint struct {
 	// Test point last updated by. Type IdentityRef.
 	LastUpdatedBy *webapi.IdentityRef `json:"lastUpdatedBy,omitempty"`
 	// Last updated date of test point.
-	LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
+	LastUpdatedDate *azuredevops.Time `json:"lastUpdatedDate,omitempty"`
 	// Outcome of test point.
 	Outcome *string `json:"outcome,omitempty"`
 	// Revision number.
@@ -2566,26 +2565,26 @@ type TestResolutionState struct {
 }
 
 type TestResult2 struct {
-	AfnStripId          *int       `json:"afnStripId,omitempty"`
-	ComputerName        *string    `json:"computerName,omitempty"`
-	CreationDate        *time.Time `json:"creationDate,omitempty"`
-	DateCompleted       *time.Time `json:"dateCompleted,omitempty"`
-	DateStarted         *time.Time `json:"dateStarted,omitempty"`
-	EffectivePointState *byte      `json:"effectivePointState,omitempty"`
-	FailureType         *byte      `json:"failureType,omitempty"`
-	LastUpdated         *time.Time `json:"lastUpdated,omitempty"`
-	LastUpdatedBy       *uuid.UUID `json:"lastUpdatedBy,omitempty"`
-	Outcome             *byte      `json:"outcome,omitempty"`
-	Owner               *uuid.UUID `json:"owner,omitempty"`
-	ProjectId           *uuid.UUID `json:"projectId,omitempty"`
-	ResetCount          *int       `json:"resetCount,omitempty"`
-	ResolutionStateId   *int       `json:"resolutionStateId,omitempty"`
-	Revision            *int       `json:"revision,omitempty"`
-	RunBy               *uuid.UUID `json:"runBy,omitempty"`
-	State               *byte      `json:"state,omitempty"`
-	TestCaseRefId       *int       `json:"testCaseRefId,omitempty"`
-	TestResultId        *int       `json:"testResultId,omitempty"`
-	TestRunId           *int       `json:"testRunId,omitempty"`
+	AfnStripId          *int              `json:"afnStripId,omitempty"`
+	ComputerName        *string           `json:"computerName,omitempty"`
+	CreationDate        *azuredevops.Time `json:"creationDate,omitempty"`
+	DateCompleted       *azuredevops.Time `json:"dateCompleted,omitempty"`
+	DateStarted         *azuredevops.Time `json:"dateStarted,omitempty"`
+	EffectivePointState *byte             `json:"effectivePointState,omitempty"`
+	FailureType         *byte             `json:"failureType,omitempty"`
+	LastUpdated         *azuredevops.Time `json:"lastUpdated,omitempty"`
+	LastUpdatedBy       *uuid.UUID        `json:"lastUpdatedBy,omitempty"`
+	Outcome             *byte             `json:"outcome,omitempty"`
+	Owner               *uuid.UUID        `json:"owner,omitempty"`
+	ProjectId           *uuid.UUID        `json:"projectId,omitempty"`
+	ResetCount          *int              `json:"resetCount,omitempty"`
+	ResolutionStateId   *int              `json:"resolutionStateId,omitempty"`
+	Revision            *int              `json:"revision,omitempty"`
+	RunBy               *uuid.UUID        `json:"runBy,omitempty"`
+	State               *byte             `json:"state,omitempty"`
+	TestCaseRefId       *int              `json:"testCaseRefId,omitempty"`
+	TestResultId        *int              `json:"testResultId,omitempty"`
+	TestRunId           *int              `json:"testRunId,omitempty"`
 }
 
 type TestResultAcrossProjectResponse struct {
@@ -2594,20 +2593,20 @@ type TestResultAcrossProjectResponse struct {
 }
 
 type TestResultAttachment struct {
-	ActionPath          *string         `json:"actionPath,omitempty"`
-	AttachmentType      *AttachmentType `json:"attachmentType,omitempty"`
-	Comment             *string         `json:"comment,omitempty"`
-	CreationDate        *time.Time      `json:"creationDate,omitempty"`
-	DownloadQueryString *string         `json:"downloadQueryString,omitempty"`
-	FileName            *string         `json:"fileName,omitempty"`
-	Id                  *int            `json:"id,omitempty"`
-	IsComplete          *bool           `json:"isComplete,omitempty"`
-	IterationId         *int            `json:"iterationId,omitempty"`
-	Length              *uint64         `json:"length,omitempty"`
-	SessionId           *int            `json:"sessionId,omitempty"`
-	TestResultId        *int            `json:"testResultId,omitempty"`
-	TestRunId           *int            `json:"testRunId,omitempty"`
-	TmiRunId            *uuid.UUID      `json:"tmiRunId,omitempty"`
+	ActionPath          *string           `json:"actionPath,omitempty"`
+	AttachmentType      *AttachmentType   `json:"attachmentType,omitempty"`
+	Comment             *string           `json:"comment,omitempty"`
+	CreationDate        *azuredevops.Time `json:"creationDate,omitempty"`
+	DownloadQueryString *string           `json:"downloadQueryString,omitempty"`
+	FileName            *string           `json:"fileName,omitempty"`
+	Id                  *int              `json:"id,omitempty"`
+	IsComplete          *bool             `json:"isComplete,omitempty"`
+	IterationId         *int              `json:"iterationId,omitempty"`
+	Length              *uint64           `json:"length,omitempty"`
+	SessionId           *int              `json:"sessionId,omitempty"`
+	TestResultId        *int              `json:"testResultId,omitempty"`
+	TestRunId           *int              `json:"testRunId,omitempty"`
+	TmiRunId            *uuid.UUID        `json:"tmiRunId,omitempty"`
 }
 
 type TestResultAttachmentIdentity struct {
@@ -2718,7 +2717,7 @@ type TestResultModelBase struct {
 	// Comment in result.
 	Comment *string `json:"comment,omitempty"`
 	// Time when execution completed.
-	CompletedDate *time.Time `json:"completedDate,omitempty"`
+	CompletedDate *azuredevops.Time `json:"completedDate,omitempty"`
 	// Duration of execution.
 	DurationInMs *float64 `json:"durationInMs,omitempty"`
 	// Error message in result.
@@ -2726,7 +2725,7 @@ type TestResultModelBase struct {
 	// Test outcome of result.
 	Outcome *string `json:"outcome,omitempty"`
 	// Time when execution started.
-	StartedDate *time.Time `json:"startedDate,omitempty"`
+	StartedDate *azuredevops.Time `json:"startedDate,omitempty"`
 }
 
 type TestResultParameter struct {
@@ -2762,13 +2761,13 @@ type TestResultPayload struct {
 }
 
 type TestResultReset2 struct {
-	AuditIdentity *uuid.UUID `json:"auditIdentity,omitempty"`
-	DateModified  *time.Time `json:"dateModified,omitempty"`
-	ProjectId     *uuid.UUID `json:"projectId,omitempty"`
-	Revision      *int       `json:"revision,omitempty"`
-	TestResultId  *int       `json:"testResultId,omitempty"`
-	TestResultRV  *[]byte    `json:"testResultRV,omitempty"`
-	TestRunId     *int       `json:"testRunId,omitempty"`
+	AuditIdentity *uuid.UUID        `json:"auditIdentity,omitempty"`
+	DateModified  *azuredevops.Time `json:"dateModified,omitempty"`
+	ProjectId     *uuid.UUID        `json:"projectId,omitempty"`
+	Revision      *int              `json:"revision,omitempty"`
+	TestResultId  *int              `json:"testResultId,omitempty"`
+	TestResultRV  *[]byte           `json:"testResultRV,omitempty"`
+	TestRunId     *int              `json:"testRunId,omitempty"`
 }
 
 type TestResultsContext struct {
@@ -2802,18 +2801,18 @@ type TestResultsDetailsForGroup struct {
 }
 
 type TestResultsEx2 struct {
-	BitValue      *bool      `json:"bitValue,omitempty"`
-	CreationDate  *time.Time `json:"creationDate,omitempty"`
-	DateTimeValue *time.Time `json:"dateTimeValue,omitempty"`
-	FieldId       *int       `json:"fieldId,omitempty"`
-	FieldName     *string    `json:"fieldName,omitempty"`
-	FloatValue    *float64   `json:"floatValue,omitempty"`
-	GuidValue     *uuid.UUID `json:"guidValue,omitempty"`
-	IntValue      *int       `json:"intValue,omitempty"`
-	ProjectId     *uuid.UUID `json:"projectId,omitempty"`
-	StringValue   *string    `json:"stringValue,omitempty"`
-	TestResultId  *int       `json:"testResultId,omitempty"`
-	TestRunId     *int       `json:"testRunId,omitempty"`
+	BitValue      *bool             `json:"bitValue,omitempty"`
+	CreationDate  *azuredevops.Time `json:"creationDate,omitempty"`
+	DateTimeValue *azuredevops.Time `json:"dateTimeValue,omitempty"`
+	FieldId       *int              `json:"fieldId,omitempty"`
+	FieldName     *string           `json:"fieldName,omitempty"`
+	FloatValue    *float64          `json:"floatValue,omitempty"`
+	GuidValue     *uuid.UUID        `json:"guidValue,omitempty"`
+	IntValue      *int              `json:"intValue,omitempty"`
+	ProjectId     *uuid.UUID        `json:"projectId,omitempty"`
+	StringValue   *string           `json:"stringValue,omitempty"`
+	TestResultId  *int              `json:"testResultId,omitempty"`
+	TestRunId     *int              `json:"testRunId,omitempty"`
 }
 
 type TestResultsGroupsForBuild struct {
@@ -2872,21 +2871,21 @@ type TestResultsUpdateSettings struct {
 }
 
 type TestResultsWithWatermark struct {
-	ChangedDate   *time.Time        `json:"changedDate,omitempty"`
+	ChangedDate   *azuredevops.Time `json:"changedDate,omitempty"`
 	PointsResults *[]PointsResults2 `json:"pointsResults,omitempty"`
 	ResultId      *int              `json:"resultId,omitempty"`
 	RunId         *int              `json:"runId,omitempty"`
 }
 
 type TestResultTrendFilter struct {
-	BranchNames      *[]string  `json:"branchNames,omitempty"`
-	BuildCount       *int       `json:"buildCount,omitempty"`
-	DefinitionIds    *[]int     `json:"definitionIds,omitempty"`
-	EnvDefinitionIds *[]int     `json:"envDefinitionIds,omitempty"`
-	MaxCompleteDate  *time.Time `json:"maxCompleteDate,omitempty"`
-	PublishContext   *string    `json:"publishContext,omitempty"`
-	TestRunTitles    *[]string  `json:"testRunTitles,omitempty"`
-	TrendDays        *int       `json:"trendDays,omitempty"`
+	BranchNames      *[]string         `json:"branchNames,omitempty"`
+	BuildCount       *int              `json:"buildCount,omitempty"`
+	DefinitionIds    *[]int            `json:"definitionIds,omitempty"`
+	EnvDefinitionIds *[]int            `json:"envDefinitionIds,omitempty"`
+	MaxCompleteDate  *azuredevops.Time `json:"maxCompleteDate,omitempty"`
+	PublishContext   *string           `json:"publishContext,omitempty"`
+	TestRunTitles    *[]string         `json:"testRunTitles,omitempty"`
+	TrendDays        *int              `json:"trendDays,omitempty"`
 }
 
 // Test run details.
@@ -2898,11 +2897,11 @@ type TestRun struct {
 	// Comments entered by those analyzing the run.
 	Comment *string `json:"comment,omitempty"`
 	// Completed date time of the run.
-	CompletedDate *time.Time `json:"completedDate,omitempty"`
+	CompletedDate *azuredevops.Time `json:"completedDate,omitempty"`
 	// Test Run Controller.
 	Controller *string `json:"controller,omitempty"`
 	// Test Run CreatedDate.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// List of Custom Fields for TestRun.
 	CustomFields *[]CustomTestField `json:"customFields,omitempty"`
 	// Drop Location for the test Run.
@@ -2911,7 +2910,7 @@ type TestRun struct {
 	DtlEnvironment                *ShallowReference      `json:"dtlEnvironment,omitempty"`
 	DtlEnvironmentCreationDetails *DtlEnvironmentDetails `json:"dtlEnvironmentCreationDetails,omitempty"`
 	// Due date and time for test run.
-	DueDate *time.Time `json:"dueDate,omitempty"`
+	DueDate *azuredevops.Time `json:"dueDate,omitempty"`
 	// Error message associated with the run.
 	ErrorMessage *string    `json:"errorMessage,omitempty"`
 	Filter       *RunFilter `json:"filter,omitempty"`
@@ -2926,7 +2925,7 @@ type TestRun struct {
 	// Team foundation ID of the last updated the test run.
 	LastUpdatedBy *webapi.IdentityRef `json:"lastUpdatedBy,omitempty"`
 	// Last updated date and time
-	LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
+	LastUpdatedDate *azuredevops.Time `json:"lastUpdatedDate,omitempty"`
 	// Name of the test run.
 	Name *string `json:"name,omitempty"`
 	// Number of Not Applicable Tests.
@@ -2955,7 +2954,7 @@ type TestRun struct {
 	// RunSummary by outcome.
 	RunStatistics *[]RunStatistic `json:"runStatistics,omitempty"`
 	// Start date time of the run.
-	StartedDate *time.Time `json:"startedDate,omitempty"`
+	StartedDate *azuredevops.Time `json:"startedDate,omitempty"`
 	// The state of the run. Type TestRunState Valid states - Unspecified ,NotStarted, InProgress, Completed, Waiting, Aborted, NeedsInvestigation
 	State *string `json:"state,omitempty"`
 	// TestRun Substate.
@@ -2975,48 +2974,48 @@ type TestRun struct {
 }
 
 type TestRun2 struct {
-	BuildConfigurationId  *int       `json:"buildConfigurationId,omitempty"`
-	BuildNumber           *string    `json:"buildNumber,omitempty"`
-	Comment               *string    `json:"comment,omitempty"`
-	CompleteDate          *time.Time `json:"completeDate,omitempty"`
-	Controller            *string    `json:"controller,omitempty"`
-	CoverageId            *int       `json:"coverageId,omitempty"`
-	CreationDate          *time.Time `json:"creationDate,omitempty"`
-	DeletedOn             *time.Time `json:"deletedOn,omitempty"`
-	DropLocation          *string    `json:"dropLocation,omitempty"`
-	DueDate               *time.Time `json:"dueDate,omitempty"`
-	ErrorMessage          *string    `json:"errorMessage,omitempty"`
-	IncompleteTests       *int       `json:"incompleteTests,omitempty"`
-	IsAutomated           *bool      `json:"isAutomated,omitempty"`
-	IsBvt                 *bool      `json:"isBvt,omitempty"`
-	IsMigrated            *bool      `json:"isMigrated,omitempty"`
-	IterationId           *int       `json:"iterationId,omitempty"`
-	LastUpdated           *time.Time `json:"lastUpdated,omitempty"`
-	LastUpdatedBy         *uuid.UUID `json:"lastUpdatedBy,omitempty"`
-	LegacySharePath       *string    `json:"legacySharePath,omitempty"`
-	MaxReservedResultId   *int       `json:"maxReservedResultId,omitempty"`
-	NotApplicableTests    *int       `json:"notApplicableTests,omitempty"`
-	Owner                 *uuid.UUID `json:"owner,omitempty"`
-	PassedTests           *int       `json:"passedTests,omitempty"`
-	PostProcessState      *byte      `json:"postProcessState,omitempty"`
-	ProjectId             *uuid.UUID `json:"projectId,omitempty"`
-	PublicTestSettingsId  *int       `json:"publicTestSettingsId,omitempty"`
-	ReleaseEnvironmentUri *string    `json:"releaseEnvironmentUri,omitempty"`
-	ReleaseUri            *string    `json:"releaseUri,omitempty"`
-	Revision              *int       `json:"revision,omitempty"`
-	StartDate             *time.Time `json:"startDate,omitempty"`
-	State                 *byte      `json:"state,omitempty"`
-	TestEnvironmentId     *uuid.UUID `json:"testEnvironmentId,omitempty"`
-	TestMessageLogId      *int       `json:"testMessageLogId,omitempty"`
-	TestPlanId            *int       `json:"testPlanId,omitempty"`
-	TestRunContextId      *int       `json:"testRunContextId,omitempty"`
-	TestRunId             *int       `json:"testRunId,omitempty"`
-	TestSettingsId        *int       `json:"testSettingsId,omitempty"`
-	Title                 *string    `json:"title,omitempty"`
-	TotalTests            *int       `json:"totalTests,omitempty"`
-	Type                  *byte      `json:"type,omitempty"`
-	UnanalyzedTests       *int       `json:"unanalyzedTests,omitempty"`
-	Version               *int       `json:"version,omitempty"`
+	BuildConfigurationId  *int              `json:"buildConfigurationId,omitempty"`
+	BuildNumber           *string           `json:"buildNumber,omitempty"`
+	Comment               *string           `json:"comment,omitempty"`
+	CompleteDate          *azuredevops.Time `json:"completeDate,omitempty"`
+	Controller            *string           `json:"controller,omitempty"`
+	CoverageId            *int              `json:"coverageId,omitempty"`
+	CreationDate          *azuredevops.Time `json:"creationDate,omitempty"`
+	DeletedOn             *azuredevops.Time `json:"deletedOn,omitempty"`
+	DropLocation          *string           `json:"dropLocation,omitempty"`
+	DueDate               *azuredevops.Time `json:"dueDate,omitempty"`
+	ErrorMessage          *string           `json:"errorMessage,omitempty"`
+	IncompleteTests       *int              `json:"incompleteTests,omitempty"`
+	IsAutomated           *bool             `json:"isAutomated,omitempty"`
+	IsBvt                 *bool             `json:"isBvt,omitempty"`
+	IsMigrated            *bool             `json:"isMigrated,omitempty"`
+	IterationId           *int              `json:"iterationId,omitempty"`
+	LastUpdated           *azuredevops.Time `json:"lastUpdated,omitempty"`
+	LastUpdatedBy         *uuid.UUID        `json:"lastUpdatedBy,omitempty"`
+	LegacySharePath       *string           `json:"legacySharePath,omitempty"`
+	MaxReservedResultId   *int              `json:"maxReservedResultId,omitempty"`
+	NotApplicableTests    *int              `json:"notApplicableTests,omitempty"`
+	Owner                 *uuid.UUID        `json:"owner,omitempty"`
+	PassedTests           *int              `json:"passedTests,omitempty"`
+	PostProcessState      *byte             `json:"postProcessState,omitempty"`
+	ProjectId             *uuid.UUID        `json:"projectId,omitempty"`
+	PublicTestSettingsId  *int              `json:"publicTestSettingsId,omitempty"`
+	ReleaseEnvironmentUri *string           `json:"releaseEnvironmentUri,omitempty"`
+	ReleaseUri            *string           `json:"releaseUri,omitempty"`
+	Revision              *int              `json:"revision,omitempty"`
+	StartDate             *azuredevops.Time `json:"startDate,omitempty"`
+	State                 *byte             `json:"state,omitempty"`
+	TestEnvironmentId     *uuid.UUID        `json:"testEnvironmentId,omitempty"`
+	TestMessageLogId      *int              `json:"testMessageLogId,omitempty"`
+	TestPlanId            *int              `json:"testPlanId,omitempty"`
+	TestRunContextId      *int              `json:"testRunContextId,omitempty"`
+	TestRunId             *int              `json:"testRunId,omitempty"`
+	TestSettingsId        *int              `json:"testSettingsId,omitempty"`
+	Title                 *string           `json:"title,omitempty"`
+	TotalTests            *int              `json:"totalTests,omitempty"`
+	Type                  *byte             `json:"type,omitempty"`
+	UnanalyzedTests       *int              `json:"unanalyzedTests,omitempty"`
+	Version               *int              `json:"version,omitempty"`
 }
 
 type TestRunCanceledEvent struct {
@@ -3052,17 +3051,17 @@ type TestRunEvent struct {
 }
 
 type TestRunEx2 struct {
-	BitValue      *bool      `json:"bitValue,omitempty"`
-	CreatedDate   *time.Time `json:"createdDate,omitempty"`
-	DateTimeValue *time.Time `json:"dateTimeValue,omitempty"`
-	FieldId       *int       `json:"fieldId,omitempty"`
-	FieldName     *string    `json:"fieldName,omitempty"`
-	FloatValue    *float64   `json:"floatValue,omitempty"`
-	GuidValue     *uuid.UUID `json:"guidValue,omitempty"`
-	IntValue      *int       `json:"intValue,omitempty"`
-	ProjectId     *uuid.UUID `json:"projectId,omitempty"`
-	StringValue   *string    `json:"stringValue,omitempty"`
-	TestRunId     *int       `json:"testRunId,omitempty"`
+	BitValue      *bool             `json:"bitValue,omitempty"`
+	CreatedDate   *azuredevops.Time `json:"createdDate,omitempty"`
+	DateTimeValue *azuredevops.Time `json:"dateTimeValue,omitempty"`
+	FieldId       *int              `json:"fieldId,omitempty"`
+	FieldName     *string           `json:"fieldName,omitempty"`
+	FloatValue    *float64          `json:"floatValue,omitempty"`
+	GuidValue     *uuid.UUID        `json:"guidValue,omitempty"`
+	IntValue      *int              `json:"intValue,omitempty"`
+	ProjectId     *uuid.UUID        `json:"projectId,omitempty"`
+	StringValue   *string           `json:"stringValue,omitempty"`
+	TestRunId     *int              `json:"testRunId,omitempty"`
 }
 
 type TestRunExtended2 struct {
@@ -3194,16 +3193,16 @@ var TestRunSubstateValues = testRunSubstateValuesType{
 }
 
 type TestRunSummary2 struct {
-	IsRerun              *bool      `json:"isRerun,omitempty"`
-	ProjectId            *uuid.UUID `json:"projectId,omitempty"`
-	ResultCount          *int       `json:"resultCount,omitempty"`
-	ResultDuration       *uint64    `json:"resultDuration,omitempty"`
-	RunDuration          *uint64    `json:"runDuration,omitempty"`
-	TestOutcome          *byte      `json:"testOutcome,omitempty"`
-	TestRunCompletedDate *time.Time `json:"testRunCompletedDate,omitempty"`
-	TestRunContextId     *int       `json:"testRunContextId,omitempty"`
-	TestRunId            *int       `json:"testRunId,omitempty"`
-	TestRunStatsId       *int       `json:"testRunStatsId,omitempty"`
+	IsRerun              *bool             `json:"isRerun,omitempty"`
+	ProjectId            *uuid.UUID        `json:"projectId,omitempty"`
+	ResultCount          *int              `json:"resultCount,omitempty"`
+	ResultDuration       *uint64           `json:"resultDuration,omitempty"`
+	RunDuration          *uint64           `json:"runDuration,omitempty"`
+	TestOutcome          *byte             `json:"testOutcome,omitempty"`
+	TestRunCompletedDate *azuredevops.Time `json:"testRunCompletedDate,omitempty"`
+	TestRunContextId     *int              `json:"testRunContextId,omitempty"`
+	TestRunId            *int              `json:"testRunId,omitempty"`
+	TestRunStatsId       *int              `json:"testRunStatsId,omitempty"`
 }
 
 type TestRunWithDtlEnvEvent struct {
@@ -3221,13 +3220,13 @@ type TestSession struct {
 	// Comments in the test session
 	Comment *string `json:"comment,omitempty"`
 	// Duration of the session
-	EndDate *time.Time `json:"endDate,omitempty"`
+	EndDate *azuredevops.Time `json:"endDate,omitempty"`
 	// Id of the test session
 	Id *int `json:"id,omitempty"`
 	// Last Updated By  Reference
 	LastUpdatedBy *webapi.IdentityRef `json:"lastUpdatedBy,omitempty"`
 	// Last updated date
-	LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
+	LastUpdatedDate *azuredevops.Time `json:"lastUpdatedDate,omitempty"`
 	// Owner of the test session
 	Owner *webapi.IdentityRef `json:"owner,omitempty"`
 	// Project to which the test session belongs
@@ -3239,7 +3238,7 @@ type TestSession struct {
 	// Source of the test session
 	Source *TestSessionSource `json:"source,omitempty"`
 	// Start date
-	StartDate *time.Time `json:"startDate,omitempty"`
+	StartDate *azuredevops.Time `json:"startDate,omitempty"`
 	// State of the test session
 	State *TestSessionState `json:"state,omitempty"`
 	// Title of the test session
@@ -3256,9 +3255,9 @@ type TestSessionExploredWorkItemReference struct {
 	// Workitem references of workitems filed as a part of the current workitem exploration.
 	AssociatedWorkItems *[]TestSessionWorkItemReference `json:"associatedWorkItems,omitempty"`
 	// Time when exploration of workitem ended.
-	EndTime *time.Time `json:"endTime,omitempty"`
+	EndTime *azuredevops.Time `json:"endTime,omitempty"`
 	// Time when explore of workitem was started.
-	StartTime *time.Time `json:"startTime,omitempty"`
+	StartTime *azuredevops.Time `json:"startTime,omitempty"`
 }
 
 // Represents the source from which the test session was created
@@ -3348,13 +3347,13 @@ type TestSettings2 struct {
 	// Area path required to create test settings
 	AreaPath    *string             `json:"areaPath,omitempty"`
 	CreatedBy   *webapi.IdentityRef `json:"createdBy,omitempty"`
-	CreatedDate *time.Time          `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time   `json:"createdDate,omitempty"`
 	// Description of the test settings. Used in create test settings.
 	Description *string `json:"description,omitempty"`
 	// Indicates if the tests settings is public or private.Used in create test settings.
 	IsPublic        *bool               `json:"isPublic,omitempty"`
 	LastUpdatedBy   *webapi.IdentityRef `json:"lastUpdatedBy,omitempty"`
-	LastUpdatedDate *time.Time          `json:"lastUpdatedDate,omitempty"`
+	LastUpdatedDate *azuredevops.Time   `json:"lastUpdatedDate,omitempty"`
 	// Xml string of machine roles. Used in create test settings.
 	MachineRoles *string `json:"machineRoles,omitempty"`
 	// Test settings content.
@@ -3375,7 +3374,7 @@ type TestSubResult struct {
 	// Comment in sub result.
 	Comment *string `json:"comment,omitempty"`
 	// Time when test execution completed.
-	CompletedDate *time.Time `json:"completedDate,omitempty"`
+	CompletedDate *azuredevops.Time `json:"completedDate,omitempty"`
 	// Machine where test executed.
 	ComputerName *string `json:"computerName,omitempty"`
 	// Reference to test configuration.
@@ -3391,7 +3390,7 @@ type TestSubResult struct {
 	// ID of sub result.
 	Id *int `json:"id,omitempty"`
 	// Time when result last updated.
-	LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
+	LastUpdatedDate *azuredevops.Time `json:"lastUpdatedDate,omitempty"`
 	// Outcome of sub result.
 	Outcome *string `json:"outcome,omitempty"`
 	// Immediate parent ID of sub result.
@@ -3403,7 +3402,7 @@ type TestSubResult struct {
 	// Stacktrace.
 	StackTrace *string `json:"stackTrace,omitempty"`
 	// Time when test execution started.
-	StartedDate *time.Time `json:"startedDate,omitempty"`
+	StartedDate *azuredevops.Time `json:"startedDate,omitempty"`
 	// List of sub results inside a sub result, if ResultGroupType is not None, it holds corresponding type sub results.
 	SubResults *[]TestSubResult `json:"subResults,omitempty"`
 	// Reference to test result.
@@ -3429,11 +3428,11 @@ type TestSuite struct {
 	// Last error for test suite.
 	LastError *string `json:"lastError,omitempty"`
 	// Last populated date.
-	LastPopulatedDate *time.Time `json:"lastPopulatedDate,omitempty"`
+	LastPopulatedDate *azuredevops.Time `json:"lastPopulatedDate,omitempty"`
 	// IdentityRef of user who has updated test suite recently.
 	LastUpdatedBy *webapi.IdentityRef `json:"lastUpdatedBy,omitempty"`
 	// Last update date.
-	LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
+	LastUpdatedDate *azuredevops.Time `json:"lastUpdatedDate,omitempty"`
 	// Name of test suite.
 	Name *string `json:"name,omitempty"`
 	// Test suite parent shallow reference.
@@ -3519,11 +3518,11 @@ type TestVariable struct {
 }
 
 type UpdatedProperties struct {
-	Id                *int       `json:"id,omitempty"`
-	LastUpdated       *time.Time `json:"lastUpdated,omitempty"`
-	LastUpdatedBy     *uuid.UUID `json:"lastUpdatedBy,omitempty"`
-	LastUpdatedByName *string    `json:"lastUpdatedByName,omitempty"`
-	Revision          *int       `json:"revision,omitempty"`
+	Id                *int              `json:"id,omitempty"`
+	LastUpdated       *azuredevops.Time `json:"lastUpdated,omitempty"`
+	LastUpdatedBy     *uuid.UUID        `json:"lastUpdatedBy,omitempty"`
+	LastUpdatedByName *string           `json:"lastUpdatedByName,omitempty"`
+	Revision          *int              `json:"revision,omitempty"`
 }
 
 type UpdateTestRunRequest struct {

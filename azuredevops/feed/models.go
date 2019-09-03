@@ -10,7 +10,7 @@ package feed
 
 import (
 	"github.com/google/uuid"
-	"time"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 )
 
 // Type of operation last performed.
@@ -61,7 +61,7 @@ type Feed struct {
 	// The view that the feed administrator has indicated is the default experience for readers.
 	DefaultViewId *uuid.UUID `json:"defaultViewId,omitempty"`
 	// The date that this feed was deleted.
-	DeletedDate *time.Time `json:"deletedDate,omitempty"`
+	DeletedDate *azuredevops.Time `json:"deletedDate,omitempty"`
 	// A description for the feed.  Descriptions must not exceed 255 characters.
 	Description *string `json:"description,omitempty"`
 	// If set, the feed will hide all deleted/unpublished versions
@@ -69,7 +69,7 @@ type Feed struct {
 	// Explicit permissions for the feed.
 	Permissions *[]FeedPermission `json:"permissions,omitempty"`
 	// If set, time that the UpstreamEnabled property was changed. Will be null if UpstreamEnabled was never changed after Feed creation.
-	UpstreamEnabledChangedDate *time.Time `json:"upstreamEnabledChangedDate,omitempty"`
+	UpstreamEnabledChangedDate *azuredevops.Time `json:"upstreamEnabledChangedDate,omitempty"`
 	// The URL of the base feed in GUID form.
 	Url *string `json:"url,omitempty"`
 }
@@ -327,7 +327,7 @@ type MinimalPackageVersion struct {
 	// Package description.
 	PackageDescription *string `json:"packageDescription,omitempty"`
 	// UTC Date the package was published to the service.
-	PublishDate *time.Time `json:"publishDate,omitempty"`
+	PublishDate *azuredevops.Time `json:"publishDate,omitempty"`
 	// Internal storage id.
 	StorageId *string `json:"storageId,omitempty"`
 	// Display version.
@@ -405,7 +405,7 @@ type PackageMetrics struct {
 	// Number of downloads per unique user per package id.
 	DownloadUniqueUsers *float64 `json:"downloadUniqueUsers,omitempty"`
 	// UTC date and time when package was last downloaded.
-	LastDownloaded *time.Time `json:"lastDownloaded,omitempty"`
+	LastDownloaded *azuredevops.Time `json:"lastDownloaded,omitempty"`
 	// Package id.
 	PackageId *uuid.UUID `json:"packageId,omitempty"`
 }
@@ -435,7 +435,7 @@ type PackageVersion struct {
 	// Package description.
 	PackageDescription *string `json:"packageDescription,omitempty"`
 	// UTC Date the package was published to the service.
-	PublishDate *time.Time `json:"publishDate,omitempty"`
+	PublishDate *azuredevops.Time `json:"publishDate,omitempty"`
 	// Internal storage id.
 	StorageId *string `json:"storageId,omitempty"`
 	// Display version.
@@ -447,7 +447,7 @@ type PackageVersion struct {
 	// Package version author.
 	Author *string `json:"author,omitempty"`
 	// UTC date that this package version was deleted.
-	DeletedDate *time.Time `json:"deletedDate,omitempty"`
+	DeletedDate *azuredevops.Time `json:"deletedDate,omitempty"`
 	// List of dependencies for this package version.
 	Dependencies *[]PackageDependency `json:"dependencies,omitempty"`
 	// Package version description.
@@ -485,7 +485,7 @@ type PackageVersionMetrics struct {
 	// Number of downloads per unique user per package version id.
 	DownloadUniqueUsers *float64 `json:"downloadUniqueUsers,omitempty"`
 	// UTC date and time when package version was last downloaded.
-	LastDownloaded *time.Time `json:"lastDownloaded,omitempty"`
+	LastDownloaded *azuredevops.Time `json:"lastDownloaded,omitempty"`
 	// Package id.
 	PackageId *uuid.UUID `json:"packageId,omitempty"`
 	// Package version id.
@@ -558,7 +558,7 @@ type RecycleBinPackageVersion struct {
 	// Package description.
 	PackageDescription *string `json:"packageDescription,omitempty"`
 	// UTC Date the package was published to the service.
-	PublishDate *time.Time `json:"publishDate,omitempty"`
+	PublishDate *azuredevops.Time `json:"publishDate,omitempty"`
 	// Internal storage id.
 	StorageId *string `json:"storageId,omitempty"`
 	// Display version.
@@ -570,7 +570,7 @@ type RecycleBinPackageVersion struct {
 	// Package version author.
 	Author *string `json:"author,omitempty"`
 	// UTC date that this package version was deleted.
-	DeletedDate *time.Time `json:"deletedDate,omitempty"`
+	DeletedDate *azuredevops.Time `json:"deletedDate,omitempty"`
 	// List of dependencies for this package version.
 	Dependencies *[]PackageDependency `json:"dependencies,omitempty"`
 	// Package version description.
@@ -590,13 +590,13 @@ type RecycleBinPackageVersion struct {
 	// Package version url.
 	Url *string `json:"url,omitempty"`
 	// UTC date on which the package will automatically be removed from the recycle bin and permanently deleted.
-	ScheduledPermanentDeleteDate *time.Time `json:"scheduledPermanentDeleteDate,omitempty"`
+	ScheduledPermanentDeleteDate *azuredevops.Time `json:"scheduledPermanentDeleteDate,omitempty"`
 }
 
 // Upstream source definition, including its Identity, package type, and other associated information.
 type UpstreamSource struct {
 	// UTC date that this upstream was deleted.
-	DeletedDate *time.Time `json:"deletedDate,omitempty"`
+	DeletedDate *azuredevops.Time `json:"deletedDate,omitempty"`
 	// Locator for connecting to the upstream source in a user friendly format, that may potentially change over time
 	DisplayLocation *string `json:"displayLocation,omitempty"`
 	// Identity of the upstream source.

@@ -10,8 +10,8 @@ package symbol
 
 import (
 	"github.com/google/uuid"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/symbolcommon"
-	"time"
 )
 
 // A dual-purpose data object, the debug entry is used by the client to publish the symbol file (with file's blob identifier, which can be calculated from VSTS hashing algorithm) or query the file (with a client key). Since the symbol server tries to return a matched symbol file with the richest information level, it may not always point to the same symbol file for different queries with same client key.
@@ -19,7 +19,7 @@ type DebugEntry struct {
 	// The ID of user who created this item. Optional.
 	CreatedBy *uuid.UUID `json:"createdBy,omitempty"`
 	// The date time when this item is created. Optional.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// An identifier for this item. Optional.
 	Id *string `json:"id,omitempty"`
 	// An opaque ETag used to synchronize with the version stored at server end. Optional.
@@ -109,7 +109,7 @@ type Request struct {
 	// The ID of user who created this item. Optional.
 	CreatedBy *uuid.UUID `json:"createdBy,omitempty"`
 	// The date time when this item is created. Optional.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// An identifier for this item. Optional.
 	Id *string `json:"id,omitempty"`
 	// An opaque ETag used to synchronize with the version stored at server end. Optional.
@@ -119,7 +119,7 @@ type Request struct {
 	// An optional human-facing description.
 	Description *string `json:"description,omitempty"`
 	// An optional expiration date for the request. The request will become inaccessible and get deleted after the date, regardless of its status.  On an HTTP POST, if expiration date is null/missing, the server will assign a default expiration data (30 days unless overwridden in the registry at the account level). On PATCH, if expiration date is null/missing, the behavior is to not change whatever the request's current expiration date is.
-	ExpirationDate *time.Time `json:"expirationDate,omitempty"`
+	ExpirationDate *azuredevops.Time `json:"expirationDate,omitempty"`
 	// A human-facing name for the request. Required on POST, ignored on PATCH.
 	Name *string `json:"name,omitempty"`
 	// The status for this request.
@@ -151,7 +151,7 @@ type ResourceBase struct {
 	// The ID of user who created this item. Optional.
 	CreatedBy *uuid.UUID `json:"createdBy,omitempty"`
 	// The date time when this item is created. Optional.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// An identifier for this item. Optional.
 	Id *string `json:"id,omitempty"`
 	// An opaque ETag used to synchronize with the version stored at server end. Optional.

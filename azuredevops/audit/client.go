@@ -16,7 +16,6 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
-	"time"
 )
 
 var ResourceAreaId, _ = uuid.Parse("94ff054d-5ee1-413d-9341-3f4a7827de2e")
@@ -67,9 +66,9 @@ func (client *Client) QueryLog(ctx context.Context, args QueryLogArgs) (*AuditLo
 // Arguments for the QueryLog function
 type QueryLogArgs struct {
 	// (optional) Start time of download window. Optional
-	StartTime *time.Time
+	StartTime *azuredevops.Time
 	// (optional) End time of download window. Optional
-	EndTime *time.Time
+	EndTime *azuredevops.Time
 	// (optional) Max number of results to return. Optional
 	BatchSize *int
 	// (optional) Token used for returning next set of results from previous query. Optional
@@ -105,7 +104,7 @@ type DownloadLogArgs struct {
 	// (required) File format for download. Can be "json" or "csv".
 	Format *string
 	// (optional) Start time of download window. Optional
-	StartTime *time.Time
+	StartTime *azuredevops.Time
 	// (optional) End time of download window. Optional
-	EndTime *time.Time
+	EndTime *azuredevops.Time
 }

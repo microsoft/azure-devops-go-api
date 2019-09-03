@@ -10,8 +10,8 @@ package contributions
 
 import (
 	"github.com/google/uuid"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/gallery"
-	"time"
 )
 
 // Representation of a ContributionNode that can be used for serialized to clients.
@@ -440,7 +440,7 @@ type InstalledExtension struct {
 	// Information about this particular installation of the extension
 	InstallState *InstalledExtensionState `json:"installState,omitempty"`
 	// This represents the date/time the extensions was last updated in the gallery. This doesnt mean this version was updated the value represents changes to any and all versions of the extension.
-	LastPublished *time.Time `json:"lastPublished,omitempty"`
+	LastPublished *azuredevops.Time `json:"lastPublished,omitempty"`
 	// Unique id of the publisher of this extension
 	PublisherId *string `json:"publisherId,omitempty"`
 	// The display name of the publisher
@@ -458,7 +458,7 @@ type InstalledExtensionState struct {
 	// List of installation issues
 	InstallationIssues *[]InstalledExtensionStateIssue `json:"installationIssues,omitempty"`
 	// The time at which this installation was last updated
-	LastUpdated *time.Time `json:"lastUpdated,omitempty"`
+	LastUpdated *azuredevops.Time `json:"lastUpdated,omitempty"`
 }
 
 // Represents an installation issue

@@ -10,8 +10,8 @@ package webapi
 
 import (
 	"github.com/google/uuid"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/system"
-	"time"
 )
 
 // Information about the location of a REST API resource
@@ -219,8 +219,8 @@ type ServiceEvent struct {
 
 // A signed url allowing limited-time anonymous access to private resources.
 type SignedUrl struct {
-	SignatureExpires *time.Time `json:"signatureExpires,omitempty"`
-	Url              *string    `json:"url,omitempty"`
+	SignatureExpires *azuredevops.Time `json:"signatureExpires,omitempty"`
+	Url              *string           `json:"url,omitempty"`
 }
 
 type TeamMember struct {
@@ -257,18 +257,18 @@ type TraceFilter struct {
 	Level         *system.TraceLevel `json:"level,omitempty"`
 	Method        *string            `json:"method,omitempty"`
 	// Used to serialize additional identity information (display name, etc) to clients. Not set by default. Server-side callers should use OwnerId.
-	Owner       *IdentityRef `json:"owner,omitempty"`
-	OwnerId     *uuid.UUID   `json:"ownerId,omitempty"`
-	Path        *string      `json:"path,omitempty"`
-	ProcessName *string      `json:"processName,omitempty"`
-	Service     *string      `json:"service,omitempty"`
-	ServiceHost *uuid.UUID   `json:"serviceHost,omitempty"`
-	TimeCreated *time.Time   `json:"timeCreated,omitempty"`
-	TraceId     *uuid.UUID   `json:"traceId,omitempty"`
-	Tracepoint  *int         `json:"tracepoint,omitempty"`
-	Uri         *string      `json:"uri,omitempty"`
-	UserAgent   *string      `json:"userAgent,omitempty"`
-	UserLogin   *string      `json:"userLogin,omitempty"`
+	Owner       *IdentityRef      `json:"owner,omitempty"`
+	OwnerId     *uuid.UUID        `json:"ownerId,omitempty"`
+	Path        *string           `json:"path,omitempty"`
+	ProcessName *string           `json:"processName,omitempty"`
+	Service     *string           `json:"service,omitempty"`
+	ServiceHost *uuid.UUID        `json:"serviceHost,omitempty"`
+	TimeCreated *azuredevops.Time `json:"timeCreated,omitempty"`
+	TraceId     *uuid.UUID        `json:"traceId,omitempty"`
+	Tracepoint  *int              `json:"tracepoint,omitempty"`
+	Uri         *string           `json:"uri,omitempty"`
+	UserAgent   *string           `json:"userAgent,omitempty"`
+	UserLogin   *string           `json:"userLogin,omitempty"`
 }
 
 type VssJsonCollectionWrapper struct {
@@ -299,7 +299,7 @@ type VssNotificationEvent struct {
 	// Optional: A list of scopes which are are relevant to the event.
 	Scopes *[]EventScope `json:"scopes,omitempty"`
 	// This is the time the original source event for this VssNotificationEvent was created.  For example, for something like a build completion notification SourceEventCreatedTime should be the time the build finished not the time this event was raised.
-	SourceEventCreatedTime *time.Time `json:"sourceEventCreatedTime,omitempty"`
+	SourceEventCreatedTime *azuredevops.Time `json:"sourceEventCreatedTime,omitempty"`
 }
 
 type WrappedException struct {

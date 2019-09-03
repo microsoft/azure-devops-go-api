@@ -9,9 +9,9 @@
 package npm
 
 import (
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/packagingshared"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 // Data required to deprecate multiple package versions. Pass this while performing NpmBatchOperationTypes.Deprecate batch operation.
@@ -62,7 +62,7 @@ type NpmPackageVersionDeletionState struct {
 	// Name of the package.
 	Name *string `json:"name,omitempty"`
 	// UTC date the package was unpublished.
-	UnpublishedDate *time.Time `json:"unpublishedDate,omitempty"`
+	UnpublishedDate *azuredevops.Time `json:"unpublishedDate,omitempty"`
 	// Version of the package.
 	Version *string `json:"version,omitempty"`
 }
@@ -83,11 +83,11 @@ type Package struct {
 	// The display name of the package.
 	Name *string `json:"name,omitempty"`
 	// If and when the package was permanently deleted.
-	PermanentlyDeletedDate *time.Time `json:"permanentlyDeletedDate,omitempty"`
+	PermanentlyDeletedDate *azuredevops.Time `json:"permanentlyDeletedDate,omitempty"`
 	// The history of upstream sources for this package. The first source in the list is the immediate source from which this package was saved.
 	SourceChain *[]packagingshared.UpstreamSourceInfo `json:"sourceChain,omitempty"`
 	// If and when the package was deleted.
-	UnpublishedDate *time.Time `json:"unpublishedDate,omitempty"`
+	UnpublishedDate *azuredevops.Time `json:"unpublishedDate,omitempty"`
 	// The version of the package.
 	Version *string `json:"version,omitempty"`
 }

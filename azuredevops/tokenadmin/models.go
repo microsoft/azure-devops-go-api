@@ -10,8 +10,8 @@ package tokenadmin
 
 import (
 	"github.com/google/uuid"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/delegatedauthorization"
-	"time"
 )
 
 // A paginated list of session tokens. Session tokens correspond to OAuth credentials such as personal access tokens (PATs) and other OAuth authorizations.
@@ -31,7 +31,7 @@ type TokenAdminRevocation struct {
 // A rule which is applied to disable any incoming delegated authorization which matches the given properties.
 type TokenAdminRevocationRule struct {
 	// A datetime cutoff. Tokens created before this time will be rejected. This is an optional parameter. If omitted, defaults to the time at which the rule was created.
-	CreatedBefore *time.Time `json:"createdBefore,omitempty"`
+	CreatedBefore *azuredevops.Time `json:"createdBefore,omitempty"`
 	// A string containing a space-delimited list of OAuth scopes. A token matching any one of the scopes will be rejected. For a list of all OAuth scopes supported by Azure DevOps, see: https://docs.microsoft.com/en-us/azure/devops/integrate/get-started/authentication/oauth?view=azure-devops#scopes This is a mandatory parameter.
 	Scopes *string `json:"scopes,omitempty"`
 }

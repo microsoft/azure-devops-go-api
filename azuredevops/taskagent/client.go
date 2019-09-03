@@ -18,7 +18,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"time"
 )
 
 var ResourceAreaId, _ = uuid.Parse("a85b8835-c1a1-4aac-ae97-1c3d0ba72dbd")
@@ -1384,7 +1383,7 @@ type GetTaskGroupsArgs struct {
 	// (optional) Number of task groups to get.
 	Top *int
 	// (optional) Gets the task groups after the continuation token provided.
-	ContinuationToken *time.Time
+	ContinuationToken *azuredevops.Time
 	// (optional) Gets the results in the defined order. Default is 'CreatedOnDescending'.
 	QueryOrder *TaskGroupQueryOrder
 }

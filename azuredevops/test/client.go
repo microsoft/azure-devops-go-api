@@ -19,7 +19,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"time"
 )
 
 var ResourceAreaId, _ = uuid.Parse("c2aa639c-3ccc-4740-b3b6-ce2a1e1d984e")
@@ -1568,9 +1567,9 @@ type QueryTestRunsArgs struct {
 	// (required) Project ID or project name
 	Project *string
 	// (required) Minimum Last Modified Date of run to be queried (Mandatory).
-	MinLastUpdatedDate *time.Time
+	MinLastUpdatedDate *azuredevops.Time
 	// (required) Maximum Last Modified Date of run to be queried (Mandatory, difference between min and max date can be atmost 7 days).
-	MaxLastUpdatedDate *time.Time
+	MaxLastUpdatedDate *azuredevops.Time
 	// (optional) Current state of the Runs to be queried.
 	State *TestRunState
 	// (optional) Plan Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).

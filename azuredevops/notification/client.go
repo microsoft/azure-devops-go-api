@@ -17,7 +17,6 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-	"time"
 )
 
 type Client struct {
@@ -67,9 +66,9 @@ type ListLogsArgs struct {
 	// (optional)
 	EntryId *uuid.UUID
 	// (optional)
-	StartTime *time.Time
+	StartTime *azuredevops.Time
 	// (optional)
-	EndTime *time.Time
+	EndTime *azuredevops.Time
 }
 
 func (client *Client) GetSubscriptionDiagnostics(ctx context.Context, args GetSubscriptionDiagnosticsArgs) (*SubscriptionDiagnostics, error) {

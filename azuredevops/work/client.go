@@ -18,7 +18,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"time"
 )
 
 var ResourceAreaId, _ = uuid.Parse("1d4f49f9-02b9-4e26-b826-2cdb6195f2a9")
@@ -1124,9 +1123,9 @@ type GetDeliveryTimelineDataArgs struct {
 	// (optional) Revision of the plan for which you want data. If the current plan is a different revision you will get an ViewRevisionMismatchException exception. If you do not supply a revision you will get data for the latest revision.
 	Revision *int
 	// (optional) The start date of timeline
-	StartDate *time.Time
+	StartDate *azuredevops.Time
 	// (optional) The end date of timeline
-	EndDate *time.Time
+	EndDate *azuredevops.Time
 }
 
 // Delete a team's iteration by iterationId

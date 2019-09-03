@@ -20,7 +20,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"time"
 )
 
 type Client struct {
@@ -1864,9 +1863,9 @@ type QueryTestRunsArgs struct {
 	// (required) Project ID or project name
 	Project *string
 	// (required) Minimum Last Modified Date of run to be queried (Mandatory).
-	MinLastUpdatedDate *time.Time
+	MinLastUpdatedDate *azuredevops.Time
 	// (required) Maximum Last Modified Date of run to be queried (Mandatory, difference between min and max date can be atmost 7 days).
-	MaxLastUpdatedDate *time.Time
+	MaxLastUpdatedDate *azuredevops.Time
 	// (optional) Current state of the Runs to be queried.
 	State *test.TestRunState
 	// (optional) Plan Ids of the Runs to be queried, comma seperated list of valid ids.
@@ -2966,7 +2965,7 @@ type QueryTestResultWorkItemsArgs struct {
 	// (optional)
 	TestCaseId *int
 	// (optional)
-	MaxCompleteDate *time.Time
+	MaxCompleteDate *azuredevops.Time
 	// (optional)
 	Days *int
 	// (optional)

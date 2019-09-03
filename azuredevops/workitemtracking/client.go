@@ -20,7 +20,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"time"
 )
 
 var ResourceAreaId, _ = uuid.Parse("5264459e-e5e0-4bd8-b118-0985e68a4ec5")
@@ -2249,7 +2248,7 @@ type GetReportingLinksByLinkTypeArgs struct {
 	// (optional) Specifies the continuationToken to start the batch from. Omit this parameter to get the first batch of links.
 	ContinuationToken *string
 	// (optional) Date/time to use as a starting point for link changes. Only link changes that occurred after that date/time will be returned. Cannot be used in conjunction with 'watermark' parameter.
-	StartDateTime *time.Time
+	StartDateTime *azuredevops.Time
 }
 
 // Gets the work item relation type definition.
@@ -2359,7 +2358,7 @@ type ReadReportingRevisionsGetArgs struct {
 	// (optional) Specifies the watermark to start the batch from. Omit this parameter to get the first batch of revisions.
 	ContinuationToken *string
 	// (optional) Date/time to use as a starting point for revisions, all revisions will occur after this date/time. Cannot be used in conjunction with 'watermark' parameter.
-	StartDateTime *time.Time
+	StartDateTime *azuredevops.Time
 	// (optional) Return an identity reference instead of a string value for identity fields.
 	IncludeIdentityRef *bool
 	// (optional) Specify if the deleted item should be returned.
@@ -2420,7 +2419,7 @@ type ReadReportingRevisionsPostArgs struct {
 	// (optional) Specifies the watermark to start the batch from. Omit this parameter to get the first batch of revisions.
 	ContinuationToken *string
 	// (optional) Date/time to use as a starting point for revisions, all revisions will occur after this date/time. Cannot be used in conjunction with 'watermark' parameter.
-	StartDateTime *time.Time
+	StartDateTime *azuredevops.Time
 	// (optional)
 	Expand *ReportingRevisionsExpand
 }
@@ -2563,7 +2562,7 @@ type GetWorkItemTemplateArgs struct {
 	// (optional) Comma-separated list of requested fields
 	Fields *string
 	// (optional) AsOf UTC date time string
-	AsOf *time.Time
+	AsOf *azuredevops.Time
 	// (optional) The expand parameters for work item attributes. Possible options are { None, Relations, Fields, Links, All }.
 	Expand *WorkItemExpand
 }
@@ -2646,7 +2645,7 @@ type GetWorkItemArgs struct {
 	// (optional) Comma-separated list of requested fields
 	Fields *[]string
 	// (optional) AsOf UTC date time string
-	AsOf *time.Time
+	AsOf *azuredevops.Time
 	// (optional) The expand parameters for work item attributes. Possible options are { None, Relations, Fields, Links, All }.
 	Expand *WorkItemExpand
 }
@@ -2701,7 +2700,7 @@ type GetWorkItemsArgs struct {
 	// (optional) Comma-separated list of requested fields
 	Fields *[]string
 	// (optional) AsOf UTC date time string
-	AsOf *time.Time
+	AsOf *azuredevops.Time
 	// (optional) The expand parameters for work item attributes. Possible options are { None, Relations, Fields, Links, All }.
 	Expand *WorkItemExpand
 	// (optional) The flag to control error policy in a bulk get work items request. Possible options are {Fail, Omit}.

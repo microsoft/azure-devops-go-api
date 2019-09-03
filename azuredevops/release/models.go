@@ -10,10 +10,10 @@ package release
 
 import (
 	"github.com/google/uuid"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/distributedtaskcommon"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/forminput"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 type AgentArtifactDefinition struct {
@@ -414,7 +414,7 @@ type AutoTriggerIssue struct {
 
 type AzureKeyVaultVariableGroupProviderData struct {
 	// Gets or sets last refreshed time.
-	LastRefreshedOn *time.Time `json:"lastRefreshedOn,omitempty"`
+	LastRefreshedOn *azuredevops.Time `json:"lastRefreshedOn,omitempty"`
 	// Gets or sets the service endpoint ID.
 	ServiceEndpointId *uuid.UUID `json:"serviceEndpointId,omitempty"`
 	// Gets or sets the vault name.
@@ -431,7 +431,7 @@ type AzureKeyVaultVariableValue struct {
 	// Indicates the vault variable value enabled or not.
 	Enabled *bool `json:"enabled,omitempty"`
 	// Gets or sets the expire time of key vault variable value.
-	Expires *time.Time `json:"expires,omitempty"`
+	Expires *azuredevops.Time `json:"expires,omitempty"`
 }
 
 type BaseDeploymentInput struct {
@@ -500,7 +500,7 @@ type Change struct {
 	// Deprecated: Use PushedBy instead
 	Pusher *string `json:"pusher,omitempty"`
 	// A timestamp for the change.
-	Timestamp *time.Time `json:"timestamp,omitempty"`
+	Timestamp *azuredevops.Time `json:"timestamp,omitempty"`
 }
 
 type CodeRepositoryReference struct {
@@ -645,7 +645,7 @@ type Deployment struct {
 	// Gets attempt number.
 	Attempt *int `json:"attempt,omitempty"`
 	// Gets the date on which deployment is complete.
-	CompletedOn *time.Time `json:"completedOn,omitempty"`
+	CompletedOn *azuredevops.Time `json:"completedOn,omitempty"`
 	// Gets the list of condition associated with deployment.
 	Conditions *[]Condition `json:"conditions,omitempty"`
 	// Gets release definition environment id.
@@ -657,7 +657,7 @@ type Deployment struct {
 	// Gets the identity who last modified the deployment.
 	LastModifiedBy *webapi.IdentityRef `json:"lastModifiedBy,omitempty"`
 	// Gets the date on which deployment is last modified.
-	LastModifiedOn *time.Time `json:"lastModifiedOn,omitempty"`
+	LastModifiedOn *azuredevops.Time `json:"lastModifiedOn,omitempty"`
 	// Gets operation status of deployment.
 	OperationStatus *DeploymentOperationStatus `json:"operationStatus,omitempty"`
 	// Gets list of PostDeployApprovals.
@@ -667,7 +667,7 @@ type Deployment struct {
 	// Gets or sets project reference.
 	ProjectReference *ProjectReference `json:"projectReference,omitempty"`
 	// Gets the date on which deployment is queued.
-	QueuedOn *time.Time `json:"queuedOn,omitempty"`
+	QueuedOn *azuredevops.Time `json:"queuedOn,omitempty"`
 	// Gets reason of deployment.
 	Reason *DeploymentReason `json:"reason,omitempty"`
 	// Gets the reference of release.
@@ -681,9 +681,9 @@ type Deployment struct {
 	// Gets the identity for whom deployment is requested.
 	RequestedFor *webapi.IdentityRef `json:"requestedFor,omitempty"`
 	// Gets the date on which deployment is scheduled.
-	ScheduledDeploymentTime *time.Time `json:"scheduledDeploymentTime,omitempty"`
+	ScheduledDeploymentTime *azuredevops.Time `json:"scheduledDeploymentTime,omitempty"`
 	// Gets the date on which deployment is started.
-	StartedOn *time.Time `json:"startedOn,omitempty"`
+	StartedOn *azuredevops.Time `json:"startedOn,omitempty"`
 }
 
 type DeploymentApprovalCompletedEvent struct {
@@ -722,7 +722,7 @@ type DeploymentAttempt struct {
 	// Identity who last modified this deployment.
 	LastModifiedBy *webapi.IdentityRef `json:"lastModifiedBy,omitempty"`
 	// Time when this deployment last modified.
-	LastModifiedOn *time.Time `json:"lastModifiedOn,omitempty"`
+	LastModifiedOn *azuredevops.Time `json:"lastModifiedOn,omitempty"`
 	// Deployment operation status.
 	OperationStatus *DeploymentOperationStatus `json:"operationStatus,omitempty"`
 	// Post deployment gates that executed in this deployment.
@@ -730,7 +730,7 @@ type DeploymentAttempt struct {
 	// Pre deployment gates that executed in this deployment.
 	PreDeploymentGates *ReleaseGates `json:"preDeploymentGates,omitempty"`
 	// When this deployment queued on.
-	QueuedOn *time.Time `json:"queuedOn,omitempty"`
+	QueuedOn *azuredevops.Time `json:"queuedOn,omitempty"`
 	// Reason for the deployment.
 	Reason *DeploymentReason `json:"reason,omitempty"`
 	// List of release deployphases executed in this deployment.
@@ -925,9 +925,9 @@ type DeploymentQueryParameters struct {
 	// Deprecated:
 	MaxDeploymentsPerEnvironment *int `json:"maxDeploymentsPerEnvironment,omitempty"`
 	// Deprecated:
-	MaxModifiedTime *time.Time `json:"maxModifiedTime,omitempty"`
+	MaxModifiedTime *azuredevops.Time `json:"maxModifiedTime,omitempty"`
 	// Deprecated:
-	MinModifiedTime *time.Time `json:"minModifiedTime,omitempty"`
+	MinModifiedTime *azuredevops.Time `json:"minModifiedTime,omitempty"`
 	// Query deployment based on deployment operation status.
 	OperationStatus *DeploymentOperationStatus `json:"operationStatus,omitempty"`
 	// Deprecated:
@@ -1207,13 +1207,13 @@ type Folder struct {
 	// Identity who created this folder.
 	CreatedBy *webapi.IdentityRef `json:"createdBy,omitempty"`
 	// Time when this folder created.
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// Description of the folder.
 	Description *string `json:"description,omitempty"`
 	// Identity who last changed this folder.
 	LastChangedBy *webapi.IdentityRef `json:"lastChangedBy,omitempty"`
 	// Time when this folder last changed.
-	LastChangedDate *time.Time `json:"lastChangedDate,omitempty"`
+	LastChangedDate *azuredevops.Time `json:"lastChangedDate,omitempty"`
 	// path of the folder.
 	Path *string `json:"path,omitempty"`
 }
@@ -1315,7 +1315,7 @@ type GitHubArtifactDownloadInput struct {
 
 type IgnoredGate struct {
 	// Gets the date on which gate is last ignored.
-	LastModifiedOn *time.Time `json:"lastModifiedOn,omitempty"`
+	LastModifiedOn *azuredevops.Time `json:"lastModifiedOn,omitempty"`
 	// Name of gate ignored.
 	Name *string `json:"name,omitempty"`
 }
@@ -1396,7 +1396,7 @@ type MailMessage struct {
 	// Message ID of the mail.
 	MessageId *string `json:"messageId,omitempty"`
 	// Data when should be replied to mail.
-	ReplyBy *time.Time `json:"replyBy,omitempty"`
+	ReplyBy *azuredevops.Time `json:"replyBy,omitempty"`
 	// Reply to Email recipients.
 	ReplyTo *EmailRecipients `json:"replyTo,omitempty"`
 	// List of mail section types.
@@ -1435,13 +1435,13 @@ type ManualIntervention struct {
 	// Gets or sets comments for approval.
 	Comments *string `json:"comments,omitempty"`
 	// Gets date on which it got created.
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// Gets the unique identifier for manual intervention.
 	Id *int `json:"id,omitempty"`
 	// Gets or sets instructions for approval.
 	Instructions *string `json:"instructions,omitempty"`
 	// Gets date on which it got modified.
-	ModifiedOn *time.Time `json:"modifiedOn,omitempty"`
+	ModifiedOn *azuredevops.Time `json:"modifiedOn,omitempty"`
 	// Gets or sets the name.
 	Name *string `json:"name,omitempty"`
 	// Gets releaseReference for manual intervention.
@@ -1659,7 +1659,7 @@ type Release struct {
 	// Gets or sets the identity who created.
 	CreatedBy *webapi.IdentityRef `json:"createdBy,omitempty"`
 	// Gets date on which it got created.
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// Gets revision number of definition snapshot.
 	DefinitionSnapshotRevision *int `json:"definitionSnapshotRevision,omitempty"`
 	// Gets or sets description of release.
@@ -1675,7 +1675,7 @@ type Release struct {
 	// Gets or sets the identity who modified.
 	ModifiedBy *webapi.IdentityRef `json:"modifiedBy,omitempty"`
 	// Gets date on which it got modified.
-	ModifiedOn *time.Time `json:"modifiedOn,omitempty"`
+	ModifiedOn *azuredevops.Time `json:"modifiedOn,omitempty"`
 	// Gets name.
 	Name *string `json:"name,omitempty"`
 	// Gets pool name.
@@ -1721,7 +1721,7 @@ type ReleaseApproval struct {
 	// Gets or sets comments for approval.
 	Comments *string `json:"comments,omitempty"`
 	// Gets date on which it got created.
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// Gets history which specifies all approvals associated with this approval.
 	History *[]ReleaseApprovalHistory `json:"history,omitempty"`
 	// Gets the unique identifier of this field.
@@ -1731,7 +1731,7 @@ type ReleaseApproval struct {
 	// Deprecated: Use Notifications instead.
 	IsNotificationOn *bool `json:"isNotificationOn,omitempty"`
 	// Gets date on which it got modified.
-	ModifiedOn *time.Time `json:"modifiedOn,omitempty"`
+	ModifiedOn *azuredevops.Time `json:"modifiedOn,omitempty"`
 	// Gets or sets rank which specifies the order of the approval. e.g. Same rank denotes parallel approval.
 	Rank *int `json:"rank,omitempty"`
 	// Gets releaseReference which specifies the reference of the release to which this approval is associated.
@@ -1758,9 +1758,9 @@ type ReleaseApprovalHistory struct {
 	// Approval history comments.
 	Comments *string `json:"comments,omitempty"`
 	// Time when this approval created.
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// Time when this approval modified.
-	ModifiedOn *time.Time `json:"modifiedOn,omitempty"`
+	ModifiedOn *azuredevops.Time `json:"modifiedOn,omitempty"`
 	// Approval history revision.
 	Revision *int `json:"revision,omitempty"`
 }
@@ -1837,7 +1837,7 @@ type ReleaseDefinition struct {
 	// Gets or sets the identity who created.
 	CreatedBy *webapi.IdentityRef `json:"createdBy,omitempty"`
 	// Gets date on which it got created.
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// Gets or sets the description.
 	Description *string `json:"description,omitempty"`
 	// Gets or sets the list of environments.
@@ -1849,7 +1849,7 @@ type ReleaseDefinition struct {
 	// Gets or sets the identity who modified.
 	ModifiedBy *webapi.IdentityRef `json:"modifiedBy,omitempty"`
 	// Gets date on which it got modified.
-	ModifiedOn *time.Time `json:"modifiedOn,omitempty"`
+	ModifiedOn *azuredevops.Time `json:"modifiedOn,omitempty"`
 	// Gets or sets properties.
 	Properties interface{} `json:"properties,omitempty"`
 	// Gets or sets the release name format.
@@ -2068,7 +2068,7 @@ type ReleaseDefinitionRevision struct {
 	// Gets the identity who did change.
 	ChangedBy *webapi.IdentityRef `json:"changedBy,omitempty"`
 	// Gets date on which ReleaseDefinition changed.
-	ChangedDate *time.Time `json:"changedDate,omitempty"`
+	ChangedDate *azuredevops.Time `json:"changedDate,omitempty"`
 	// Gets type of change.
 	ChangeType *AuditAction `json:"changeType,omitempty"`
 	// Gets comments for revision.
@@ -2154,7 +2154,7 @@ type ReleaseDeployPhase struct {
 	// Run Plan ID of the phase.
 	RunPlanId *uuid.UUID `json:"runPlanId,omitempty"`
 	// Phase start time.
-	StartedOn *time.Time `json:"startedOn,omitempty"`
+	StartedOn *azuredevops.Time `json:"startedOn,omitempty"`
 	// Status of the phase.
 	Status *DeployPhaseStatus `json:"status,omitempty"`
 }
@@ -2163,7 +2163,7 @@ type ReleaseEnvironment struct {
 	// Gets list of conditions.
 	Conditions *[]ReleaseCondition `json:"conditions,omitempty"`
 	// Gets date on which it got created.
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// Gets definition environment id.
 	DefinitionEnvironmentId *int `json:"definitionEnvironmentId,omitempty"`
 	// Deprecated: Use DeploymentInput.Demands instead.
@@ -2177,11 +2177,11 @@ type ReleaseEnvironment struct {
 	// Gets the unique identifier of this field.
 	Id *int `json:"id,omitempty"`
 	// Gets date on which it got modified.
-	ModifiedOn *time.Time `json:"modifiedOn,omitempty"`
+	ModifiedOn *azuredevops.Time `json:"modifiedOn,omitempty"`
 	// Gets name.
 	Name *string `json:"name,omitempty"`
 	// Gets next scheduled UTC time.
-	NextScheduledUtcTime *time.Time `json:"nextScheduledUtcTime,omitempty"`
+	NextScheduledUtcTime *azuredevops.Time `json:"nextScheduledUtcTime,omitempty"`
 	// Gets the identity who is owner for release environment.
 	Owner *webapi.IdentityRef `json:"owner,omitempty"`
 	// Gets list of post deploy approvals snapshot.
@@ -2213,7 +2213,7 @@ type ReleaseEnvironment struct {
 	// Gets release id.
 	ReleaseId *int `json:"releaseId,omitempty"`
 	// Gets schedule deployment time of release environment.
-	ScheduledDeploymentTime *time.Time `json:"scheduledDeploymentTime,omitempty"`
+	ScheduledDeploymentTime *azuredevops.Time `json:"scheduledDeploymentTime,omitempty"`
 	// Gets list of schedules.
 	Schedules *[]ReleaseSchedule `json:"schedules,omitempty"`
 	// Gets environment status.
@@ -2271,7 +2271,7 @@ type ReleaseEnvironmentUpdateMetadata struct {
 	// Gets or sets comment.
 	Comment *string `json:"comment,omitempty"`
 	// Gets or sets scheduled deployment time.
-	ScheduledDeploymentTime *time.Time `json:"scheduledDeploymentTime,omitempty"`
+	ScheduledDeploymentTime *azuredevops.Time `json:"scheduledDeploymentTime,omitempty"`
 	// Gets or sets status of environment.
 	Status *EnvironmentStatus `json:"status,omitempty"`
 	// Sets list of environment variables to be overridden at deployment time.
@@ -2309,17 +2309,17 @@ type ReleaseGates struct {
 	// List of ignored gates.
 	IgnoredGates *[]IgnoredGate `json:"ignoredGates,omitempty"`
 	// Gates last modified time.
-	LastModifiedOn *time.Time `json:"lastModifiedOn,omitempty"`
+	LastModifiedOn *azuredevops.Time `json:"lastModifiedOn,omitempty"`
 	// Run plan ID of the gates.
 	RunPlanId *uuid.UUID `json:"runPlanId,omitempty"`
 	// Gates stabilization completed date and time.
-	StabilizationCompletedOn *time.Time `json:"stabilizationCompletedOn,omitempty"`
+	StabilizationCompletedOn *azuredevops.Time `json:"stabilizationCompletedOn,omitempty"`
 	// Gates evaluation started time.
-	StartedOn *time.Time `json:"startedOn,omitempty"`
+	StartedOn *azuredevops.Time `json:"startedOn,omitempty"`
 	// Status of release gates.
 	Status *GateStatus `json:"status,omitempty"`
 	// Date and time at which all gates executed successfully.
-	SucceedingSince *time.Time `json:"succeedingSince,omitempty"`
+	SucceedingSince *azuredevops.Time `json:"succeedingSince,omitempty"`
 }
 
 type ReleaseGatesPhase struct {
@@ -2342,15 +2342,15 @@ type ReleaseGatesPhase struct {
 	// Run Plan ID of the phase.
 	RunPlanId *uuid.UUID `json:"runPlanId,omitempty"`
 	// Phase start time.
-	StartedOn *time.Time `json:"startedOn,omitempty"`
+	StartedOn *azuredevops.Time `json:"startedOn,omitempty"`
 	// Status of the phase.
 	Status *DeployPhaseStatus `json:"status,omitempty"`
 	// List of ignored gates.
 	IgnoredGates *[]IgnoredGate `json:"ignoredGates,omitempty"`
 	// Date and time at which stabilization of gates completed.
-	StabilizationCompletedOn *time.Time `json:"stabilizationCompletedOn,omitempty"`
+	StabilizationCompletedOn *azuredevops.Time `json:"stabilizationCompletedOn,omitempty"`
 	// Date and time at which all gates executed successfully.
-	SucceedingSince *time.Time `json:"succeedingSince,omitempty"`
+	SucceedingSince *azuredevops.Time `json:"succeedingSince,omitempty"`
 }
 
 type ReleaseManagementInputValue struct {
@@ -2412,7 +2412,7 @@ type ReleaseReference struct {
 	// Gets the identity who created release.
 	CreatedBy *webapi.IdentityRef `json:"createdBy,omitempty"`
 	// Gets date on when this release created.
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// Gets description.
 	Description *string `json:"description,omitempty"`
 	// ID of the Release.
@@ -2435,7 +2435,7 @@ type ReleaseRevision struct {
 	// Gets or sets the identity who changed.
 	ChangedBy *webapi.IdentityRef `json:"changedBy,omitempty"`
 	// Change date of the revision.
-	ChangedDate *time.Time `json:"changedDate,omitempty"`
+	ChangedDate *azuredevops.Time `json:"changedDate,omitempty"`
 	// Change details of the revision.
 	ChangeDetails *string `json:"changeDetails,omitempty"`
 	// Change details of the revision. Typically ChangeDetails values are Add and Update.
@@ -2533,11 +2533,11 @@ type ReleaseTask struct {
 	// Agent name on which task executed.
 	AgentName *string `json:"agentName,omitempty"`
 	// Deprecated: Use FinishTime instead
-	DateEnded *time.Time `json:"dateEnded,omitempty"`
+	DateEnded *azuredevops.Time `json:"dateEnded,omitempty"`
 	// Deprecated: Use StartTime instead.
-	DateStarted *time.Time `json:"dateStarted,omitempty"`
+	DateStarted *azuredevops.Time `json:"dateStarted,omitempty"`
 	// Finish time of the release task.
-	FinishTime *time.Time `json:"finishTime,omitempty"`
+	FinishTime *azuredevops.Time `json:"finishTime,omitempty"`
 	// ID of the release task.
 	Id *int `json:"id,omitempty"`
 	// List of issues occurred while execution of task.
@@ -2555,7 +2555,7 @@ type ReleaseTask struct {
 	// Result code of the task.
 	ResultCode *string `json:"resultCode,omitempty"`
 	// ID of the release task.
-	StartTime *time.Time `json:"startTime,omitempty"`
+	StartTime *azuredevops.Time `json:"startTime,omitempty"`
 	// Status of release task.
 	Status *TaskStatus `json:"status,omitempty"`
 	// Workflow task reference.
@@ -2568,11 +2568,11 @@ type ReleaseTaskAttachment struct {
 	// Reference links of task.
 	Links interface{} `json:"_links,omitempty"`
 	// Data and time when it created.
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// Identity who modified.
 	ModifiedBy *webapi.IdentityRef `json:"modifiedBy,omitempty"`
 	// Data and time when modified.
-	ModifiedOn *time.Time `json:"modifiedOn,omitempty"`
+	ModifiedOn *azuredevops.Time `json:"modifiedOn,omitempty"`
 	// Name of the task attachment.
 	Name *string `json:"name,omitempty"`
 	// Record ID of the task.
@@ -2780,7 +2780,7 @@ type SourcePullRequestVersion struct {
 	// Pull Request Id for which the release will publish status.
 	PullRequestId *string `json:"pullRequestId,omitempty"`
 	// Date and time of the pull request merge creation. It is required to keep timeline record of Releases created by pull request.
-	PullRequestMergedAt *time.Time `json:"pullRequestMergedAt,omitempty"`
+	PullRequestMergedAt *azuredevops.Time `json:"pullRequestMergedAt,omitempty"`
 	// Source branch of the Pull Request.
 	SourceBranch *string `json:"sourceBranch,omitempty"`
 	// Source branch commit Id of the Pull Request for which the release will publish status.
@@ -2889,7 +2889,7 @@ type VariableGroup struct {
 	// Gets or sets the identity who created.
 	CreatedBy *webapi.IdentityRef `json:"createdBy,omitempty"`
 	// Gets date on which it got created.
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// Gets or sets description.
 	Description *string `json:"description,omitempty"`
 	// Gets the unique identifier of this field.
@@ -2899,7 +2899,7 @@ type VariableGroup struct {
 	// Gets or sets the identity who modified.
 	ModifiedBy *webapi.IdentityRef `json:"modifiedBy,omitempty"`
 	// Gets date on which it got modified.
-	ModifiedOn *time.Time `json:"modifiedOn,omitempty"`
+	ModifiedOn *azuredevops.Time `json:"modifiedOn,omitempty"`
 	// Gets or sets name.
 	Name *string `json:"name,omitempty"`
 	// Gets or sets provider data.

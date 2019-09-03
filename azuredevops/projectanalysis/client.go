@@ -15,7 +15,6 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
-	"time"
 )
 
 var ResourceAreaId, _ = uuid.Parse("7658fa33-b1bf-4580-990f-fac5896773d3")
@@ -92,7 +91,7 @@ type GetProjectActivityMetricsArgs struct {
 	// (required) Project ID or project name
 	Project *string
 	// (required)
-	FromDate *time.Time
+	FromDate *azuredevops.Time
 	// (required)
 	AggregationType *AggregationType
 }
@@ -138,7 +137,7 @@ type GetGitRepositoriesActivityMetricsArgs struct {
 	// (required) Project ID or project name
 	Project *string
 	// (required) Date from which, the trends are to be fetched.
-	FromDate *time.Time
+	FromDate *azuredevops.Time
 	// (required) Bucket size on which, trends are to be aggregated.
 	AggregationType *AggregationType
 	// (required) The number of repositories to ignore.
@@ -186,7 +185,7 @@ type GetRepositoryActivityMetricsArgs struct {
 	// (required)
 	RepositoryId *uuid.UUID
 	// (required)
-	FromDate *time.Time
+	FromDate *azuredevops.Time
 	// (required)
 	AggregationType *AggregationType
 }

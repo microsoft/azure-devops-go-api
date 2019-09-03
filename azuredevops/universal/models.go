@@ -9,9 +9,9 @@
 package universal
 
 import (
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/packagingshared"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 // Package version metadata for a Universal package
@@ -19,13 +19,13 @@ type Package struct {
 	// Related REST links.
 	Links interface{} `json:"_links,omitempty"`
 	// If and when the package was deleted.
-	DeletedDate *time.Time `json:"deletedDate,omitempty"`
+	DeletedDate *azuredevops.Time `json:"deletedDate,omitempty"`
 	// Package Id.
 	Id *string `json:"id,omitempty"`
 	// The display name of the package.
 	Name *string `json:"name,omitempty"`
 	// If and when the package was permanently deleted.
-	PermanentlyDeletedDate *time.Time `json:"permanentlyDeletedDate,omitempty"`
+	PermanentlyDeletedDate *azuredevops.Time `json:"permanentlyDeletedDate,omitempty"`
 	// The version of the package.
 	Version *string `json:"version,omitempty"`
 }
@@ -84,7 +84,7 @@ type UPackPackagesBatchRequest struct {
 // Deletion state of a Universal package.
 type UPackPackageVersionDeletionState struct {
 	// UTC date the package was deleted.
-	DeletedDate *time.Time `json:"deletedDate,omitempty"`
+	DeletedDate *azuredevops.Time `json:"deletedDate,omitempty"`
 	// Name of the package.
 	Name *string `json:"name,omitempty"`
 	// Version of the package.

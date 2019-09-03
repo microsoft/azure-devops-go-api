@@ -10,9 +10,9 @@ package core
 
 import (
 	"github.com/google/uuid"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/identity"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 type ConnectedServiceKind string
@@ -112,7 +112,7 @@ type ProjectInfo struct {
 	// The id of the project.
 	Id *uuid.UUID `json:"id,omitempty"`
 	// The time that this project was last updated.
-	LastUpdateTime *time.Time `json:"lastUpdateTime,omitempty"`
+	LastUpdateTime *azuredevops.Time `json:"lastUpdateTime,omitempty"`
 	// The name of the project.
 	Name *string `json:"name,omitempty"`
 	// A set of name-value pairs storing additional property data related to the project.
@@ -253,7 +253,7 @@ type TeamProject struct {
 	// Project identifier.
 	Id *uuid.UUID `json:"id,omitempty"`
 	// Project last update time.
-	LastUpdateTime *time.Time `json:"lastUpdateTime,omitempty"`
+	LastUpdateTime *azuredevops.Time `json:"lastUpdateTime,omitempty"`
 	// Project name.
 	Name *string `json:"name,omitempty"`
 	// Project revision.
@@ -311,7 +311,7 @@ type TeamProjectReference struct {
 	// Project identifier.
 	Id *uuid.UUID `json:"id,omitempty"`
 	// Project last update time.
-	LastUpdateTime *time.Time `json:"lastUpdateTime,omitempty"`
+	LastUpdateTime *azuredevops.Time `json:"lastUpdateTime,omitempty"`
 	// Project name.
 	Name *string `json:"name,omitempty"`
 	// Project revision.
@@ -326,12 +326,12 @@ type TeamProjectReference struct {
 
 // A data transfer object that stores the metadata associated with the creation of temporary data.
 type TemporaryDataCreatedDTO struct {
-	ExpirationSeconds *int        `json:"expirationSeconds,omitempty"`
-	Origin            *string     `json:"origin,omitempty"`
-	Value             interface{} `json:"value,omitempty"`
-	ExpirationDate    *time.Time  `json:"expirationDate,omitempty"`
-	Id                *uuid.UUID  `json:"id,omitempty"`
-	Url               *string     `json:"url,omitempty"`
+	ExpirationSeconds *int              `json:"expirationSeconds,omitempty"`
+	Origin            *string           `json:"origin,omitempty"`
+	Value             interface{}       `json:"value,omitempty"`
+	ExpirationDate    *azuredevops.Time `json:"expirationDate,omitempty"`
+	Id                *uuid.UUID        `json:"id,omitempty"`
+	Url               *string           `json:"url,omitempty"`
 }
 
 // A data transfer object that stores the metadata associated with the temporary data.
@@ -399,7 +399,7 @@ type WebApiProject struct {
 	// Project identifier.
 	Id *uuid.UUID `json:"id,omitempty"`
 	// Project last update time.
-	LastUpdateTime *time.Time `json:"lastUpdateTime,omitempty"`
+	LastUpdateTime *azuredevops.Time `json:"lastUpdateTime,omitempty"`
 	// Project name.
 	Name *string `json:"name,omitempty"`
 	// Project revision.
