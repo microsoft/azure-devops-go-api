@@ -9,8 +9,8 @@
 package pipelines
 
 import (
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 type ConfigurationType string
@@ -56,11 +56,11 @@ var GetLogExpandOptionsValues = getLogExpandOptionsValuesType{
 
 type Log struct {
 	// The date and time the log was created.
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// The ID of the log.
 	Id *int `json:"id,omitempty"`
 	// The date and time the log was last changed.
-	LastChangedOn *time.Time `json:"lastChangedOn,omitempty"`
+	LastChangedOn *azuredevops.Time `json:"lastChangedOn,omitempty"`
 	// The number of lines in the log.
 	LineCount     *uint64           `json:"lineCount,omitempty"`
 	SignedContent *webapi.SignedUrl `json:"signedContent,omitempty"`
@@ -142,8 +142,8 @@ type Run struct {
 	Id           *int                 `json:"id,omitempty"`
 	Name         *string              `json:"name,omitempty"`
 	Links        interface{}          `json:"_links,omitempty"`
-	CreatedDate  *time.Time           `json:"createdDate,omitempty"`
-	FinishedDate *time.Time           `json:"finishedDate,omitempty"`
+	CreatedDate  *azuredevops.Time    `json:"createdDate,omitempty"`
+	FinishedDate *azuredevops.Time    `json:"finishedDate,omitempty"`
 	Pipeline     *PipelineReference   `json:"pipeline,omitempty"`
 	Resources    *RunResources        `json:"resources,omitempty"`
 	Result       *RunResult           `json:"result,omitempty"`

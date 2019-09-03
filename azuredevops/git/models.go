@@ -10,10 +10,10 @@ package git
 
 import (
 	"github.com/google/uuid"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/core"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/policy"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 type AssociatedWorkItem struct {
@@ -70,7 +70,7 @@ type Attachment struct {
 	// Content hash of on-disk representation of file content. Its calculated by the server by using SHA1 hash function.
 	ContentHash *string `json:"contentHash,omitempty"`
 	// The time the attachment was uploaded.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// The description of the attachment.
 	Description *string `json:"description,omitempty"`
 	// The display name of the attachment. Can't be null or empty.
@@ -123,12 +123,12 @@ type ChangeList struct {
 	Changes            *[]interface{}                    `json:"changes,omitempty"`
 	Comment            *string                           `json:"comment,omitempty"`
 	CommentTruncated   *bool                             `json:"commentTruncated,omitempty"`
-	CreationDate       *time.Time                        `json:"creationDate,omitempty"`
+	CreationDate       *azuredevops.Time                 `json:"creationDate,omitempty"`
 	Notes              *[]CheckinNote                    `json:"notes,omitempty"`
 	Owner              *string                           `json:"owner,omitempty"`
 	OwnerDisplayName   *string                           `json:"ownerDisplayName,omitempty"`
 	OwnerId            *uuid.UUID                        `json:"ownerId,omitempty"`
-	SortDate           *time.Time                        `json:"sortDate,omitempty"`
+	SortDate           *azuredevops.Time                 `json:"sortDate,omitempty"`
 	Version            *string                           `json:"version,omitempty"`
 }
 
@@ -182,13 +182,13 @@ type Comment struct {
 	// Whether or not this comment was soft-deleted.
 	IsDeleted *bool `json:"isDeleted,omitempty"`
 	// The date the comment's content was last updated.
-	LastContentUpdatedDate *time.Time `json:"lastContentUpdatedDate,omitempty"`
+	LastContentUpdatedDate *azuredevops.Time `json:"lastContentUpdatedDate,omitempty"`
 	// The date the comment was last updated.
-	LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
+	LastUpdatedDate *azuredevops.Time `json:"lastUpdatedDate,omitempty"`
 	// The ID of the parent comment. This is used for replies.
 	ParentCommentId *int `json:"parentCommentId,omitempty"`
 	// The date the comment was first published.
-	PublishedDate *time.Time `json:"publishedDate,omitempty"`
+	PublishedDate *azuredevops.Time `json:"publishedDate,omitempty"`
 	// A list of the users who have liked this comment.
 	UsersLiked *[]webapi.IdentityRef `json:"usersLiked,omitempty"`
 }
@@ -221,11 +221,11 @@ type CommentThread struct {
 	// Specify if the thread is deleted which happens when all comments are deleted.
 	IsDeleted *bool `json:"isDeleted,omitempty"`
 	// The time this thread was last updated.
-	LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
+	LastUpdatedDate *azuredevops.Time `json:"lastUpdatedDate,omitempty"`
 	// Optional properties associated with the thread as a collection of key-value pairs.
 	Properties interface{} `json:"properties,omitempty"`
 	// The time this thread was published.
-	PublishedDate *time.Time `json:"publishedDate,omitempty"`
+	PublishedDate *azuredevops.Time `json:"publishedDate,omitempty"`
 	// The status of the comment thread.
 	Status *CommentThreadStatus `json:"status,omitempty"`
 	// Specify thread context such as position in left/right file.
@@ -642,7 +642,7 @@ type GitConflict struct {
 	ResolutionError   *GitResolutionError  `json:"resolutionError,omitempty"`
 	ResolutionStatus  *GitResolutionStatus `json:"resolutionStatus,omitempty"`
 	ResolvedBy        *webapi.IdentityRef  `json:"resolvedBy,omitempty"`
-	ResolvedDate      *time.Time           `json:"resolvedDate,omitempty"`
+	ResolvedDate      *azuredevops.Time    `json:"resolvedDate,omitempty"`
 	Url               *string              `json:"url,omitempty"`
 }
 
@@ -659,7 +659,7 @@ type GitConflictAddAdd struct {
 	ResolutionError   *GitResolutionError        `json:"resolutionError,omitempty"`
 	ResolutionStatus  *GitResolutionStatus       `json:"resolutionStatus,omitempty"`
 	ResolvedBy        *webapi.IdentityRef        `json:"resolvedBy,omitempty"`
-	ResolvedDate      *time.Time                 `json:"resolvedDate,omitempty"`
+	ResolvedDate      *azuredevops.Time          `json:"resolvedDate,omitempty"`
 	Url               *string                    `json:"url,omitempty"`
 	Resolution        *GitResolutionMergeContent `json:"resolution,omitempty"`
 	SourceBlob        *GitBlobRef                `json:"sourceBlob,omitempty"`
@@ -679,7 +679,7 @@ type GitConflictAddRename struct {
 	ResolutionError    *GitResolutionError        `json:"resolutionError,omitempty"`
 	ResolutionStatus   *GitResolutionStatus       `json:"resolutionStatus,omitempty"`
 	ResolvedBy         *webapi.IdentityRef        `json:"resolvedBy,omitempty"`
-	ResolvedDate       *time.Time                 `json:"resolvedDate,omitempty"`
+	ResolvedDate       *azuredevops.Time          `json:"resolvedDate,omitempty"`
 	Url                *string                    `json:"url,omitempty"`
 	BaseBlob           *GitBlobRef                `json:"baseBlob,omitempty"`
 	Resolution         *GitResolutionPathConflict `json:"resolution,omitempty"`
@@ -701,7 +701,7 @@ type GitConflictDeleteEdit struct {
 	ResolutionError   *GitResolutionError         `json:"resolutionError,omitempty"`
 	ResolutionStatus  *GitResolutionStatus        `json:"resolutionStatus,omitempty"`
 	ResolvedBy        *webapi.IdentityRef         `json:"resolvedBy,omitempty"`
-	ResolvedDate      *time.Time                  `json:"resolvedDate,omitempty"`
+	ResolvedDate      *azuredevops.Time           `json:"resolvedDate,omitempty"`
 	Url               *string                     `json:"url,omitempty"`
 	BaseBlob          *GitBlobRef                 `json:"baseBlob,omitempty"`
 	Resolution        *GitResolutionPickOneAction `json:"resolution,omitempty"`
@@ -721,7 +721,7 @@ type GitConflictDeleteRename struct {
 	ResolutionError   *GitResolutionError         `json:"resolutionError,omitempty"`
 	ResolutionStatus  *GitResolutionStatus        `json:"resolutionStatus,omitempty"`
 	ResolvedBy        *webapi.IdentityRef         `json:"resolvedBy,omitempty"`
-	ResolvedDate      *time.Time                  `json:"resolvedDate,omitempty"`
+	ResolvedDate      *azuredevops.Time           `json:"resolvedDate,omitempty"`
 	Url               *string                     `json:"url,omitempty"`
 	BaseBlob          *GitBlobRef                 `json:"baseBlob,omitempty"`
 	Resolution        *GitResolutionPickOneAction `json:"resolution,omitempty"`
@@ -742,7 +742,7 @@ type GitConflictDirectoryFile struct {
 	ResolutionError   *GitResolutionError        `json:"resolutionError,omitempty"`
 	ResolutionStatus  *GitResolutionStatus       `json:"resolutionStatus,omitempty"`
 	ResolvedBy        *webapi.IdentityRef        `json:"resolvedBy,omitempty"`
-	ResolvedDate      *time.Time                 `json:"resolvedDate,omitempty"`
+	ResolvedDate      *azuredevops.Time          `json:"resolvedDate,omitempty"`
 	Url               *string                    `json:"url,omitempty"`
 	Resolution        *GitResolutionPathConflict `json:"resolution,omitempty"`
 	SourceTree        *GitTreeRef                `json:"sourceTree,omitempty"`
@@ -762,7 +762,7 @@ type GitConflictEditDelete struct {
 	ResolutionError   *GitResolutionError         `json:"resolutionError,omitempty"`
 	ResolutionStatus  *GitResolutionStatus        `json:"resolutionStatus,omitempty"`
 	ResolvedBy        *webapi.IdentityRef         `json:"resolvedBy,omitempty"`
-	ResolvedDate      *time.Time                  `json:"resolvedDate,omitempty"`
+	ResolvedDate      *azuredevops.Time           `json:"resolvedDate,omitempty"`
 	Url               *string                     `json:"url,omitempty"`
 	BaseBlob          *GitBlobRef                 `json:"baseBlob,omitempty"`
 	Resolution        *GitResolutionPickOneAction `json:"resolution,omitempty"`
@@ -782,7 +782,7 @@ type GitConflictEditEdit struct {
 	ResolutionError   *GitResolutionError        `json:"resolutionError,omitempty"`
 	ResolutionStatus  *GitResolutionStatus       `json:"resolutionStatus,omitempty"`
 	ResolvedBy        *webapi.IdentityRef        `json:"resolvedBy,omitempty"`
-	ResolvedDate      *time.Time                 `json:"resolvedDate,omitempty"`
+	ResolvedDate      *azuredevops.Time          `json:"resolvedDate,omitempty"`
 	Url               *string                    `json:"url,omitempty"`
 	BaseBlob          *GitBlobRef                `json:"baseBlob,omitempty"`
 	Resolution        *GitResolutionMergeContent `json:"resolution,omitempty"`
@@ -803,7 +803,7 @@ type GitConflictFileDirectory struct {
 	ResolutionError   *GitResolutionError        `json:"resolutionError,omitempty"`
 	ResolutionStatus  *GitResolutionStatus       `json:"resolutionStatus,omitempty"`
 	ResolvedBy        *webapi.IdentityRef        `json:"resolvedBy,omitempty"`
-	ResolvedDate      *time.Time                 `json:"resolvedDate,omitempty"`
+	ResolvedDate      *azuredevops.Time          `json:"resolvedDate,omitempty"`
 	Url               *string                    `json:"url,omitempty"`
 	Resolution        *GitResolutionPathConflict `json:"resolution,omitempty"`
 	SourceBlob        *GitBlobRef                `json:"sourceBlob,omitempty"`
@@ -823,7 +823,7 @@ type GitConflictRename1to2 struct {
 	ResolutionError   *GitResolutionError      `json:"resolutionError,omitempty"`
 	ResolutionStatus  *GitResolutionStatus     `json:"resolutionStatus,omitempty"`
 	ResolvedBy        *webapi.IdentityRef      `json:"resolvedBy,omitempty"`
-	ResolvedDate      *time.Time               `json:"resolvedDate,omitempty"`
+	ResolvedDate      *azuredevops.Time        `json:"resolvedDate,omitempty"`
 	Url               *string                  `json:"url,omitempty"`
 	BaseBlob          *GitBlobRef              `json:"baseBlob,omitempty"`
 	Resolution        *GitResolutionRename1to2 `json:"resolution,omitempty"`
@@ -846,7 +846,7 @@ type GitConflictRename2to1 struct {
 	ResolutionError    *GitResolutionError        `json:"resolutionError,omitempty"`
 	ResolutionStatus   *GitResolutionStatus       `json:"resolutionStatus,omitempty"`
 	ResolvedBy         *webapi.IdentityRef        `json:"resolvedBy,omitempty"`
-	ResolvedDate       *time.Time                 `json:"resolvedDate,omitempty"`
+	ResolvedDate       *azuredevops.Time          `json:"resolvedDate,omitempty"`
 	Url                *string                    `json:"url,omitempty"`
 	Resolution         *GitResolutionPathConflict `json:"resolution,omitempty"`
 	SourceNewBlob      *GitBlobRef                `json:"sourceNewBlob,omitempty"`
@@ -870,7 +870,7 @@ type GitConflictRenameAdd struct {
 	ResolutionError    *GitResolutionError        `json:"resolutionError,omitempty"`
 	ResolutionStatus   *GitResolutionStatus       `json:"resolutionStatus,omitempty"`
 	ResolvedBy         *webapi.IdentityRef        `json:"resolvedBy,omitempty"`
-	ResolvedDate       *time.Time                 `json:"resolvedDate,omitempty"`
+	ResolvedDate       *azuredevops.Time          `json:"resolvedDate,omitempty"`
 	Url                *string                    `json:"url,omitempty"`
 	BaseBlob           *GitBlobRef                `json:"baseBlob,omitempty"`
 	Resolution         *GitResolutionPathConflict `json:"resolution,omitempty"`
@@ -892,7 +892,7 @@ type GitConflictRenameDelete struct {
 	ResolutionError   *GitResolutionError         `json:"resolutionError,omitempty"`
 	ResolutionStatus  *GitResolutionStatus        `json:"resolutionStatus,omitempty"`
 	ResolvedBy        *webapi.IdentityRef         `json:"resolvedBy,omitempty"`
-	ResolvedDate      *time.Time                  `json:"resolvedDate,omitempty"`
+	ResolvedDate      *azuredevops.Time           `json:"resolvedDate,omitempty"`
 	Url               *string                     `json:"url,omitempty"`
 	BaseBlob          *GitBlobRef                 `json:"baseBlob,omitempty"`
 	Resolution        *GitResolutionPickOneAction `json:"resolution,omitempty"`
@@ -913,7 +913,7 @@ type GitConflictRenameRename struct {
 	ResolutionError   *GitResolutionError        `json:"resolutionError,omitempty"`
 	ResolutionStatus  *GitResolutionStatus       `json:"resolutionStatus,omitempty"`
 	ResolvedBy        *webapi.IdentityRef        `json:"resolvedBy,omitempty"`
-	ResolvedDate      *time.Time                 `json:"resolvedDate,omitempty"`
+	ResolvedDate      *azuredevops.Time          `json:"resolvedDate,omitempty"`
 	Url               *string                    `json:"url,omitempty"`
 	BaseBlob          *GitBlobRef                `json:"baseBlob,omitempty"`
 	OriginalPath      *string                    `json:"originalPath,omitempty"`
@@ -1012,9 +1012,9 @@ var GitConflictUpdateStatusValues = gitConflictUpdateStatusValuesType{
 }
 
 type GitDeletedRepository struct {
-	CreatedDate *time.Time                 `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time          `json:"createdDate,omitempty"`
 	DeletedBy   *webapi.IdentityRef        `json:"deletedBy,omitempty"`
-	DeletedDate *time.Time                 `json:"deletedDate,omitempty"`
+	DeletedDate *azuredevops.Time          `json:"deletedDate,omitempty"`
 	Id          *uuid.UUID                 `json:"id,omitempty"`
 	Name        *string                    `json:"name,omitempty"`
 	Project     *core.TeamProjectReference `json:"project,omitempty"`
@@ -1222,7 +1222,7 @@ type GitLastChangeTreeItems struct {
 	// The last change of items.
 	Items *[]GitLastChangeItem `json:"items,omitempty"`
 	// The last explored time, in case the result is not comprehensive. Null otherwise.
-	LastExploredTime *time.Time `json:"lastExploredTime,omitempty"`
+	LastExploredTime *azuredevops.Time `json:"lastExploredTime,omitempty"`
 }
 
 type GitMerge struct {
@@ -1339,7 +1339,7 @@ type GitPullRequest struct {
 	// The user who closed the pull request.
 	ClosedBy *webapi.IdentityRef `json:"closedBy,omitempty"`
 	// The date when the pull request was closed (completed, abandoned, or merged externally).
-	ClosedDate *time.Time `json:"closedDate,omitempty"`
+	ClosedDate *azuredevops.Time `json:"closedDate,omitempty"`
 	// The code review ID of the pull request. Used internally.
 	CodeReviewId *int `json:"codeReviewId,omitempty"`
 	// The commits contained in the pull request.
@@ -1347,11 +1347,11 @@ type GitPullRequest struct {
 	// Options which affect how the pull request will be merged when it is completed.
 	CompletionOptions *GitPullRequestCompletionOptions `json:"completionOptions,omitempty"`
 	// The most recent date at which the pull request entered the queue to be completed. Used internally.
-	CompletionQueueTime *time.Time `json:"completionQueueTime,omitempty"`
+	CompletionQueueTime *azuredevops.Time `json:"completionQueueTime,omitempty"`
 	// The identity of the user who created the pull request.
 	CreatedBy *webapi.IdentityRef `json:"createdBy,omitempty"`
 	// The date when the pull request was created.
-	CreationDate *time.Time `json:"creationDate,omitempty"`
+	CreationDate *azuredevops.Time `json:"creationDate,omitempty"`
 	// The description of the pull request.
 	Description *string `json:"description,omitempty"`
 	// If this is a PR from a fork this will contain information about its source.
@@ -1419,11 +1419,11 @@ type GitPullRequestCommentThread struct {
 	// Specify if the thread is deleted which happens when all comments are deleted.
 	IsDeleted *bool `json:"isDeleted,omitempty"`
 	// The time this thread was last updated.
-	LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
+	LastUpdatedDate *azuredevops.Time `json:"lastUpdatedDate,omitempty"`
 	// Optional properties associated with the thread as a collection of key-value pairs.
 	Properties interface{} `json:"properties,omitempty"`
 	// The time this thread was published.
-	PublishedDate *time.Time `json:"publishedDate,omitempty"`
+	PublishedDate *azuredevops.Time `json:"publishedDate,omitempty"`
 	// The status of the comment thread.
 	Status *CommentThreadStatus `json:"status,omitempty"`
 	// Specify thread context such as position in left/right file.
@@ -1475,7 +1475,7 @@ type GitPullRequestIteration struct {
 	// The first common Git commit of the source and target refs.
 	CommonRefCommit *GitCommitRef `json:"commonRefCommit,omitempty"`
 	// The creation date of the pull request iteration.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// Description of the pull request iteration.
 	Description *string `json:"description,omitempty"`
 	// Indicates if the Commits property contains a truncated list of commits in this pull request iteration.
@@ -1495,7 +1495,7 @@ type GitPullRequestIteration struct {
 	// The target Git commit of this iteration.
 	TargetRefCommit *GitCommitRef `json:"targetRefCommit,omitempty"`
 	// The updated date of the pull request iteration.
-	UpdatedDate *time.Time `json:"updatedDate,omitempty"`
+	UpdatedDate *azuredevops.Time `json:"updatedDate,omitempty"`
 }
 
 // Collection of changes made in a pull request.
@@ -1619,7 +1619,7 @@ type GitPullRequestStatus struct {
 	// Identity that created the status.
 	CreatedBy *webapi.IdentityRef `json:"createdBy,omitempty"`
 	// Creation date and time of the status.
-	CreationDate *time.Time `json:"creationDate,omitempty"`
+	CreationDate *azuredevops.Time `json:"creationDate,omitempty"`
 	// Status description. Typically describes current state of the status.
 	Description *string `json:"description,omitempty"`
 	// Status identifier.
@@ -1629,7 +1629,7 @@ type GitPullRequestStatus struct {
 	// URL with status details.
 	TargetUrl *string `json:"targetUrl,omitempty"`
 	// Last update date and time of the status.
-	UpdatedDate *time.Time `json:"updatedDate,omitempty"`
+	UpdatedDate *azuredevops.Time `json:"updatedDate,omitempty"`
 	// ID of the iteration to associate status with. Minimum value is 1.
 	IterationId *int `json:"iterationId,omitempty"`
 	// Custom properties of the status.
@@ -1638,7 +1638,7 @@ type GitPullRequestStatus struct {
 
 type GitPush struct {
 	Links             interface{}         `json:"_links,omitempty"`
-	Date              *time.Time          `json:"date,omitempty"`
+	Date              *azuredevops.Time   `json:"date,omitempty"`
 	PushCorrelationId *uuid.UUID          `json:"pushCorrelationId,omitempty"`
 	PushedBy          *webapi.IdentityRef `json:"pushedBy,omitempty"`
 	PushId            *int                `json:"pushId,omitempty"`
@@ -1657,8 +1657,8 @@ type GitPushEventData struct {
 }
 
 type GitPushRef struct {
-	Links interface{} `json:"_links,omitempty"`
-	Date  *time.Time  `json:"date,omitempty"`
+	Links interface{}       `json:"_links,omitempty"`
+	Date  *azuredevops.Time `json:"date,omitempty"`
 	// Deprecated: This is unused as of Dev15 M115 and may be deleted in the future
 	PushCorrelationId *uuid.UUID          `json:"pushCorrelationId,omitempty"`
 	PushedBy          *webapi.IdentityRef `json:"pushedBy,omitempty"`
@@ -1667,13 +1667,13 @@ type GitPushRef struct {
 }
 
 type GitPushSearchCriteria struct {
-	FromDate *time.Time `json:"fromDate,omitempty"`
+	FromDate *azuredevops.Time `json:"fromDate,omitempty"`
 	// Whether to include the _links field on the shallow references
-	IncludeLinks      *bool      `json:"includeLinks,omitempty"`
-	IncludeRefUpdates *bool      `json:"includeRefUpdates,omitempty"`
-	PusherId          *uuid.UUID `json:"pusherId,omitempty"`
-	RefName           *string    `json:"refName,omitempty"`
-	ToDate            *time.Time `json:"toDate,omitempty"`
+	IncludeLinks      *bool             `json:"includeLinks,omitempty"`
+	IncludeRefUpdates *bool             `json:"includeRefUpdates,omitempty"`
+	PusherId          *uuid.UUID        `json:"pusherId,omitempty"`
+	RefName           *string           `json:"refName,omitempty"`
+	ToDate            *azuredevops.Time `json:"toDate,omitempty"`
 }
 
 type GitQueryBranchStatsCriteria struct {
@@ -2081,7 +2081,7 @@ type GitStatus struct {
 	// Identity that created the status.
 	CreatedBy *webapi.IdentityRef `json:"createdBy,omitempty"`
 	// Creation date and time of the status.
-	CreationDate *time.Time `json:"creationDate,omitempty"`
+	CreationDate *azuredevops.Time `json:"creationDate,omitempty"`
 	// Status description. Typically describes current state of the status.
 	Description *string `json:"description,omitempty"`
 	// Status identifier.
@@ -2091,7 +2091,7 @@ type GitStatus struct {
 	// URL with status details.
 	TargetUrl *string `json:"targetUrl,omitempty"`
 	// Last update date and time of the status.
-	UpdatedDate *time.Time `json:"updatedDate,omitempty"`
+	UpdatedDate *azuredevops.Time `json:"updatedDate,omitempty"`
 }
 
 // Status context that uniquely identifies the status.
@@ -2219,7 +2219,7 @@ type GitTreeRef struct {
 // User info and date for Git operations.
 type GitUserDate struct {
 	// Date of the Git operation.
-	Date *time.Time `json:"date,omitempty"`
+	Date *azuredevops.Time `json:"date,omitempty"`
 	// Email address of the user performing the Git operation.
 	Email *string `json:"email,omitempty"`
 	// Url for the user's avatar.
@@ -2312,10 +2312,10 @@ type ImportRepositoryValidation struct {
 }
 
 type IncludedGitCommit struct {
-	CommitId        *string    `json:"commitId,omitempty"`
-	CommitTime      *time.Time `json:"commitTime,omitempty"`
-	ParentCommitIds *[]string  `json:"parentCommitIds,omitempty"`
-	RepositoryId    *uuid.UUID `json:"repositoryId,omitempty"`
+	CommitId        *string           `json:"commitId,omitempty"`
+	CommitTime      *azuredevops.Time `json:"commitTime,omitempty"`
+	ParentCommitIds *[]string         `json:"parentCommitIds,omitempty"`
+	RepositoryId    *uuid.UUID        `json:"repositoryId,omitempty"`
 }
 
 // Real time event (SignalR) for IsDraft update on a pull request
@@ -2680,7 +2680,7 @@ type TfvcBranch struct {
 	// A collection of REST reference links.
 	Links interface{} `json:"_links,omitempty"`
 	// Creation date of the branch.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// Description of the branch.
 	Description *string `json:"description,omitempty"`
 	// Is the branch deleted?
@@ -2714,7 +2714,7 @@ type TfvcBranchRef struct {
 	// A collection of REST reference links.
 	Links interface{} `json:"_links,omitempty"`
 	// Creation date of the branch.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// Description of the branch.
 	Description *string `json:"description,omitempty"`
 	// Is the branch deleted?
@@ -2746,7 +2746,7 @@ type TfvcChangeset struct {
 	// Was the Comment result truncated?
 	CommentTruncated *bool `json:"commentTruncated,omitempty"`
 	// Creation date of the changeset.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// URL to retrieve the item.
 	Url *string `json:"url,omitempty"`
 	// Account Id of the changeset.
@@ -2781,7 +2781,7 @@ type TfvcChangesetRef struct {
 	// Was the Comment result truncated?
 	CommentTruncated *bool `json:"commentTruncated,omitempty"`
 	// Creation date of the changeset.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// URL to retrieve the item.
 	Url *string `json:"url,omitempty"`
 }
@@ -2836,7 +2836,7 @@ type TfvcItem struct {
 	IsSymLink       *bool                `json:"isSymLink,omitempty"`
 	Path            *string              `json:"path,omitempty"`
 	Url             *string              `json:"url,omitempty"`
-	ChangeDate      *time.Time           `json:"changeDate,omitempty"`
+	ChangeDate      *azuredevops.Time    `json:"changeDate,omitempty"`
 	DeletionId      *int                 `json:"deletionId,omitempty"`
 	// File encoding from database, -1 represents binary.
 	Encoding *int `json:"encoding,omitempty"`
@@ -2866,7 +2866,7 @@ type TfvcItemPreviousHash struct {
 	IsSymLink       *bool                `json:"isSymLink,omitempty"`
 	Path            *string              `json:"path,omitempty"`
 	Url             *string              `json:"url,omitempty"`
-	ChangeDate      *time.Time           `json:"changeDate,omitempty"`
+	ChangeDate      *azuredevops.Time    `json:"changeDate,omitempty"`
 	DeletionId      *int                 `json:"deletionId,omitempty"`
 	// File encoding from database, -1 represents binary.
 	Encoding *int `json:"encoding,omitempty"`
@@ -2894,7 +2894,7 @@ type TfvcLabel struct {
 	Description  *string             `json:"description,omitempty"`
 	Id           *int                `json:"id,omitempty"`
 	LabelScope   *string             `json:"labelScope,omitempty"`
-	ModifiedDate *time.Time          `json:"modifiedDate,omitempty"`
+	ModifiedDate *azuredevops.Time   `json:"modifiedDate,omitempty"`
 	Name         *string             `json:"name,omitempty"`
 	Owner        *webapi.IdentityRef `json:"owner,omitempty"`
 	Url          *string             `json:"url,omitempty"`
@@ -2906,7 +2906,7 @@ type TfvcLabelRef struct {
 	Description  *string             `json:"description,omitempty"`
 	Id           *int                `json:"id,omitempty"`
 	LabelScope   *string             `json:"labelScope,omitempty"`
-	ModifiedDate *time.Time          `json:"modifiedDate,omitempty"`
+	ModifiedDate *azuredevops.Time   `json:"modifiedDate,omitempty"`
 	Name         *string             `json:"name,omitempty"`
 	Owner        *webapi.IdentityRef `json:"owner,omitempty"`
 	Url          *string             `json:"url,omitempty"`
@@ -2958,7 +2958,7 @@ type TfvcShelveset struct {
 	Links            interface{}             `json:"_links,omitempty"`
 	Comment          *string                 `json:"comment,omitempty"`
 	CommentTruncated *bool                   `json:"commentTruncated,omitempty"`
-	CreatedDate      *time.Time              `json:"createdDate,omitempty"`
+	CreatedDate      *azuredevops.Time       `json:"createdDate,omitempty"`
 	Id               *string                 `json:"id,omitempty"`
 	Name             *string                 `json:"name,omitempty"`
 	Owner            *webapi.IdentityRef     `json:"owner,omitempty"`
@@ -2974,7 +2974,7 @@ type TfvcShelvesetRef struct {
 	Links            interface{}         `json:"_links,omitempty"`
 	Comment          *string             `json:"comment,omitempty"`
 	CommentTruncated *bool               `json:"commentTruncated,omitempty"`
-	CreatedDate      *time.Time          `json:"createdDate,omitempty"`
+	CreatedDate      *azuredevops.Time   `json:"createdDate,omitempty"`
 	Id               *string             `json:"id,omitempty"`
 	Name             *string             `json:"name,omitempty"`
 	Owner            *webapi.IdentityRef `json:"owner,omitempty"`

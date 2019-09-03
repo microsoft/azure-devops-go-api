@@ -10,9 +10,9 @@ package work
 
 import (
 	"github.com/google/uuid"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/workitemtracking"
-	"time"
 )
 
 type Activity struct {
@@ -318,9 +318,9 @@ type CreatePlan struct {
 
 type DateRange struct {
 	// End of the date range.
-	End *time.Time `json:"end,omitempty"`
+	End *azuredevops.Time `json:"end,omitempty"`
 	// Start of the date range.
-	Start *time.Time `json:"start,omitempty"`
+	Start *azuredevops.Time `json:"start,omitempty"`
 }
 
 // Data contract for Data of Delivery View
@@ -332,11 +332,11 @@ type DeliveryViewData struct {
 	// Filter criteria status of the timeline
 	CriteriaStatus *TimelineCriteriaStatus `json:"criteriaStatus,omitempty"`
 	// The end date of the delivery view data
-	EndDate *time.Time `json:"endDate,omitempty"`
+	EndDate *azuredevops.Time `json:"endDate,omitempty"`
 	// Max number of teams can be configured for a delivery plan.
 	MaxExpandedTeams *int `json:"maxExpandedTeams,omitempty"`
 	// The start date for the delivery view data
-	StartDate *time.Time `json:"startDate,omitempty"`
+	StartDate *azuredevops.Time `json:"startDate,omitempty"`
 	// All the team data
 	Teams *[]TimelineTeamData `json:"teams,omitempty"`
 }
@@ -445,7 +445,7 @@ type Marker struct {
 	// Color associated with the marker.
 	Color *string `json:"color,omitempty"`
 	// Where the marker should be displayed on the timeline.
-	Date *time.Time `json:"date,omitempty"`
+	Date *azuredevops.Time `json:"date,omitempty"`
 	// Label/title for the marker.
 	Label *string `json:"label,omitempty"`
 }
@@ -469,7 +469,7 @@ type Plan struct {
 	// Identity that created this plan. Defaults to null for records before upgrading to ScaledAgileViewComponent4.
 	CreatedByIdentity *webapi.IdentityRef `json:"createdByIdentity,omitempty"`
 	// Date when the plan was created
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// Description of the plan
 	Description *string `json:"description,omitempty"`
 	// Id of the plan
@@ -477,7 +477,7 @@ type Plan struct {
 	// Identity that last modified this plan. Defaults to null for records before upgrading to ScaledAgileViewComponent4.
 	ModifiedByIdentity *webapi.IdentityRef `json:"modifiedByIdentity,omitempty"`
 	// Date when the plan was last modified. Default to CreatedDate when the plan is first created.
-	ModifiedDate *time.Time `json:"modifiedDate,omitempty"`
+	ModifiedDate *azuredevops.Time `json:"modifiedDate,omitempty"`
 	// Name of the plan
 	Name *string `json:"name,omitempty"`
 	// The PlanPropertyCollection instance associated with the plan. These are dependent on the type of the plan. For example, DeliveryTimelineView, it would be of type DeliveryViewPropertyCollection.
@@ -499,7 +499,7 @@ type PlanMetadata struct {
 	// Description of plan
 	Description *string `json:"description,omitempty"`
 	// Last modified date of the plan
-	ModifiedDate *time.Time `json:"modifiedDate,omitempty"`
+	ModifiedDate *azuredevops.Time `json:"modifiedDate,omitempty"`
 	// Bit flag indicating set of permissions a user has to the plan.
 	UserPermissions *PlanUserPermissions `json:"userPermissions,omitempty"`
 }
@@ -643,9 +643,9 @@ type TeamFieldValuesPatch struct {
 
 type TeamIterationAttributes struct {
 	// Finish date of the iteration. Date-only, correct unadjusted at midnight in UTC.
-	FinishDate *time.Time `json:"finishDate,omitempty"`
+	FinishDate *azuredevops.Time `json:"finishDate,omitempty"`
 	// Start date of the iteration. Date-only, correct unadjusted at midnight in UTC.
-	StartDate *time.Time `json:"startDate,omitempty"`
+	StartDate *azuredevops.Time `json:"startDate,omitempty"`
 	// Time frame of the iteration, such as past, current or future.
 	TimeFrame *TimeFrame `json:"timeFrame,omitempty"`
 }
@@ -834,7 +834,7 @@ type TimelineTeamIteration struct {
 	// The iteration CSS Node Id
 	CssNodeId *string `json:"cssNodeId,omitempty"`
 	// The end date of the iteration
-	FinishDate *time.Time `json:"finishDate,omitempty"`
+	FinishDate *azuredevops.Time `json:"finishDate,omitempty"`
 	// The iteration name
 	Name *string `json:"name,omitempty"`
 	// All the partially paged workitems in this iteration.
@@ -842,7 +842,7 @@ type TimelineTeamIteration struct {
 	// The iteration path
 	Path *string `json:"path,omitempty"`
 	// The start date of the iteration
-	StartDate *time.Time `json:"startDate,omitempty"`
+	StartDate *azuredevops.Time `json:"startDate,omitempty"`
 	// The status of this iteration
 	Status *TimelineIterationStatus `json:"status,omitempty"`
 	// The work items that have been paged in this iteration

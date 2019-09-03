@@ -13,7 +13,6 @@ import (
 	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/forminput"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 type AadLoginPromptOption string
@@ -58,7 +57,7 @@ type AgentChangeEvent struct {
 	// Deprecated:
 	PoolId *int `json:"poolId,omitempty"`
 	// Deprecated:
-	TimeStamp *time.Time `json:"timeStamp,omitempty"`
+	TimeStamp *azuredevops.Time `json:"timeStamp,omitempty"`
 }
 
 type AgentJobRequestMessage struct {
@@ -69,7 +68,7 @@ type AgentJobRequestMessage struct {
 	MessageType *string                         `json:"messageType,omitempty"`
 	Plan        *TaskOrchestrationPlanReference `json:"plan,omitempty"`
 	Timeline    *TimelineReference              `json:"timeline,omitempty"`
-	LockedUntil *time.Time                      `json:"lockedUntil,omitempty"`
+	LockedUntil *azuredevops.Time               `json:"lockedUntil,omitempty"`
 	LockToken   *uuid.UUID                      `json:"lockToken,omitempty"`
 	RequestId   *uint64                         `json:"requestId,omitempty"`
 	Tasks       *[]TaskInstance                 `json:"tasks,omitempty"`
@@ -136,17 +135,17 @@ type AzureKeyVaultPermission struct {
 }
 
 type AzureKeyVaultVariableGroupProviderData struct {
-	LastRefreshedOn   *time.Time `json:"lastRefreshedOn,omitempty"`
-	ServiceEndpointId *uuid.UUID `json:"serviceEndpointId,omitempty"`
-	Vault             *string    `json:"vault,omitempty"`
+	LastRefreshedOn   *azuredevops.Time `json:"lastRefreshedOn,omitempty"`
+	ServiceEndpointId *uuid.UUID        `json:"serviceEndpointId,omitempty"`
+	Vault             *string           `json:"vault,omitempty"`
 }
 
 type AzureKeyVaultVariableValue struct {
-	IsSecret    *bool      `json:"isSecret,omitempty"`
-	Value       *string    `json:"value,omitempty"`
-	ContentType *string    `json:"contentType,omitempty"`
-	Enabled     *bool      `json:"enabled,omitempty"`
-	Expires     *time.Time `json:"expires,omitempty"`
+	IsSecret    *bool             `json:"isSecret,omitempty"`
+	Value       *string           `json:"value,omitempty"`
+	ContentType *string           `json:"contentType,omitempty"`
+	Enabled     *bool             `json:"enabled,omitempty"`
+	Expires     *azuredevops.Time `json:"expires,omitempty"`
 }
 
 // Azure Management Group
@@ -549,7 +548,7 @@ type EnvironmentDeploymentExecutionRecord struct {
 	// Id of the Environment
 	EnvironmentId *int `json:"environmentId,omitempty"`
 	// Finish time of the environment deployment execution
-	FinishTime *time.Time `json:"finishTime,omitempty"`
+	FinishTime *azuredevops.Time `json:"finishTime,omitempty"`
 	// Id of the Environment deployment execution history record
 	Id *uint64 `json:"id,omitempty"`
 	// Job Attempt
@@ -563,7 +562,7 @@ type EnvironmentDeploymentExecutionRecord struct {
 	// Plan type of the environment deployment execution record
 	PlanType *string `json:"planType,omitempty"`
 	// Queue time of the environment deployment execution
-	QueueTime *time.Time `json:"queueTime,omitempty"`
+	QueueTime *azuredevops.Time `json:"queueTime,omitempty"`
 	// Request identifier of the Environment deployment execution history record
 	RequestIdentifier *string `json:"requestIdentifier,omitempty"`
 	// Resource Id
@@ -579,7 +578,7 @@ type EnvironmentDeploymentExecutionRecord struct {
 	// Stage name
 	StageName *string `json:"stageName,omitempty"`
 	// Start time of the environment deployment execution
-	StartTime *time.Time `json:"startTime,omitempty"`
+	StartTime *azuredevops.Time `json:"startTime,omitempty"`
 }
 
 // [Flags] Properties to be included or expanded in environment objects. This is useful when getting a single environment.
@@ -602,7 +601,7 @@ type EnvironmentInstance struct {
 	// Identity reference of the user who created the Environment.
 	CreatedBy *webapi.IdentityRef `json:"createdBy,omitempty"`
 	// Creation time of the Environment
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// Description of the Environment.
 	Description *string `json:"description,omitempty"`
 	// Id of the Environment
@@ -610,7 +609,7 @@ type EnvironmentInstance struct {
 	// Identity reference of the user who last modified the Environment.
 	LastModifiedBy *webapi.IdentityRef `json:"lastModifiedBy,omitempty"`
 	// Last modified time of the Environment
-	LastModifiedOn *time.Time `json:"lastModifiedOn,omitempty"`
+	LastModifiedOn *azuredevops.Time `json:"lastModifiedOn,omitempty"`
 	// Name of the Environment.
 	Name      *string                         `json:"name,omitempty"`
 	Resources *[]EnvironmentResourceReference `json:"resources,omitempty"`
@@ -631,11 +630,11 @@ type EnvironmentReference struct {
 
 type EnvironmentResource struct {
 	CreatedBy            *webapi.IdentityRef   `json:"createdBy,omitempty"`
-	CreatedOn            *time.Time            `json:"createdOn,omitempty"`
+	CreatedOn            *azuredevops.Time     `json:"createdOn,omitempty"`
 	EnvironmentReference *EnvironmentReference `json:"environmentReference,omitempty"`
 	Id                   *int                  `json:"id,omitempty"`
 	LastModifiedBy       *webapi.IdentityRef   `json:"lastModifiedBy,omitempty"`
-	LastModifiedOn       *time.Time            `json:"lastModifiedOn,omitempty"`
+	LastModifiedOn       *azuredevops.Time     `json:"lastModifiedOn,omitempty"`
 	Name                 *string               `json:"name,omitempty"`
 	// Environment resource type
 	Type *EnvironmentResourceType `json:"type,omitempty"`
@@ -807,11 +806,11 @@ type JobStartedEvent struct {
 
 type KubernetesResource struct {
 	CreatedBy            *webapi.IdentityRef   `json:"createdBy,omitempty"`
-	CreatedOn            *time.Time            `json:"createdOn,omitempty"`
+	CreatedOn            *azuredevops.Time     `json:"createdOn,omitempty"`
 	EnvironmentReference *EnvironmentReference `json:"environmentReference,omitempty"`
 	Id                   *int                  `json:"id,omitempty"`
 	LastModifiedBy       *webapi.IdentityRef   `json:"lastModifiedBy,omitempty"`
-	LastModifiedOn       *time.Time            `json:"lastModifiedOn,omitempty"`
+	LastModifiedOn       *azuredevops.Time     `json:"lastModifiedOn,omitempty"`
 	Name                 *string               `json:"name,omitempty"`
 	// Environment resource type
 	Type              *EnvironmentResourceType `json:"type,omitempty"`
@@ -896,7 +895,7 @@ type MetricsRow struct {
 // Represents a downloadable package.
 type PackageMetadata struct {
 	// The date the package was created
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// A direct link to download the package.
 	DownloadUrl *string `json:"downloadUrl,omitempty"`
 	// The UI uses this to display instructions, i.e. "unzip MyAgent.zip"
@@ -1030,10 +1029,10 @@ type ResultTransformationDetails struct {
 
 type SecureFile struct {
 	CreatedBy  *webapi.IdentityRef `json:"createdBy,omitempty"`
-	CreatedOn  *time.Time          `json:"createdOn,omitempty"`
+	CreatedOn  *azuredevops.Time   `json:"createdOn,omitempty"`
 	Id         *uuid.UUID          `json:"id,omitempty"`
 	ModifiedBy *webapi.IdentityRef `json:"modifiedBy,omitempty"`
-	ModifiedOn *time.Time          `json:"modifiedOn,omitempty"`
+	ModifiedOn *azuredevops.Time   `json:"modifiedOn,omitempty"`
 	Name       *string             `json:"name,omitempty"`
 	Properties *map[string]string  `json:"properties,omitempty"`
 	Ticket     *string             `json:"ticket,omitempty"`
@@ -1139,7 +1138,7 @@ type ServiceEndpointExecutionData struct {
 	// Gets the definition of service endpoint execution owner.
 	Definition *TaskOrchestrationOwner `json:"definition,omitempty"`
 	// Gets the finish time of service endpoint execution.
-	FinishTime *time.Time `json:"finishTime,omitempty"`
+	FinishTime *azuredevops.Time `json:"finishTime,omitempty"`
 	// Gets the Id of service endpoint execution data.
 	Id *uint64 `json:"id,omitempty"`
 	// Gets the owner of service endpoint execution data.
@@ -1149,7 +1148,7 @@ type ServiceEndpointExecutionData struct {
 	// Gets the result of service endpoint execution.
 	Result *TaskResult `json:"result,omitempty"`
 	// Gets the start time of service endpoint execution.
-	StartTime *time.Time `json:"startTime,omitempty"`
+	StartTime *azuredevops.Time `json:"startTime,omitempty"`
 }
 
 type ServiceEndpointExecutionRecord struct {
@@ -1231,7 +1230,7 @@ type TaskAgent struct {
 	// Authorization information for this agent.
 	Authorization *TaskAgentAuthorization `json:"authorization,omitempty"`
 	// Date on which this agent was created.
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// The last request which was completed by this agent.
 	LastCompletedRequest *TaskAgentJobRequest `json:"lastCompletedRequest,omitempty"`
 	// Maximum job parallelism allowed for this agent.
@@ -1240,7 +1239,7 @@ type TaskAgent struct {
 	PendingUpdate *TaskAgentUpdate `json:"pendingUpdate,omitempty"`
 	Properties    interface{}      `json:"properties,omitempty"`
 	// Date on which the last connectivity status change occurred.
-	StatusChangedOn    *time.Time         `json:"statusChangedOn,omitempty"`
+	StatusChangedOn    *azuredevops.Time  `json:"statusChangedOn,omitempty"`
 	SystemCapabilities *map[string]string `json:"systemCapabilities,omitempty"`
 	UserCapabilities   *map[string]string `json:"userCapabilities,omitempty"`
 }
@@ -1277,13 +1276,13 @@ type TaskAgentCloud struct {
 type TaskAgentCloudRequest struct {
 	Agent                *TaskAgentReference     `json:"agent,omitempty"`
 	AgentCloudId         *int                    `json:"agentCloudId,omitempty"`
-	AgentConnectedTime   *time.Time              `json:"agentConnectedTime,omitempty"`
+	AgentConnectedTime   *azuredevops.Time       `json:"agentConnectedTime,omitempty"`
 	AgentData            interface{}             `json:"agentData,omitempty"`
 	AgentSpecification   interface{}             `json:"agentSpecification,omitempty"`
 	Pool                 *TaskAgentPoolReference `json:"pool,omitempty"`
-	ProvisionedTime      *time.Time              `json:"provisionedTime,omitempty"`
-	ProvisionRequestTime *time.Time              `json:"provisionRequestTime,omitempty"`
-	ReleaseRequestTime   *time.Time              `json:"releaseRequestTime,omitempty"`
+	ProvisionedTime      *azuredevops.Time       `json:"provisionedTime,omitempty"`
+	ProvisionRequestTime *azuredevops.Time       `json:"provisionRequestTime,omitempty"`
+	ReleaseRequestTime   *azuredevops.Time       `json:"releaseRequestTime,omitempty"`
 	RequestId            *uuid.UUID              `json:"requestId,omitempty"`
 }
 
@@ -1315,7 +1314,7 @@ type TaskAgentJobRequest struct {
 	AgentDelays        *[]TaskAgentDelaySource `json:"agentDelays,omitempty"`
 	AgentSpecification interface{}             `json:"agentSpecification,omitempty"`
 	// The date/time this request was assigned.
-	AssignTime *time.Time `json:"assignTime,omitempty"`
+	AssignTime *azuredevops.Time `json:"assignTime,omitempty"`
 	// Additional data about the request.
 	Data *map[string]string `json:"data,omitempty"`
 	// The pipeline definition associated with this request
@@ -1324,7 +1323,7 @@ type TaskAgentJobRequest struct {
 	Demands          *[]interface{} `json:"demands,omitempty"`
 	ExpectedDuration interface{}    `json:"expectedDuration,omitempty"`
 	// The date/time this request was finished.
-	FinishTime *time.Time `json:"finishTime,omitempty"`
+	FinishTime *azuredevops.Time `json:"finishTime,omitempty"`
 	// The host which triggered this request.
 	HostId *uuid.UUID `json:"hostId,omitempty"`
 	// ID of the job resulting from this request.
@@ -1332,7 +1331,7 @@ type TaskAgentJobRequest struct {
 	// Name of the job resulting from this request.
 	JobName *string `json:"jobName,omitempty"`
 	// The deadline for the agent to renew the lock.
-	LockedUntil            *time.Time            `json:"lockedUntil,omitempty"`
+	LockedUntil            *azuredevops.Time     `json:"lockedUntil,omitempty"`
 	MatchedAgents          *[]TaskAgentReference `json:"matchedAgents,omitempty"`
 	MatchesAllAgentsInPool *bool                 `json:"matchesAllAgentsInPool,omitempty"`
 	OrchestrationId        *string               `json:"orchestrationId,omitempty"`
@@ -1348,9 +1347,9 @@ type TaskAgentJobRequest struct {
 	// The ID of the queue this request targets
 	QueueId *int `json:"queueId,omitempty"`
 	// The date/time this request was queued.
-	QueueTime *time.Time `json:"queueTime,omitempty"`
+	QueueTime *azuredevops.Time `json:"queueTime,omitempty"`
 	// The date/time this request was receieved by an agent.
-	ReceiveTime *time.Time `json:"receiveTime,omitempty"`
+	ReceiveTime *azuredevops.Time `json:"receiveTime,omitempty"`
 	// ID of the request.
 	RequestId *uint64 `json:"requestId,omitempty"`
 	// The agent allocated for this request.
@@ -1468,7 +1467,7 @@ type TaskAgentPool struct {
 	// Creator of the pool. The creator of the pool is automatically added into the administrators group for the pool on creation.
 	CreatedBy *webapi.IdentityRef `json:"createdBy,omitempty"`
 	// The date/time of the pool creation.
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// Owner or administrator of the pool.
 	Owner      *webapi.IdentityRef `json:"owner,omitempty"`
 	Properties interface{}         `json:"properties,omitempty"`
@@ -1513,7 +1512,7 @@ type TaskAgentPoolMaintenanceJob struct {
 	// The total error counts during the maintenance job
 	ErrorCount *int `json:"errorCount,omitempty"`
 	// Time that the maintenance job was completed
-	FinishTime *time.Time `json:"finishTime,omitempty"`
+	FinishTime *azuredevops.Time `json:"finishTime,omitempty"`
 	// Id of the maintenance job
 	JobId *int `json:"jobId,omitempty"`
 	// The log download url for the maintenance job
@@ -1523,13 +1522,13 @@ type TaskAgentPoolMaintenanceJob struct {
 	// Pool reference for the maintenance job
 	Pool *TaskAgentPoolReference `json:"pool,omitempty"`
 	// Time that the maintenance job was queued
-	QueueTime *time.Time `json:"queueTime,omitempty"`
+	QueueTime *azuredevops.Time `json:"queueTime,omitempty"`
 	// The identity that queued the maintenance job
 	RequestedBy *webapi.IdentityRef `json:"requestedBy,omitempty"`
 	// The maintenance job result
 	Result *TaskAgentPoolMaintenanceJobResult `json:"result,omitempty"`
 	// Time that the maintenance job was started
-	StartTime *time.Time `json:"startTime,omitempty"`
+	StartTime *azuredevops.Time `json:"startTime,omitempty"`
 	// Status of the maintenance job
 	Status       *TaskAgentPoolMaintenanceJobStatus        `json:"status,omitempty"`
 	TargetAgents *[]TaskAgentPoolMaintenanceJobTargetAgent `json:"targetAgents,omitempty"`
@@ -1805,7 +1804,7 @@ type TaskAgentUpdate struct {
 	// Identity which requested this update.
 	RequestedBy *webapi.IdentityRef `json:"requestedBy,omitempty"`
 	// Date on which this update was requested.
-	RequestTime *time.Time `json:"requestTime,omitempty"`
+	RequestTime *azuredevops.Time `json:"requestTime,omitempty"`
 	// Source agent version of the update.
 	SourceVersion *PackageVersion `json:"sourceVersion,omitempty"`
 	// Target agent version of the update.
@@ -1835,14 +1834,14 @@ type TaskAssignedEvent struct {
 }
 
 type TaskAttachment struct {
-	Links         interface{} `json:"_links,omitempty"`
-	CreatedOn     *time.Time  `json:"createdOn,omitempty"`
-	LastChangedBy *uuid.UUID  `json:"lastChangedBy,omitempty"`
-	LastChangedOn *time.Time  `json:"lastChangedOn,omitempty"`
-	Name          *string     `json:"name,omitempty"`
-	RecordId      *uuid.UUID  `json:"recordId,omitempty"`
-	TimelineId    *uuid.UUID  `json:"timelineId,omitempty"`
-	Type          *string     `json:"type,omitempty"`
+	Links         interface{}       `json:"_links,omitempty"`
+	CreatedOn     *azuredevops.Time `json:"createdOn,omitempty"`
+	LastChangedBy *uuid.UUID        `json:"lastChangedBy,omitempty"`
+	LastChangedOn *azuredevops.Time `json:"lastChangedOn,omitempty"`
+	Name          *string           `json:"name,omitempty"`
+	RecordId      *uuid.UUID        `json:"recordId,omitempty"`
+	TimelineId    *uuid.UUID        `json:"timelineId,omitempty"`
+	Type          *string           `json:"type,omitempty"`
 }
 
 type TaskCompletedEvent struct {
@@ -2005,13 +2004,13 @@ type TaskGroup struct {
 	// Gets or sets the identity who created.
 	CreatedBy *webapi.IdentityRef `json:"createdBy,omitempty"`
 	// Gets or sets date on which it got created.
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// Gets or sets as 'true' to indicate as deleted, 'false' otherwise.
 	Deleted *bool `json:"deleted,omitempty"`
 	// Gets or sets the identity who modified.
 	ModifiedBy *webapi.IdentityRef `json:"modifiedBy,omitempty"`
 	// Gets or sets date on which it got modified.
-	ModifiedOn *time.Time `json:"modifiedOn,omitempty"`
+	ModifiedOn *azuredevops.Time `json:"modifiedOn,omitempty"`
 	// Gets or sets the owner.
 	Owner *string `json:"owner,omitempty"`
 	// Gets or sets parent task group Id. This is used while creating a draft task group.
@@ -2087,7 +2086,7 @@ var TaskGroupQueryOrderValues = taskGroupQueryOrderValuesType{
 
 type TaskGroupRevision struct {
 	ChangedBy    *webapi.IdentityRef `json:"changedBy,omitempty"`
-	ChangedDate  *time.Time          `json:"changedDate,omitempty"`
+	ChangedDate  *azuredevops.Time   `json:"changedDate,omitempty"`
 	ChangeType   *AuditAction        `json:"changeType,omitempty"`
 	Comment      *string             `json:"comment,omitempty"`
 	FileId       *int                `json:"fileId,omitempty"`
@@ -2191,13 +2190,13 @@ type TaskInstance struct {
 }
 
 type TaskLog struct {
-	Id            *int       `json:"id,omitempty"`
-	Location      *string    `json:"location,omitempty"`
-	CreatedOn     *time.Time `json:"createdOn,omitempty"`
-	IndexLocation *string    `json:"indexLocation,omitempty"`
-	LastChangedOn *time.Time `json:"lastChangedOn,omitempty"`
-	LineCount     *uint64    `json:"lineCount,omitempty"`
-	Path          *string    `json:"path,omitempty"`
+	Id            *int              `json:"id,omitempty"`
+	Location      *string           `json:"location,omitempty"`
+	CreatedOn     *azuredevops.Time `json:"createdOn,omitempty"`
+	IndexLocation *string           `json:"indexLocation,omitempty"`
+	LastChangedOn *azuredevops.Time `json:"lastChangedOn,omitempty"`
+	LineCount     *uint64           `json:"lineCount,omitempty"`
+	Path          *string           `json:"path,omitempty"`
 }
 
 type TaskLogReference struct {
@@ -2261,14 +2260,14 @@ type TaskOrchestrationPlan struct {
 	ScopeIdentifier   *uuid.UUID                  `json:"scopeIdentifier,omitempty"`
 	Version           *int                        `json:"version,omitempty"`
 	Environment       *PlanEnvironment            `json:"environment,omitempty"`
-	FinishTime        *time.Time                  `json:"finishTime,omitempty"`
+	FinishTime        *azuredevops.Time           `json:"finishTime,omitempty"`
 	Implementation    *TaskOrchestrationContainer `json:"implementation,omitempty"`
 	InitializationLog *TaskLogReference           `json:"initializationLog,omitempty"`
 	RequestedById     *uuid.UUID                  `json:"requestedById,omitempty"`
 	RequestedForId    *uuid.UUID                  `json:"requestedForId,omitempty"`
 	Result            *TaskResult                 `json:"result,omitempty"`
 	ResultCode        *string                     `json:"resultCode,omitempty"`
-	StartTime         *time.Time                  `json:"startTime,omitempty"`
+	StartTime         *azuredevops.Time           `json:"startTime,omitempty"`
 	State             *TaskOrchestrationPlanState `json:"state,omitempty"`
 	Timeline          *TimelineReference          `json:"timeline,omitempty"`
 }
@@ -2313,14 +2312,14 @@ var TaskOrchestrationPlanStateValues = taskOrchestrationPlanStateValuesType{
 }
 
 type TaskOrchestrationQueuedPlan struct {
-	AssignTime      *time.Time              `json:"assignTime,omitempty"`
+	AssignTime      *azuredevops.Time       `json:"assignTime,omitempty"`
 	Definition      *TaskOrchestrationOwner `json:"definition,omitempty"`
 	Owner           *TaskOrchestrationOwner `json:"owner,omitempty"`
 	PlanGroup       *string                 `json:"planGroup,omitempty"`
 	PlanId          *uuid.UUID              `json:"planId,omitempty"`
 	PoolId          *int                    `json:"poolId,omitempty"`
 	QueuePosition   *int                    `json:"queuePosition,omitempty"`
-	QueueTime       *time.Time              `json:"queueTime,omitempty"`
+	QueueTime       *azuredevops.Time       `json:"queueTime,omitempty"`
 	ScopeIdentifier *uuid.UUID              `json:"scopeIdentifier,omitempty"`
 }
 
@@ -2395,7 +2394,7 @@ type Timeline struct {
 	Id            *uuid.UUID        `json:"id,omitempty"`
 	Location      *string           `json:"location,omitempty"`
 	LastChangedBy *uuid.UUID        `json:"lastChangedBy,omitempty"`
-	LastChangedOn *time.Time        `json:"lastChangedOn,omitempty"`
+	LastChangedOn *azuredevops.Time `json:"lastChangedOn,omitempty"`
 	Records       *[]TimelineRecord `json:"records,omitempty"`
 }
 
@@ -2416,11 +2415,11 @@ type TimelineRecord struct {
 	CurrentOperation *string                   `json:"currentOperation,omitempty"`
 	Details          *TimelineReference        `json:"details,omitempty"`
 	ErrorCount       *int                      `json:"errorCount,omitempty"`
-	FinishTime       *time.Time                `json:"finishTime,omitempty"`
+	FinishTime       *azuredevops.Time         `json:"finishTime,omitempty"`
 	Id               *uuid.UUID                `json:"id,omitempty"`
 	Identifier       *string                   `json:"identifier,omitempty"`
 	Issues           *[]Issue                  `json:"issues,omitempty"`
-	LastModified     *time.Time                `json:"lastModified,omitempty"`
+	LastModified     *azuredevops.Time         `json:"lastModified,omitempty"`
 	Location         *string                   `json:"location,omitempty"`
 	Log              *TaskLogReference         `json:"log,omitempty"`
 	Name             *string                   `json:"name,omitempty"`
@@ -2431,7 +2430,7 @@ type TimelineRecord struct {
 	RefName          *string                   `json:"refName,omitempty"`
 	Result           *TaskResult               `json:"result,omitempty"`
 	ResultCode       *string                   `json:"resultCode,omitempty"`
-	StartTime        *time.Time                `json:"startTime,omitempty"`
+	StartTime        *azuredevops.Time         `json:"startTime,omitempty"`
 	State            *TimelineRecordState      `json:"state,omitempty"`
 	Task             *TaskReference            `json:"task,omitempty"`
 	Type             *string                   `json:"type,omitempty"`
@@ -2482,7 +2481,7 @@ type VariableGroup struct {
 	// Gets or sets the identity who created the variable group.
 	CreatedBy *webapi.IdentityRef `json:"createdBy,omitempty"`
 	// Gets or sets the time when variable group was created.
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// Gets or sets description of the variable group.
 	Description *string `json:"description,omitempty"`
 	// Gets or sets id of the variable group.
@@ -2492,7 +2491,7 @@ type VariableGroup struct {
 	// Gets or sets the identity who modified the variable group.
 	ModifiedBy *webapi.IdentityRef `json:"modifiedBy,omitempty"`
 	// Gets or sets the time when variable group was modified
-	ModifiedOn *time.Time `json:"modifiedOn,omitempty"`
+	ModifiedOn *azuredevops.Time `json:"modifiedOn,omitempty"`
 	// Gets or sets name of the variable group.
 	Name *string `json:"name,omitempty"`
 	// Gets or sets provider data.
@@ -2563,11 +2562,11 @@ type VirtualMachine struct {
 
 type VirtualMachineGroup struct {
 	CreatedBy            *webapi.IdentityRef   `json:"createdBy,omitempty"`
-	CreatedOn            *time.Time            `json:"createdOn,omitempty"`
+	CreatedOn            *azuredevops.Time     `json:"createdOn,omitempty"`
 	EnvironmentReference *EnvironmentReference `json:"environmentReference,omitempty"`
 	Id                   *int                  `json:"id,omitempty"`
 	LastModifiedBy       *webapi.IdentityRef   `json:"lastModifiedBy,omitempty"`
-	LastModifiedOn       *time.Time            `json:"lastModifiedOn,omitempty"`
+	LastModifiedOn       *azuredevops.Time     `json:"lastModifiedOn,omitempty"`
 	Name                 *string               `json:"name,omitempty"`
 	// Environment resource type
 	Type   *EnvironmentResourceType `json:"type,omitempty"`

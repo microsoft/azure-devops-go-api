@@ -10,10 +10,10 @@ package licensing
 
 import (
 	"github.com/google/uuid"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/accounts"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/commerce"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 // License assigned to a user
@@ -39,14 +39,14 @@ type AccountEntitlement struct {
 	// Gets or sets the id of the account to which the license belongs
 	AccountId *uuid.UUID `json:"accountId,omitempty"`
 	// Gets or sets the date the license was assigned
-	AssignmentDate *time.Time `json:"assignmentDate,omitempty"`
+	AssignmentDate *azuredevops.Time `json:"assignmentDate,omitempty"`
 	// Assignment Source
 	AssignmentSource *AssignmentSource `json:"assignmentSource,omitempty"`
 	// Gets or sets the creation date of the user in this account
-	DateCreated *time.Time `json:"dateCreated,omitempty"`
+	DateCreated *azuredevops.Time `json:"dateCreated,omitempty"`
 	// Gets or sets the date of the user last sign-in to this account
-	LastAccessedDate *time.Time `json:"lastAccessedDate,omitempty"`
-	License          *License   `json:"license,omitempty"`
+	LastAccessedDate *azuredevops.Time `json:"lastAccessedDate,omitempty"`
+	License          *License          `json:"license,omitempty"`
 	// Licensing origin
 	Origin *LicensingOrigin `json:"origin,omitempty"`
 	// The computed rights of this user in the account.
@@ -82,7 +82,7 @@ type AccountLicenseExtensionUsage struct {
 	MsdnUsedCount          *int                                  `json:"msdnUsedCount,omitempty"`
 	ProvisionedCount       *int                                  `json:"provisionedCount,omitempty"`
 	RemainingTrialDays     *int                                  `json:"remainingTrialDays,omitempty"`
-	TrialExpiryDate        *time.Time                            `json:"trialExpiryDate,omitempty"`
+	TrialExpiryDate        *azuredevops.Time                     `json:"trialExpiryDate,omitempty"`
 	UsedCount              *int                                  `json:"usedCount,omitempty"`
 }
 

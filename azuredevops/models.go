@@ -4,8 +4,10 @@
 package azuredevops
 
 import (
+	"encoding/json"
 	"github.com/google/uuid"
 	"strconv"
+	"time"
 )
 
 // ApiResourceLocation Information about the location of a REST API resource
@@ -50,6 +52,41 @@ type ResourceAreaInfo struct {
 	Id          *uuid.UUID `json:"id,omitempty"`
 	LocationUrl *string    `json:"locationUrl,omitempty"`
 	Name        *string    `json:"name,omitempty"`
+}
+
+type Time struct {
+	Time time.Time
+}
+
+func (t *Time) UnmarshalJSON(b []byte) error {
+	t2 := time.Time{}
+	err := json.Unmarshal(b, &t2)
+
+	// ignore errors for 0001-01-01T00:00:00 dates. The Azure DevOps service
+	// returns default dates in a format that is invalid for a time.Time. The
+	// correct value would have a 'z' at the end to represent utc. We are going
+	// to ignore this error, and set the value to the default time.Time value.
+	// https://github.com/microsoft/azure-devops-go-api/issues/17
+	if err != nil {
+		if parseError, ok := err.(*time.ParseError); ok && parseError.Value == "\"0001-01-01T00:00:00\"" {
+			err = nil
+		}
+	}
+
+	t.Time = t2
+	return err
+}
+
+func (t *Time) MarshalJson() ([]byte, error) {
+	return json.Marshal(t.Time)
+}
+
+func (t Time) String() string {
+	return t.Time.String()
+}
+
+func (t Time) Equal(u Time) bool {
+	return t.Time.Equal(u.Time)
 }
 
 // ServerSystemError

@@ -19,7 +19,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"time"
 )
 
 var ResourceAreaId, _ = uuid.Parse("efc2f575-36ef-48e9-b672-0c6fb4a48ac5")
@@ -612,9 +611,9 @@ type GetDeploymentsArgs struct {
 	// (optional)
 	CreatedBy *string
 	// (optional)
-	MinModifiedTime *time.Time
+	MinModifiedTime *azuredevops.Time
 	// (optional)
-	MaxModifiedTime *time.Time
+	MaxModifiedTime *azuredevops.Time
 	// (optional)
 	DeploymentStatus *DeploymentStatus
 	// (optional)
@@ -630,9 +629,9 @@ type GetDeploymentsArgs struct {
 	// (optional)
 	CreatedFor *string
 	// (optional)
-	MinStartedTime *time.Time
+	MinStartedTime *azuredevops.Time
 	// (optional)
-	MaxStartedTime *time.Time
+	MaxStartedTime *azuredevops.Time
 	// (optional)
 	SourceBranch *string
 }
@@ -1214,9 +1213,9 @@ type GetReleasesArgs struct {
 	// (optional)
 	EnvironmentStatusFilter *int
 	// (optional) Releases that were created after this time.
-	MinCreatedTime *time.Time
+	MinCreatedTime *azuredevops.Time
 	// (optional) Releases that were created before this time.
-	MaxCreatedTime *time.Time
+	MaxCreatedTime *azuredevops.Time
 	// (optional) Gets the results in the defined order of created date for releases. Default is descending.
 	QueryOrder *ReleaseQueryOrder
 	// (optional) Number of releases to get. Default is 50.

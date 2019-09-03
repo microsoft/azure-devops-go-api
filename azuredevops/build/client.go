@@ -20,7 +20,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"time"
 )
 
 var ResourceAreaId, _ = uuid.Parse("965220d5-5bb9-42cf-8d67-9b146df2a5a4")
@@ -698,9 +697,9 @@ type GetBuildsArgs struct {
 	// (optional) If specified, filters to builds that match this build number. Append * to do a prefix search.
 	BuildNumber *string
 	// (optional) If specified, filters to builds that finished/started/queued after this date based on the queryOrder specified.
-	MinTime *time.Time
+	MinTime *azuredevops.Time
 	// (optional) If specified, filters to builds that finished/started/queued before this date based on the queryOrder specified.
-	MaxTime *time.Time
+	MaxTime *azuredevops.Time
 	// (optional) If specified, filters to builds requested for the specified user.
 	RequestedFor *string
 	// (optional) If specified, filters to builds that match this reason.
@@ -1134,7 +1133,7 @@ type GetDefinitionArgs struct {
 	// (optional) The revision number to retrieve. If this is not specified, the latest version will be returned.
 	Revision *int
 	// (optional) If specified, indicates the date from which metrics should be included.
-	MinMetricsTime *time.Time
+	MinMetricsTime *azuredevops.Time
 	// (optional) A comma-delimited list of properties to include in the results.
 	PropertyFilters *[]string
 	// (optional)
@@ -1232,15 +1231,15 @@ type GetDefinitionsArgs struct {
 	// (optional) A continuation token, returned by a previous call to this method, that can be used to return the next set of definitions.
 	ContinuationToken *string
 	// (optional) If specified, indicates the date from which metrics should be included.
-	MinMetricsTime *time.Time
+	MinMetricsTime *azuredevops.Time
 	// (optional) A comma-delimited list that specifies the IDs of definitions to retrieve.
 	DefinitionIds *[]int
 	// (optional) If specified, filters to definitions under this folder.
 	Path *string
 	// (optional) If specified, filters to definitions that have builds after this date.
-	BuiltAfter *time.Time
+	BuiltAfter *azuredevops.Time
 	// (optional) If specified, filters to definitions that do not have builds after this date.
-	NotBuiltAfter *time.Time
+	NotBuiltAfter *azuredevops.Time
 	// (optional) Indicates whether the full definitions should be returned. By default, shallow representations of the definitions are returned.
 	IncludeAllProperties *bool
 	// (optional) Indicates whether to return the latest and latest completed builds for this definition.
@@ -1817,7 +1816,7 @@ type GetProjectMetricsArgs struct {
 	// (optional) The aggregation type to use (hourly, daily).
 	MetricAggregationType *string
 	// (optional) The date from which to calculate metrics.
-	MinMetricsTime *time.Time
+	MinMetricsTime *azuredevops.Time
 }
 
 // [Preview API] Gets build metrics for a definition.
@@ -1854,7 +1853,7 @@ type GetDefinitionMetricsArgs struct {
 	// (required) The ID of the definition.
 	DefinitionId *int
 	// (optional) The date from which to calculate metrics.
-	MinMetricsTime *time.Time
+	MinMetricsTime *azuredevops.Time
 }
 
 // Gets all build definition options supported by the system.

@@ -10,9 +10,9 @@ package location
 
 import (
 	"github.com/google/uuid"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/identity"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 type AccessMapping struct {
@@ -38,7 +38,7 @@ type ConnectionData struct {
 	// The instance id for this host.
 	InstanceId *uuid.UUID `json:"instanceId,omitempty"`
 	// The last user access for this instance.  Null if not requested specifically.
-	LastUserAccess *time.Time `json:"lastUserAccess,omitempty"`
+	LastUserAccess *azuredevops.Time `json:"lastUserAccess,omitempty"`
 	// Data that the location service holds.
 	LocationServiceData *LocationServiceData `json:"locationServiceData,omitempty"`
 	// The virtual directory of the host we are talking to.

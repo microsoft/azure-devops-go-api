@@ -18,7 +18,6 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
-	"time"
 )
 
 var ResourceAreaId, _ = uuid.Parse("69d21c00-f135-441b-b5ce-3626378e0819")
@@ -1143,7 +1142,7 @@ type GetExtensionEventsArgs struct {
 	// (optional) Count of events to fetch, applies to each event type.
 	Count *int
 	// (optional) Fetch events that occurred on or after this date
-	AfterDate *time.Time
+	AfterDate *azuredevops.Time
 	// (optional) Filter options. Supported values: install, uninstall, review, acquisition, sales. Default is to fetch all types of events
 	Include *string
 	// (optional) Event properties to include. Currently only 'lastContactDetails' is supported for uninstall events
@@ -2091,7 +2090,7 @@ type GetQuestionsArgs struct {
 	// (optional) Page number from which set of questions are to be retrieved.
 	Page *int
 	// (optional) If provided, results questions are returned which were posted after this date
-	AfterDate *time.Time
+	AfterDate *azuredevops.Time
 }
 
 // [Preview API] Flags a concern with an existing question for an extension.
@@ -2444,7 +2443,7 @@ type GetExtensionReportsArgs struct {
 	// (optional) Number of events to be returned
 	Count *int
 	// (optional) Use if you want to fetch events newer than the specified date
-	AfterDate *time.Time
+	AfterDate *azuredevops.Time
 }
 
 // [Preview API] Returns a list of reviews associated with an extension
@@ -2494,9 +2493,9 @@ type GetReviewsArgs struct {
 	// (optional) FilterOptions to filter out empty reviews etcetera, defaults to none
 	FilterOptions *ReviewFilterOptions
 	// (optional) Use if you want to fetch reviews older than the specified date, defaults to null
-	BeforeDate *time.Time
+	BeforeDate *azuredevops.Time
 	// (optional) Use if you want to fetch reviews newer than the specified date, defaults to null
-	AfterDate *time.Time
+	AfterDate *azuredevops.Time
 }
 
 // [Preview API] Returns a summary of the reviews
@@ -2536,9 +2535,9 @@ type GetReviewsSummaryArgs struct {
 	// (required) Name of the extension
 	ExtName *string
 	// (optional) Use if you want to fetch summary of reviews older than the specified date, defaults to null
-	BeforeDate *time.Time
+	BeforeDate *azuredevops.Time
 	// (optional) Use if you want to fetch summary of reviews newer than the specified date, defaults to null
-	AfterDate *time.Time
+	AfterDate *azuredevops.Time
 }
 
 // [Preview API] Creates a new review for an extension
@@ -2886,7 +2885,7 @@ type GetExtensionDailyStatsArgs struct {
 	// (optional)
 	Aggregate *ExtensionStatsAggregateType
 	// (optional)
-	AfterDate *time.Time
+	AfterDate *azuredevops.Time
 }
 
 // [Preview API] This route/location id only supports HTTP POST anonymously, so that the page view daily stat can be incremented from Marketplace client. Trying to call GET on this route should result in an exception. Without this explicit implementation, calling GET on this public route invokes the above GET implementation GetExtensionDailyStats.

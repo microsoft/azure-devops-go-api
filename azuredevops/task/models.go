@@ -10,7 +10,7 @@ package task
 
 import (
 	"github.com/google/uuid"
-	"time"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 )
 
 type Issue struct {
@@ -129,24 +129,24 @@ type TaskAgentJobVariable struct {
 }
 
 type TaskAttachment struct {
-	Links         interface{} `json:"_links,omitempty"`
-	CreatedOn     *time.Time  `json:"createdOn,omitempty"`
-	LastChangedBy *uuid.UUID  `json:"lastChangedBy,omitempty"`
-	LastChangedOn *time.Time  `json:"lastChangedOn,omitempty"`
-	Name          *string     `json:"name,omitempty"`
-	RecordId      *uuid.UUID  `json:"recordId,omitempty"`
-	TimelineId    *uuid.UUID  `json:"timelineId,omitempty"`
-	Type          *string     `json:"type,omitempty"`
+	Links         interface{}       `json:"_links,omitempty"`
+	CreatedOn     *azuredevops.Time `json:"createdOn,omitempty"`
+	LastChangedBy *uuid.UUID        `json:"lastChangedBy,omitempty"`
+	LastChangedOn *azuredevops.Time `json:"lastChangedOn,omitempty"`
+	Name          *string           `json:"name,omitempty"`
+	RecordId      *uuid.UUID        `json:"recordId,omitempty"`
+	TimelineId    *uuid.UUID        `json:"timelineId,omitempty"`
+	Type          *string           `json:"type,omitempty"`
 }
 
 type TaskLog struct {
-	Id            *int       `json:"id,omitempty"`
-	Location      *string    `json:"location,omitempty"`
-	CreatedOn     *time.Time `json:"createdOn,omitempty"`
-	IndexLocation *string    `json:"indexLocation,omitempty"`
-	LastChangedOn *time.Time `json:"lastChangedOn,omitempty"`
-	LineCount     *uint64    `json:"lineCount,omitempty"`
-	Path          *string    `json:"path,omitempty"`
+	Id            *int              `json:"id,omitempty"`
+	Location      *string           `json:"location,omitempty"`
+	CreatedOn     *azuredevops.Time `json:"createdOn,omitempty"`
+	IndexLocation *string           `json:"indexLocation,omitempty"`
+	LastChangedOn *azuredevops.Time `json:"lastChangedOn,omitempty"`
+	LineCount     *uint64           `json:"lineCount,omitempty"`
+	Path          *string           `json:"path,omitempty"`
 }
 
 type TaskLogReference struct {
@@ -197,14 +197,14 @@ type TaskOrchestrationPlan struct {
 	ScopeIdentifier   *uuid.UUID                  `json:"scopeIdentifier,omitempty"`
 	Version           *int                        `json:"version,omitempty"`
 	Environment       *PlanEnvironment            `json:"environment,omitempty"`
-	FinishTime        *time.Time                  `json:"finishTime,omitempty"`
+	FinishTime        *azuredevops.Time           `json:"finishTime,omitempty"`
 	Implementation    *TaskOrchestrationContainer `json:"implementation,omitempty"`
 	InitializationLog *TaskLogReference           `json:"initializationLog,omitempty"`
 	RequestedById     *uuid.UUID                  `json:"requestedById,omitempty"`
 	RequestedForId    *uuid.UUID                  `json:"requestedForId,omitempty"`
 	Result            *TaskResult                 `json:"result,omitempty"`
 	ResultCode        *string                     `json:"resultCode,omitempty"`
-	StartTime         *time.Time                  `json:"startTime,omitempty"`
+	StartTime         *azuredevops.Time           `json:"startTime,omitempty"`
 	State             *TaskOrchestrationPlanState `json:"state,omitempty"`
 	Timeline          *TimelineReference          `json:"timeline,omitempty"`
 }
@@ -243,14 +243,14 @@ var TaskOrchestrationPlanStateValues = taskOrchestrationPlanStateValuesType{
 }
 
 type TaskOrchestrationQueuedPlan struct {
-	AssignTime      *time.Time              `json:"assignTime,omitempty"`
+	AssignTime      *azuredevops.Time       `json:"assignTime,omitempty"`
 	Definition      *TaskOrchestrationOwner `json:"definition,omitempty"`
 	Owner           *TaskOrchestrationOwner `json:"owner,omitempty"`
 	PlanGroup       *string                 `json:"planGroup,omitempty"`
 	PlanId          *uuid.UUID              `json:"planId,omitempty"`
 	PoolId          *int                    `json:"poolId,omitempty"`
 	QueuePosition   *int                    `json:"queuePosition,omitempty"`
-	QueueTime       *time.Time              `json:"queueTime,omitempty"`
+	QueueTime       *azuredevops.Time       `json:"queueTime,omitempty"`
 	ScopeIdentifier *uuid.UUID              `json:"scopeIdentifier,omitempty"`
 }
 
@@ -295,7 +295,7 @@ type Timeline struct {
 	Id            *uuid.UUID        `json:"id,omitempty"`
 	Location      *string           `json:"location,omitempty"`
 	LastChangedBy *uuid.UUID        `json:"lastChangedBy,omitempty"`
-	LastChangedOn *time.Time        `json:"lastChangedOn,omitempty"`
+	LastChangedOn *azuredevops.Time `json:"lastChangedOn,omitempty"`
 	Records       *[]TimelineRecord `json:"records,omitempty"`
 }
 
@@ -316,11 +316,11 @@ type TimelineRecord struct {
 	CurrentOperation *string                   `json:"currentOperation,omitempty"`
 	Details          *TimelineReference        `json:"details,omitempty"`
 	ErrorCount       *int                      `json:"errorCount,omitempty"`
-	FinishTime       *time.Time                `json:"finishTime,omitempty"`
+	FinishTime       *azuredevops.Time         `json:"finishTime,omitempty"`
 	Id               *uuid.UUID                `json:"id,omitempty"`
 	Identifier       *string                   `json:"identifier,omitempty"`
 	Issues           *[]Issue                  `json:"issues,omitempty"`
-	LastModified     *time.Time                `json:"lastModified,omitempty"`
+	LastModified     *azuredevops.Time         `json:"lastModified,omitempty"`
 	Location         *string                   `json:"location,omitempty"`
 	Log              *TaskLogReference         `json:"log,omitempty"`
 	Name             *string                   `json:"name,omitempty"`
@@ -331,7 +331,7 @@ type TimelineRecord struct {
 	RefName          *string                   `json:"refName,omitempty"`
 	Result           *TaskResult               `json:"result,omitempty"`
 	ResultCode       *string                   `json:"resultCode,omitempty"`
-	StartTime        *time.Time                `json:"startTime,omitempty"`
+	StartTime        *azuredevops.Time         `json:"startTime,omitempty"`
 	State            *TimelineRecordState      `json:"state,omitempty"`
 	Task             *TaskReference            `json:"task,omitempty"`
 	Type             *string                   `json:"type,omitempty"`

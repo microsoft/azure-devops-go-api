@@ -10,7 +10,7 @@ package projectanalysis
 
 import (
 	"github.com/google/uuid"
-	"time"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 )
 
 type AggregationType string
@@ -35,8 +35,8 @@ type AnalyzerDescriptor struct {
 }
 
 type CodeChangeTrendItem struct {
-	Time  *time.Time `json:"time,omitempty"`
-	Value *int       `json:"value,omitempty"`
+	Time  *azuredevops.Time `json:"time,omitempty"`
+	Value *int              `json:"value,omitempty"`
 }
 
 type LanguageMetricsSecuredObject struct {
@@ -90,7 +90,7 @@ type RepositoryLanguageAnalytics struct {
 	LanguageBreakdown   *[]LanguageStatistics `json:"languageBreakdown,omitempty"`
 	Name                *string               `json:"name,omitempty"`
 	ResultPhase         *ResultPhase          `json:"resultPhase,omitempty"`
-	UpdatedTime         *time.Time            `json:"updatedTime,omitempty"`
+	UpdatedTime         *azuredevops.Time     `json:"updatedTime,omitempty"`
 }
 
 type ResultPhase string

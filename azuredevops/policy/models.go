@@ -10,8 +10,8 @@ package policy
 
 import (
 	"github.com/google/uuid"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 // The full policy configuration with settings.
@@ -29,7 +29,7 @@ type PolicyConfiguration struct {
 	// A reference to the identity that created the policy.
 	CreatedBy *webapi.IdentityRef `json:"createdBy,omitempty"`
 	// The date and time when the policy was created.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// Indicates whether the policy is blocking.
 	IsBlocking *bool `json:"isBlocking,omitempty"`
 	// Indicates whether the policy has been (soft) deleted.
@@ -57,7 +57,7 @@ type PolicyEvaluationRecord struct {
 	// A string which uniquely identifies the target of a policy evaluation.
 	ArtifactId *string `json:"artifactId,omitempty"`
 	// Time when this policy finished evaluating on this pull request.
-	CompletedDate *time.Time `json:"completedDate,omitempty"`
+	CompletedDate *azuredevops.Time `json:"completedDate,omitempty"`
 	// Contains all configuration data for the policy which is being evaluated.
 	Configuration *PolicyConfiguration `json:"configuration,omitempty"`
 	// Internal context data of this policy evaluation.
@@ -65,7 +65,7 @@ type PolicyEvaluationRecord struct {
 	// Guid which uniquely identifies this evaluation record (one policy running on one pull request).
 	EvaluationId *uuid.UUID `json:"evaluationId,omitempty"`
 	// Time when this policy was first evaluated on this pull request.
-	StartedDate *time.Time `json:"startedDate,omitempty"`
+	StartedDate *azuredevops.Time `json:"startedDate,omitempty"`
 	// Status of the policy (Running, Approved, Failed, etc.)
 	Status *PolicyEvaluationStatus `json:"status,omitempty"`
 }

@@ -10,8 +10,8 @@ package delegatedauthorization
 
 import (
 	"github.com/google/uuid"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 type AccessTokenResult struct {
@@ -22,22 +22,22 @@ type AccessTokenResult struct {
 	HasError         *bool                `json:"hasError,omitempty"`
 	RefreshToken     *RefreshTokenGrant   `json:"refreshToken,omitempty"`
 	TokenType        *string              `json:"tokenType,omitempty"`
-	ValidTo          *time.Time           `json:"validTo,omitempty"`
+	ValidTo          *azuredevops.Time    `json:"validTo,omitempty"`
 }
 
 type Authorization struct {
-	AccessIssued    *time.Time `json:"accessIssued,omitempty"`
-	Audience        *string    `json:"audience,omitempty"`
-	AuthorizationId *uuid.UUID `json:"authorizationId,omitempty"`
-	IdentityId      *uuid.UUID `json:"identityId,omitempty"`
-	IsAccessUsed    *bool      `json:"isAccessUsed,omitempty"`
-	IsValid         *bool      `json:"isValid,omitempty"`
-	RedirectUri     *string    `json:"redirectUri,omitempty"`
-	RegistrationId  *uuid.UUID `json:"registrationId,omitempty"`
-	Scopes          *string    `json:"scopes,omitempty"`
-	Source          *string    `json:"source,omitempty"`
-	ValidFrom       *time.Time `json:"validFrom,omitempty"`
-	ValidTo         *time.Time `json:"validTo,omitempty"`
+	AccessIssued    *azuredevops.Time `json:"accessIssued,omitempty"`
+	Audience        *string           `json:"audience,omitempty"`
+	AuthorizationId *uuid.UUID        `json:"authorizationId,omitempty"`
+	IdentityId      *uuid.UUID        `json:"identityId,omitempty"`
+	IsAccessUsed    *bool             `json:"isAccessUsed,omitempty"`
+	IsValid         *bool             `json:"isValid,omitempty"`
+	RedirectUri     *string           `json:"redirectUri,omitempty"`
+	RegistrationId  *uuid.UUID        `json:"registrationId,omitempty"`
+	Scopes          *string           `json:"scopes,omitempty"`
+	Source          *string           `json:"source,omitempty"`
+	ValidFrom       *azuredevops.Time `json:"validFrom,omitempty"`
+	ValidTo         *azuredevops.Time `json:"validTo,omitempty"`
 }
 
 type AuthorizationDecision struct {
@@ -216,21 +216,21 @@ type Registration struct {
 	OrganizationLocation *string     `json:"organizationLocation,omitempty"`
 	OrganizationName     *string     `json:"organizationName,omitempty"`
 	// Raw cert data string from public key. This will be used for authenticating medium trust clients.
-	PublicKey                            *string    `json:"publicKey,omitempty"`
-	RedirectUris                         *[]string  `json:"redirectUris,omitempty"`
-	RegistrationDescription              *string    `json:"registrationDescription,omitempty"`
-	RegistrationId                       *uuid.UUID `json:"registrationId,omitempty"`
-	RegistrationLocation                 *string    `json:"registrationLocation,omitempty"`
-	RegistrationLogoSecureLocation       *string    `json:"registrationLogoSecureLocation,omitempty"`
-	RegistrationName                     *string    `json:"registrationName,omitempty"`
-	RegistrationPrivacyStatementLocation *string    `json:"registrationPrivacyStatementLocation,omitempty"`
-	RegistrationTermsOfServiceLocation   *string    `json:"registrationTermsOfServiceLocation,omitempty"`
-	ResponseTypes                        *string    `json:"responseTypes,omitempty"`
-	Scopes                               *string    `json:"scopes,omitempty"`
-	Secret                               *string    `json:"secret,omitempty"`
-	SecretValidTo                        *time.Time `json:"secretValidTo,omitempty"`
-	SecretVersionId                      *uuid.UUID `json:"secretVersionId,omitempty"`
-	ValidFrom                            *time.Time `json:"validFrom,omitempty"`
+	PublicKey                            *string           `json:"publicKey,omitempty"`
+	RedirectUris                         *[]string         `json:"redirectUris,omitempty"`
+	RegistrationDescription              *string           `json:"registrationDescription,omitempty"`
+	RegistrationId                       *uuid.UUID        `json:"registrationId,omitempty"`
+	RegistrationLocation                 *string           `json:"registrationLocation,omitempty"`
+	RegistrationLogoSecureLocation       *string           `json:"registrationLogoSecureLocation,omitempty"`
+	RegistrationName                     *string           `json:"registrationName,omitempty"`
+	RegistrationPrivacyStatementLocation *string           `json:"registrationPrivacyStatementLocation,omitempty"`
+	RegistrationTermsOfServiceLocation   *string           `json:"registrationTermsOfServiceLocation,omitempty"`
+	ResponseTypes                        *string           `json:"responseTypes,omitempty"`
+	Scopes                               *string           `json:"scopes,omitempty"`
+	Secret                               *string           `json:"secret,omitempty"`
+	SecretValidTo                        *azuredevops.Time `json:"secretValidTo,omitempty"`
+	SecretVersionId                      *uuid.UUID        `json:"secretVersionId,omitempty"`
+	ValidFrom                            *azuredevops.Time `json:"validFrom,omitempty"`
 }
 
 type ResponseType string
@@ -271,10 +271,10 @@ type SessionToken struct {
 	Source              *string            `json:"source,omitempty"`
 	TargetAccounts      *[]uuid.UUID       `json:"targetAccounts,omitempty"`
 	// This is computed and not returned in Get queries
-	Token     *string    `json:"token,omitempty"`
-	UserId    *uuid.UUID `json:"userId,omitempty"`
-	ValidFrom *time.Time `json:"validFrom,omitempty"`
-	ValidTo   *time.Time `json:"validTo,omitempty"`
+	Token     *string           `json:"token,omitempty"`
+	UserId    *uuid.UUID        `json:"userId,omitempty"`
+	ValidFrom *azuredevops.Time `json:"validFrom,omitempty"`
+	ValidTo   *azuredevops.Time `json:"validTo,omitempty"`
 }
 
 type TokenError string

@@ -10,12 +10,12 @@ package build
 
 import (
 	"github.com/google/uuid"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/core"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/distributedtaskcommon"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/git"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/test"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 // Represents a queue for running builds.
@@ -136,13 +136,13 @@ type Build struct {
 	// The identity of the process or person that deleted the build.
 	DeletedBy *webapi.IdentityRef `json:"deletedBy,omitempty"`
 	// The date the build was deleted.
-	DeletedDate *time.Time `json:"deletedDate,omitempty"`
+	DeletedDate *azuredevops.Time `json:"deletedDate,omitempty"`
 	// The description of how the build was deleted.
 	DeletedReason *string `json:"deletedReason,omitempty"`
 	// A list of demands that represents the agent capabilities required by this build.
 	Demands *[]interface{} `json:"demands,omitempty"`
 	// The time that the build was completed.
-	FinishTime *time.Time `json:"finishTime,omitempty"`
+	FinishTime *azuredevops.Time `json:"finishTime,omitempty"`
 	// The ID of the build.
 	Id *int `json:"id,omitempty"`
 	// Indicates whether the build should be skipped by retention policies.
@@ -150,7 +150,7 @@ type Build struct {
 	// The identity representing the process or person that last changed the build.
 	LastChangedBy *webapi.IdentityRef `json:"lastChangedBy,omitempty"`
 	// The date the build was last changed.
-	LastChangedDate *time.Time `json:"lastChangedDate,omitempty"`
+	LastChangedDate *azuredevops.Time `json:"lastChangedDate,omitempty"`
 	// Information about the build logs.
 	Logs *BuildLogReference `json:"logs,omitempty"`
 	// The orchestration plan for the build.
@@ -173,7 +173,7 @@ type Build struct {
 	// The current position of the build in the queue.
 	QueuePosition *int `json:"queuePosition,omitempty"`
 	// The time that the build was queued.
-	QueueTime *time.Time `json:"queueTime,omitempty"`
+	QueueTime *azuredevops.Time `json:"queueTime,omitempty"`
 	// The reason that the build was created.
 	Reason *BuildReason `json:"reason,omitempty"`
 	// The repository.
@@ -191,7 +191,7 @@ type Build struct {
 	// The source version.
 	SourceVersion *string `json:"sourceVersion,omitempty"`
 	// The time that the build was started.
-	StartTime *time.Time `json:"startTime,omitempty"`
+	StartTime *azuredevops.Time `json:"startTime,omitempty"`
 	// The status of the build.
 	Status *BuildStatus `json:"status,omitempty"`
 	Tags   *[]string    `json:"tags,omitempty"`
@@ -209,7 +209,7 @@ type Build struct {
 type BuildAgent struct {
 	BuildDirectory   *string                       `json:"buildDirectory,omitempty"`
 	Controller       *XamlBuildControllerReference `json:"controller,omitempty"`
-	CreatedDate      *time.Time                    `json:"createdDate,omitempty"`
+	CreatedDate      *azuredevops.Time             `json:"createdDate,omitempty"`
 	Description      *string                       `json:"description,omitempty"`
 	Enabled          *bool                         `json:"enabled,omitempty"`
 	Id               *int                          `json:"id,omitempty"`
@@ -219,7 +219,7 @@ type BuildAgent struct {
 	Server           *XamlBuildServerReference     `json:"server,omitempty"`
 	Status           *AgentStatus                  `json:"status,omitempty"`
 	StatusMessage    *string                       `json:"statusMessage,omitempty"`
-	UpdatedDate      *time.Time                    `json:"updatedDate,omitempty"`
+	UpdatedDate      *azuredevops.Time             `json:"updatedDate,omitempty"`
 	Uri              *string                       `json:"uri,omitempty"`
 	Url              *string                       `json:"url,omitempty"`
 }
@@ -300,7 +300,7 @@ type BuildController struct {
 	Url   *string     `json:"url,omitempty"`
 	Links interface{} `json:"_links,omitempty"`
 	// The date the controller was created.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// The description of the controller.
 	Description *string `json:"description,omitempty"`
 	// Indicates whether the controller is enabled.
@@ -308,7 +308,7 @@ type BuildController struct {
 	// The status of the controller.
 	Status *ControllerStatus `json:"status,omitempty"`
 	// The date the controller was last updated.
-	UpdatedDate *time.Time `json:"updatedDate,omitempty"`
+	UpdatedDate *azuredevops.Time `json:"updatedDate,omitempty"`
 	// The controller's URI.
 	Uri *string `json:"uri,omitempty"`
 }
@@ -316,7 +316,7 @@ type BuildController struct {
 // Represents a build definition.
 type BuildDefinition struct {
 	// The date this version of the definition was created.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// The ID of the referenced definition.
 	Id *int `json:"id,omitempty"`
 	// The name of the referenced definition.
@@ -384,7 +384,7 @@ type BuildDefinition struct {
 // For back-compat with extensions that use the old Steps format instead of Process and Phases
 type BuildDefinition3_2 struct {
 	// The date this version of the definition was created.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// The ID of the referenced definition.
 	Id *int `json:"id,omitempty"`
 	// The name of the referenced definition.
@@ -450,7 +450,7 @@ type BuildDefinition3_2 struct {
 // Represents a reference to a build definition.
 type BuildDefinitionReference struct {
 	// The date this version of the definition was created.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// The ID of the referenced definition.
 	Id *int `json:"id,omitempty"`
 	// The name of the referenced definition.
@@ -488,7 +488,7 @@ type BuildDefinitionReference struct {
 // For back-compat with extensions that use the old Steps format instead of Process and Phases
 type BuildDefinitionReference3_2 struct {
 	// The date this version of the definition was created.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// The ID of the referenced definition.
 	Id *int `json:"id,omitempty"`
 	// The name of the referenced definition.
@@ -526,7 +526,7 @@ type BuildDefinitionRevision struct {
 	// The identity of the person or process that changed the definition.
 	ChangedBy *webapi.IdentityRef `json:"changedBy,omitempty"`
 	// The date and time that the definition was changed.
-	ChangedDate *time.Time `json:"changedDate,omitempty"`
+	ChangedDate *azuredevops.Time `json:"changedDate,omitempty"`
 	// The change type (add, edit, delete).
 	ChangeType *AuditAction `json:"changeType,omitempty"`
 	// The comment associated with the change.
@@ -547,7 +547,7 @@ type BuildDefinitionSourceProvider struct {
 	// Id of this source provider
 	Id *int `json:"id,omitempty"`
 	// The lst time this source provider was modified
-	LastModified *time.Time `json:"lastModified,omitempty"`
+	LastModified *azuredevops.Time `json:"lastModified,omitempty"`
 	// Name of the source provider
 	Name *string `json:"name,omitempty"`
 	// Which trigger types are supported by this definition source provider
@@ -644,9 +644,9 @@ type BuildLog struct {
 	// A full link to the log resource.
 	Url *string `json:"url,omitempty"`
 	// The date and time the log was created.
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// The date and time the log was last changed.
-	LastChangedOn *time.Time `json:"lastChangedOn,omitempty"`
+	LastChangedOn *azuredevops.Time `json:"lastChangedOn,omitempty"`
 	// The number of lines in the log.
 	LineCount *uint64 `json:"lineCount,omitempty"`
 }
@@ -664,7 +664,7 @@ type BuildLogReference struct {
 // Represents metadata about builds in the system.
 type BuildMetric struct {
 	// The date for the scope.
-	Date *time.Time `json:"date,omitempty"`
+	Date *azuredevops.Time `json:"date,omitempty"`
 	// The value.
 	IntValue *int `json:"intValue,omitempty"`
 	// The name of the metric.
@@ -881,17 +881,17 @@ type BuildReference struct {
 	// Indicates whether the build has been deleted.
 	Deleted *bool `json:"deleted,omitempty"`
 	// The time that the build was completed.
-	FinishTime *time.Time `json:"finishTime,omitempty"`
+	FinishTime *azuredevops.Time `json:"finishTime,omitempty"`
 	// The ID of the build.
 	Id *int `json:"id,omitempty"`
 	// The time that the build was queued.
-	QueueTime *time.Time `json:"queueTime,omitempty"`
+	QueueTime *azuredevops.Time `json:"queueTime,omitempty"`
 	// The identity on whose behalf the build was queued.
 	RequestedFor *webapi.IdentityRef `json:"requestedFor,omitempty"`
 	// The build result.
 	Result *BuildResult `json:"result,omitempty"`
 	// The time that the build was started.
-	StartTime *time.Time `json:"startTime,omitempty"`
+	StartTime *azuredevops.Time `json:"startTime,omitempty"`
 	// The build status.
 	Status *BuildStatus `json:"status,omitempty"`
 }
@@ -996,7 +996,7 @@ type BuildServer struct {
 	Name                      *string                       `json:"name,omitempty"`
 	RequireClientCertificates *bool                         `json:"requireClientCertificates,omitempty"`
 	Status                    *ServiceHostStatus            `json:"status,omitempty"`
-	StatusChangedDate         *time.Time                    `json:"statusChangedDate,omitempty"`
+	StatusChangedDate         *azuredevops.Time             `json:"statusChangedDate,omitempty"`
 	Uri                       *string                       `json:"uri,omitempty"`
 	Url                       *string                       `json:"url,omitempty"`
 	Version                   *int                          `json:"version,omitempty"`
@@ -1043,12 +1043,12 @@ var BuildStatusValues = buildStatusValuesType{
 
 type BuildSummary struct {
 	Build        *XamlBuildReference `json:"build,omitempty"`
-	FinishTime   *time.Time          `json:"finishTime,omitempty"`
+	FinishTime   *azuredevops.Time   `json:"finishTime,omitempty"`
 	KeepForever  *bool               `json:"keepForever,omitempty"`
 	Quality      *string             `json:"quality,omitempty"`
 	Reason       *BuildReason        `json:"reason,omitempty"`
 	RequestedFor *webapi.IdentityRef `json:"requestedFor,omitempty"`
-	StartTime    *time.Time          `json:"startTime,omitempty"`
+	StartTime    *azuredevops.Time   `json:"startTime,omitempty"`
 	Status       *BuildStatus        `json:"status,omitempty"`
 }
 
@@ -1086,7 +1086,7 @@ type Change struct {
 	// The person or process that pushed the change.
 	Pusher *string `json:"pusher,omitempty"`
 	// The timestamp for the change.
-	Timestamp *time.Time `json:"timestamp,omitempty"`
+	Timestamp *azuredevops.Time `json:"timestamp,omitempty"`
 	// The type of change. "commit", "changeset", etc.
 	Type *string `json:"type,omitempty"`
 }
@@ -1202,7 +1202,7 @@ var DefinitionQueueStatusValues = definitionQueueStatusValuesType{
 // Represents a reference to a definition.
 type DefinitionReference struct {
 	// The date this version of the definition was created.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// The ID of the referenced definition.
 	Id *int `json:"id,omitempty"`
 	// The name of the referenced definition.
@@ -1369,13 +1369,13 @@ type Folder struct {
 	// The process or person who created the folder.
 	CreatedBy *webapi.IdentityRef `json:"createdBy,omitempty"`
 	// The date the folder was created.
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// The description.
 	Description *string `json:"description,omitempty"`
 	// The process or person that last changed the folder.
 	LastChangedBy *webapi.IdentityRef `json:"lastChangedBy,omitempty"`
 	// The date the folder was last changed.
-	LastChangedDate *time.Time `json:"lastChangedDate,omitempty"`
+	LastChangedDate *azuredevops.Time `json:"lastChangedDate,omitempty"`
 	// The full path.
 	Path *string `json:"path,omitempty"`
 	// The project.
@@ -1441,7 +1441,7 @@ type InformationNode struct {
 	// Process or person that last modified this node
 	LastModifiedBy *string `json:"lastModifiedBy,omitempty"`
 	// Date this node was last modified
-	LastModifiedDate *time.Time `json:"lastModifiedDate,omitempty"`
+	LastModifiedDate *azuredevops.Time `json:"lastModifiedDate,omitempty"`
 	// Node Id of this information node
 	NodeId *int `json:"nodeId,omitempty"`
 	// Id of parent node (xml tree)
@@ -2013,7 +2013,7 @@ type Timeline struct {
 	// The process or person that last changed the timeline.
 	LastChangedBy *uuid.UUID `json:"lastChangedBy,omitempty"`
 	// The time the timeline was last changed.
-	LastChangedOn *time.Time        `json:"lastChangedOn,omitempty"`
+	LastChangedOn *azuredevops.Time `json:"lastChangedOn,omitempty"`
 	Records       *[]TimelineRecord `json:"records,omitempty"`
 }
 
@@ -2040,14 +2040,14 @@ type TimelineRecord struct {
 	// The number of errors produced by this operation.
 	ErrorCount *int `json:"errorCount,omitempty"`
 	// The finish time.
-	FinishTime *time.Time `json:"finishTime,omitempty"`
+	FinishTime *azuredevops.Time `json:"finishTime,omitempty"`
 	// The ID of the record.
 	Id *uuid.UUID `json:"id,omitempty"`
 	// String identifier that is consistent across attempts.
 	Identifier *string  `json:"identifier,omitempty"`
 	Issues     *[]Issue `json:"issues,omitempty"`
 	// The time the record was last modified.
-	LastModified *time.Time `json:"lastModified,omitempty"`
+	LastModified *azuredevops.Time `json:"lastModified,omitempty"`
 	// A reference to the log produced by this operation.
 	Log *BuildLogReference `json:"log,omitempty"`
 	// The name.
@@ -2064,7 +2064,7 @@ type TimelineRecord struct {
 	// The result code.
 	ResultCode *string `json:"resultCode,omitempty"`
 	// The start time.
-	StartTime *time.Time `json:"startTime,omitempty"`
+	StartTime *azuredevops.Time `json:"startTime,omitempty"`
 	// The state of the record.
 	State *TimelineRecordState `json:"state,omitempty"`
 	// A reference to the task represented by this timeline record.
@@ -2203,7 +2203,7 @@ type WorkspaceTemplate struct {
 	// The identity that last modified this template
 	LastModifiedBy *string `json:"lastModifiedBy,omitempty"`
 	// The last time this template was modified
-	LastModifiedDate *time.Time `json:"lastModifiedDate,omitempty"`
+	LastModifiedDate *azuredevops.Time `json:"lastModifiedDate,omitempty"`
 	// List of workspace mappings
 	Mappings *[]WorkspaceMapping `json:"mappings,omitempty"`
 	// Id of the workspace for this template
@@ -2221,7 +2221,7 @@ type XamlBuildControllerReference struct {
 
 type XamlBuildDefinition struct {
 	// The date this version of the definition was created.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// The ID of the referenced definition.
 	Id *int `json:"id,omitempty"`
 	// The name of the referenced definition.
@@ -2249,7 +2249,7 @@ type XamlBuildDefinition struct {
 	// The build controller
 	Controller *BuildController `json:"controller,omitempty"`
 	// The date this definition was created
-	CreatedOn *time.Time `json:"createdOn,omitempty"`
+	CreatedOn *azuredevops.Time `json:"createdOn,omitempty"`
 	// Default drop location for builds from this definition
 	DefaultDropLocation *string `json:"defaultDropLocation,omitempty"`
 	// Description of the definition

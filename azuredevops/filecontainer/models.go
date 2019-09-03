@@ -10,7 +10,7 @@ package filecontainer
 
 import (
 	"github.com/google/uuid"
-	"time"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 )
 
 // Status of a container item.
@@ -67,7 +67,7 @@ type FileContainer struct {
 	// Owner.
 	CreatedBy *uuid.UUID `json:"createdBy,omitempty"`
 	// Creation date.
-	DateCreated *time.Time `json:"dateCreated,omitempty"`
+	DateCreated *azuredevops.Time `json:"dateCreated,omitempty"`
 	// Description.
 	Description *string `json:"description,omitempty"`
 	// Id.
@@ -100,9 +100,9 @@ type FileContainerItem struct {
 	// Creator.
 	CreatedBy *uuid.UUID `json:"createdBy,omitempty"`
 	// Creation date.
-	DateCreated *time.Time `json:"dateCreated,omitempty"`
+	DateCreated *azuredevops.Time `json:"dateCreated,omitempty"`
 	// Last modified date.
-	DateLastModified *time.Time `json:"dateLastModified,omitempty"`
+	DateLastModified *azuredevops.Time `json:"dateLastModified,omitempty"`
 	// Encoding of the file. Zero if not a file.
 	FileEncoding *int `json:"fileEncoding,omitempty"`
 	// Hash value of the file. Null if not a file.

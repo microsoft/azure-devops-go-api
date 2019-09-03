@@ -9,9 +9,9 @@
 package pypiapi
 
 import (
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/packagingshared"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 // Package version metadata for a Python package
@@ -19,13 +19,13 @@ type Package struct {
 	// Related REST links.
 	Links interface{} `json:"_links,omitempty"`
 	// If and when the package was deleted.
-	DeletedDate *time.Time `json:"deletedDate,omitempty"`
+	DeletedDate *azuredevops.Time `json:"deletedDate,omitempty"`
 	// Package Id.
 	Id *string `json:"id,omitempty"`
 	// The display name of the package.
 	Name *string `json:"name,omitempty"`
 	// If and when the package was permanently deleted.
-	PermanentlyDeletedDate *time.Time `json:"permanentlyDeletedDate,omitempty"`
+	PermanentlyDeletedDate *azuredevops.Time `json:"permanentlyDeletedDate,omitempty"`
 	// The history of upstream sources for this package. The first source in the list is the immediate source from which this package was saved.
 	SourceChain *[]packagingshared.UpstreamSourceInfo `json:"sourceChain,omitempty"`
 	// The version of the package.
@@ -71,7 +71,7 @@ type PyPiPackagesBatchRequest struct {
 // Deletion state of a Python package.
 type PyPiPackageVersionDeletionState struct {
 	// UTC date the package was deleted.
-	DeletedDate *time.Time `json:"deletedDate,omitempty"`
+	DeletedDate *azuredevops.Time `json:"deletedDate,omitempty"`
 	// Name of the package.
 	Name *string `json:"name,omitempty"`
 	// Version of the package.

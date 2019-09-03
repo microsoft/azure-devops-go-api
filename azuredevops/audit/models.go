@@ -10,7 +10,7 @@ package audit
 
 import (
 	"github.com/google/uuid"
-	"time"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 )
 
 // Defines all the categories an AuditAction can be
@@ -85,7 +85,7 @@ type DecoratedAuditLogEntry struct {
 	// The type of the scope, Organization or Project
 	ScopeType *string `json:"scopeType,omitempty"`
 	// The time when the event occurred in UTC
-	Timestamp *time.Time `json:"timestamp,omitempty"`
+	Timestamp *azuredevops.Time `json:"timestamp,omitempty"`
 	// The user agent from the request
 	UserAgent *string `json:"userAgent,omitempty"`
 }
