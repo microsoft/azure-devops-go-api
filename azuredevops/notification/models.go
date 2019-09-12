@@ -299,15 +299,24 @@ type GroupSubscriptionChannel struct {
 
 // Abstraction interface for the diagnostic log.  Primarily for deserialization.
 type INotificationDiagnosticLog struct {
-	ActivityId  *uuid.UUID                          `json:"activityId,omitempty"`
-	Description *string                             `json:"description,omitempty"`
-	EndTime     *azuredevops.Time                   `json:"endTime,omitempty"`
-	Id          *uuid.UUID                          `json:"id,omitempty"`
-	LogType     *string                             `json:"logType,omitempty"`
-	Messages    *[]NotificationDiagnosticLogMessage `json:"messages,omitempty"`
-	Properties  *map[string]string                  `json:"properties,omitempty"`
-	Source      *uuid.UUID                          `json:"source,omitempty"`
-	StartTime   *azuredevops.Time                   `json:"startTime,omitempty"`
+	// Identifier used for correlating to other diagnostics that may have been recorded elsewhere.
+	ActivityId *uuid.UUID `json:"activityId,omitempty"`
+	// Description of what subscription or notification job is being logged.
+	Description *string `json:"description,omitempty"`
+	// Time the log ended.
+	EndTime *azuredevops.Time `json:"endTime,omitempty"`
+	// Unique instance identifier.
+	Id *uuid.UUID `json:"id,omitempty"`
+	// Type of information being logged.
+	LogType *string `json:"logType,omitempty"`
+	// List of log messages.
+	Messages *[]NotificationDiagnosticLogMessage `json:"messages,omitempty"`
+	// Dictionary of log properties and settings for the job.
+	Properties *map[string]string `json:"properties,omitempty"`
+	// This identifier depends on the logType.  For notification jobs, this will be the job Id. For subscription tracing, this will be a special root Guid with the subscription Id encoded.
+	Source *uuid.UUID `json:"source,omitempty"`
+	// Time the log started.
+	StartTime *azuredevops.Time `json:"startTime,omitempty"`
 }
 
 type ISubscriptionChannel struct {
@@ -681,11 +690,14 @@ type notificationSubscriberDeliveryPreferenceValuesType struct {
 }
 
 var NotificationSubscriberDeliveryPreferenceValues = notificationSubscriberDeliveryPreferenceValuesType{
+	// Do not send notifications by default. Note: notifications can still be delivered to this subscriber, for example via a custom subscription.
 	NoDelivery: "noDelivery",
 	// Deliver notifications to the subscriber's preferred email address.
 	PreferredEmailAddress: "preferredEmailAddress",
-	EachMember:            "eachMember",
-	UseDefault:            "useDefault",
+	// Deliver notifications to each member of the group representing the subscriber. Only applicable when the subscriber is a group.
+	EachMember: "eachMember",
+	// Use default
+	UseDefault: "useDefault",
 }
 
 // Updates to a subscriber. Typically used to change (or set) a preferred email address or default delivery preference.
@@ -885,9 +897,13 @@ type SubscriptionChannelWithAddress struct {
 	UseCustomAddress *bool   `json:"useCustomAddress,omitempty"`
 }
 
+// Contains all the diagonstics settings for a subscription.
 type SubscriptionDiagnostics struct {
-	DeliveryResults   *SubscriptionTracing `json:"deliveryResults,omitempty"`
-	DeliveryTracing   *SubscriptionTracing `json:"deliveryTracing,omitempty"`
+	// Diagnostics settings for retaining delivery results.  Used for Service Hooks subscriptions.
+	DeliveryResults *SubscriptionTracing `json:"deliveryResults,omitempty"`
+	// Diagnostics settings for troubleshooting notification delivery.
+	DeliveryTracing *SubscriptionTracing `json:"deliveryTracing,omitempty"`
+	// Diagnostics settings for troubleshooting event matching.
 	EvaluationTracing *SubscriptionTracing `json:"evaluationTracing,omitempty"`
 }
 
@@ -1246,7 +1262,9 @@ type SubscriptionTraceNotificationDeliveryLog struct {
 	Notifications  *[]DiagnosticNotification `json:"notifications,omitempty"`
 }
 
+// Data controlling a single diagnostic setting for a subscription.
 type SubscriptionTracing struct {
+	// Indicates whether the diagnostic tracing is enabled or not.
 	Enabled *bool `json:"enabled,omitempty"`
 	// Trace until the specified end date.
 	EndDate *azuredevops.Time `json:"endDate,omitempty"`
@@ -1273,13 +1291,19 @@ type UnsupportedSubscriptionChannel struct {
 	Type *string `json:"type,omitempty"`
 }
 
+// Parameters to update diagnostics settings for a subscription.
 type UpdateSubscripitonDiagnosticsParameters struct {
-	DeliveryResults   *UpdateSubscripitonTracingParameters `json:"deliveryResults,omitempty"`
-	DeliveryTracing   *UpdateSubscripitonTracingParameters `json:"deliveryTracing,omitempty"`
+	// Diagnostics settings for retaining delivery results.  Used for Service Hooks subscriptions.
+	DeliveryResults *UpdateSubscripitonTracingParameters `json:"deliveryResults,omitempty"`
+	// Diagnostics settings for troubleshooting notification delivery.
+	DeliveryTracing *UpdateSubscripitonTracingParameters `json:"deliveryTracing,omitempty"`
+	// Diagnostics settings for troubleshooting event matching.
 	EvaluationTracing *UpdateSubscripitonTracingParameters `json:"evaluationTracing,omitempty"`
 }
 
+// Parameters to update a specific diagnostic setting.
 type UpdateSubscripitonTracingParameters struct {
+	// Indicates whether to enable to disable the diagnostic tracing.
 	Enabled *bool `json:"enabled,omitempty"`
 }
 

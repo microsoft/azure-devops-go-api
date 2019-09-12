@@ -30,7 +30,7 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) *Client 
 	}
 }
 
-// List diagnostic logs this service.
+// Get a list of diagnostic logs for this service.
 func (client *Client) ListLogs(ctx context.Context, args ListLogsArgs) (*[]INotificationDiagnosticLog, error) {
 	routeValues := make(map[string]string)
 	if args.Source == nil {
@@ -61,16 +61,17 @@ func (client *Client) ListLogs(ctx context.Context, args ListLogsArgs) (*[]INoti
 
 // Arguments for the ListLogs function
 type ListLogsArgs struct {
-	// (required)
+	// (required) ID specifying which type of logs to check diagnostics for.
 	Source *uuid.UUID
-	// (optional)
+	// (optional) The ID of the specific log to query for.
 	EntryId *uuid.UUID
-	// (optional)
+	// (optional) Start time for the time range to query in.
 	StartTime *azuredevops.Time
-	// (optional)
+	// (optional) End time for the time range to query in.
 	EndTime *azuredevops.Time
 }
 
+// Get the diagnostics settings for a subscription.
 func (client *Client) GetSubscriptionDiagnostics(ctx context.Context, args GetSubscriptionDiagnosticsArgs) (*SubscriptionDiagnostics, error) {
 	routeValues := make(map[string]string)
 	if args.SubscriptionId == nil || *args.SubscriptionId == "" {
@@ -91,10 +92,11 @@ func (client *Client) GetSubscriptionDiagnostics(ctx context.Context, args GetSu
 
 // Arguments for the GetSubscriptionDiagnostics function
 type GetSubscriptionDiagnosticsArgs struct {
-	// (required)
+	// (required) The id of the notifications subscription.
 	SubscriptionId *string
 }
 
+// Update the diagnostics settings for a subscription.
 func (client *Client) UpdateSubscriptionDiagnostics(ctx context.Context, args UpdateSubscriptionDiagnosticsArgs) (*SubscriptionDiagnostics, error) {
 	if args.UpdateParameters == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UpdateParameters"}
@@ -124,7 +126,7 @@ func (client *Client) UpdateSubscriptionDiagnostics(ctx context.Context, args Up
 type UpdateSubscriptionDiagnosticsArgs struct {
 	// (required)
 	UpdateParameters *UpdateSubscripitonDiagnosticsParameters
-	// (required)
+	// (required) The id of the notifications subscription.
 	SubscriptionId *string
 }
 
@@ -149,7 +151,7 @@ func (client *Client) GetEventType(ctx context.Context, args GetEventTypeArgs) (
 
 // Arguments for the GetEventType function
 type GetEventTypeArgs struct {
-	// (required)
+	// (required) The ID of the event type.
 	EventType *string
 }
 
@@ -217,6 +219,7 @@ type UpdateSettingsArgs struct {
 	UpdateParameters *NotificationAdminSettingsUpdateParameters
 }
 
+// Get delivery preferences of a notifications subscriber.
 func (client *Client) GetSubscriber(ctx context.Context, args GetSubscriberArgs) (*NotificationSubscriber, error) {
 	routeValues := make(map[string]string)
 	if args.SubscriberId == nil {
@@ -237,10 +240,11 @@ func (client *Client) GetSubscriber(ctx context.Context, args GetSubscriberArgs)
 
 // Arguments for the GetSubscriber function
 type GetSubscriberArgs struct {
-	// (required)
+	// (required) ID of the user or group.
 	SubscriberId *uuid.UUID
 }
 
+// Update delivery preferences of a notifications subscriber.
 func (client *Client) UpdateSubscriber(ctx context.Context, args UpdateSubscriberArgs) (*NotificationSubscriber, error) {
 	if args.UpdateParameters == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UpdateParameters"}
@@ -270,7 +274,7 @@ func (client *Client) UpdateSubscriber(ctx context.Context, args UpdateSubscribe
 type UpdateSubscriberArgs struct {
 	// (required)
 	UpdateParameters *NotificationSubscriberUpdateParameters
-	// (required)
+	// (required) ID of the user or group.
 	SubscriberId *uuid.UUID
 }
 
