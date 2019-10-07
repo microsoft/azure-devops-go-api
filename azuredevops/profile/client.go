@@ -19,22 +19,27 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("8ccfef3d-2b87-4e99-8ccb-66e343d2daa8")
 
-type Client struct {
+type Client interface {
+	// Gets a user profile.
+	GetProfile(context.Context, GetProfileArgs) (*Profile, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
 // Gets a user profile.
-func (client *Client) GetProfile(ctx context.Context, args GetProfileArgs) (*Profile, error) {
+func (client *ClientImpl) GetProfile(ctx context.Context, args GetProfileArgs) (*Profile, error) {
 	routeValues := make(map[string]string)
 	if args.Id == nil || *args.Id == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Id"}

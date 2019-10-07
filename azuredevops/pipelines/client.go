@@ -19,19 +19,38 @@ import (
 	"strconv"
 )
 
-type Client struct {
+type Client interface {
+	// [Preview API]
+	GetLog(context.Context, GetLogArgs) (*Log, error)
+	// [Preview API]
+	ListLogs(context.Context, ListLogsArgs) (*LogCollection, error)
+	// [Preview API]
+	CreatePipeline(context.Context, CreatePipelineArgs) (*Pipeline, error)
+	// [Preview API] Gets a pipeline, optionally at the specified version
+	GetPipeline(context.Context, GetPipelineArgs) (*Pipeline, error)
+	// [Preview API] Gets a list of pipelines.
+	ListPipelines(context.Context, ListPipelinesArgs) (*ListPipelinesResponseValue, error)
+	// [Preview API] Gets a run for a particular pipeline.
+	GetRun(context.Context, GetRunArgs) (*Run, error)
+	// [Preview API] Gets top 10000 runs for a particular pipeline.
+	ListRuns(context.Context, ListRunsArgs) (*[]Run, error)
+	// [Preview API] Runs a pipeline.
+	RunPipeline(context.Context, RunPipelineArgs) (*Run, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) *Client {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) Client {
 	client := connection.GetClientByUrl(connection.BaseUrl)
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}
 }
 
 // [Preview API]
-func (client *Client) GetLog(ctx context.Context, args GetLogArgs) (*Log, error) {
+func (client *ClientImpl) GetLog(ctx context.Context, args GetLogArgs) (*Log, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -80,7 +99,7 @@ type GetLogArgs struct {
 }
 
 // [Preview API]
-func (client *Client) ListLogs(ctx context.Context, args ListLogsArgs) (*LogCollection, error) {
+func (client *ClientImpl) ListLogs(ctx context.Context, args ListLogsArgs) (*LogCollection, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -123,7 +142,7 @@ type ListLogsArgs struct {
 }
 
 // [Preview API]
-func (client *Client) CreatePipeline(ctx context.Context, args CreatePipelineArgs) (*Pipeline, error) {
+func (client *ClientImpl) CreatePipeline(ctx context.Context, args CreatePipelineArgs) (*Pipeline, error) {
 	if args.InputParameters == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.InputParameters"}
 	}
@@ -157,7 +176,7 @@ type CreatePipelineArgs struct {
 }
 
 // [Preview API] Gets a pipeline, optionally at the specified version
-func (client *Client) GetPipeline(ctx context.Context, args GetPipelineArgs) (*Pipeline, error) {
+func (client *ClientImpl) GetPipeline(ctx context.Context, args GetPipelineArgs) (*Pipeline, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -194,7 +213,7 @@ type GetPipelineArgs struct {
 }
 
 // [Preview API] Gets a list of pipelines.
-func (client *Client) ListPipelines(ctx context.Context, args ListPipelinesArgs) (*ListPipelinesResponseValue, error) {
+func (client *ClientImpl) ListPipelines(ctx context.Context, args ListPipelinesArgs) (*ListPipelinesResponseValue, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -243,7 +262,7 @@ type ListPipelinesResponseValue struct {
 }
 
 // [Preview API] Gets a run for a particular pipeline.
-func (client *Client) GetRun(ctx context.Context, args GetRunArgs) (*Run, error) {
+func (client *ClientImpl) GetRun(ctx context.Context, args GetRunArgs) (*Run, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -280,7 +299,7 @@ type GetRunArgs struct {
 }
 
 // [Preview API] Gets top 10000 runs for a particular pipeline.
-func (client *Client) ListRuns(ctx context.Context, args ListRunsArgs) (*[]Run, error) {
+func (client *ClientImpl) ListRuns(ctx context.Context, args ListRunsArgs) (*[]Run, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -311,7 +330,7 @@ type ListRunsArgs struct {
 }
 
 // [Preview API] Runs a pipeline.
-func (client *Client) RunPipeline(ctx context.Context, args RunPipelineArgs) (*Run, error) {
+func (client *ClientImpl) RunPipeline(ctx context.Context, args RunPipelineArgs) (*Run, error) {
 	if args.RunParameters == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RunParameters"}
 	}

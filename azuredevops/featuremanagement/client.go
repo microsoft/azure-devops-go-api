@@ -18,19 +18,40 @@ import (
 	"net/url"
 )
 
-type Client struct {
+type Client interface {
+	// [Preview API] Get a specific feature by its id
+	GetFeature(context.Context, GetFeatureArgs) (*ContributedFeature, error)
+	// [Preview API] Get a list of all defined features
+	GetFeatures(context.Context, GetFeaturesArgs) (*[]ContributedFeature, error)
+	// [Preview API] Get the state of the specified feature for the given user/all-users scope
+	GetFeatureState(context.Context, GetFeatureStateArgs) (*ContributedFeatureState, error)
+	// [Preview API] Set the state of a feature
+	SetFeatureState(context.Context, SetFeatureStateArgs) (*ContributedFeatureState, error)
+	// [Preview API] Get the state of the specified feature for the given named scope
+	GetFeatureStateForScope(context.Context, GetFeatureStateForScopeArgs) (*ContributedFeatureState, error)
+	// [Preview API] Set the state of a feature at a specific scope
+	SetFeatureStateForScope(context.Context, SetFeatureStateForScopeArgs) (*ContributedFeatureState, error)
+	// [Preview API] Get the effective state for a list of feature ids
+	QueryFeatureStates(context.Context, QueryFeatureStatesArgs) (*ContributedFeatureStateQuery, error)
+	// [Preview API] Get the states of the specified features for the default scope
+	QueryFeatureStatesForDefaultScope(context.Context, QueryFeatureStatesForDefaultScopeArgs) (*ContributedFeatureStateQuery, error)
+	// [Preview API] Get the states of the specified features for the specific named scope
+	QueryFeatureStatesForNamedScope(context.Context, QueryFeatureStatesForNamedScopeArgs) (*ContributedFeatureStateQuery, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) *Client {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) Client {
 	client := connection.GetClientByUrl(connection.BaseUrl)
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}
 }
 
 // [Preview API] Get a specific feature by its id
-func (client *Client) GetFeature(ctx context.Context, args GetFeatureArgs) (*ContributedFeature, error) {
+func (client *ClientImpl) GetFeature(ctx context.Context, args GetFeatureArgs) (*ContributedFeature, error) {
 	routeValues := make(map[string]string)
 	if args.FeatureId == nil || *args.FeatureId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FeatureId"}
@@ -55,7 +76,7 @@ type GetFeatureArgs struct {
 }
 
 // [Preview API] Get a list of all defined features
-func (client *Client) GetFeatures(ctx context.Context, args GetFeaturesArgs) (*[]ContributedFeature, error) {
+func (client *ClientImpl) GetFeatures(ctx context.Context, args GetFeaturesArgs) (*[]ContributedFeature, error) {
 	queryParams := url.Values{}
 	if args.TargetContributionId != nil {
 		queryParams.Add("targetContributionId", *args.TargetContributionId)
@@ -78,7 +99,7 @@ type GetFeaturesArgs struct {
 }
 
 // [Preview API] Get the state of the specified feature for the given user/all-users scope
-func (client *Client) GetFeatureState(ctx context.Context, args GetFeatureStateArgs) (*ContributedFeatureState, error) {
+func (client *ClientImpl) GetFeatureState(ctx context.Context, args GetFeatureStateArgs) (*ContributedFeatureState, error) {
 	routeValues := make(map[string]string)
 	if args.FeatureId == nil || *args.FeatureId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FeatureId"}
@@ -109,7 +130,7 @@ type GetFeatureStateArgs struct {
 }
 
 // [Preview API] Set the state of a feature
-func (client *Client) SetFeatureState(ctx context.Context, args SetFeatureStateArgs) (*ContributedFeatureState, error) {
+func (client *ClientImpl) SetFeatureState(ctx context.Context, args SetFeatureStateArgs) (*ContributedFeatureState, error) {
 	if args.Feature == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Feature"}
 	}
@@ -160,7 +181,7 @@ type SetFeatureStateArgs struct {
 }
 
 // [Preview API] Get the state of the specified feature for the given named scope
-func (client *Client) GetFeatureStateForScope(ctx context.Context, args GetFeatureStateForScopeArgs) (*ContributedFeatureState, error) {
+func (client *ClientImpl) GetFeatureStateForScope(ctx context.Context, args GetFeatureStateForScopeArgs) (*ContributedFeatureState, error) {
 	routeValues := make(map[string]string)
 	if args.FeatureId == nil || *args.FeatureId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FeatureId"}
@@ -203,7 +224,7 @@ type GetFeatureStateForScopeArgs struct {
 }
 
 // [Preview API] Set the state of a feature at a specific scope
-func (client *Client) SetFeatureStateForScope(ctx context.Context, args SetFeatureStateForScopeArgs) (*ContributedFeatureState, error) {
+func (client *ClientImpl) SetFeatureStateForScope(ctx context.Context, args SetFeatureStateForScopeArgs) (*ContributedFeatureState, error) {
 	if args.Feature == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Feature"}
 	}
@@ -266,7 +287,7 @@ type SetFeatureStateForScopeArgs struct {
 }
 
 // [Preview API] Get the effective state for a list of feature ids
-func (client *Client) QueryFeatureStates(ctx context.Context, args QueryFeatureStatesArgs) (*ContributedFeatureStateQuery, error) {
+func (client *ClientImpl) QueryFeatureStates(ctx context.Context, args QueryFeatureStatesArgs) (*ContributedFeatureStateQuery, error) {
 	if args.Query == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Query"}
 	}
@@ -292,7 +313,7 @@ type QueryFeatureStatesArgs struct {
 }
 
 // [Preview API] Get the states of the specified features for the default scope
-func (client *Client) QueryFeatureStatesForDefaultScope(ctx context.Context, args QueryFeatureStatesForDefaultScopeArgs) (*ContributedFeatureStateQuery, error) {
+func (client *ClientImpl) QueryFeatureStatesForDefaultScope(ctx context.Context, args QueryFeatureStatesForDefaultScopeArgs) (*ContributedFeatureStateQuery, error) {
 	if args.Query == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Query"}
 	}
@@ -326,7 +347,7 @@ type QueryFeatureStatesForDefaultScopeArgs struct {
 }
 
 // [Preview API] Get the states of the specified features for the specific named scope
-func (client *Client) QueryFeatureStatesForNamedScope(ctx context.Context, args QueryFeatureStatesForNamedScopeArgs) (*ContributedFeatureStateQuery, error) {
+func (client *ClientImpl) QueryFeatureStatesForNamedScope(ctx context.Context, args QueryFeatureStatesForNamedScopeArgs) (*ContributedFeatureStateQuery, error) {
 	if args.Query == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Query"}
 	}

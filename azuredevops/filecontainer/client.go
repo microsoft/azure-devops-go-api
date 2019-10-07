@@ -19,19 +19,30 @@ import (
 	"strconv"
 )
 
-type Client struct {
+type Client interface {
+	// [Preview API] Creates the specified items in in the referenced container.
+	CreateItems(context.Context, CreateItemsArgs) (*[]FileContainerItem, error)
+	// [Preview API] Deletes the specified items in a container.
+	DeleteItem(context.Context, DeleteItemArgs) error
+	// [Preview API] Gets containers filtered by a comma separated list of artifact uris within the same scope, if not specified returns all containers
+	GetContainers(context.Context, GetContainersArgs) (*[]FileContainer, error)
+	// [Preview API]
+	GetItems(context.Context, GetItemsArgs) (*[]FileContainerItem, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) *Client {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) Client {
 	client := connection.GetClientByUrl(connection.BaseUrl)
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}
 }
 
 // [Preview API] Creates the specified items in in the referenced container.
-func (client *Client) CreateItems(ctx context.Context, args CreateItemsArgs) (*[]FileContainerItem, error) {
+func (client *ClientImpl) CreateItems(ctx context.Context, args CreateItemsArgs) (*[]FileContainerItem, error) {
 	if args.Items == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Items"}
 	}
@@ -71,7 +82,7 @@ type CreateItemsArgs struct {
 }
 
 // [Preview API] Deletes the specified items in a container.
-func (client *Client) DeleteItem(ctx context.Context, args DeleteItemArgs) error {
+func (client *ClientImpl) DeleteItem(ctx context.Context, args DeleteItemArgs) error {
 	routeValues := make(map[string]string)
 	if args.ContainerId == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.ContainerId"}
@@ -106,7 +117,7 @@ type DeleteItemArgs struct {
 }
 
 // [Preview API] Gets containers filtered by a comma separated list of artifact uris within the same scope, if not specified returns all containers
-func (client *Client) GetContainers(ctx context.Context, args GetContainersArgs) (*[]FileContainer, error) {
+func (client *ClientImpl) GetContainers(ctx context.Context, args GetContainersArgs) (*[]FileContainer, error) {
 	queryParams := url.Values{}
 	if args.Scope != nil {
 		queryParams.Add("scope", (*args.Scope).String())
@@ -134,7 +145,7 @@ type GetContainersArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetItems(ctx context.Context, args GetItemsArgs) (*[]FileContainerItem, error) {
+func (client *ClientImpl) GetItems(ctx context.Context, args GetItemsArgs) (*[]FileContainerItem, error) {
 	routeValues := make(map[string]string)
 	if args.ContainerId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ContainerId"}

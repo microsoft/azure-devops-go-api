@@ -19,22 +19,33 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("7658fa33-b1bf-4580-990f-fac5896773d3")
 
-type Client struct {
+type Client interface {
+	// [Preview API]
+	GetProjectLanguageAnalytics(context.Context, GetProjectLanguageAnalyticsArgs) (*ProjectLanguageAnalytics, error)
+	// [Preview API]
+	GetProjectActivityMetrics(context.Context, GetProjectActivityMetricsArgs) (*ProjectActivityMetrics, error)
+	// [Preview API] Retrieves git activity metrics for repositories matching a specified criteria.
+	GetGitRepositoriesActivityMetrics(context.Context, GetGitRepositoriesActivityMetricsArgs) (*[]RepositoryActivityMetrics, error)
+	// [Preview API]
+	GetRepositoryActivityMetrics(context.Context, GetRepositoryActivityMetricsArgs) (*RepositoryActivityMetrics, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
 // [Preview API]
-func (client *Client) GetProjectLanguageAnalytics(ctx context.Context, args GetProjectLanguageAnalyticsArgs) (*ProjectLanguageAnalytics, error) {
+func (client *ClientImpl) GetProjectLanguageAnalytics(ctx context.Context, args GetProjectLanguageAnalyticsArgs) (*ProjectLanguageAnalytics, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -59,7 +70,7 @@ type GetProjectLanguageAnalyticsArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetProjectActivityMetrics(ctx context.Context, args GetProjectActivityMetricsArgs) (*ProjectActivityMetrics, error) {
+func (client *ClientImpl) GetProjectActivityMetrics(ctx context.Context, args GetProjectActivityMetricsArgs) (*ProjectActivityMetrics, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -97,7 +108,7 @@ type GetProjectActivityMetricsArgs struct {
 }
 
 // [Preview API] Retrieves git activity metrics for repositories matching a specified criteria.
-func (client *Client) GetGitRepositoriesActivityMetrics(ctx context.Context, args GetGitRepositoriesActivityMetricsArgs) (*[]RepositoryActivityMetrics, error) {
+func (client *ClientImpl) GetGitRepositoriesActivityMetrics(ctx context.Context, args GetGitRepositoriesActivityMetricsArgs) (*[]RepositoryActivityMetrics, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -147,7 +158,7 @@ type GetGitRepositoriesActivityMetricsArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetRepositoryActivityMetrics(ctx context.Context, args GetRepositoryActivityMetricsArgs) (*RepositoryActivityMetrics, error) {
+func (client *ClientImpl) GetRepositoryActivityMetrics(ctx context.Context, args GetRepositoryActivityMetricsArgs) (*RepositoryActivityMetrics, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}

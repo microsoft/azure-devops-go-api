@@ -24,22 +24,179 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("5264459e-e5e0-4bd8-b118-0985e68a4ec5")
 
-type Client struct {
+type Client interface {
+	// [Preview API] Gets recent work item activities
+	GetRecentActivityData(context.Context, GetRecentActivityDataArgs) (*[]AccountRecentActivityWorkItemModel2, error)
+	// [Preview API] Get the list of work item tracking outbound artifact link types.
+	GetWorkArtifactLinkTypes(context.Context, GetWorkArtifactLinkTypesArgs) (*[]WorkArtifactLink, error)
+	// [Preview API] Queries work items linked to a given list of artifact URI.
+	QueryWorkItemsForArtifactUris(context.Context, QueryWorkItemsForArtifactUrisArgs) (*ArtifactUriQueryResult, error)
+	// Uploads an attachment.
+	CreateAttachment(context.Context, CreateAttachmentArgs) (*AttachmentReference, error)
+	// Downloads an attachment.
+	GetAttachmentContent(context.Context, GetAttachmentContentArgs) (io.ReadCloser, error)
+	// Downloads an attachment.
+	GetAttachmentZip(context.Context, GetAttachmentZipArgs) (io.ReadCloser, error)
+	// Gets root classification nodes or list of classification nodes for a given list of nodes ids, for a given project. In case ids parameter is supplied you will  get list of classification nodes for those ids. Otherwise you will get root classification nodes for this project.
+	GetClassificationNodes(context.Context, GetClassificationNodesArgs) (*[]WorkItemClassificationNode, error)
+	// Gets root classification nodes under the project.
+	GetRootNodes(context.Context, GetRootNodesArgs) (*[]WorkItemClassificationNode, error)
+	// Create new or update an existing classification node.
+	CreateOrUpdateClassificationNode(context.Context, CreateOrUpdateClassificationNodeArgs) (*WorkItemClassificationNode, error)
+	// Delete an existing classification node.
+	DeleteClassificationNode(context.Context, DeleteClassificationNodeArgs) error
+	// Gets the classification node for a given node path.
+	GetClassificationNode(context.Context, GetClassificationNodeArgs) (*WorkItemClassificationNode, error)
+	// Update an existing classification node.
+	UpdateClassificationNode(context.Context, UpdateClassificationNodeArgs) (*WorkItemClassificationNode, error)
+	// [Preview API] Get users who reacted on the comment.
+	GetEngagedUsers(context.Context, GetEngagedUsersArgs) (*[]webapi.IdentityRef, error)
+	// [Preview API] Add a comment on a work item.
+	AddComment(context.Context, AddCommentArgs) (*Comment, error)
+	// [Preview API] Delete a comment on a work item.
+	DeleteComment(context.Context, DeleteCommentArgs) error
+	// [Preview API] Returns a work item comment.
+	GetComment(context.Context, GetCommentArgs) (*Comment, error)
+	// [Preview API] Returns a list of work item comments, pageable.
+	GetComments(context.Context, GetCommentsArgs) (*CommentList, error)
+	// [Preview API] Returns a list of work item comments by ids.
+	GetCommentsBatch(context.Context, GetCommentsBatchArgs) (*CommentList, error)
+	// [Preview API] Update a comment on a work item.
+	UpdateComment(context.Context, UpdateCommentArgs) (*Comment, error)
+	// [Preview API] Adds a new reaction to a comment.
+	CreateCommentReaction(context.Context, CreateCommentReactionArgs) (*CommentReaction, error)
+	// [Preview API] Deletes an existing reaction on a comment.
+	DeleteCommentReaction(context.Context, DeleteCommentReactionArgs) (*CommentReaction, error)
+	// [Preview API] Gets reactions of a comment.
+	GetCommentReactions(context.Context, GetCommentReactionsArgs) (*[]CommentReaction, error)
+	// [Preview API]
+	GetCommentVersion(context.Context, GetCommentVersionArgs) (*CommentVersion, error)
+	// [Preview API]
+	GetCommentVersions(context.Context, GetCommentVersionsArgs) (*[]CommentVersion, error)
+	// Create a new field.
+	CreateField(context.Context, CreateFieldArgs) (*WorkItemField, error)
+	// Deletes the field.
+	DeleteField(context.Context, DeleteFieldArgs) error
+	// Gets information on a specific field.
+	GetField(context.Context, GetFieldArgs) (*WorkItemField, error)
+	// Returns information for all fields.
+	GetFields(context.Context, GetFieldsArgs) (*[]WorkItemField, error)
+	// Creates a query, or moves a query.
+	CreateQuery(context.Context, CreateQueryArgs) (*QueryHierarchyItem, error)
+	// Delete a query or a folder. This deletes any permission change on the deleted query or folder and any of its descendants if it is a folder. It is important to note that the deleted permission changes cannot be recovered upon undeleting the query or folder.
+	DeleteQuery(context.Context, DeleteQueryArgs) error
+	// Gets the root queries and their children
+	GetQueries(context.Context, GetQueriesArgs) (*[]QueryHierarchyItem, error)
+	// Retrieves an individual query and its children
+	GetQuery(context.Context, GetQueryArgs) (*QueryHierarchyItem, error)
+	// Searches all queries the user has access to in the current project
+	SearchQueries(context.Context, SearchQueriesArgs) (*QueryHierarchyItemsResult, error)
+	// Update a query or a folder. This allows you to update, rename and move queries and folders.
+	UpdateQuery(context.Context, UpdateQueryArgs) (*QueryHierarchyItem, error)
+	// Gets a list of queries by ids (Maximum 1000)
+	GetQueriesBatch(context.Context, GetQueriesBatchArgs) (*[]QueryHierarchyItem, error)
+	// Destroys the specified work item permanently from the Recycle Bin. This action can not be undone.
+	DestroyWorkItem(context.Context, DestroyWorkItemArgs) error
+	// Gets a deleted work item from Recycle Bin.
+	GetDeletedWorkItem(context.Context, GetDeletedWorkItemArgs) (*WorkItemDelete, error)
+	// Gets the work items from the recycle bin, whose IDs have been specified in the parameters
+	GetDeletedWorkItems(context.Context, GetDeletedWorkItemsArgs) (*[]WorkItemDeleteReference, error)
+	// Gets a list of the IDs and the URLs of the deleted the work items in the Recycle Bin.
+	GetDeletedWorkItemShallowReferences(context.Context, GetDeletedWorkItemShallowReferencesArgs) (*[]WorkItemDeleteShallowReference, error)
+	// Restores the deleted work item from Recycle Bin.
+	RestoreWorkItem(context.Context, RestoreWorkItemArgs) (*WorkItemDelete, error)
+	// Returns a fully hydrated work item for the requested revision
+	GetRevision(context.Context, GetRevisionArgs) (*WorkItem, error)
+	// Returns the list of fully hydrated work item revisions, paged.
+	GetRevisions(context.Context, GetRevisionsArgs) (*[]WorkItem, error)
+	// [Preview API] Creates a template
+	CreateTemplate(context.Context, CreateTemplateArgs) (*WorkItemTemplate, error)
+	// [Preview API] Gets template
+	GetTemplates(context.Context, GetTemplatesArgs) (*[]WorkItemTemplateReference, error)
+	// [Preview API] Deletes the template with given id
+	DeleteTemplate(context.Context, DeleteTemplateArgs) error
+	// [Preview API] Gets the template with specified id
+	GetTemplate(context.Context, GetTemplateArgs) (*WorkItemTemplate, error)
+	// [Preview API] Replace template contents
+	ReplaceTemplate(context.Context, ReplaceTemplateArgs) (*WorkItemTemplate, error)
+	// Returns a single update for a work item
+	GetUpdate(context.Context, GetUpdateArgs) (*WorkItemUpdate, error)
+	// Returns a the deltas between work item revisions
+	GetUpdates(context.Context, GetUpdatesArgs) (*[]WorkItemUpdate, error)
+	// Gets the results of the query given its WIQL.
+	QueryByWiql(context.Context, QueryByWiqlArgs) (*WorkItemQueryResult, error)
+	// Gets the results of the query given the query ID.
+	GetQueryResultCount(context.Context, GetQueryResultCountArgs) (*int, error)
+	// Gets the results of the query given the query ID.
+	QueryById(context.Context, QueryByIdArgs) (*WorkItemQueryResult, error)
+	// Get a work item icon given the friendly name and icon color.
+	GetWorkItemIconJson(context.Context, GetWorkItemIconJsonArgs) (*WorkItemIcon, error)
+	// Get a list of all work item icons.
+	GetWorkItemIcons(context.Context, GetWorkItemIconsArgs) (*[]WorkItemIcon, error)
+	// Get a work item icon given the friendly name and icon color.
+	GetWorkItemIconSvg(context.Context, GetWorkItemIconSvgArgs) (io.ReadCloser, error)
+	// Get a work item icon given the friendly name and icon color.
+	GetWorkItemIconXaml(context.Context, GetWorkItemIconXamlArgs) (io.ReadCloser, error)
+	// Get a batch of work item links
+	GetReportingLinksByLinkType(context.Context, GetReportingLinksByLinkTypeArgs) (*ReportingWorkItemLinksBatch, error)
+	// Gets the work item relation type definition.
+	GetRelationType(context.Context, GetRelationTypeArgs) (*WorkItemRelationType, error)
+	// Gets the work item relation types.
+	GetRelationTypes(context.Context, GetRelationTypesArgs) (*[]WorkItemRelationType, error)
+	// Get a batch of work item revisions with the option of including deleted items
+	ReadReportingRevisionsGet(context.Context, ReadReportingRevisionsGetArgs) (*ReportingWorkItemRevisionsBatch, error)
+	// Get a batch of work item revisions. This request may be used if your list of fields is large enough that it may run the URL over the length limit.
+	ReadReportingRevisionsPost(context.Context, ReadReportingRevisionsPostArgs) (*ReportingWorkItemRevisionsBatch, error)
+	// [Preview API]
+	ReadReportingDiscussions(context.Context, ReadReportingDiscussionsArgs) (*ReportingWorkItemRevisionsBatch, error)
+	// Creates a single work item.
+	CreateWorkItem(context.Context, CreateWorkItemArgs) (*WorkItem, error)
+	// Returns a single work item from a template.
+	GetWorkItemTemplate(context.Context, GetWorkItemTemplateArgs) (*WorkItem, error)
+	// Deletes the specified work item and sends it to the Recycle Bin, so that it can be restored back, if required. Optionally, if the destroy parameter has been set to true, it destroys the work item permanently. WARNING: If the destroy parameter is set to true, work items deleted by this command will NOT go to recycle-bin and there is no way to restore/recover them after deletion. It is recommended NOT to use this parameter. If you do, please use this parameter with extreme caution.
+	DeleteWorkItem(context.Context, DeleteWorkItemArgs) (*WorkItemDelete, error)
+	// Returns a single work item.
+	GetWorkItem(context.Context, GetWorkItemArgs) (*WorkItem, error)
+	// Returns a list of work items (Maximum 200)
+	GetWorkItems(context.Context, GetWorkItemsArgs) (*[]WorkItem, error)
+	// Updates a single work item.
+	UpdateWorkItem(context.Context, UpdateWorkItemArgs) (*WorkItem, error)
+	// Gets work items for a list of work item ids (Maximum 200)
+	GetWorkItemsBatch(context.Context, GetWorkItemsBatchArgs) (*[]WorkItem, error)
+	// [Preview API] Returns the next state on the given work item IDs.
+	GetWorkItemNextStatesOnCheckinAction(context.Context, GetWorkItemNextStatesOnCheckinActionArgs) (*[]WorkItemNextStateOnTransition, error)
+	// Get all work item type categories.
+	GetWorkItemTypeCategories(context.Context, GetWorkItemTypeCategoriesArgs) (*[]WorkItemTypeCategory, error)
+	// Get specific work item type category by name.
+	GetWorkItemTypeCategory(context.Context, GetWorkItemTypeCategoryArgs) (*WorkItemTypeCategory, error)
+	// Returns a work item type definition.
+	GetWorkItemType(context.Context, GetWorkItemTypeArgs) (*WorkItemType, error)
+	// Returns the list of work item types
+	GetWorkItemTypes(context.Context, GetWorkItemTypesArgs) (*[]WorkItemType, error)
+	// Get a list of fields for a work item type with detailed references.
+	GetWorkItemTypeFieldsWithReferences(context.Context, GetWorkItemTypeFieldsWithReferencesArgs) (*[]WorkItemTypeFieldWithReferences, error)
+	// Get a field for a work item type with detailed references.
+	GetWorkItemTypeFieldWithReferences(context.Context, GetWorkItemTypeFieldWithReferencesArgs) (*WorkItemTypeFieldWithReferences, error)
+	// [Preview API] Returns the state names and colors for a work item type.
+	GetWorkItemTypeStates(context.Context, GetWorkItemTypeStatesArgs) (*[]WorkItemStateColor, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
 // [Preview API] Gets recent work item activities
-func (client *Client) GetRecentActivityData(ctx context.Context, args GetRecentActivityDataArgs) (*[]AccountRecentActivityWorkItemModel2, error) {
+func (client *ClientImpl) GetRecentActivityData(ctx context.Context, args GetRecentActivityDataArgs) (*[]AccountRecentActivityWorkItemModel2, error) {
 	locationId, _ := uuid.Parse("1bc988f4-c15f-4072-ad35-497c87e3a909")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", nil, nil, nil, "", "application/json", nil)
 	if err != nil {
@@ -56,7 +213,7 @@ type GetRecentActivityDataArgs struct {
 }
 
 // [Preview API] Get the list of work item tracking outbound artifact link types.
-func (client *Client) GetWorkArtifactLinkTypes(ctx context.Context, args GetWorkArtifactLinkTypesArgs) (*[]WorkArtifactLink, error) {
+func (client *ClientImpl) GetWorkArtifactLinkTypes(ctx context.Context, args GetWorkArtifactLinkTypesArgs) (*[]WorkArtifactLink, error) {
 	locationId, _ := uuid.Parse("1a31de40-e318-41cd-a6c6-881077df52e3")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, nil, nil, "", "application/json", nil)
 	if err != nil {
@@ -73,7 +230,7 @@ type GetWorkArtifactLinkTypesArgs struct {
 }
 
 // [Preview API] Queries work items linked to a given list of artifact URI.
-func (client *Client) QueryWorkItemsForArtifactUris(ctx context.Context, args QueryWorkItemsForArtifactUrisArgs) (*ArtifactUriQueryResult, error) {
+func (client *ClientImpl) QueryWorkItemsForArtifactUris(ctx context.Context, args QueryWorkItemsForArtifactUrisArgs) (*ArtifactUriQueryResult, error) {
 	if args.ArtifactUriQuery == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ArtifactUriQuery"}
 	}
@@ -106,7 +263,7 @@ type QueryWorkItemsForArtifactUrisArgs struct {
 }
 
 // Uploads an attachment.
-func (client *Client) CreateAttachment(ctx context.Context, args CreateAttachmentArgs) (*AttachmentReference, error) {
+func (client *ClientImpl) CreateAttachment(ctx context.Context, args CreateAttachmentArgs) (*AttachmentReference, error) {
 	if args.UploadStream == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UploadStream"}
 	}
@@ -151,7 +308,7 @@ type CreateAttachmentArgs struct {
 }
 
 // Downloads an attachment.
-func (client *Client) GetAttachmentContent(ctx context.Context, args GetAttachmentContentArgs) (io.ReadCloser, error) {
+func (client *ClientImpl) GetAttachmentContent(ctx context.Context, args GetAttachmentContentArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -190,7 +347,7 @@ type GetAttachmentContentArgs struct {
 }
 
 // Downloads an attachment.
-func (client *Client) GetAttachmentZip(ctx context.Context, args GetAttachmentZipArgs) (io.ReadCloser, error) {
+func (client *ClientImpl) GetAttachmentZip(ctx context.Context, args GetAttachmentZipArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -229,7 +386,7 @@ type GetAttachmentZipArgs struct {
 }
 
 // Gets root classification nodes or list of classification nodes for a given list of nodes ids, for a given project. In case ids parameter is supplied you will  get list of classification nodes for those ids. Otherwise you will get root classification nodes for this project.
-func (client *Client) GetClassificationNodes(ctx context.Context, args GetClassificationNodesArgs) (*[]WorkItemClassificationNode, error) {
+func (client *ClientImpl) GetClassificationNodes(ctx context.Context, args GetClassificationNodesArgs) (*[]WorkItemClassificationNode, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -276,7 +433,7 @@ type GetClassificationNodesArgs struct {
 }
 
 // Gets root classification nodes under the project.
-func (client *Client) GetRootNodes(ctx context.Context, args GetRootNodesArgs) (*[]WorkItemClassificationNode, error) {
+func (client *ClientImpl) GetRootNodes(ctx context.Context, args GetRootNodesArgs) (*[]WorkItemClassificationNode, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -307,7 +464,7 @@ type GetRootNodesArgs struct {
 }
 
 // Create new or update an existing classification node.
-func (client *Client) CreateOrUpdateClassificationNode(ctx context.Context, args CreateOrUpdateClassificationNodeArgs) (*WorkItemClassificationNode, error) {
+func (client *ClientImpl) CreateOrUpdateClassificationNode(ctx context.Context, args CreateOrUpdateClassificationNodeArgs) (*WorkItemClassificationNode, error) {
 	if args.PostedNode == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PostedNode"}
 	}
@@ -352,7 +509,7 @@ type CreateOrUpdateClassificationNodeArgs struct {
 }
 
 // Delete an existing classification node.
-func (client *Client) DeleteClassificationNode(ctx context.Context, args DeleteClassificationNodeArgs) error {
+func (client *ClientImpl) DeleteClassificationNode(ctx context.Context, args DeleteClassificationNodeArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -392,7 +549,7 @@ type DeleteClassificationNodeArgs struct {
 }
 
 // Gets the classification node for a given node path.
-func (client *Client) GetClassificationNode(ctx context.Context, args GetClassificationNodeArgs) (*WorkItemClassificationNode, error) {
+func (client *ClientImpl) GetClassificationNode(ctx context.Context, args GetClassificationNodeArgs) (*WorkItemClassificationNode, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -434,7 +591,7 @@ type GetClassificationNodeArgs struct {
 }
 
 // Update an existing classification node.
-func (client *Client) UpdateClassificationNode(ctx context.Context, args UpdateClassificationNodeArgs) (*WorkItemClassificationNode, error) {
+func (client *ClientImpl) UpdateClassificationNode(ctx context.Context, args UpdateClassificationNodeArgs) (*WorkItemClassificationNode, error) {
 	if args.PostedNode == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PostedNode"}
 	}
@@ -479,7 +636,7 @@ type UpdateClassificationNodeArgs struct {
 }
 
 // [Preview API] Get users who reacted on the comment.
-func (client *Client) GetEngagedUsers(ctx context.Context, args GetEngagedUsersArgs) (*[]webapi.IdentityRef, error) {
+func (client *ClientImpl) GetEngagedUsers(ctx context.Context, args GetEngagedUsersArgs) (*[]webapi.IdentityRef, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -533,7 +690,7 @@ type GetEngagedUsersArgs struct {
 }
 
 // [Preview API] Add a comment on a work item.
-func (client *Client) AddComment(ctx context.Context, args AddCommentArgs) (*Comment, error) {
+func (client *ClientImpl) AddComment(ctx context.Context, args AddCommentArgs) (*Comment, error) {
 	if args.Request == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Request"}
 	}
@@ -573,7 +730,7 @@ type AddCommentArgs struct {
 }
 
 // [Preview API] Delete a comment on a work item.
-func (client *Client) DeleteComment(ctx context.Context, args DeleteCommentArgs) error {
+func (client *ClientImpl) DeleteComment(ctx context.Context, args DeleteCommentArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -608,7 +765,7 @@ type DeleteCommentArgs struct {
 }
 
 // [Preview API] Returns a work item comment.
-func (client *Client) GetComment(ctx context.Context, args GetCommentArgs) (*Comment, error) {
+func (client *ClientImpl) GetComment(ctx context.Context, args GetCommentArgs) (*Comment, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -656,7 +813,7 @@ type GetCommentArgs struct {
 }
 
 // [Preview API] Returns a list of work item comments, pageable.
-func (client *Client) GetComments(ctx context.Context, args GetCommentsArgs) (*CommentList, error) {
+func (client *ClientImpl) GetComments(ctx context.Context, args GetCommentsArgs) (*CommentList, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -713,7 +870,7 @@ type GetCommentsArgs struct {
 }
 
 // [Preview API] Returns a list of work item comments by ids.
-func (client *Client) GetCommentsBatch(ctx context.Context, args GetCommentsBatchArgs) (*CommentList, error) {
+func (client *ClientImpl) GetCommentsBatch(ctx context.Context, args GetCommentsBatchArgs) (*CommentList, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -766,7 +923,7 @@ type GetCommentsBatchArgs struct {
 }
 
 // [Preview API] Update a comment on a work item.
-func (client *Client) UpdateComment(ctx context.Context, args UpdateCommentArgs) (*Comment, error) {
+func (client *ClientImpl) UpdateComment(ctx context.Context, args UpdateCommentArgs) (*Comment, error) {
 	if args.Request == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Request"}
 	}
@@ -812,7 +969,7 @@ type UpdateCommentArgs struct {
 }
 
 // [Preview API] Adds a new reaction to a comment.
-func (client *Client) CreateCommentReaction(ctx context.Context, args CreateCommentReactionArgs) (*CommentReaction, error) {
+func (client *ClientImpl) CreateCommentReaction(ctx context.Context, args CreateCommentReactionArgs) (*CommentReaction, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -855,7 +1012,7 @@ type CreateCommentReactionArgs struct {
 }
 
 // [Preview API] Deletes an existing reaction on a comment.
-func (client *Client) DeleteCommentReaction(ctx context.Context, args DeleteCommentReactionArgs) (*CommentReaction, error) {
+func (client *ClientImpl) DeleteCommentReaction(ctx context.Context, args DeleteCommentReactionArgs) (*CommentReaction, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -898,7 +1055,7 @@ type DeleteCommentReactionArgs struct {
 }
 
 // [Preview API] Gets reactions of a comment.
-func (client *Client) GetCommentReactions(ctx context.Context, args GetCommentReactionsArgs) (*[]CommentReaction, error) {
+func (client *ClientImpl) GetCommentReactions(ctx context.Context, args GetCommentReactionsArgs) (*[]CommentReaction, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -935,7 +1092,7 @@ type GetCommentReactionsArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetCommentVersion(ctx context.Context, args GetCommentVersionArgs) (*CommentVersion, error) {
+func (client *ClientImpl) GetCommentVersion(ctx context.Context, args GetCommentVersionArgs) (*CommentVersion, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -978,7 +1135,7 @@ type GetCommentVersionArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetCommentVersions(ctx context.Context, args GetCommentVersionsArgs) (*[]CommentVersion, error) {
+func (client *ClientImpl) GetCommentVersions(ctx context.Context, args GetCommentVersionsArgs) (*[]CommentVersion, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1015,7 +1172,7 @@ type GetCommentVersionsArgs struct {
 }
 
 // Create a new field.
-func (client *Client) CreateField(ctx context.Context, args CreateFieldArgs) (*WorkItemField, error) {
+func (client *ClientImpl) CreateField(ctx context.Context, args CreateFieldArgs) (*WorkItemField, error) {
 	if args.WorkItemField == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WorkItemField"}
 	}
@@ -1048,7 +1205,7 @@ type CreateFieldArgs struct {
 }
 
 // Deletes the field.
-func (client *Client) DeleteField(ctx context.Context, args DeleteFieldArgs) error {
+func (client *ClientImpl) DeleteField(ctx context.Context, args DeleteFieldArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -1076,7 +1233,7 @@ type DeleteFieldArgs struct {
 }
 
 // Gets information on a specific field.
-func (client *Client) GetField(ctx context.Context, args GetFieldArgs) (*WorkItemField, error) {
+func (client *ClientImpl) GetField(ctx context.Context, args GetFieldArgs) (*WorkItemField, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -1106,7 +1263,7 @@ type GetFieldArgs struct {
 }
 
 // Returns information for all fields.
-func (client *Client) GetFields(ctx context.Context, args GetFieldsArgs) (*[]WorkItemField, error) {
+func (client *ClientImpl) GetFields(ctx context.Context, args GetFieldsArgs) (*[]WorkItemField, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -1136,7 +1293,7 @@ type GetFieldsArgs struct {
 }
 
 // Creates a query, or moves a query.
-func (client *Client) CreateQuery(ctx context.Context, args CreateQueryArgs) (*QueryHierarchyItem, error) {
+func (client *ClientImpl) CreateQuery(ctx context.Context, args CreateQueryArgs) (*QueryHierarchyItem, error) {
 	if args.PostedQuery == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PostedQuery"}
 	}
@@ -1182,7 +1339,7 @@ type CreateQueryArgs struct {
 }
 
 // Delete a query or a folder. This deletes any permission change on the deleted query or folder and any of its descendants if it is a folder. It is important to note that the deleted permission changes cannot be recovered upon undeleting the query or folder.
-func (client *Client) DeleteQuery(ctx context.Context, args DeleteQueryArgs) error {
+func (client *ClientImpl) DeleteQuery(ctx context.Context, args DeleteQueryArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1211,7 +1368,7 @@ type DeleteQueryArgs struct {
 }
 
 // Gets the root queries and their children
-func (client *Client) GetQueries(ctx context.Context, args GetQueriesArgs) (*[]QueryHierarchyItem, error) {
+func (client *ClientImpl) GetQueries(ctx context.Context, args GetQueriesArgs) (*[]QueryHierarchyItem, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1252,7 +1409,7 @@ type GetQueriesArgs struct {
 }
 
 // Retrieves an individual query and its children
-func (client *Client) GetQuery(ctx context.Context, args GetQueryArgs) (*QueryHierarchyItem, error) {
+func (client *ClientImpl) GetQuery(ctx context.Context, args GetQueryArgs) (*QueryHierarchyItem, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1299,7 +1456,7 @@ type GetQueryArgs struct {
 }
 
 // Searches all queries the user has access to in the current project
-func (client *Client) SearchQueries(ctx context.Context, args SearchQueriesArgs) (*QueryHierarchyItemsResult, error) {
+func (client *ClientImpl) SearchQueries(ctx context.Context, args SearchQueriesArgs) (*QueryHierarchyItemsResult, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1346,7 +1503,7 @@ type SearchQueriesArgs struct {
 }
 
 // Update a query or a folder. This allows you to update, rename and move queries and folders.
-func (client *Client) UpdateQuery(ctx context.Context, args UpdateQueryArgs) (*QueryHierarchyItem, error) {
+func (client *ClientImpl) UpdateQuery(ctx context.Context, args UpdateQueryArgs) (*QueryHierarchyItem, error) {
 	if args.QueryUpdate == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.QueryUpdate"}
 	}
@@ -1392,7 +1549,7 @@ type UpdateQueryArgs struct {
 }
 
 // Gets a list of queries by ids (Maximum 1000)
-func (client *Client) GetQueriesBatch(ctx context.Context, args GetQueriesBatchArgs) (*[]QueryHierarchyItem, error) {
+func (client *ClientImpl) GetQueriesBatch(ctx context.Context, args GetQueriesBatchArgs) (*[]QueryHierarchyItem, error) {
 	if args.QueryGetRequest == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.QueryGetRequest"}
 	}
@@ -1426,7 +1583,7 @@ type GetQueriesBatchArgs struct {
 }
 
 // Destroys the specified work item permanently from the Recycle Bin. This action can not be undone.
-func (client *Client) DestroyWorkItem(ctx context.Context, args DestroyWorkItemArgs) error {
+func (client *ClientImpl) DestroyWorkItem(ctx context.Context, args DestroyWorkItemArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -1454,7 +1611,7 @@ type DestroyWorkItemArgs struct {
 }
 
 // Gets a deleted work item from Recycle Bin.
-func (client *Client) GetDeletedWorkItem(ctx context.Context, args GetDeletedWorkItemArgs) (*WorkItemDelete, error) {
+func (client *ClientImpl) GetDeletedWorkItem(ctx context.Context, args GetDeletedWorkItemArgs) (*WorkItemDelete, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -1484,7 +1641,7 @@ type GetDeletedWorkItemArgs struct {
 }
 
 // Gets the work items from the recycle bin, whose IDs have been specified in the parameters
-func (client *Client) GetDeletedWorkItems(ctx context.Context, args GetDeletedWorkItemsArgs) (*[]WorkItemDeleteReference, error) {
+func (client *ClientImpl) GetDeletedWorkItems(ctx context.Context, args GetDeletedWorkItemsArgs) (*[]WorkItemDeleteReference, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -1520,7 +1677,7 @@ type GetDeletedWorkItemsArgs struct {
 }
 
 // Gets a list of the IDs and the URLs of the deleted the work items in the Recycle Bin.
-func (client *Client) GetDeletedWorkItemShallowReferences(ctx context.Context, args GetDeletedWorkItemShallowReferencesArgs) (*[]WorkItemDeleteShallowReference, error) {
+func (client *ClientImpl) GetDeletedWorkItemShallowReferences(ctx context.Context, args GetDeletedWorkItemShallowReferencesArgs) (*[]WorkItemDeleteShallowReference, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -1544,7 +1701,7 @@ type GetDeletedWorkItemShallowReferencesArgs struct {
 }
 
 // Restores the deleted work item from Recycle Bin.
-func (client *Client) RestoreWorkItem(ctx context.Context, args RestoreWorkItemArgs) (*WorkItemDelete, error) {
+func (client *ClientImpl) RestoreWorkItem(ctx context.Context, args RestoreWorkItemArgs) (*WorkItemDelete, error) {
 	if args.Payload == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Payload"}
 	}
@@ -1583,7 +1740,7 @@ type RestoreWorkItemArgs struct {
 }
 
 // Returns a fully hydrated work item for the requested revision
-func (client *Client) GetRevision(ctx context.Context, args GetRevisionArgs) (*WorkItem, error) {
+func (client *ClientImpl) GetRevision(ctx context.Context, args GetRevisionArgs) (*WorkItem, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -1625,7 +1782,7 @@ type GetRevisionArgs struct {
 }
 
 // Returns the list of fully hydrated work item revisions, paged.
-func (client *Client) GetRevisions(ctx context.Context, args GetRevisionsArgs) (*[]WorkItem, error) {
+func (client *ClientImpl) GetRevisions(ctx context.Context, args GetRevisionsArgs) (*[]WorkItem, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -1671,7 +1828,7 @@ type GetRevisionsArgs struct {
 }
 
 // [Preview API] Creates a template
-func (client *Client) CreateTemplate(ctx context.Context, args CreateTemplateArgs) (*WorkItemTemplate, error) {
+func (client *ClientImpl) CreateTemplate(ctx context.Context, args CreateTemplateArgs) (*WorkItemTemplate, error) {
 	if args.Template == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Template"}
 	}
@@ -1711,7 +1868,7 @@ type CreateTemplateArgs struct {
 }
 
 // [Preview API] Gets template
-func (client *Client) GetTemplates(ctx context.Context, args GetTemplatesArgs) (*[]WorkItemTemplateReference, error) {
+func (client *ClientImpl) GetTemplates(ctx context.Context, args GetTemplatesArgs) (*[]WorkItemTemplateReference, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1748,7 +1905,7 @@ type GetTemplatesArgs struct {
 }
 
 // [Preview API] Deletes the template with given id
-func (client *Client) DeleteTemplate(ctx context.Context, args DeleteTemplateArgs) error {
+func (client *ClientImpl) DeleteTemplate(ctx context.Context, args DeleteTemplateArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1783,7 +1940,7 @@ type DeleteTemplateArgs struct {
 }
 
 // [Preview API] Gets the template with specified id
-func (client *Client) GetTemplate(ctx context.Context, args GetTemplateArgs) (*WorkItemTemplate, error) {
+func (client *ClientImpl) GetTemplate(ctx context.Context, args GetTemplateArgs) (*WorkItemTemplate, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1820,7 +1977,7 @@ type GetTemplateArgs struct {
 }
 
 // [Preview API] Replace template contents
-func (client *Client) ReplaceTemplate(ctx context.Context, args ReplaceTemplateArgs) (*WorkItemTemplate, error) {
+func (client *ClientImpl) ReplaceTemplate(ctx context.Context, args ReplaceTemplateArgs) (*WorkItemTemplate, error) {
 	if args.TemplateContent == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TemplateContent"}
 	}
@@ -1866,7 +2023,7 @@ type ReplaceTemplateArgs struct {
 }
 
 // Returns a single update for a work item
-func (client *Client) GetUpdate(ctx context.Context, args GetUpdateArgs) (*WorkItemUpdate, error) {
+func (client *ClientImpl) GetUpdate(ctx context.Context, args GetUpdateArgs) (*WorkItemUpdate, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -1902,7 +2059,7 @@ type GetUpdateArgs struct {
 }
 
 // Returns a the deltas between work item revisions
-func (client *Client) GetUpdates(ctx context.Context, args GetUpdatesArgs) (*[]WorkItemUpdate, error) {
+func (client *ClientImpl) GetUpdates(ctx context.Context, args GetUpdatesArgs) (*[]WorkItemUpdate, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -1943,7 +2100,7 @@ type GetUpdatesArgs struct {
 }
 
 // Gets the results of the query given its WIQL.
-func (client *Client) QueryByWiql(ctx context.Context, args QueryByWiqlArgs) (*WorkItemQueryResult, error) {
+func (client *ClientImpl) QueryByWiql(ctx context.Context, args QueryByWiqlArgs) (*WorkItemQueryResult, error) {
 	if args.Wiql == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Wiql"}
 	}
@@ -1992,7 +2149,7 @@ type QueryByWiqlArgs struct {
 }
 
 // Gets the results of the query given the query ID.
-func (client *Client) GetQueryResultCount(ctx context.Context, args GetQueryResultCountArgs) (*int, error) {
+func (client *ClientImpl) GetQueryResultCount(ctx context.Context, args GetQueryResultCountArgs) (*int, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -2038,7 +2195,7 @@ type GetQueryResultCountArgs struct {
 }
 
 // Gets the results of the query given the query ID.
-func (client *Client) QueryById(ctx context.Context, args QueryByIdArgs) (*WorkItemQueryResult, error) {
+func (client *ClientImpl) QueryById(ctx context.Context, args QueryByIdArgs) (*WorkItemQueryResult, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -2084,7 +2241,7 @@ type QueryByIdArgs struct {
 }
 
 // Get a work item icon given the friendly name and icon color.
-func (client *Client) GetWorkItemIconJson(ctx context.Context, args GetWorkItemIconJsonArgs) (*WorkItemIcon, error) {
+func (client *ClientImpl) GetWorkItemIconJson(ctx context.Context, args GetWorkItemIconJsonArgs) (*WorkItemIcon, error) {
 	routeValues := make(map[string]string)
 	if args.Icon == nil || *args.Icon == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Icon"}
@@ -2120,7 +2277,7 @@ type GetWorkItemIconJsonArgs struct {
 }
 
 // Get a list of all work item icons.
-func (client *Client) GetWorkItemIcons(ctx context.Context, args GetWorkItemIconsArgs) (*[]WorkItemIcon, error) {
+func (client *ClientImpl) GetWorkItemIcons(ctx context.Context, args GetWorkItemIconsArgs) (*[]WorkItemIcon, error) {
 	locationId, _ := uuid.Parse("4e1eb4a5-1970-4228-a682-ec48eb2dca30")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, nil, nil, "", "application/json", nil)
 	if err != nil {
@@ -2137,7 +2294,7 @@ type GetWorkItemIconsArgs struct {
 }
 
 // Get a work item icon given the friendly name and icon color.
-func (client *Client) GetWorkItemIconSvg(ctx context.Context, args GetWorkItemIconSvgArgs) (io.ReadCloser, error) {
+func (client *ClientImpl) GetWorkItemIconSvg(ctx context.Context, args GetWorkItemIconSvgArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.Icon == nil || *args.Icon == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Icon"}
@@ -2171,7 +2328,7 @@ type GetWorkItemIconSvgArgs struct {
 }
 
 // Get a work item icon given the friendly name and icon color.
-func (client *Client) GetWorkItemIconXaml(ctx context.Context, args GetWorkItemIconXamlArgs) (io.ReadCloser, error) {
+func (client *ClientImpl) GetWorkItemIconXaml(ctx context.Context, args GetWorkItemIconXamlArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.Icon == nil || *args.Icon == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Icon"}
@@ -2205,7 +2362,7 @@ type GetWorkItemIconXamlArgs struct {
 }
 
 // Get a batch of work item links
-func (client *Client) GetReportingLinksByLinkType(ctx context.Context, args GetReportingLinksByLinkTypeArgs) (*ReportingWorkItemLinksBatch, error) {
+func (client *ClientImpl) GetReportingLinksByLinkType(ctx context.Context, args GetReportingLinksByLinkTypeArgs) (*ReportingWorkItemLinksBatch, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -2252,7 +2409,7 @@ type GetReportingLinksByLinkTypeArgs struct {
 }
 
 // Gets the work item relation type definition.
-func (client *Client) GetRelationType(ctx context.Context, args GetRelationTypeArgs) (*WorkItemRelationType, error) {
+func (client *ClientImpl) GetRelationType(ctx context.Context, args GetRelationTypeArgs) (*WorkItemRelationType, error) {
 	routeValues := make(map[string]string)
 	if args.Relation == nil || *args.Relation == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Relation"}
@@ -2277,7 +2434,7 @@ type GetRelationTypeArgs struct {
 }
 
 // Gets the work item relation types.
-func (client *Client) GetRelationTypes(ctx context.Context, args GetRelationTypesArgs) (*[]WorkItemRelationType, error) {
+func (client *ClientImpl) GetRelationTypes(ctx context.Context, args GetRelationTypesArgs) (*[]WorkItemRelationType, error) {
 	locationId, _ := uuid.Parse("f5d33bc9-5b49-4a3c-a9bd-f3cd46dd2165")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, nil, nil, "", "application/json", nil)
 	if err != nil {
@@ -2294,7 +2451,7 @@ type GetRelationTypesArgs struct {
 }
 
 // Get a batch of work item revisions with the option of including deleted items
-func (client *Client) ReadReportingRevisionsGet(ctx context.Context, args ReadReportingRevisionsGetArgs) (*ReportingWorkItemRevisionsBatch, error) {
+func (client *ClientImpl) ReadReportingRevisionsGet(ctx context.Context, args ReadReportingRevisionsGetArgs) (*ReportingWorkItemRevisionsBatch, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -2376,7 +2533,7 @@ type ReadReportingRevisionsGetArgs struct {
 }
 
 // Get a batch of work item revisions. This request may be used if your list of fields is large enough that it may run the URL over the length limit.
-func (client *Client) ReadReportingRevisionsPost(ctx context.Context, args ReadReportingRevisionsPostArgs) (*ReportingWorkItemRevisionsBatch, error) {
+func (client *ClientImpl) ReadReportingRevisionsPost(ctx context.Context, args ReadReportingRevisionsPostArgs) (*ReportingWorkItemRevisionsBatch, error) {
 	if args.Filter == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Filter"}
 	}
@@ -2425,7 +2582,7 @@ type ReadReportingRevisionsPostArgs struct {
 }
 
 // [Preview API]
-func (client *Client) ReadReportingDiscussions(ctx context.Context, args ReadReportingDiscussionsArgs) (*ReportingWorkItemRevisionsBatch, error) {
+func (client *ClientImpl) ReadReportingDiscussions(ctx context.Context, args ReadReportingDiscussionsArgs) (*ReportingWorkItemRevisionsBatch, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -2460,7 +2617,7 @@ type ReadReportingDiscussionsArgs struct {
 }
 
 // Creates a single work item.
-func (client *Client) CreateWorkItem(ctx context.Context, args CreateWorkItemArgs) (*WorkItem, error) {
+func (client *ClientImpl) CreateWorkItem(ctx context.Context, args CreateWorkItemArgs) (*WorkItem, error) {
 	if args.Document == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Document"}
 	}
@@ -2521,7 +2678,7 @@ type CreateWorkItemArgs struct {
 }
 
 // Returns a single work item from a template.
-func (client *Client) GetWorkItemTemplate(ctx context.Context, args GetWorkItemTemplateArgs) (*WorkItem, error) {
+func (client *ClientImpl) GetWorkItemTemplate(ctx context.Context, args GetWorkItemTemplateArgs) (*WorkItem, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -2568,7 +2725,7 @@ type GetWorkItemTemplateArgs struct {
 }
 
 // Deletes the specified work item and sends it to the Recycle Bin, so that it can be restored back, if required. Optionally, if the destroy parameter has been set to true, it destroys the work item permanently. WARNING: If the destroy parameter is set to true, work items deleted by this command will NOT go to recycle-bin and there is no way to restore/recover them after deletion. It is recommended NOT to use this parameter. If you do, please use this parameter with extreme caution.
-func (client *Client) DeleteWorkItem(ctx context.Context, args DeleteWorkItemArgs) (*WorkItemDelete, error) {
+func (client *ClientImpl) DeleteWorkItem(ctx context.Context, args DeleteWorkItemArgs) (*WorkItemDelete, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -2604,7 +2761,7 @@ type DeleteWorkItemArgs struct {
 }
 
 // Returns a single work item.
-func (client *Client) GetWorkItem(ctx context.Context, args GetWorkItemArgs) (*WorkItem, error) {
+func (client *ClientImpl) GetWorkItem(ctx context.Context, args GetWorkItemArgs) (*WorkItem, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -2651,7 +2808,7 @@ type GetWorkItemArgs struct {
 }
 
 // Returns a list of work items (Maximum 200)
-func (client *Client) GetWorkItems(ctx context.Context, args GetWorkItemsArgs) (*[]WorkItem, error) {
+func (client *ClientImpl) GetWorkItems(ctx context.Context, args GetWorkItemsArgs) (*[]WorkItem, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -2708,7 +2865,7 @@ type GetWorkItemsArgs struct {
 }
 
 // Updates a single work item.
-func (client *Client) UpdateWorkItem(ctx context.Context, args UpdateWorkItemArgs) (*WorkItem, error) {
+func (client *ClientImpl) UpdateWorkItem(ctx context.Context, args UpdateWorkItemArgs) (*WorkItem, error) {
 	if args.Document == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Document"}
 	}
@@ -2768,7 +2925,7 @@ type UpdateWorkItemArgs struct {
 }
 
 // Gets work items for a list of work item ids (Maximum 200)
-func (client *Client) GetWorkItemsBatch(ctx context.Context, args GetWorkItemsBatchArgs) (*[]WorkItem, error) {
+func (client *ClientImpl) GetWorkItemsBatch(ctx context.Context, args GetWorkItemsBatchArgs) (*[]WorkItem, error) {
 	if args.WorkItemGetRequest == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WorkItemGetRequest"}
 	}
@@ -2801,7 +2958,7 @@ type GetWorkItemsBatchArgs struct {
 }
 
 // [Preview API] Returns the next state on the given work item IDs.
-func (client *Client) GetWorkItemNextStatesOnCheckinAction(ctx context.Context, args GetWorkItemNextStatesOnCheckinActionArgs) (*[]WorkItemNextStateOnTransition, error) {
+func (client *ClientImpl) GetWorkItemNextStatesOnCheckinAction(ctx context.Context, args GetWorkItemNextStatesOnCheckinActionArgs) (*[]WorkItemNextStateOnTransition, error) {
 	queryParams := url.Values{}
 	if args.Ids == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "ids"}
@@ -2835,7 +2992,7 @@ type GetWorkItemNextStatesOnCheckinActionArgs struct {
 }
 
 // Get all work item type categories.
-func (client *Client) GetWorkItemTypeCategories(ctx context.Context, args GetWorkItemTypeCategoriesArgs) (*[]WorkItemTypeCategory, error) {
+func (client *ClientImpl) GetWorkItemTypeCategories(ctx context.Context, args GetWorkItemTypeCategoriesArgs) (*[]WorkItemTypeCategory, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -2860,7 +3017,7 @@ type GetWorkItemTypeCategoriesArgs struct {
 }
 
 // Get specific work item type category by name.
-func (client *Client) GetWorkItemTypeCategory(ctx context.Context, args GetWorkItemTypeCategoryArgs) (*WorkItemTypeCategory, error) {
+func (client *ClientImpl) GetWorkItemTypeCategory(ctx context.Context, args GetWorkItemTypeCategoryArgs) (*WorkItemTypeCategory, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -2891,7 +3048,7 @@ type GetWorkItemTypeCategoryArgs struct {
 }
 
 // Returns a work item type definition.
-func (client *Client) GetWorkItemType(ctx context.Context, args GetWorkItemTypeArgs) (*WorkItemType, error) {
+func (client *ClientImpl) GetWorkItemType(ctx context.Context, args GetWorkItemTypeArgs) (*WorkItemType, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -2922,7 +3079,7 @@ type GetWorkItemTypeArgs struct {
 }
 
 // Returns the list of work item types
-func (client *Client) GetWorkItemTypes(ctx context.Context, args GetWorkItemTypesArgs) (*[]WorkItemType, error) {
+func (client *ClientImpl) GetWorkItemTypes(ctx context.Context, args GetWorkItemTypesArgs) (*[]WorkItemType, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -2947,7 +3104,7 @@ type GetWorkItemTypesArgs struct {
 }
 
 // Get a list of fields for a work item type with detailed references.
-func (client *Client) GetWorkItemTypeFieldsWithReferences(ctx context.Context, args GetWorkItemTypeFieldsWithReferencesArgs) (*[]WorkItemTypeFieldWithReferences, error) {
+func (client *ClientImpl) GetWorkItemTypeFieldsWithReferences(ctx context.Context, args GetWorkItemTypeFieldsWithReferencesArgs) (*[]WorkItemTypeFieldWithReferences, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -2984,7 +3141,7 @@ type GetWorkItemTypeFieldsWithReferencesArgs struct {
 }
 
 // Get a field for a work item type with detailed references.
-func (client *Client) GetWorkItemTypeFieldWithReferences(ctx context.Context, args GetWorkItemTypeFieldWithReferencesArgs) (*WorkItemTypeFieldWithReferences, error) {
+func (client *ClientImpl) GetWorkItemTypeFieldWithReferences(ctx context.Context, args GetWorkItemTypeFieldWithReferencesArgs) (*WorkItemTypeFieldWithReferences, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -3027,7 +3184,7 @@ type GetWorkItemTypeFieldWithReferencesArgs struct {
 }
 
 // [Preview API] Returns the state names and colors for a work item type.
-func (client *Client) GetWorkItemTypeStates(ctx context.Context, args GetWorkItemTypeStatesArgs) (*[]WorkItemStateColor, error) {
+func (client *ClientImpl) GetWorkItemTypeStates(ctx context.Context, args GetWorkItemTypeStatesArgs) (*[]WorkItemStateColor, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}

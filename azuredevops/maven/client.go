@@ -21,22 +21,37 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("6f7f8c07-ff36-473c-bcf3-bd6cc9b6c066")
 
-type Client struct {
+type Client interface {
+	// [Preview API] Fulfills Maven package file download requests by either returning the URL of the requested package file or, in the case of Azure DevOps Server (OnPrem), returning the content as a stream.
+	DownloadPackage(context.Context, DownloadPackageArgs) (interface{}, error)
+	// [Preview API] Permanently delete a package from a feed's recycle bin.
+	DeletePackageVersionFromRecycleBin(context.Context, DeletePackageVersionFromRecycleBinArgs) error
+	// [Preview API] Get information about a package version in the recycle bin.
+	GetPackageVersionMetadataFromRecycleBin(context.Context, GetPackageVersionMetadataFromRecycleBinArgs) (*MavenPackageVersionDeletionState, error)
+	// [Preview API] Restore a package version from the recycle bin to its associated feed.
+	RestorePackageVersionFromRecycleBin(context.Context, RestorePackageVersionFromRecycleBinArgs) error
+	// [Preview API] Get information about a package version.
+	GetPackageVersion(context.Context, GetPackageVersionArgs) (*Package, error)
+	// [Preview API] Delete a package version from the feed and move it to the feed's recycle bin.
+	PackageDelete(context.Context, PackageDeleteArgs) error
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
 // [Preview API] Fulfills Maven package file download requests by either returning the URL of the requested package file or, in the case of Azure DevOps Server (OnPrem), returning the content as a stream.
-func (client *Client) DownloadPackage(ctx context.Context, args DownloadPackageArgs) (interface{}, error) {
+func (client *ClientImpl) DownloadPackage(ctx context.Context, args DownloadPackageArgs) (interface{}, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -90,7 +105,7 @@ type DownloadPackageArgs struct {
 }
 
 // [Preview API] Permanently delete a package from a feed's recycle bin.
-func (client *Client) DeletePackageVersionFromRecycleBin(ctx context.Context, args DeletePackageVersionFromRecycleBinArgs) error {
+func (client *ClientImpl) DeletePackageVersionFromRecycleBin(ctx context.Context, args DeletePackageVersionFromRecycleBinArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -136,7 +151,7 @@ type DeletePackageVersionFromRecycleBinArgs struct {
 }
 
 // [Preview API] Get information about a package version in the recycle bin.
-func (client *Client) GetPackageVersionMetadataFromRecycleBin(ctx context.Context, args GetPackageVersionMetadataFromRecycleBinArgs) (*MavenPackageVersionDeletionState, error) {
+func (client *ClientImpl) GetPackageVersionMetadataFromRecycleBin(ctx context.Context, args GetPackageVersionMetadataFromRecycleBinArgs) (*MavenPackageVersionDeletionState, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -184,7 +199,7 @@ type GetPackageVersionMetadataFromRecycleBinArgs struct {
 }
 
 // [Preview API] Restore a package version from the recycle bin to its associated feed.
-func (client *Client) RestorePackageVersionFromRecycleBin(ctx context.Context, args RestorePackageVersionFromRecycleBinArgs) error {
+func (client *ClientImpl) RestorePackageVersionFromRecycleBin(ctx context.Context, args RestorePackageVersionFromRecycleBinArgs) error {
 	if args.PackageVersionDetails == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.PackageVersionDetails"}
 	}
@@ -239,7 +254,7 @@ type RestorePackageVersionFromRecycleBinArgs struct {
 }
 
 // [Preview API] Get information about a package version.
-func (client *Client) GetPackageVersion(ctx context.Context, args GetPackageVersionArgs) (*Package, error) {
+func (client *ClientImpl) GetPackageVersion(ctx context.Context, args GetPackageVersionArgs) (*Package, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -293,7 +308,7 @@ type GetPackageVersionArgs struct {
 }
 
 // [Preview API] Delete a package version from the feed and move it to the feed's recycle bin.
-func (client *Client) PackageDelete(ctx context.Context, args PackageDeleteArgs) error {
+func (client *ClientImpl) PackageDelete(ctx context.Context, args PackageDeleteArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project

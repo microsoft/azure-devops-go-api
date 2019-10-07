@@ -21,22 +21,39 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("92f0314b-06c5-46e0-abe7-15fd9d13276a")
 
-type Client struct {
+type Client interface {
+	// [Preview API] Download a python package file directly. This API is intended for manual UI download options, not for programmatic access and scripting.
+	DownloadPackage(context.Context, DownloadPackageArgs) (interface{}, error)
+	// [Preview API] Delete a package version from the feed, moving it to the recycle bin.
+	DeletePackageVersionFromRecycleBin(context.Context, DeletePackageVersionFromRecycleBinArgs) error
+	// [Preview API] Get information about a package version in the recycle bin.
+	GetPackageVersionMetadataFromRecycleBin(context.Context, GetPackageVersionMetadataFromRecycleBinArgs) (*PyPiPackageVersionDeletionState, error)
+	// [Preview API] Restore a package version from the recycle bin to its associated feed.
+	RestorePackageVersionFromRecycleBin(context.Context, RestorePackageVersionFromRecycleBinArgs) error
+	// [Preview API] Delete a package version, moving it to the recycle bin.
+	DeletePackageVersion(context.Context, DeletePackageVersionArgs) (*Package, error)
+	// [Preview API] Get information about a package version.
+	GetPackageVersion(context.Context, GetPackageVersionArgs) (*Package, error)
+	// [Preview API] Update state for a package version.
+	UpdatePackageVersion(context.Context, UpdatePackageVersionArgs) error
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
 // [Preview API] Download a python package file directly. This API is intended for manual UI download options, not for programmatic access and scripting.
-func (client *Client) DownloadPackage(ctx context.Context, args DownloadPackageArgs) (interface{}, error) {
+func (client *ClientImpl) DownloadPackage(ctx context.Context, args DownloadPackageArgs) (interface{}, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -84,7 +101,7 @@ type DownloadPackageArgs struct {
 }
 
 // [Preview API] Delete a package version from the feed, moving it to the recycle bin.
-func (client *Client) DeletePackageVersionFromRecycleBin(ctx context.Context, args DeletePackageVersionFromRecycleBinArgs) error {
+func (client *ClientImpl) DeletePackageVersionFromRecycleBin(ctx context.Context, args DeletePackageVersionFromRecycleBinArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -124,7 +141,7 @@ type DeletePackageVersionFromRecycleBinArgs struct {
 }
 
 // [Preview API] Get information about a package version in the recycle bin.
-func (client *Client) GetPackageVersionMetadataFromRecycleBin(ctx context.Context, args GetPackageVersionMetadataFromRecycleBinArgs) (*PyPiPackageVersionDeletionState, error) {
+func (client *ClientImpl) GetPackageVersionMetadataFromRecycleBin(ctx context.Context, args GetPackageVersionMetadataFromRecycleBinArgs) (*PyPiPackageVersionDeletionState, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -166,7 +183,7 @@ type GetPackageVersionMetadataFromRecycleBinArgs struct {
 }
 
 // [Preview API] Restore a package version from the recycle bin to its associated feed.
-func (client *Client) RestorePackageVersionFromRecycleBin(ctx context.Context, args RestorePackageVersionFromRecycleBinArgs) error {
+func (client *ClientImpl) RestorePackageVersionFromRecycleBin(ctx context.Context, args RestorePackageVersionFromRecycleBinArgs) error {
 	if args.PackageVersionDetails == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.PackageVersionDetails"}
 	}
@@ -215,7 +232,7 @@ type RestorePackageVersionFromRecycleBinArgs struct {
 }
 
 // [Preview API] Delete a package version, moving it to the recycle bin.
-func (client *Client) DeletePackageVersion(ctx context.Context, args DeletePackageVersionArgs) (*Package, error) {
+func (client *ClientImpl) DeletePackageVersion(ctx context.Context, args DeletePackageVersionArgs) (*Package, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -257,7 +274,7 @@ type DeletePackageVersionArgs struct {
 }
 
 // [Preview API] Get information about a package version.
-func (client *Client) GetPackageVersion(ctx context.Context, args GetPackageVersionArgs) (*Package, error) {
+func (client *ClientImpl) GetPackageVersion(ctx context.Context, args GetPackageVersionArgs) (*Package, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -305,7 +322,7 @@ type GetPackageVersionArgs struct {
 }
 
 // [Preview API] Update state for a package version.
-func (client *Client) UpdatePackageVersion(ctx context.Context, args UpdatePackageVersionArgs) error {
+func (client *ClientImpl) UpdatePackageVersion(ctx context.Context, args UpdatePackageVersionArgs) error {
 	if args.PackageVersionDetails == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.PackageVersionDetails"}
 	}

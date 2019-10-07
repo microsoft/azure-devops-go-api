@@ -19,19 +19,54 @@ import (
 	"strings"
 )
 
-type Client struct {
+type Client interface {
+	// Get a list of diagnostic logs for this service.
+	ListLogs(context.Context, ListLogsArgs) (*[]INotificationDiagnosticLog, error)
+	// Get the diagnostics settings for a subscription.
+	GetSubscriptionDiagnostics(context.Context, GetSubscriptionDiagnosticsArgs) (*SubscriptionDiagnostics, error)
+	// Update the diagnostics settings for a subscription.
+	UpdateSubscriptionDiagnostics(context.Context, UpdateSubscriptionDiagnosticsArgs) (*SubscriptionDiagnostics, error)
+	// Get a specific event type.
+	GetEventType(context.Context, GetEventTypeArgs) (*NotificationEventType, error)
+	// List available event types for this service. Optionally filter by only event types for the specified publisher.
+	ListEventTypes(context.Context, ListEventTypesArgs) (*[]NotificationEventType, error)
+	GetSettings(context.Context, GetSettingsArgs) (*NotificationAdminSettings, error)
+	UpdateSettings(context.Context, UpdateSettingsArgs) (*NotificationAdminSettings, error)
+	// Get delivery preferences of a notifications subscriber.
+	GetSubscriber(context.Context, GetSubscriberArgs) (*NotificationSubscriber, error)
+	// Update delivery preferences of a notifications subscriber.
+	UpdateSubscriber(context.Context, UpdateSubscriberArgs) (*NotificationSubscriber, error)
+	// Query for subscriptions. A subscription is returned if it matches one or more of the specified conditions.
+	QuerySubscriptions(context.Context, QuerySubscriptionsArgs) (*[]NotificationSubscription, error)
+	// Create a new subscription.
+	CreateSubscription(context.Context, CreateSubscriptionArgs) (*NotificationSubscription, error)
+	// Delete a subscription.
+	DeleteSubscription(context.Context, DeleteSubscriptionArgs) error
+	// Get a notification subscription by its ID.
+	GetSubscription(context.Context, GetSubscriptionArgs) (*NotificationSubscription, error)
+	// Get a list of notification subscriptions, either by subscription IDs or by all subscriptions for a given user or group.
+	ListSubscriptions(context.Context, ListSubscriptionsArgs) (*[]NotificationSubscription, error)
+	// Update an existing subscription. Depending on the type of subscription and permissions, the caller can update the description, filter settings, channel (delivery) settings and more.
+	UpdateSubscription(context.Context, UpdateSubscriptionArgs) (*NotificationSubscription, error)
+	// Get available subscription templates.
+	GetSubscriptionTemplates(context.Context, GetSubscriptionTemplatesArgs) (*[]NotificationSubscriptionTemplate, error)
+	// Update the specified user's settings for the specified subscription. This API is typically used to opt in or out of a shared subscription. User settings can only be applied to shared subscriptions, like team subscriptions or default subscriptions.
+	UpdateSubscriptionUserSettings(context.Context, UpdateSubscriptionUserSettingsArgs) (*SubscriptionUserSettings, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) *Client {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) Client {
 	client := connection.GetClientByUrl(connection.BaseUrl)
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}
 }
 
 // Get a list of diagnostic logs for this service.
-func (client *Client) ListLogs(ctx context.Context, args ListLogsArgs) (*[]INotificationDiagnosticLog, error) {
+func (client *ClientImpl) ListLogs(ctx context.Context, args ListLogsArgs) (*[]INotificationDiagnosticLog, error) {
 	routeValues := make(map[string]string)
 	if args.Source == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Source"}
@@ -72,7 +107,7 @@ type ListLogsArgs struct {
 }
 
 // Get the diagnostics settings for a subscription.
-func (client *Client) GetSubscriptionDiagnostics(ctx context.Context, args GetSubscriptionDiagnosticsArgs) (*SubscriptionDiagnostics, error) {
+func (client *ClientImpl) GetSubscriptionDiagnostics(ctx context.Context, args GetSubscriptionDiagnosticsArgs) (*SubscriptionDiagnostics, error) {
 	routeValues := make(map[string]string)
 	if args.SubscriptionId == nil || *args.SubscriptionId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubscriptionId"}
@@ -97,7 +132,7 @@ type GetSubscriptionDiagnosticsArgs struct {
 }
 
 // Update the diagnostics settings for a subscription.
-func (client *Client) UpdateSubscriptionDiagnostics(ctx context.Context, args UpdateSubscriptionDiagnosticsArgs) (*SubscriptionDiagnostics, error) {
+func (client *ClientImpl) UpdateSubscriptionDiagnostics(ctx context.Context, args UpdateSubscriptionDiagnosticsArgs) (*SubscriptionDiagnostics, error) {
 	if args.UpdateParameters == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UpdateParameters"}
 	}
@@ -131,7 +166,7 @@ type UpdateSubscriptionDiagnosticsArgs struct {
 }
 
 // Get a specific event type.
-func (client *Client) GetEventType(ctx context.Context, args GetEventTypeArgs) (*NotificationEventType, error) {
+func (client *ClientImpl) GetEventType(ctx context.Context, args GetEventTypeArgs) (*NotificationEventType, error) {
 	routeValues := make(map[string]string)
 	if args.EventType == nil || *args.EventType == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.EventType"}
@@ -156,7 +191,7 @@ type GetEventTypeArgs struct {
 }
 
 // List available event types for this service. Optionally filter by only event types for the specified publisher.
-func (client *Client) ListEventTypes(ctx context.Context, args ListEventTypesArgs) (*[]NotificationEventType, error) {
+func (client *ClientImpl) ListEventTypes(ctx context.Context, args ListEventTypesArgs) (*[]NotificationEventType, error) {
 	queryParams := url.Values{}
 	if args.PublisherId != nil {
 		queryParams.Add("publisherId", *args.PublisherId)
@@ -178,7 +213,7 @@ type ListEventTypesArgs struct {
 	PublisherId *string
 }
 
-func (client *Client) GetSettings(ctx context.Context, args GetSettingsArgs) (*NotificationAdminSettings, error) {
+func (client *ClientImpl) GetSettings(ctx context.Context, args GetSettingsArgs) (*NotificationAdminSettings, error) {
 	locationId, _ := uuid.Parse("cbe076d8-2803-45ff-8d8d-44653686ea2a")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, nil, nil, "", "application/json", nil)
 	if err != nil {
@@ -194,7 +229,7 @@ func (client *Client) GetSettings(ctx context.Context, args GetSettingsArgs) (*N
 type GetSettingsArgs struct {
 }
 
-func (client *Client) UpdateSettings(ctx context.Context, args UpdateSettingsArgs) (*NotificationAdminSettings, error) {
+func (client *ClientImpl) UpdateSettings(ctx context.Context, args UpdateSettingsArgs) (*NotificationAdminSettings, error) {
 	if args.UpdateParameters == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UpdateParameters"}
 	}
@@ -220,7 +255,7 @@ type UpdateSettingsArgs struct {
 }
 
 // Get delivery preferences of a notifications subscriber.
-func (client *Client) GetSubscriber(ctx context.Context, args GetSubscriberArgs) (*NotificationSubscriber, error) {
+func (client *ClientImpl) GetSubscriber(ctx context.Context, args GetSubscriberArgs) (*NotificationSubscriber, error) {
 	routeValues := make(map[string]string)
 	if args.SubscriberId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SubscriberId"}
@@ -245,7 +280,7 @@ type GetSubscriberArgs struct {
 }
 
 // Update delivery preferences of a notifications subscriber.
-func (client *Client) UpdateSubscriber(ctx context.Context, args UpdateSubscriberArgs) (*NotificationSubscriber, error) {
+func (client *ClientImpl) UpdateSubscriber(ctx context.Context, args UpdateSubscriberArgs) (*NotificationSubscriber, error) {
 	if args.UpdateParameters == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UpdateParameters"}
 	}
@@ -279,7 +314,7 @@ type UpdateSubscriberArgs struct {
 }
 
 // Query for subscriptions. A subscription is returned if it matches one or more of the specified conditions.
-func (client *Client) QuerySubscriptions(ctx context.Context, args QuerySubscriptionsArgs) (*[]NotificationSubscription, error) {
+func (client *ClientImpl) QuerySubscriptions(ctx context.Context, args QuerySubscriptionsArgs) (*[]NotificationSubscription, error) {
 	if args.SubscriptionQuery == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SubscriptionQuery"}
 	}
@@ -305,7 +340,7 @@ type QuerySubscriptionsArgs struct {
 }
 
 // Create a new subscription.
-func (client *Client) CreateSubscription(ctx context.Context, args CreateSubscriptionArgs) (*NotificationSubscription, error) {
+func (client *ClientImpl) CreateSubscription(ctx context.Context, args CreateSubscriptionArgs) (*NotificationSubscription, error) {
 	if args.CreateParameters == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CreateParameters"}
 	}
@@ -331,7 +366,7 @@ type CreateSubscriptionArgs struct {
 }
 
 // Delete a subscription.
-func (client *Client) DeleteSubscription(ctx context.Context, args DeleteSubscriptionArgs) error {
+func (client *ClientImpl) DeleteSubscription(ctx context.Context, args DeleteSubscriptionArgs) error {
 	routeValues := make(map[string]string)
 	if args.SubscriptionId == nil || *args.SubscriptionId == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubscriptionId"}
@@ -354,7 +389,7 @@ type DeleteSubscriptionArgs struct {
 }
 
 // Get a notification subscription by its ID.
-func (client *Client) GetSubscription(ctx context.Context, args GetSubscriptionArgs) (*NotificationSubscription, error) {
+func (client *ClientImpl) GetSubscription(ctx context.Context, args GetSubscriptionArgs) (*NotificationSubscription, error) {
 	routeValues := make(map[string]string)
 	if args.SubscriptionId == nil || *args.SubscriptionId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubscriptionId"}
@@ -385,7 +420,7 @@ type GetSubscriptionArgs struct {
 }
 
 // Get a list of notification subscriptions, either by subscription IDs or by all subscriptions for a given user or group.
-func (client *Client) ListSubscriptions(ctx context.Context, args ListSubscriptionsArgs) (*[]NotificationSubscription, error) {
+func (client *ClientImpl) ListSubscriptions(ctx context.Context, args ListSubscriptionsArgs) (*[]NotificationSubscription, error) {
 	queryParams := url.Values{}
 	if args.TargetId != nil {
 		queryParams.Add("targetId", (*args.TargetId).String())
@@ -419,7 +454,7 @@ type ListSubscriptionsArgs struct {
 }
 
 // Update an existing subscription. Depending on the type of subscription and permissions, the caller can update the description, filter settings, channel (delivery) settings and more.
-func (client *Client) UpdateSubscription(ctx context.Context, args UpdateSubscriptionArgs) (*NotificationSubscription, error) {
+func (client *ClientImpl) UpdateSubscription(ctx context.Context, args UpdateSubscriptionArgs) (*NotificationSubscription, error) {
 	if args.UpdateParameters == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UpdateParameters"}
 	}
@@ -453,7 +488,7 @@ type UpdateSubscriptionArgs struct {
 }
 
 // Get available subscription templates.
-func (client *Client) GetSubscriptionTemplates(ctx context.Context, args GetSubscriptionTemplatesArgs) (*[]NotificationSubscriptionTemplate, error) {
+func (client *ClientImpl) GetSubscriptionTemplates(ctx context.Context, args GetSubscriptionTemplatesArgs) (*[]NotificationSubscriptionTemplate, error) {
 	locationId, _ := uuid.Parse("fa5d24ba-7484-4f3d-888d-4ec6b1974082")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, nil, nil, "", "application/json", nil)
 	if err != nil {
@@ -470,7 +505,7 @@ type GetSubscriptionTemplatesArgs struct {
 }
 
 // Update the specified user's settings for the specified subscription. This API is typically used to opt in or out of a shared subscription. User settings can only be applied to shared subscriptions, like team subscriptions or default subscriptions.
-func (client *Client) UpdateSubscriptionUserSettings(ctx context.Context, args UpdateSubscriptionUserSettingsArgs) (*SubscriptionUserSettings, error) {
+func (client *ClientImpl) UpdateSubscriptionUserSettings(ctx context.Context, args UpdateSubscriptionUserSettingsArgs) (*SubscriptionUserSettings, error) {
 	if args.UserSettings == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UserSettings"}
 	}

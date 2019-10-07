@@ -19,22 +19,27 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("b40c1171-807a-493a-8f3f-5c26d5e2f5aa")
 
-type Client struct {
+type Client interface {
+	// [Preview API] Creates a session, a wrapper around a feed that can store additional metadata on the packages published to it.
+	CreateSession(context.Context, CreateSessionArgs) (*SessionResponse, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
 // [Preview API] Creates a session, a wrapper around a feed that can store additional metadata on the packages published to it.
-func (client *Client) CreateSession(ctx context.Context, args CreateSessionArgs) (*SessionResponse, error) {
+func (client *ClientImpl) CreateSession(ctx context.Context, args CreateSessionArgs) (*SessionResponse, error) {
 	if args.SessionRequest == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SessionRequest"}
 	}

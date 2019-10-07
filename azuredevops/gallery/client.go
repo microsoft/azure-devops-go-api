@@ -22,22 +22,181 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("69d21c00-f135-441b-b5ce-3626378e0819")
 
-type Client struct {
+type Client interface {
+	// [Preview API]
+	ShareExtensionById(context.Context, ShareExtensionByIdArgs) error
+	// [Preview API]
+	UnshareExtensionById(context.Context, UnshareExtensionByIdArgs) error
+	// [Preview API]
+	ShareExtension(context.Context, ShareExtensionArgs) error
+	// [Preview API]
+	UnshareExtension(context.Context, UnshareExtensionArgs) error
+	// [Preview API]
+	GetAcquisitionOptions(context.Context, GetAcquisitionOptionsArgs) (*AcquisitionOptions, error)
+	// [Preview API]
+	RequestAcquisition(context.Context, RequestAcquisitionArgs) (*ExtensionAcquisitionRequest, error)
+	// [Preview API]
+	GetAssetByName(context.Context, GetAssetByNameArgs) (io.ReadCloser, error)
+	// [Preview API]
+	GetAsset(context.Context, GetAssetArgs) (io.ReadCloser, error)
+	// [Preview API]
+	GetAssetAuthenticated(context.Context, GetAssetAuthenticatedArgs) (io.ReadCloser, error)
+	// [Preview API]
+	AssociateAzurePublisher(context.Context, AssociateAzurePublisherArgs) (*AzurePublisher, error)
+	// [Preview API]
+	QueryAssociatedAzurePublisher(context.Context, QueryAssociatedAzurePublisherArgs) (*AzurePublisher, error)
+	// [Preview API]
+	GetCategories(context.Context, GetCategoriesArgs) (*[]string, error)
+	// [Preview API]
+	GetCategoryDetails(context.Context, GetCategoryDetailsArgs) (*CategoriesResult, error)
+	// [Preview API]
+	GetCategoryTree(context.Context, GetCategoryTreeArgs) (*ProductCategory, error)
+	// [Preview API]
+	GetRootCategories(context.Context, GetRootCategoriesArgs) (*ProductCategoriesResult, error)
+	// [Preview API]
+	GetCertificate(context.Context, GetCertificateArgs) (io.ReadCloser, error)
+	// [Preview API]
+	GetContentVerificationLog(context.Context, GetContentVerificationLogArgs) (io.ReadCloser, error)
+	// [Preview API]
+	CreateDraftForEditExtension(context.Context, CreateDraftForEditExtensionArgs) (*ExtensionDraft, error)
+	// [Preview API]
+	PerformEditExtensionDraftOperation(context.Context, PerformEditExtensionDraftOperationArgs) (*ExtensionDraft, error)
+	// [Preview API]
+	UpdatePayloadInDraftForEditExtension(context.Context, UpdatePayloadInDraftForEditExtensionArgs) (*ExtensionDraft, error)
+	// [Preview API]
+	AddAssetForEditExtensionDraft(context.Context, AddAssetForEditExtensionDraftArgs) (*ExtensionDraftAsset, error)
+	// [Preview API]
+	CreateDraftForNewExtension(context.Context, CreateDraftForNewExtensionArgs) (*ExtensionDraft, error)
+	// [Preview API]
+	PerformNewExtensionDraftOperation(context.Context, PerformNewExtensionDraftOperationArgs) (*ExtensionDraft, error)
+	// [Preview API]
+	UpdatePayloadInDraftForNewExtension(context.Context, UpdatePayloadInDraftForNewExtensionArgs) (*ExtensionDraft, error)
+	// [Preview API]
+	AddAssetForNewExtensionDraft(context.Context, AddAssetForNewExtensionDraftArgs) (*ExtensionDraftAsset, error)
+	// [Preview API]
+	GetAssetFromEditExtensionDraft(context.Context, GetAssetFromEditExtensionDraftArgs) (io.ReadCloser, error)
+	// [Preview API]
+	GetAssetFromNewExtensionDraft(context.Context, GetAssetFromNewExtensionDraftArgs) (io.ReadCloser, error)
+	// [Preview API] Get install/uninstall events of an extension. If both count and afterDate parameters are specified, count takes precedence.
+	GetExtensionEvents(context.Context, GetExtensionEventsArgs) (*ExtensionEvents, error)
+	// [Preview API] API endpoint to publish extension install/uninstall events. This is meant to be invoked by EMS only for sending us data related to install/uninstall of an extension.
+	PublishExtensionEvents(context.Context, PublishExtensionEventsArgs) error
+	// [Preview API]
+	QueryExtensions(context.Context, QueryExtensionsArgs) (*ExtensionQueryResult, error)
+	// [Preview API]
+	CreateExtension(context.Context, CreateExtensionArgs) (*PublishedExtension, error)
+	// [Preview API]
+	DeleteExtensionById(context.Context, DeleteExtensionByIdArgs) error
+	// [Preview API]
+	GetExtensionById(context.Context, GetExtensionByIdArgs) (*PublishedExtension, error)
+	// [Preview API]
+	UpdateExtensionById(context.Context, UpdateExtensionByIdArgs) (*PublishedExtension, error)
+	// [Preview API]
+	CreateExtensionWithPublisher(context.Context, CreateExtensionWithPublisherArgs) (*PublishedExtension, error)
+	// [Preview API]
+	DeleteExtension(context.Context, DeleteExtensionArgs) error
+	// [Preview API]
+	GetExtension(context.Context, GetExtensionArgs) (*PublishedExtension, error)
+	// [Preview API] REST endpoint to update an extension.
+	UpdateExtension(context.Context, UpdateExtensionArgs) (*PublishedExtension, error)
+	// [Preview API]
+	UpdateExtensionProperties(context.Context, UpdateExtensionPropertiesArgs) (*PublishedExtension, error)
+	// [Preview API]
+	ShareExtensionWithHost(context.Context, ShareExtensionWithHostArgs) error
+	// [Preview API]
+	UnshareExtensionWithHost(context.Context, UnshareExtensionWithHostArgs) error
+	// [Preview API]
+	ExtensionValidator(context.Context, ExtensionValidatorArgs) error
+	// [Preview API] Send Notification
+	SendNotifications(context.Context, SendNotificationsArgs) error
+	// [Preview API] This endpoint gets hit when you download a VSTS extension from the Web UI
+	GetPackage(context.Context, GetPackageArgs) (io.ReadCloser, error)
+	// [Preview API]
+	GetAssetWithToken(context.Context, GetAssetWithTokenArgs) (io.ReadCloser, error)
+	// [Preview API] Delete publisher asset like logo
+	DeletePublisherAsset(context.Context, DeletePublisherAssetArgs) error
+	// [Preview API] Get publisher asset like logo as a stream
+	GetPublisherAsset(context.Context, GetPublisherAssetArgs) (io.ReadCloser, error)
+	// [Preview API] Update publisher asset like logo. It accepts asset file as an octet stream and file name is passed in header values.
+	UpdatePublisherAsset(context.Context, UpdatePublisherAssetArgs) (*map[string]string, error)
+	// [Preview API]
+	QueryPublishers(context.Context, QueryPublishersArgs) (*PublisherQueryResult, error)
+	// [Preview API]
+	CreatePublisher(context.Context, CreatePublisherArgs) (*Publisher, error)
+	// [Preview API]
+	DeletePublisher(context.Context, DeletePublisherArgs) error
+	// [Preview API]
+	GetPublisher(context.Context, GetPublisherArgs) (*Publisher, error)
+	// [Preview API]
+	UpdatePublisher(context.Context, UpdatePublisherArgs) (*Publisher, error)
+	// [Preview API] Endpoint to add/modify publisher membership. Currently Supports only addition/modification of 1 user at a time Works only for adding members of same tenant.
+	UpdatePublisherMembers(context.Context, UpdatePublisherMembersArgs) (*[]PublisherRoleAssignment, error)
+	// [Preview API] Returns a list of questions with their responses associated with an extension.
+	GetQuestions(context.Context, GetQuestionsArgs) (*QuestionsResult, error)
+	// [Preview API] Flags a concern with an existing question for an extension.
+	ReportQuestion(context.Context, ReportQuestionArgs) (*Concern, error)
+	// [Preview API] Creates a new question for an extension.
+	CreateQuestion(context.Context, CreateQuestionArgs) (*Question, error)
+	// [Preview API] Deletes an existing question and all its associated responses for an extension. (soft delete)
+	DeleteQuestion(context.Context, DeleteQuestionArgs) error
+	// [Preview API] Updates an existing question for an extension.
+	UpdateQuestion(context.Context, UpdateQuestionArgs) (*Question, error)
+	// [Preview API] Creates a new response for a given question for an extension.
+	CreateResponse(context.Context, CreateResponseArgs) (*Response, error)
+	// [Preview API] Deletes a response for an extension. (soft delete)
+	DeleteResponse(context.Context, DeleteResponseArgs) error
+	// [Preview API] Updates an existing response for a given question for an extension.
+	UpdateResponse(context.Context, UpdateResponseArgs) (*Response, error)
+	// [Preview API] Returns extension reports
+	GetExtensionReports(context.Context, GetExtensionReportsArgs) (interface{}, error)
+	// [Preview API] Returns a list of reviews associated with an extension
+	GetReviews(context.Context, GetReviewsArgs) (*ReviewsResult, error)
+	// [Preview API] Returns a summary of the reviews
+	GetReviewsSummary(context.Context, GetReviewsSummaryArgs) (*ReviewSummary, error)
+	// [Preview API] Creates a new review for an extension
+	CreateReview(context.Context, CreateReviewArgs) (*Review, error)
+	// [Preview API] Deletes a review
+	DeleteReview(context.Context, DeleteReviewArgs) error
+	// [Preview API] Updates or Flags a review
+	UpdateReview(context.Context, UpdateReviewArgs) (*ReviewPatch, error)
+	// [Preview API]
+	CreateCategory(context.Context, CreateCategoryArgs) (*ExtensionCategory, error)
+	// [Preview API] Get all setting entries for the given user/all-users scope
+	GetGalleryUserSettings(context.Context, GetGalleryUserSettingsArgs) (*map[string]interface{}, error)
+	// [Preview API] Set all setting entries for the given user/all-users scope
+	SetGalleryUserSettings(context.Context, SetGalleryUserSettingsArgs) error
+	// [Preview API]
+	GenerateKey(context.Context, GenerateKeyArgs) error
+	// [Preview API]
+	GetSigningKey(context.Context, GetSigningKeyArgs) (*string, error)
+	// [Preview API]
+	UpdateExtensionStatistics(context.Context, UpdateExtensionStatisticsArgs) error
+	// [Preview API]
+	GetExtensionDailyStats(context.Context, GetExtensionDailyStatsArgs) (*ExtensionDailyStats, error)
+	// [Preview API] This route/location id only supports HTTP POST anonymously, so that the page view daily stat can be incremented from Marketplace client. Trying to call GET on this route should result in an exception. Without this explicit implementation, calling GET on this public route invokes the above GET implementation GetExtensionDailyStats.
+	GetExtensionDailyStatsAnonymous(context.Context, GetExtensionDailyStatsAnonymousArgs) (*ExtensionDailyStats, error)
+	// [Preview API] Increments a daily statistic associated with the extension
+	IncrementExtensionDailyStat(context.Context, IncrementExtensionDailyStatArgs) error
+	// [Preview API]
+	GetVerificationLog(context.Context, GetVerificationLogArgs) (io.ReadCloser, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
 // [Preview API]
-func (client *Client) ShareExtensionById(ctx context.Context, args ShareExtensionByIdArgs) error {
+func (client *ClientImpl) ShareExtensionById(ctx context.Context, args ShareExtensionByIdArgs) error {
 	routeValues := make(map[string]string)
 	if args.ExtensionId == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.ExtensionId"}
@@ -66,7 +225,7 @@ type ShareExtensionByIdArgs struct {
 }
 
 // [Preview API]
-func (client *Client) UnshareExtensionById(ctx context.Context, args UnshareExtensionByIdArgs) error {
+func (client *ClientImpl) UnshareExtensionById(ctx context.Context, args UnshareExtensionByIdArgs) error {
 	routeValues := make(map[string]string)
 	if args.ExtensionId == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.ExtensionId"}
@@ -95,7 +254,7 @@ type UnshareExtensionByIdArgs struct {
 }
 
 // [Preview API]
-func (client *Client) ShareExtension(ctx context.Context, args ShareExtensionArgs) error {
+func (client *ClientImpl) ShareExtension(ctx context.Context, args ShareExtensionArgs) error {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -130,7 +289,7 @@ type ShareExtensionArgs struct {
 }
 
 // [Preview API]
-func (client *Client) UnshareExtension(ctx context.Context, args UnshareExtensionArgs) error {
+func (client *ClientImpl) UnshareExtension(ctx context.Context, args UnshareExtensionArgs) error {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -165,7 +324,7 @@ type UnshareExtensionArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetAcquisitionOptions(ctx context.Context, args GetAcquisitionOptionsArgs) (*AcquisitionOptions, error) {
+func (client *ClientImpl) GetAcquisitionOptions(ctx context.Context, args GetAcquisitionOptionsArgs) (*AcquisitionOptions, error) {
 	routeValues := make(map[string]string)
 	if args.ItemId == nil || *args.ItemId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ItemId"}
@@ -207,7 +366,7 @@ type GetAcquisitionOptionsArgs struct {
 }
 
 // [Preview API]
-func (client *Client) RequestAcquisition(ctx context.Context, args RequestAcquisitionArgs) (*ExtensionAcquisitionRequest, error) {
+func (client *ClientImpl) RequestAcquisition(ctx context.Context, args RequestAcquisitionArgs) (*ExtensionAcquisitionRequest, error) {
 	if args.AcquisitionRequest == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.AcquisitionRequest"}
 	}
@@ -233,7 +392,7 @@ type RequestAcquisitionArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetAssetByName(ctx context.Context, args GetAssetByNameArgs) (io.ReadCloser, error) {
+func (client *ClientImpl) GetAssetByName(ctx context.Context, args GetAssetByNameArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -291,7 +450,7 @@ type GetAssetByNameArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetAsset(ctx context.Context, args GetAssetArgs) (io.ReadCloser, error) {
+func (client *ClientImpl) GetAsset(ctx context.Context, args GetAssetArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.ExtensionId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ExtensionId"}
@@ -343,7 +502,7 @@ type GetAssetArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetAssetAuthenticated(ctx context.Context, args GetAssetAuthenticatedArgs) (io.ReadCloser, error) {
+func (client *ClientImpl) GetAssetAuthenticated(ctx context.Context, args GetAssetAuthenticatedArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -396,7 +555,7 @@ type GetAssetAuthenticatedArgs struct {
 }
 
 // [Preview API]
-func (client *Client) AssociateAzurePublisher(ctx context.Context, args AssociateAzurePublisherArgs) (*AzurePublisher, error) {
+func (client *ClientImpl) AssociateAzurePublisher(ctx context.Context, args AssociateAzurePublisherArgs) (*AzurePublisher, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -428,7 +587,7 @@ type AssociateAzurePublisherArgs struct {
 }
 
 // [Preview API]
-func (client *Client) QueryAssociatedAzurePublisher(ctx context.Context, args QueryAssociatedAzurePublisherArgs) (*AzurePublisher, error) {
+func (client *ClientImpl) QueryAssociatedAzurePublisher(ctx context.Context, args QueryAssociatedAzurePublisherArgs) (*AzurePublisher, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -453,7 +612,7 @@ type QueryAssociatedAzurePublisherArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetCategories(ctx context.Context, args GetCategoriesArgs) (*[]string, error) {
+func (client *ClientImpl) GetCategories(ctx context.Context, args GetCategoriesArgs) (*[]string, error) {
 	queryParams := url.Values{}
 	if args.Languages != nil {
 		queryParams.Add("languages", *args.Languages)
@@ -476,7 +635,7 @@ type GetCategoriesArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetCategoryDetails(ctx context.Context, args GetCategoryDetailsArgs) (*CategoriesResult, error) {
+func (client *ClientImpl) GetCategoryDetails(ctx context.Context, args GetCategoryDetailsArgs) (*CategoriesResult, error) {
 	routeValues := make(map[string]string)
 	if args.CategoryName == nil || *args.CategoryName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.CategoryName"}
@@ -512,7 +671,7 @@ type GetCategoryDetailsArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetCategoryTree(ctx context.Context, args GetCategoryTreeArgs) (*ProductCategory, error) {
+func (client *ClientImpl) GetCategoryTree(ctx context.Context, args GetCategoryTreeArgs) (*ProductCategory, error) {
 	routeValues := make(map[string]string)
 	if args.Product == nil || *args.Product == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Product"}
@@ -569,7 +728,7 @@ type GetCategoryTreeArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetRootCategories(ctx context.Context, args GetRootCategoriesArgs) (*ProductCategoriesResult, error) {
+func (client *ClientImpl) GetRootCategories(ctx context.Context, args GetRootCategoriesArgs) (*ProductCategoriesResult, error) {
 	routeValues := make(map[string]string)
 	if args.Product == nil || *args.Product == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Product"}
@@ -620,7 +779,7 @@ type GetRootCategoriesArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetCertificate(ctx context.Context, args GetCertificateArgs) (io.ReadCloser, error) {
+func (client *ClientImpl) GetCertificate(ctx context.Context, args GetCertificateArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -654,7 +813,7 @@ type GetCertificateArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetContentVerificationLog(ctx context.Context, args GetContentVerificationLogArgs) (io.ReadCloser, error) {
+func (client *ClientImpl) GetContentVerificationLog(ctx context.Context, args GetContentVerificationLogArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -683,7 +842,7 @@ type GetContentVerificationLogArgs struct {
 }
 
 // [Preview API]
-func (client *Client) CreateDraftForEditExtension(ctx context.Context, args CreateDraftForEditExtensionArgs) (*ExtensionDraft, error) {
+func (client *ClientImpl) CreateDraftForEditExtension(ctx context.Context, args CreateDraftForEditExtensionArgs) (*ExtensionDraft, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -714,7 +873,7 @@ type CreateDraftForEditExtensionArgs struct {
 }
 
 // [Preview API]
-func (client *Client) PerformEditExtensionDraftOperation(ctx context.Context, args PerformEditExtensionDraftOperationArgs) (*ExtensionDraft, error) {
+func (client *ClientImpl) PerformEditExtensionDraftOperation(ctx context.Context, args PerformEditExtensionDraftOperationArgs) (*ExtensionDraft, error) {
 	if args.DraftPatch == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.DraftPatch"}
 	}
@@ -760,7 +919,7 @@ type PerformEditExtensionDraftOperationArgs struct {
 }
 
 // [Preview API]
-func (client *Client) UpdatePayloadInDraftForEditExtension(ctx context.Context, args UpdatePayloadInDraftForEditExtensionArgs) (*ExtensionDraft, error) {
+func (client *ClientImpl) UpdatePayloadInDraftForEditExtension(ctx context.Context, args UpdatePayloadInDraftForEditExtensionArgs) (*ExtensionDraft, error) {
 	if args.UploadStream == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UploadStream"}
 	}
@@ -808,7 +967,7 @@ type UpdatePayloadInDraftForEditExtensionArgs struct {
 }
 
 // [Preview API]
-func (client *Client) AddAssetForEditExtensionDraft(ctx context.Context, args AddAssetForEditExtensionDraftArgs) (*ExtensionDraftAsset, error) {
+func (client *ClientImpl) AddAssetForEditExtensionDraft(ctx context.Context, args AddAssetForEditExtensionDraftArgs) (*ExtensionDraftAsset, error) {
 	if args.UploadStream == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UploadStream"}
 	}
@@ -856,7 +1015,7 @@ type AddAssetForEditExtensionDraftArgs struct {
 }
 
 // [Preview API]
-func (client *Client) CreateDraftForNewExtension(ctx context.Context, args CreateDraftForNewExtensionArgs) (*ExtensionDraft, error) {
+func (client *ClientImpl) CreateDraftForNewExtension(ctx context.Context, args CreateDraftForNewExtensionArgs) (*ExtensionDraft, error) {
 	if args.UploadStream == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UploadStream"}
 	}
@@ -897,7 +1056,7 @@ type CreateDraftForNewExtensionArgs struct {
 }
 
 // [Preview API]
-func (client *Client) PerformNewExtensionDraftOperation(ctx context.Context, args PerformNewExtensionDraftOperationArgs) (*ExtensionDraft, error) {
+func (client *ClientImpl) PerformNewExtensionDraftOperation(ctx context.Context, args PerformNewExtensionDraftOperationArgs) (*ExtensionDraft, error) {
 	if args.DraftPatch == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.DraftPatch"}
 	}
@@ -937,7 +1096,7 @@ type PerformNewExtensionDraftOperationArgs struct {
 }
 
 // [Preview API]
-func (client *Client) UpdatePayloadInDraftForNewExtension(ctx context.Context, args UpdatePayloadInDraftForNewExtensionArgs) (*ExtensionDraft, error) {
+func (client *ClientImpl) UpdatePayloadInDraftForNewExtension(ctx context.Context, args UpdatePayloadInDraftForNewExtensionArgs) (*ExtensionDraft, error) {
 	if args.UploadStream == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UploadStream"}
 	}
@@ -979,7 +1138,7 @@ type UpdatePayloadInDraftForNewExtensionArgs struct {
 }
 
 // [Preview API]
-func (client *Client) AddAssetForNewExtensionDraft(ctx context.Context, args AddAssetForNewExtensionDraftArgs) (*ExtensionDraftAsset, error) {
+func (client *ClientImpl) AddAssetForNewExtensionDraft(ctx context.Context, args AddAssetForNewExtensionDraftArgs) (*ExtensionDraftAsset, error) {
 	if args.UploadStream == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UploadStream"}
 	}
@@ -1021,7 +1180,7 @@ type AddAssetForNewExtensionDraftArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetAssetFromEditExtensionDraft(ctx context.Context, args GetAssetFromEditExtensionDraftArgs) (io.ReadCloser, error) {
+func (client *ClientImpl) GetAssetFromEditExtensionDraft(ctx context.Context, args GetAssetFromEditExtensionDraftArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -1063,7 +1222,7 @@ type GetAssetFromEditExtensionDraftArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetAssetFromNewExtensionDraft(ctx context.Context, args GetAssetFromNewExtensionDraftArgs) (io.ReadCloser, error) {
+func (client *ClientImpl) GetAssetFromNewExtensionDraft(ctx context.Context, args GetAssetFromNewExtensionDraftArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -1098,7 +1257,7 @@ type GetAssetFromNewExtensionDraftArgs struct {
 }
 
 // [Preview API] Get install/uninstall events of an extension. If both count and afterDate parameters are specified, count takes precedence.
-func (client *Client) GetExtensionEvents(ctx context.Context, args GetExtensionEventsArgs) (*ExtensionEvents, error) {
+func (client *ClientImpl) GetExtensionEvents(ctx context.Context, args GetExtensionEventsArgs) (*ExtensionEvents, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -1150,7 +1309,7 @@ type GetExtensionEventsArgs struct {
 }
 
 // [Preview API] API endpoint to publish extension install/uninstall events. This is meant to be invoked by EMS only for sending us data related to install/uninstall of an extension.
-func (client *Client) PublishExtensionEvents(ctx context.Context, args PublishExtensionEventsArgs) error {
+func (client *ClientImpl) PublishExtensionEvents(ctx context.Context, args PublishExtensionEventsArgs) error {
 	if args.ExtensionEvents == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.ExtensionEvents"}
 	}
@@ -1174,7 +1333,7 @@ type PublishExtensionEventsArgs struct {
 }
 
 // [Preview API]
-func (client *Client) QueryExtensions(ctx context.Context, args QueryExtensionsArgs) (*ExtensionQueryResult, error) {
+func (client *ClientImpl) QueryExtensions(ctx context.Context, args QueryExtensionsArgs) (*ExtensionQueryResult, error) {
 	if args.ExtensionQuery == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ExtensionQuery"}
 	}
@@ -1212,7 +1371,7 @@ type QueryExtensionsArgs struct {
 }
 
 // [Preview API]
-func (client *Client) CreateExtension(ctx context.Context, args CreateExtensionArgs) (*PublishedExtension, error) {
+func (client *ClientImpl) CreateExtension(ctx context.Context, args CreateExtensionArgs) (*PublishedExtension, error) {
 	if args.UploadStream == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UploadStream"}
 	}
@@ -1234,7 +1393,7 @@ type CreateExtensionArgs struct {
 }
 
 // [Preview API]
-func (client *Client) DeleteExtensionById(ctx context.Context, args DeleteExtensionByIdArgs) error {
+func (client *ClientImpl) DeleteExtensionById(ctx context.Context, args DeleteExtensionByIdArgs) error {
 	routeValues := make(map[string]string)
 	if args.ExtensionId == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.ExtensionId"}
@@ -1263,7 +1422,7 @@ type DeleteExtensionByIdArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetExtensionById(ctx context.Context, args GetExtensionByIdArgs) (*PublishedExtension, error) {
+func (client *ClientImpl) GetExtensionById(ctx context.Context, args GetExtensionByIdArgs) (*PublishedExtension, error) {
 	routeValues := make(map[string]string)
 	if args.ExtensionId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ExtensionId"}
@@ -1299,7 +1458,7 @@ type GetExtensionByIdArgs struct {
 }
 
 // [Preview API]
-func (client *Client) UpdateExtensionById(ctx context.Context, args UpdateExtensionByIdArgs) (*PublishedExtension, error) {
+func (client *ClientImpl) UpdateExtensionById(ctx context.Context, args UpdateExtensionByIdArgs) (*PublishedExtension, error) {
 	routeValues := make(map[string]string)
 	if args.ExtensionId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ExtensionId"}
@@ -1324,7 +1483,7 @@ type UpdateExtensionByIdArgs struct {
 }
 
 // [Preview API]
-func (client *Client) CreateExtensionWithPublisher(ctx context.Context, args CreateExtensionWithPublisherArgs) (*PublishedExtension, error) {
+func (client *ClientImpl) CreateExtensionWithPublisher(ctx context.Context, args CreateExtensionWithPublisherArgs) (*PublishedExtension, error) {
 	if args.UploadStream == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UploadStream"}
 	}
@@ -1354,7 +1513,7 @@ type CreateExtensionWithPublisherArgs struct {
 }
 
 // [Preview API]
-func (client *Client) DeleteExtension(ctx context.Context, args DeleteExtensionArgs) error {
+func (client *ClientImpl) DeleteExtension(ctx context.Context, args DeleteExtensionArgs) error {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -1389,7 +1548,7 @@ type DeleteExtensionArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetExtension(ctx context.Context, args GetExtensionArgs) (*PublishedExtension, error) {
+func (client *ClientImpl) GetExtension(ctx context.Context, args GetExtensionArgs) (*PublishedExtension, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -1442,7 +1601,7 @@ type GetExtensionArgs struct {
 }
 
 // [Preview API] REST endpoint to update an extension.
-func (client *Client) UpdateExtension(ctx context.Context, args UpdateExtensionArgs) (*PublishedExtension, error) {
+func (client *ClientImpl) UpdateExtension(ctx context.Context, args UpdateExtensionArgs) (*PublishedExtension, error) {
 	if args.UploadStream == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UploadStream"}
 	}
@@ -1484,7 +1643,7 @@ type UpdateExtensionArgs struct {
 }
 
 // [Preview API]
-func (client *Client) UpdateExtensionProperties(ctx context.Context, args UpdateExtensionPropertiesArgs) (*PublishedExtension, error) {
+func (client *ClientImpl) UpdateExtensionProperties(ctx context.Context, args UpdateExtensionPropertiesArgs) (*PublishedExtension, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -1522,7 +1681,7 @@ type UpdateExtensionPropertiesArgs struct {
 }
 
 // [Preview API]
-func (client *Client) ShareExtensionWithHost(ctx context.Context, args ShareExtensionWithHostArgs) error {
+func (client *ClientImpl) ShareExtensionWithHost(ctx context.Context, args ShareExtensionWithHostArgs) error {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -1563,7 +1722,7 @@ type ShareExtensionWithHostArgs struct {
 }
 
 // [Preview API]
-func (client *Client) UnshareExtensionWithHost(ctx context.Context, args UnshareExtensionWithHostArgs) error {
+func (client *ClientImpl) UnshareExtensionWithHost(ctx context.Context, args UnshareExtensionWithHostArgs) error {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -1604,7 +1763,7 @@ type UnshareExtensionWithHostArgs struct {
 }
 
 // [Preview API]
-func (client *Client) ExtensionValidator(ctx context.Context, args ExtensionValidatorArgs) error {
+func (client *ClientImpl) ExtensionValidator(ctx context.Context, args ExtensionValidatorArgs) error {
 	if args.AzureRestApiRequestModel == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.AzureRestApiRequestModel"}
 	}
@@ -1628,7 +1787,7 @@ type ExtensionValidatorArgs struct {
 }
 
 // [Preview API] Send Notification
-func (client *Client) SendNotifications(ctx context.Context, args SendNotificationsArgs) error {
+func (client *ClientImpl) SendNotifications(ctx context.Context, args SendNotificationsArgs) error {
 	if args.NotificationData == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.NotificationData"}
 	}
@@ -1652,7 +1811,7 @@ type SendNotificationsArgs struct {
 }
 
 // [Preview API] This endpoint gets hit when you download a VSTS extension from the Web UI
-func (client *Client) GetPackage(ctx context.Context, args GetPackageArgs) (io.ReadCloser, error) {
+func (client *ClientImpl) GetPackage(ctx context.Context, args GetPackageArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -1704,7 +1863,7 @@ type GetPackageArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetAssetWithToken(ctx context.Context, args GetAssetWithTokenArgs) (io.ReadCloser, error) {
+func (client *ClientImpl) GetAssetWithToken(ctx context.Context, args GetAssetWithTokenArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -1767,7 +1926,7 @@ type GetAssetWithTokenArgs struct {
 }
 
 // [Preview API] Delete publisher asset like logo
-func (client *Client) DeletePublisherAsset(ctx context.Context, args DeletePublisherAssetArgs) error {
+func (client *ClientImpl) DeletePublisherAsset(ctx context.Context, args DeletePublisherAssetArgs) error {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -1796,7 +1955,7 @@ type DeletePublisherAssetArgs struct {
 }
 
 // [Preview API] Get publisher asset like logo as a stream
-func (client *Client) GetPublisherAsset(ctx context.Context, args GetPublisherAssetArgs) (io.ReadCloser, error) {
+func (client *ClientImpl) GetPublisherAsset(ctx context.Context, args GetPublisherAssetArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -1825,7 +1984,7 @@ type GetPublisherAssetArgs struct {
 }
 
 // [Preview API] Update publisher asset like logo. It accepts asset file as an octet stream and file name is passed in header values.
-func (client *Client) UpdatePublisherAsset(ctx context.Context, args UpdatePublisherAssetArgs) (*map[string]string, error) {
+func (client *ClientImpl) UpdatePublisherAsset(ctx context.Context, args UpdatePublisherAssetArgs) (*map[string]string, error) {
 	if args.UploadStream == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UploadStream"}
 	}
@@ -1867,7 +2026,7 @@ type UpdatePublisherAssetArgs struct {
 }
 
 // [Preview API]
-func (client *Client) QueryPublishers(ctx context.Context, args QueryPublishersArgs) (*PublisherQueryResult, error) {
+func (client *ClientImpl) QueryPublishers(ctx context.Context, args QueryPublishersArgs) (*PublisherQueryResult, error) {
 	if args.PublisherQuery == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PublisherQuery"}
 	}
@@ -1893,7 +2052,7 @@ type QueryPublishersArgs struct {
 }
 
 // [Preview API]
-func (client *Client) CreatePublisher(ctx context.Context, args CreatePublisherArgs) (*Publisher, error) {
+func (client *ClientImpl) CreatePublisher(ctx context.Context, args CreatePublisherArgs) (*Publisher, error) {
 	if args.Publisher == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Publisher"}
 	}
@@ -1919,7 +2078,7 @@ type CreatePublisherArgs struct {
 }
 
 // [Preview API]
-func (client *Client) DeletePublisher(ctx context.Context, args DeletePublisherArgs) error {
+func (client *ClientImpl) DeletePublisher(ctx context.Context, args DeletePublisherArgs) error {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -1942,7 +2101,7 @@ type DeletePublisherArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetPublisher(ctx context.Context, args GetPublisherArgs) (*Publisher, error) {
+func (client *ClientImpl) GetPublisher(ctx context.Context, args GetPublisherArgs) (*Publisher, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -1973,7 +2132,7 @@ type GetPublisherArgs struct {
 }
 
 // [Preview API]
-func (client *Client) UpdatePublisher(ctx context.Context, args UpdatePublisherArgs) (*Publisher, error) {
+func (client *ClientImpl) UpdatePublisher(ctx context.Context, args UpdatePublisherArgs) (*Publisher, error) {
 	if args.Publisher == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Publisher"}
 	}
@@ -2007,7 +2166,7 @@ type UpdatePublisherArgs struct {
 }
 
 // [Preview API] Endpoint to add/modify publisher membership. Currently Supports only addition/modification of 1 user at a time Works only for adding members of same tenant.
-func (client *Client) UpdatePublisherMembers(ctx context.Context, args UpdatePublisherMembersArgs) (*[]PublisherRoleAssignment, error) {
+func (client *ClientImpl) UpdatePublisherMembers(ctx context.Context, args UpdatePublisherMembersArgs) (*[]PublisherRoleAssignment, error) {
 	if args.RoleAssignments == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RoleAssignments"}
 	}
@@ -2047,7 +2206,7 @@ type UpdatePublisherMembersArgs struct {
 }
 
 // [Preview API] Returns a list of questions with their responses associated with an extension.
-func (client *Client) GetQuestions(ctx context.Context, args GetQuestionsArgs) (*QuestionsResult, error) {
+func (client *ClientImpl) GetQuestions(ctx context.Context, args GetQuestionsArgs) (*QuestionsResult, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -2094,7 +2253,7 @@ type GetQuestionsArgs struct {
 }
 
 // [Preview API] Flags a concern with an existing question for an extension.
-func (client *Client) ReportQuestion(ctx context.Context, args ReportQuestionArgs) (*Concern, error) {
+func (client *ClientImpl) ReportQuestion(ctx context.Context, args ReportQuestionArgs) (*Concern, error) {
 	if args.Concern == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Concern"}
 	}
@@ -2140,7 +2299,7 @@ type ReportQuestionArgs struct {
 }
 
 // [Preview API] Creates a new question for an extension.
-func (client *Client) CreateQuestion(ctx context.Context, args CreateQuestionArgs) (*Question, error) {
+func (client *ClientImpl) CreateQuestion(ctx context.Context, args CreateQuestionArgs) (*Question, error) {
 	if args.Question == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Question"}
 	}
@@ -2180,7 +2339,7 @@ type CreateQuestionArgs struct {
 }
 
 // [Preview API] Deletes an existing question and all its associated responses for an extension. (soft delete)
-func (client *Client) DeleteQuestion(ctx context.Context, args DeleteQuestionArgs) error {
+func (client *ClientImpl) DeleteQuestion(ctx context.Context, args DeleteQuestionArgs) error {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -2215,7 +2374,7 @@ type DeleteQuestionArgs struct {
 }
 
 // [Preview API] Updates an existing question for an extension.
-func (client *Client) UpdateQuestion(ctx context.Context, args UpdateQuestionArgs) (*Question, error) {
+func (client *ClientImpl) UpdateQuestion(ctx context.Context, args UpdateQuestionArgs) (*Question, error) {
 	if args.Question == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Question"}
 	}
@@ -2261,7 +2420,7 @@ type UpdateQuestionArgs struct {
 }
 
 // [Preview API] Creates a new response for a given question for an extension.
-func (client *Client) CreateResponse(ctx context.Context, args CreateResponseArgs) (*Response, error) {
+func (client *ClientImpl) CreateResponse(ctx context.Context, args CreateResponseArgs) (*Response, error) {
 	if args.Response == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Response"}
 	}
@@ -2307,7 +2466,7 @@ type CreateResponseArgs struct {
 }
 
 // [Preview API] Deletes a response for an extension. (soft delete)
-func (client *Client) DeleteResponse(ctx context.Context, args DeleteResponseArgs) error {
+func (client *ClientImpl) DeleteResponse(ctx context.Context, args DeleteResponseArgs) error {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -2348,7 +2507,7 @@ type DeleteResponseArgs struct {
 }
 
 // [Preview API] Updates an existing response for a given question for an extension.
-func (client *Client) UpdateResponse(ctx context.Context, args UpdateResponseArgs) (*Response, error) {
+func (client *ClientImpl) UpdateResponse(ctx context.Context, args UpdateResponseArgs) (*Response, error) {
 	if args.Response == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Response"}
 	}
@@ -2400,7 +2559,7 @@ type UpdateResponseArgs struct {
 }
 
 // [Preview API] Returns extension reports
-func (client *Client) GetExtensionReports(ctx context.Context, args GetExtensionReportsArgs) (interface{}, error) {
+func (client *ClientImpl) GetExtensionReports(ctx context.Context, args GetExtensionReportsArgs) (interface{}, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -2447,7 +2606,7 @@ type GetExtensionReportsArgs struct {
 }
 
 // [Preview API] Returns a list of reviews associated with an extension
-func (client *Client) GetReviews(ctx context.Context, args GetReviewsArgs) (*ReviewsResult, error) {
+func (client *ClientImpl) GetReviews(ctx context.Context, args GetReviewsArgs) (*ReviewsResult, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -2499,7 +2658,7 @@ type GetReviewsArgs struct {
 }
 
 // [Preview API] Returns a summary of the reviews
-func (client *Client) GetReviewsSummary(ctx context.Context, args GetReviewsSummaryArgs) (*ReviewSummary, error) {
+func (client *ClientImpl) GetReviewsSummary(ctx context.Context, args GetReviewsSummaryArgs) (*ReviewSummary, error) {
 	routeValues := make(map[string]string)
 	if args.PubName == nil || *args.PubName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PubName"}
@@ -2541,7 +2700,7 @@ type GetReviewsSummaryArgs struct {
 }
 
 // [Preview API] Creates a new review for an extension
-func (client *Client) CreateReview(ctx context.Context, args CreateReviewArgs) (*Review, error) {
+func (client *ClientImpl) CreateReview(ctx context.Context, args CreateReviewArgs) (*Review, error) {
 	if args.Review == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Review"}
 	}
@@ -2581,7 +2740,7 @@ type CreateReviewArgs struct {
 }
 
 // [Preview API] Deletes a review
-func (client *Client) DeleteReview(ctx context.Context, args DeleteReviewArgs) error {
+func (client *ClientImpl) DeleteReview(ctx context.Context, args DeleteReviewArgs) error {
 	routeValues := make(map[string]string)
 	if args.PubName == nil || *args.PubName == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PubName"}
@@ -2616,7 +2775,7 @@ type DeleteReviewArgs struct {
 }
 
 // [Preview API] Updates or Flags a review
-func (client *Client) UpdateReview(ctx context.Context, args UpdateReviewArgs) (*ReviewPatch, error) {
+func (client *ClientImpl) UpdateReview(ctx context.Context, args UpdateReviewArgs) (*ReviewPatch, error) {
 	if args.ReviewPatch == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ReviewPatch"}
 	}
@@ -2662,7 +2821,7 @@ type UpdateReviewArgs struct {
 }
 
 // [Preview API]
-func (client *Client) CreateCategory(ctx context.Context, args CreateCategoryArgs) (*ExtensionCategory, error) {
+func (client *ClientImpl) CreateCategory(ctx context.Context, args CreateCategoryArgs) (*ExtensionCategory, error) {
 	if args.Category == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Category"}
 	}
@@ -2688,7 +2847,7 @@ type CreateCategoryArgs struct {
 }
 
 // [Preview API] Get all setting entries for the given user/all-users scope
-func (client *Client) GetGalleryUserSettings(ctx context.Context, args GetGalleryUserSettingsArgs) (*map[string]interface{}, error) {
+func (client *ClientImpl) GetGalleryUserSettings(ctx context.Context, args GetGalleryUserSettingsArgs) (*map[string]interface{}, error) {
 	routeValues := make(map[string]string)
 	if args.UserScope == nil || *args.UserScope == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.UserScope"}
@@ -2718,7 +2877,7 @@ type GetGalleryUserSettingsArgs struct {
 }
 
 // [Preview API] Set all setting entries for the given user/all-users scope
-func (client *Client) SetGalleryUserSettings(ctx context.Context, args SetGalleryUserSettingsArgs) error {
+func (client *ClientImpl) SetGalleryUserSettings(ctx context.Context, args SetGalleryUserSettingsArgs) error {
 	if args.Entries == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.Entries"}
 	}
@@ -2750,7 +2909,7 @@ type SetGalleryUserSettingsArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GenerateKey(ctx context.Context, args GenerateKeyArgs) error {
+func (client *ClientImpl) GenerateKey(ctx context.Context, args GenerateKeyArgs) error {
 	routeValues := make(map[string]string)
 	if args.KeyType == nil || *args.KeyType == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.KeyType"}
@@ -2779,7 +2938,7 @@ type GenerateKeyArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetSigningKey(ctx context.Context, args GetSigningKeyArgs) (*string, error) {
+func (client *ClientImpl) GetSigningKey(ctx context.Context, args GetSigningKeyArgs) (*string, error) {
 	routeValues := make(map[string]string)
 	if args.KeyType == nil || *args.KeyType == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.KeyType"}
@@ -2804,7 +2963,7 @@ type GetSigningKeyArgs struct {
 }
 
 // [Preview API]
-func (client *Client) UpdateExtensionStatistics(ctx context.Context, args UpdateExtensionStatisticsArgs) error {
+func (client *ClientImpl) UpdateExtensionStatistics(ctx context.Context, args UpdateExtensionStatisticsArgs) error {
 	if args.ExtensionStatisticsUpdate == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.ExtensionStatisticsUpdate"}
 	}
@@ -2842,7 +3001,7 @@ type UpdateExtensionStatisticsArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetExtensionDailyStats(ctx context.Context, args GetExtensionDailyStatsArgs) (*ExtensionDailyStats, error) {
+func (client *ClientImpl) GetExtensionDailyStats(ctx context.Context, args GetExtensionDailyStatsArgs) (*ExtensionDailyStats, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -2889,7 +3048,7 @@ type GetExtensionDailyStatsArgs struct {
 }
 
 // [Preview API] This route/location id only supports HTTP POST anonymously, so that the page view daily stat can be incremented from Marketplace client. Trying to call GET on this route should result in an exception. Without this explicit implementation, calling GET on this public route invokes the above GET implementation GetExtensionDailyStats.
-func (client *Client) GetExtensionDailyStatsAnonymous(ctx context.Context, args GetExtensionDailyStatsAnonymousArgs) (*ExtensionDailyStats, error) {
+func (client *ClientImpl) GetExtensionDailyStatsAnonymous(ctx context.Context, args GetExtensionDailyStatsAnonymousArgs) (*ExtensionDailyStats, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -2926,7 +3085,7 @@ type GetExtensionDailyStatsAnonymousArgs struct {
 }
 
 // [Preview API] Increments a daily statistic associated with the extension
-func (client *Client) IncrementExtensionDailyStat(ctx context.Context, args IncrementExtensionDailyStatArgs) error {
+func (client *ClientImpl) IncrementExtensionDailyStat(ctx context.Context, args IncrementExtensionDailyStatArgs) error {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}
@@ -2968,7 +3127,7 @@ type IncrementExtensionDailyStatArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetVerificationLog(ctx context.Context, args GetVerificationLogArgs) (io.ReadCloser, error) {
+func (client *ClientImpl) GetVerificationLog(ctx context.Context, args GetVerificationLogArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherName == nil || *args.PublisherName == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherName"}

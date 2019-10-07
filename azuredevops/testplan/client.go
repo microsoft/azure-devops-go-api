@@ -19,19 +19,94 @@ import (
 	"strconv"
 )
 
-type Client struct {
+type Client interface {
+	// [Preview API] Create a test configuration.
+	CreateTestConfiguration(context.Context, CreateTestConfigurationArgs) (*TestConfiguration, error)
+	// [Preview API] Delete a test configuration by its ID.
+	DeleteTestConfguration(context.Context, DeleteTestConfgurationArgs) error
+	// [Preview API] Get a test configuration
+	GetTestConfigurationById(context.Context, GetTestConfigurationByIdArgs) (*TestConfiguration, error)
+	// [Preview API] Get a list of test configurations.
+	GetTestConfigurations(context.Context, GetTestConfigurationsArgs) (*GetTestConfigurationsResponseValue, error)
+	// [Preview API] Update a test configuration by its ID.
+	UpdateTestConfiguration(context.Context, UpdateTestConfigurationArgs) (*TestConfiguration, error)
+	// [Preview API] Create a test plan.
+	CreateTestPlan(context.Context, CreateTestPlanArgs) (*TestPlan, error)
+	// [Preview API] Delete a test plan.
+	DeleteTestPlan(context.Context, DeleteTestPlanArgs) error
+	// [Preview API] Get a test plan by Id.
+	GetTestPlanById(context.Context, GetTestPlanByIdArgs) (*TestPlan, error)
+	// [Preview API] Get a list of test plans
+	GetTestPlans(context.Context, GetTestPlansArgs) (*GetTestPlansResponseValue, error)
+	// [Preview API] Update a test plan.
+	UpdateTestPlan(context.Context, UpdateTestPlanArgs) (*TestPlan, error)
+	// [Preview API] Get a list of test suite entries in the test suite.
+	GetSuiteEntries(context.Context, GetSuiteEntriesArgs) (*[]SuiteEntry, error)
+	// [Preview API] Reorder test suite entries in the test suite.
+	ReorderSuiteEntries(context.Context, ReorderSuiteEntriesArgs) (*[]SuiteEntry, error)
+	// [Preview API] Create test suite.
+	CreateTestSuite(context.Context, CreateTestSuiteArgs) (*TestSuite, error)
+	// [Preview API] Delete test suite.
+	DeleteTestSuite(context.Context, DeleteTestSuiteArgs) error
+	// [Preview API] Get test suite by suite id.
+	GetTestSuiteById(context.Context, GetTestSuiteByIdArgs) (*TestSuite, error)
+	// [Preview API] Get test suites for plan.
+	GetTestSuitesForPlan(context.Context, GetTestSuitesForPlanArgs) (*GetTestSuitesForPlanResponseValue, error)
+	// [Preview API] Update test suite.
+	UpdateTestSuite(context.Context, UpdateTestSuiteArgs) (*TestSuite, error)
+	// Find the list of all test suites in which a given test case is present. This is helpful if you need to find out which test suites are using a test case, when you need to make changes to a test case.
+	GetSuitesByTestCaseId(context.Context, GetSuitesByTestCaseIdArgs) (*[]TestSuite, error)
+	// [Preview API] Add test cases to a suite with specified configurations
+	AddTestCasesToSuite(context.Context, AddTestCasesToSuiteArgs) (*[]TestCase, error)
+	// [Preview API] Get Test Cases For a Suite.
+	GetTestCase(context.Context, GetTestCaseArgs) (*[]TestCase, error)
+	// [Preview API] Get Test Case List return those test cases which have all the configuration Ids as mentioned in the optional paramter. If configuration Ids is null, it return all the test cases
+	GetTestCaseList(context.Context, GetTestCaseListArgs) (*GetTestCaseListResponseValue, error)
+	// [Preview API] Removes test cases from a suite based on the list of test case Ids provided.
+	RemoveTestCasesFromSuite(context.Context, RemoveTestCasesFromSuiteArgs) error
+	// [Preview API] Update the configurations for test cases
+	UpdateSuiteTestCases(context.Context, UpdateSuiteTestCasesArgs) (*[]TestCase, error)
+	// [Preview API] Delete a test case.
+	DeleteTestCase(context.Context, DeleteTestCaseArgs) error
+	// [Preview API] Clone test plan
+	CloneTestPlan(context.Context, CloneTestPlanArgs) (*CloneTestPlanOperationInformation, error)
+	// [Preview API] Get clone information.
+	GetCloneInformation(context.Context, GetCloneInformationArgs) (*CloneTestPlanOperationInformation, error)
+	// [Preview API] Get a list of points based on point Ids provided.
+	GetPoints(context.Context, GetPointsArgs) (*[]TestPoint, error)
+	// [Preview API] Get all the points inside a suite based on some filters
+	GetPointsList(context.Context, GetPointsListArgs) (*GetPointsListResponseValue, error)
+	// [Preview API] Update Test Points. This is used to Reset test point to active, update the outcome of a test point or update the tester of a test point
+	UpdateTestPoints(context.Context, UpdateTestPointsArgs) (*[]TestPoint, error)
+	// [Preview API] Clone test suite
+	CloneTestSuite(context.Context, CloneTestSuiteArgs) (*CloneTestSuiteOperationInformation, error)
+	// [Preview API] Get clone information.
+	GetSuiteCloneInformation(context.Context, GetSuiteCloneInformationArgs) (*CloneTestSuiteOperationInformation, error)
+	// [Preview API] Create a test variable.
+	CreateTestVariable(context.Context, CreateTestVariableArgs) (*TestVariable, error)
+	// [Preview API] Delete a test variable by its ID.
+	DeleteTestVariable(context.Context, DeleteTestVariableArgs) error
+	// [Preview API] Get a test variable by its ID.
+	GetTestVariableById(context.Context, GetTestVariableByIdArgs) (*TestVariable, error)
+	// [Preview API] Get a list of test variables.
+	GetTestVariables(context.Context, GetTestVariablesArgs) (*GetTestVariablesResponseValue, error)
+	// [Preview API] Update a test variable by its ID.
+	UpdateTestVariable(context.Context, UpdateTestVariableArgs) (*TestVariable, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) *Client {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) Client {
 	client := connection.GetClientByUrl(connection.BaseUrl)
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}
 }
 
 // [Preview API] Create a test configuration.
-func (client *Client) CreateTestConfiguration(ctx context.Context, args CreateTestConfigurationArgs) (*TestConfiguration, error) {
+func (client *ClientImpl) CreateTestConfiguration(ctx context.Context, args CreateTestConfigurationArgs) (*TestConfiguration, error) {
 	if args.TestConfigurationCreateUpdateParameters == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestConfigurationCreateUpdateParameters"}
 	}
@@ -65,7 +140,7 @@ type CreateTestConfigurationArgs struct {
 }
 
 // [Preview API] Delete a test configuration by its ID.
-func (client *Client) DeleteTestConfguration(ctx context.Context, args DeleteTestConfgurationArgs) error {
+func (client *ClientImpl) DeleteTestConfguration(ctx context.Context, args DeleteTestConfgurationArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -95,7 +170,7 @@ type DeleteTestConfgurationArgs struct {
 }
 
 // [Preview API] Get a test configuration
-func (client *Client) GetTestConfigurationById(ctx context.Context, args GetTestConfigurationByIdArgs) (*TestConfiguration, error) {
+func (client *ClientImpl) GetTestConfigurationById(ctx context.Context, args GetTestConfigurationByIdArgs) (*TestConfiguration, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -126,7 +201,7 @@ type GetTestConfigurationByIdArgs struct {
 }
 
 // [Preview API] Get a list of test configurations.
-func (client *Client) GetTestConfigurations(ctx context.Context, args GetTestConfigurationsArgs) (*GetTestConfigurationsResponseValue, error) {
+func (client *ClientImpl) GetTestConfigurations(ctx context.Context, args GetTestConfigurationsArgs) (*GetTestConfigurationsResponseValue, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -165,7 +240,7 @@ type GetTestConfigurationsResponseValue struct {
 }
 
 // [Preview API] Update a test configuration by its ID.
-func (client *Client) UpdateTestConfiguration(ctx context.Context, args UpdateTestConfigurationArgs) (*TestConfiguration, error) {
+func (client *ClientImpl) UpdateTestConfiguration(ctx context.Context, args UpdateTestConfigurationArgs) (*TestConfiguration, error) {
 	if args.TestConfigurationCreateUpdateParameters == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestConfigurationCreateUpdateParameters"}
 	}
@@ -206,7 +281,7 @@ type UpdateTestConfigurationArgs struct {
 }
 
 // [Preview API] Create a test plan.
-func (client *Client) CreateTestPlan(ctx context.Context, args CreateTestPlanArgs) (*TestPlan, error) {
+func (client *ClientImpl) CreateTestPlan(ctx context.Context, args CreateTestPlanArgs) (*TestPlan, error) {
 	if args.TestPlanCreateParams == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestPlanCreateParams"}
 	}
@@ -240,7 +315,7 @@ type CreateTestPlanArgs struct {
 }
 
 // [Preview API] Delete a test plan.
-func (client *Client) DeleteTestPlan(ctx context.Context, args DeleteTestPlanArgs) error {
+func (client *ClientImpl) DeleteTestPlan(ctx context.Context, args DeleteTestPlanArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -269,7 +344,7 @@ type DeleteTestPlanArgs struct {
 }
 
 // [Preview API] Get a test plan by Id.
-func (client *Client) GetTestPlanById(ctx context.Context, args GetTestPlanByIdArgs) (*TestPlan, error) {
+func (client *ClientImpl) GetTestPlanById(ctx context.Context, args GetTestPlanByIdArgs) (*TestPlan, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -300,7 +375,7 @@ type GetTestPlanByIdArgs struct {
 }
 
 // [Preview API] Get a list of test plans
-func (client *Client) GetTestPlans(ctx context.Context, args GetTestPlansArgs) (*GetTestPlansResponseValue, error) {
+func (client *ClientImpl) GetTestPlans(ctx context.Context, args GetTestPlansArgs) (*GetTestPlansResponseValue, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -354,7 +429,7 @@ type GetTestPlansResponseValue struct {
 }
 
 // [Preview API] Update a test plan.
-func (client *Client) UpdateTestPlan(ctx context.Context, args UpdateTestPlanArgs) (*TestPlan, error) {
+func (client *ClientImpl) UpdateTestPlan(ctx context.Context, args UpdateTestPlanArgs) (*TestPlan, error) {
 	if args.TestPlanUpdateParams == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestPlanUpdateParams"}
 	}
@@ -394,7 +469,7 @@ type UpdateTestPlanArgs struct {
 }
 
 // [Preview API] Get a list of test suite entries in the test suite.
-func (client *Client) GetSuiteEntries(ctx context.Context, args GetSuiteEntriesArgs) (*[]SuiteEntry, error) {
+func (client *ClientImpl) GetSuiteEntries(ctx context.Context, args GetSuiteEntriesArgs) (*[]SuiteEntry, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -431,7 +506,7 @@ type GetSuiteEntriesArgs struct {
 }
 
 // [Preview API] Reorder test suite entries in the test suite.
-func (client *Client) ReorderSuiteEntries(ctx context.Context, args ReorderSuiteEntriesArgs) (*[]SuiteEntry, error) {
+func (client *ClientImpl) ReorderSuiteEntries(ctx context.Context, args ReorderSuiteEntriesArgs) (*[]SuiteEntry, error) {
 	if args.SuiteEntries == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SuiteEntries"}
 	}
@@ -471,7 +546,7 @@ type ReorderSuiteEntriesArgs struct {
 }
 
 // [Preview API] Create test suite.
-func (client *Client) CreateTestSuite(ctx context.Context, args CreateTestSuiteArgs) (*TestSuite, error) {
+func (client *ClientImpl) CreateTestSuite(ctx context.Context, args CreateTestSuiteArgs) (*TestSuite, error) {
 	if args.TestSuiteCreateParams == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestSuiteCreateParams"}
 	}
@@ -511,7 +586,7 @@ type CreateTestSuiteArgs struct {
 }
 
 // [Preview API] Delete test suite.
-func (client *Client) DeleteTestSuite(ctx context.Context, args DeleteTestSuiteArgs) error {
+func (client *ClientImpl) DeleteTestSuite(ctx context.Context, args DeleteTestSuiteArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -546,7 +621,7 @@ type DeleteTestSuiteArgs struct {
 }
 
 // [Preview API] Get test suite by suite id.
-func (client *Client) GetTestSuiteById(ctx context.Context, args GetTestSuiteByIdArgs) (*TestSuite, error) {
+func (client *ClientImpl) GetTestSuiteById(ctx context.Context, args GetTestSuiteByIdArgs) (*TestSuite, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -589,7 +664,7 @@ type GetTestSuiteByIdArgs struct {
 }
 
 // [Preview API] Get test suites for plan.
-func (client *Client) GetTestSuitesForPlan(ctx context.Context, args GetTestSuitesForPlanArgs) (*GetTestSuitesForPlanResponseValue, error) {
+func (client *ClientImpl) GetTestSuitesForPlan(ctx context.Context, args GetTestSuitesForPlanArgs) (*GetTestSuitesForPlanResponseValue, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -644,7 +719,7 @@ type GetTestSuitesForPlanResponseValue struct {
 }
 
 // [Preview API] Update test suite.
-func (client *Client) UpdateTestSuite(ctx context.Context, args UpdateTestSuiteArgs) (*TestSuite, error) {
+func (client *ClientImpl) UpdateTestSuite(ctx context.Context, args UpdateTestSuiteArgs) (*TestSuite, error) {
 	if args.TestSuiteUpdateParams == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestSuiteUpdateParams"}
 	}
@@ -690,7 +765,7 @@ type UpdateTestSuiteArgs struct {
 }
 
 // Find the list of all test suites in which a given test case is present. This is helpful if you need to find out which test suites are using a test case, when you need to make changes to a test case.
-func (client *Client) GetSuitesByTestCaseId(ctx context.Context, args GetSuitesByTestCaseIdArgs) (*[]TestSuite, error) {
+func (client *ClientImpl) GetSuitesByTestCaseId(ctx context.Context, args GetSuitesByTestCaseIdArgs) (*[]TestSuite, error) {
 	queryParams := url.Values{}
 	if args.TestCaseId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "testCaseId"}
@@ -714,7 +789,7 @@ type GetSuitesByTestCaseIdArgs struct {
 }
 
 // [Preview API] Add test cases to a suite with specified configurations
-func (client *Client) AddTestCasesToSuite(ctx context.Context, args AddTestCasesToSuiteArgs) (*[]TestCase, error) {
+func (client *ClientImpl) AddTestCasesToSuite(ctx context.Context, args AddTestCasesToSuiteArgs) (*[]TestCase, error) {
 	if args.SuiteTestCaseCreateUpdateParameters == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SuiteTestCaseCreateUpdateParameters"}
 	}
@@ -760,7 +835,7 @@ type AddTestCasesToSuiteArgs struct {
 }
 
 // [Preview API] Get Test Cases For a Suite.
-func (client *Client) GetTestCase(ctx context.Context, args GetTestCaseArgs) (*[]TestCase, error) {
+func (client *ClientImpl) GetTestCase(ctx context.Context, args GetTestCaseArgs) (*[]TestCase, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -814,7 +889,7 @@ type GetTestCaseArgs struct {
 }
 
 // [Preview API] Get Test Case List return those test cases which have all the configuration Ids as mentioned in the optional paramter. If configuration Ids is null, it return all the test cases
-func (client *Client) GetTestCaseList(ctx context.Context, args GetTestCaseListArgs) (*GetTestCaseListResponseValue, error) {
+func (client *ClientImpl) GetTestCaseList(ctx context.Context, args GetTestCaseListArgs) (*GetTestCaseListResponseValue, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -890,7 +965,7 @@ type GetTestCaseListResponseValue struct {
 }
 
 // [Preview API] Removes test cases from a suite based on the list of test case Ids provided.
-func (client *Client) RemoveTestCasesFromSuite(ctx context.Context, args RemoveTestCasesFromSuiteArgs) error {
+func (client *ClientImpl) RemoveTestCasesFromSuite(ctx context.Context, args RemoveTestCasesFromSuiteArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -931,7 +1006,7 @@ type RemoveTestCasesFromSuiteArgs struct {
 }
 
 // [Preview API] Update the configurations for test cases
-func (client *Client) UpdateSuiteTestCases(ctx context.Context, args UpdateSuiteTestCasesArgs) (*[]TestCase, error) {
+func (client *ClientImpl) UpdateSuiteTestCases(ctx context.Context, args UpdateSuiteTestCasesArgs) (*[]TestCase, error) {
 	if args.SuiteTestCaseCreateUpdateParameters == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SuiteTestCaseCreateUpdateParameters"}
 	}
@@ -977,7 +1052,7 @@ type UpdateSuiteTestCasesArgs struct {
 }
 
 // [Preview API] Delete a test case.
-func (client *Client) DeleteTestCase(ctx context.Context, args DeleteTestCaseArgs) error {
+func (client *ClientImpl) DeleteTestCase(ctx context.Context, args DeleteTestCaseArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1006,7 +1081,7 @@ type DeleteTestCaseArgs struct {
 }
 
 // [Preview API] Clone test plan
-func (client *Client) CloneTestPlan(ctx context.Context, args CloneTestPlanArgs) (*CloneTestPlanOperationInformation, error) {
+func (client *ClientImpl) CloneTestPlan(ctx context.Context, args CloneTestPlanArgs) (*CloneTestPlanOperationInformation, error) {
 	if args.CloneRequestBody == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CloneRequestBody"}
 	}
@@ -1046,7 +1121,7 @@ type CloneTestPlanArgs struct {
 }
 
 // [Preview API] Get clone information.
-func (client *Client) GetCloneInformation(ctx context.Context, args GetCloneInformationArgs) (*CloneTestPlanOperationInformation, error) {
+func (client *ClientImpl) GetCloneInformation(ctx context.Context, args GetCloneInformationArgs) (*CloneTestPlanOperationInformation, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1077,7 +1152,7 @@ type GetCloneInformationArgs struct {
 }
 
 // [Preview API] Get a list of points based on point Ids provided.
-func (client *Client) GetPoints(ctx context.Context, args GetPointsArgs) (*[]TestPoint, error) {
+func (client *ClientImpl) GetPoints(ctx context.Context, args GetPointsArgs) (*[]TestPoint, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1126,7 +1201,7 @@ type GetPointsArgs struct {
 }
 
 // [Preview API] Get all the points inside a suite based on some filters
-func (client *Client) GetPointsList(ctx context.Context, args GetPointsListArgs) (*GetPointsListResponseValue, error) {
+func (client *ClientImpl) GetPointsList(ctx context.Context, args GetPointsListArgs) (*GetPointsListResponseValue, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1197,7 +1272,7 @@ type GetPointsListResponseValue struct {
 }
 
 // [Preview API] Update Test Points. This is used to Reset test point to active, update the outcome of a test point or update the tester of a test point
-func (client *Client) UpdateTestPoints(ctx context.Context, args UpdateTestPointsArgs) (*[]TestPoint, error) {
+func (client *ClientImpl) UpdateTestPoints(ctx context.Context, args UpdateTestPointsArgs) (*[]TestPoint, error) {
 	if args.TestPointUpdateParams == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestPointUpdateParams"}
 	}
@@ -1243,7 +1318,7 @@ type UpdateTestPointsArgs struct {
 }
 
 // [Preview API] Clone test suite
-func (client *Client) CloneTestSuite(ctx context.Context, args CloneTestSuiteArgs) (*CloneTestSuiteOperationInformation, error) {
+func (client *ClientImpl) CloneTestSuite(ctx context.Context, args CloneTestSuiteArgs) (*CloneTestSuiteOperationInformation, error) {
 	if args.CloneRequestBody == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CloneRequestBody"}
 	}
@@ -1283,7 +1358,7 @@ type CloneTestSuiteArgs struct {
 }
 
 // [Preview API] Get clone information.
-func (client *Client) GetSuiteCloneInformation(ctx context.Context, args GetSuiteCloneInformationArgs) (*CloneTestSuiteOperationInformation, error) {
+func (client *ClientImpl) GetSuiteCloneInformation(ctx context.Context, args GetSuiteCloneInformationArgs) (*CloneTestSuiteOperationInformation, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1314,7 +1389,7 @@ type GetSuiteCloneInformationArgs struct {
 }
 
 // [Preview API] Create a test variable.
-func (client *Client) CreateTestVariable(ctx context.Context, args CreateTestVariableArgs) (*TestVariable, error) {
+func (client *ClientImpl) CreateTestVariable(ctx context.Context, args CreateTestVariableArgs) (*TestVariable, error) {
 	if args.TestVariableCreateUpdateParameters == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestVariableCreateUpdateParameters"}
 	}
@@ -1348,7 +1423,7 @@ type CreateTestVariableArgs struct {
 }
 
 // [Preview API] Delete a test variable by its ID.
-func (client *Client) DeleteTestVariable(ctx context.Context, args DeleteTestVariableArgs) error {
+func (client *ClientImpl) DeleteTestVariable(ctx context.Context, args DeleteTestVariableArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1377,7 +1452,7 @@ type DeleteTestVariableArgs struct {
 }
 
 // [Preview API] Get a test variable by its ID.
-func (client *Client) GetTestVariableById(ctx context.Context, args GetTestVariableByIdArgs) (*TestVariable, error) {
+func (client *ClientImpl) GetTestVariableById(ctx context.Context, args GetTestVariableByIdArgs) (*TestVariable, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1408,7 +1483,7 @@ type GetTestVariableByIdArgs struct {
 }
 
 // [Preview API] Get a list of test variables.
-func (client *Client) GetTestVariables(ctx context.Context, args GetTestVariablesArgs) (*GetTestVariablesResponseValue, error) {
+func (client *ClientImpl) GetTestVariables(ctx context.Context, args GetTestVariablesArgs) (*GetTestVariablesResponseValue, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1447,7 +1522,7 @@ type GetTestVariablesResponseValue struct {
 }
 
 // [Preview API] Update a test variable by its ID.
-func (client *Client) UpdateTestVariable(ctx context.Context, args UpdateTestVariableArgs) (*TestVariable, error) {
+func (client *ClientImpl) UpdateTestVariable(ctx context.Context, args UpdateTestVariableArgs) (*TestVariable, error) {
 	if args.TestVariableCreateUpdateParameters == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestVariableCreateUpdateParameters"}
 	}

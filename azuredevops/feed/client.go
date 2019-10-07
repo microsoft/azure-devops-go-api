@@ -21,22 +21,89 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("7ab4e64e-c4d8-4f50-ae73-5ef2e21642a5")
 
-type Client struct {
+type Client interface {
+	// [Preview API] Generate a SVG badge for the latest version of a package.  The generated SVG is typically used as the image in an HTML link which takes users to the feed containing the package to accelerate discovery and consumption.
+	GetBadge(context.Context, GetBadgeArgs) (*string, error)
+	// [Preview API] Query a feed to determine its current state.
+	GetFeedChange(context.Context, GetFeedChangeArgs) (*FeedChange, error)
+	// [Preview API] Query to determine which feeds have changed since the last call, tracked through the provided continuationToken. Only changes to a feed itself are returned and impact the continuationToken, not additions or alterations to packages within the feeds.
+	GetFeedChanges(context.Context, GetFeedChangesArgs) (*FeedChangesResponse, error)
+	// [Preview API] Create a feed, a container for various package types.
+	CreateFeed(context.Context, CreateFeedArgs) (*Feed, error)
+	// [Preview API] Remove a feed and all its packages. The action does not result in packages moving to the RecycleBin and is not reversible.
+	DeleteFeed(context.Context, DeleteFeedArgs) error
+	// [Preview API] Get the settings for a specific feed.
+	GetFeed(context.Context, GetFeedArgs) (*Feed, error)
+	// [Preview API] Get all feeds in an account where you have the provided role access.
+	GetFeeds(context.Context, GetFeedsArgs) (*[]Feed, error)
+	// [Preview API] Change the attributes of a feed.
+	UpdateFeed(context.Context, UpdateFeedArgs) (*Feed, error)
+	// [Preview API] Get all service-wide feed creation and administration permissions.
+	GetGlobalPermissions(context.Context, GetGlobalPermissionsArgs) (*[]GlobalPermission, error)
+	// [Preview API] Set service-wide permissions that govern feed creation and administration.
+	SetGlobalPermissions(context.Context, SetGlobalPermissionsArgs) (*[]GlobalPermission, error)
+	// [Preview API] Get a batch of package changes made to a feed.  The changes returned are 'most recent change' so if an Add is followed by an Update before you begin enumerating, you'll only see one change in the batch.  While consuming batches using the continuation token, you may see changes to the same package version multiple times if they are happening as you enumerate.
+	GetPackageChanges(context.Context, GetPackageChangesArgs) (*PackageChangesResponse, error)
+	// [Preview API]
+	QueryPackageMetrics(context.Context, QueryPackageMetricsArgs) (*[]PackageMetrics, error)
+	// [Preview API] Get details about a specific package.
+	GetPackage(context.Context, GetPackageArgs) (*Package, error)
+	// [Preview API] Get details about all of the packages in the feed. Use the various filters to include or exclude information from the result set.
+	GetPackages(context.Context, GetPackagesArgs) (*[]Package, error)
+	// [Preview API] Get the permissions for a feed.
+	GetFeedPermissions(context.Context, GetFeedPermissionsArgs) (*[]FeedPermission, error)
+	// [Preview API] Update the permissions on a feed.
+	SetFeedPermissions(context.Context, SetFeedPermissionsArgs) (*[]FeedPermission, error)
+	// [Preview API] Gets provenance for a package version.
+	GetPackageVersionProvenance(context.Context, GetPackageVersionProvenanceArgs) (*PackageVersionProvenance, error)
+	// [Preview API] Get information about a package and all its versions within the recycle bin.
+	GetRecycleBinPackage(context.Context, GetRecycleBinPackageArgs) (*Package, error)
+	// [Preview API] Query for packages within the recycle bin.
+	GetRecycleBinPackages(context.Context, GetRecycleBinPackagesArgs) (*[]Package, error)
+	// [Preview API] Get information about a package version within the recycle bin.
+	GetRecycleBinPackageVersion(context.Context, GetRecycleBinPackageVersionArgs) (*RecycleBinPackageVersion, error)
+	// [Preview API] Get a list of package versions within the recycle bin.
+	GetRecycleBinPackageVersions(context.Context, GetRecycleBinPackageVersionsArgs) (*[]RecycleBinPackageVersion, error)
+	// [Preview API] Delete the retention policy for a feed.
+	DeleteFeedRetentionPolicies(context.Context, DeleteFeedRetentionPoliciesArgs) error
+	// [Preview API] Get the retention policy for a feed.
+	GetFeedRetentionPolicies(context.Context, GetFeedRetentionPoliciesArgs) (*FeedRetentionPolicy, error)
+	// [Preview API] Set the retention policy for a feed.
+	SetFeedRetentionPolicies(context.Context, SetFeedRetentionPoliciesArgs) (*FeedRetentionPolicy, error)
+	// [Preview API]
+	QueryPackageVersionMetrics(context.Context, QueryPackageVersionMetricsArgs) (*[]PackageVersionMetrics, error)
+	// [Preview API] Get details about a specific package version.
+	GetPackageVersion(context.Context, GetPackageVersionArgs) (*PackageVersion, error)
+	// [Preview API] Get a list of package versions, optionally filtering by state.
+	GetPackageVersions(context.Context, GetPackageVersionsArgs) (*[]PackageVersion, error)
+	// [Preview API] Create a new view on the referenced feed.
+	CreateFeedView(context.Context, CreateFeedViewArgs) (*FeedView, error)
+	// [Preview API] Delete a feed view.
+	DeleteFeedView(context.Context, DeleteFeedViewArgs) error
+	// [Preview API] Get a view by Id.
+	GetFeedView(context.Context, GetFeedViewArgs) (*FeedView, error)
+	// [Preview API] Get all views for a feed.
+	GetFeedViews(context.Context, GetFeedViewsArgs) (*[]FeedView, error)
+	// [Preview API] Update a view.
+	UpdateFeedView(context.Context, UpdateFeedViewArgs) (*FeedView, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
 // [Preview API] Generate a SVG badge for the latest version of a package.  The generated SVG is typically used as the image in an HTML link which takes users to the feed containing the package to accelerate discovery and consumption.
-func (client *Client) GetBadge(ctx context.Context, args GetBadgeArgs) (*string, error) {
+func (client *ClientImpl) GetBadge(ctx context.Context, args GetBadgeArgs) (*string, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -72,7 +139,7 @@ type GetBadgeArgs struct {
 }
 
 // [Preview API] Query a feed to determine its current state.
-func (client *Client) GetFeedChange(ctx context.Context, args GetFeedChangeArgs) (*FeedChange, error) {
+func (client *ClientImpl) GetFeedChange(ctx context.Context, args GetFeedChangeArgs) (*FeedChange, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -102,7 +169,7 @@ type GetFeedChangeArgs struct {
 }
 
 // [Preview API] Query to determine which feeds have changed since the last call, tracked through the provided continuationToken. Only changes to a feed itself are returned and impact the continuationToken, not additions or alterations to packages within the feeds.
-func (client *Client) GetFeedChanges(ctx context.Context, args GetFeedChangesArgs) (*FeedChangesResponse, error) {
+func (client *ClientImpl) GetFeedChanges(ctx context.Context, args GetFeedChangesArgs) (*FeedChangesResponse, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -142,7 +209,7 @@ type GetFeedChangesArgs struct {
 }
 
 // [Preview API] Create a feed, a container for various package types.
-func (client *Client) CreateFeed(ctx context.Context, args CreateFeedArgs) (*Feed, error) {
+func (client *ClientImpl) CreateFeed(ctx context.Context, args CreateFeedArgs) (*Feed, error) {
 	if args.Feed == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Feed"}
 	}
@@ -175,7 +242,7 @@ type CreateFeedArgs struct {
 }
 
 // [Preview API] Remove a feed and all its packages. The action does not result in packages moving to the RecycleBin and is not reversible.
-func (client *Client) DeleteFeed(ctx context.Context, args DeleteFeedArgs) error {
+func (client *ClientImpl) DeleteFeed(ctx context.Context, args DeleteFeedArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -203,7 +270,7 @@ type DeleteFeedArgs struct {
 }
 
 // [Preview API] Get the settings for a specific feed.
-func (client *Client) GetFeed(ctx context.Context, args GetFeedArgs) (*Feed, error) {
+func (client *ClientImpl) GetFeed(ctx context.Context, args GetFeedArgs) (*Feed, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -239,7 +306,7 @@ type GetFeedArgs struct {
 }
 
 // [Preview API] Get all feeds in an account where you have the provided role access.
-func (client *Client) GetFeeds(ctx context.Context, args GetFeedsArgs) (*[]Feed, error) {
+func (client *ClientImpl) GetFeeds(ctx context.Context, args GetFeedsArgs) (*[]Feed, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -274,7 +341,7 @@ type GetFeedsArgs struct {
 }
 
 // [Preview API] Change the attributes of a feed.
-func (client *Client) UpdateFeed(ctx context.Context, args UpdateFeedArgs) (*Feed, error) {
+func (client *ClientImpl) UpdateFeed(ctx context.Context, args UpdateFeedArgs) (*Feed, error) {
 	if args.Feed == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Feed"}
 	}
@@ -313,7 +380,7 @@ type UpdateFeedArgs struct {
 }
 
 // [Preview API] Get all service-wide feed creation and administration permissions.
-func (client *Client) GetGlobalPermissions(ctx context.Context, args GetGlobalPermissionsArgs) (*[]GlobalPermission, error) {
+func (client *ClientImpl) GetGlobalPermissions(ctx context.Context, args GetGlobalPermissionsArgs) (*[]GlobalPermission, error) {
 	queryParams := url.Values{}
 	if args.IncludeIds != nil {
 		queryParams.Add("includeIds", strconv.FormatBool(*args.IncludeIds))
@@ -336,7 +403,7 @@ type GetGlobalPermissionsArgs struct {
 }
 
 // [Preview API] Set service-wide permissions that govern feed creation and administration.
-func (client *Client) SetGlobalPermissions(ctx context.Context, args SetGlobalPermissionsArgs) (*[]GlobalPermission, error) {
+func (client *ClientImpl) SetGlobalPermissions(ctx context.Context, args SetGlobalPermissionsArgs) (*[]GlobalPermission, error) {
 	if args.GlobalPermissions == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.GlobalPermissions"}
 	}
@@ -362,7 +429,7 @@ type SetGlobalPermissionsArgs struct {
 }
 
 // [Preview API] Get a batch of package changes made to a feed.  The changes returned are 'most recent change' so if an Add is followed by an Update before you begin enumerating, you'll only see one change in the batch.  While consuming batches using the continuation token, you may see changes to the same package version multiple times if they are happening as you enumerate.
-func (client *Client) GetPackageChanges(ctx context.Context, args GetPackageChangesArgs) (*PackageChangesResponse, error) {
+func (client *ClientImpl) GetPackageChanges(ctx context.Context, args GetPackageChangesArgs) (*PackageChangesResponse, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -403,7 +470,7 @@ type GetPackageChangesArgs struct {
 }
 
 // [Preview API]
-func (client *Client) QueryPackageMetrics(ctx context.Context, args QueryPackageMetricsArgs) (*[]PackageMetrics, error) {
+func (client *ClientImpl) QueryPackageMetrics(ctx context.Context, args QueryPackageMetricsArgs) (*[]PackageMetrics, error) {
 	if args.PackageIdQuery == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PackageIdQuery"}
 	}
@@ -442,7 +509,7 @@ type QueryPackageMetricsArgs struct {
 }
 
 // [Preview API] Get details about a specific package.
-func (client *Client) GetPackage(ctx context.Context, args GetPackageArgs) (*Package, error) {
+func (client *ClientImpl) GetPackage(ctx context.Context, args GetPackageArgs) (*Package, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -509,7 +576,7 @@ type GetPackageArgs struct {
 }
 
 // [Preview API] Get details about all of the packages in the feed. Use the various filters to include or exclude information from the result set.
-func (client *Client) GetPackages(ctx context.Context, args GetPackagesArgs) (*[]Package, error) {
+func (client *ClientImpl) GetPackages(ctx context.Context, args GetPackagesArgs) (*[]Package, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -610,7 +677,7 @@ type GetPackagesArgs struct {
 }
 
 // [Preview API] Get the permissions for a feed.
-func (client *Client) GetFeedPermissions(ctx context.Context, args GetFeedPermissionsArgs) (*[]FeedPermission, error) {
+func (client *ClientImpl) GetFeedPermissions(ctx context.Context, args GetFeedPermissionsArgs) (*[]FeedPermission, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -656,7 +723,7 @@ type GetFeedPermissionsArgs struct {
 }
 
 // [Preview API] Update the permissions on a feed.
-func (client *Client) SetFeedPermissions(ctx context.Context, args SetFeedPermissionsArgs) (*[]FeedPermission, error) {
+func (client *ClientImpl) SetFeedPermissions(ctx context.Context, args SetFeedPermissionsArgs) (*[]FeedPermission, error) {
 	if args.FeedPermission == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.FeedPermission"}
 	}
@@ -695,7 +762,7 @@ type SetFeedPermissionsArgs struct {
 }
 
 // [Preview API] Gets provenance for a package version.
-func (client *Client) GetPackageVersionProvenance(ctx context.Context, args GetPackageVersionProvenanceArgs) (*PackageVersionProvenance, error) {
+func (client *ClientImpl) GetPackageVersionProvenance(ctx context.Context, args GetPackageVersionProvenanceArgs) (*PackageVersionProvenance, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -737,7 +804,7 @@ type GetPackageVersionProvenanceArgs struct {
 }
 
 // [Preview API] Get information about a package and all its versions within the recycle bin.
-func (client *Client) GetRecycleBinPackage(ctx context.Context, args GetRecycleBinPackageArgs) (*Package, error) {
+func (client *ClientImpl) GetRecycleBinPackage(ctx context.Context, args GetRecycleBinPackageArgs) (*Package, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -779,7 +846,7 @@ type GetRecycleBinPackageArgs struct {
 }
 
 // [Preview API] Query for packages within the recycle bin.
-func (client *Client) GetRecycleBinPackages(ctx context.Context, args GetRecycleBinPackagesArgs) (*[]Package, error) {
+func (client *ClientImpl) GetRecycleBinPackages(ctx context.Context, args GetRecycleBinPackagesArgs) (*[]Package, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -840,7 +907,7 @@ type GetRecycleBinPackagesArgs struct {
 }
 
 // [Preview API] Get information about a package version within the recycle bin.
-func (client *Client) GetRecycleBinPackageVersion(ctx context.Context, args GetRecycleBinPackageVersionArgs) (*RecycleBinPackageVersion, error) {
+func (client *ClientImpl) GetRecycleBinPackageVersion(ctx context.Context, args GetRecycleBinPackageVersionArgs) (*RecycleBinPackageVersion, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -888,7 +955,7 @@ type GetRecycleBinPackageVersionArgs struct {
 }
 
 // [Preview API] Get a list of package versions within the recycle bin.
-func (client *Client) GetRecycleBinPackageVersions(ctx context.Context, args GetRecycleBinPackageVersionsArgs) (*[]RecycleBinPackageVersion, error) {
+func (client *ClientImpl) GetRecycleBinPackageVersions(ctx context.Context, args GetRecycleBinPackageVersionsArgs) (*[]RecycleBinPackageVersion, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -930,7 +997,7 @@ type GetRecycleBinPackageVersionsArgs struct {
 }
 
 // [Preview API] Delete the retention policy for a feed.
-func (client *Client) DeleteFeedRetentionPolicies(ctx context.Context, args DeleteFeedRetentionPoliciesArgs) error {
+func (client *ClientImpl) DeleteFeedRetentionPolicies(ctx context.Context, args DeleteFeedRetentionPoliciesArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -958,7 +1025,7 @@ type DeleteFeedRetentionPoliciesArgs struct {
 }
 
 // [Preview API] Get the retention policy for a feed.
-func (client *Client) GetFeedRetentionPolicies(ctx context.Context, args GetFeedRetentionPoliciesArgs) (*FeedRetentionPolicy, error) {
+func (client *ClientImpl) GetFeedRetentionPolicies(ctx context.Context, args GetFeedRetentionPoliciesArgs) (*FeedRetentionPolicy, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -988,7 +1055,7 @@ type GetFeedRetentionPoliciesArgs struct {
 }
 
 // [Preview API] Set the retention policy for a feed.
-func (client *Client) SetFeedRetentionPolicies(ctx context.Context, args SetFeedRetentionPoliciesArgs) (*FeedRetentionPolicy, error) {
+func (client *ClientImpl) SetFeedRetentionPolicies(ctx context.Context, args SetFeedRetentionPoliciesArgs) (*FeedRetentionPolicy, error) {
 	if args.Policy == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Policy"}
 	}
@@ -1027,7 +1094,7 @@ type SetFeedRetentionPoliciesArgs struct {
 }
 
 // [Preview API]
-func (client *Client) QueryPackageVersionMetrics(ctx context.Context, args QueryPackageVersionMetricsArgs) (*[]PackageVersionMetrics, error) {
+func (client *ClientImpl) QueryPackageVersionMetrics(ctx context.Context, args QueryPackageVersionMetricsArgs) (*[]PackageVersionMetrics, error) {
 	if args.PackageVersionIdQuery == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PackageVersionIdQuery"}
 	}
@@ -1072,7 +1139,7 @@ type QueryPackageVersionMetricsArgs struct {
 }
 
 // [Preview API] Get details about a specific package version.
-func (client *Client) GetPackageVersion(ctx context.Context, args GetPackageVersionArgs) (*PackageVersion, error) {
+func (client *ClientImpl) GetPackageVersion(ctx context.Context, args GetPackageVersionArgs) (*PackageVersion, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -1130,7 +1197,7 @@ type GetPackageVersionArgs struct {
 }
 
 // [Preview API] Get a list of package versions, optionally filtering by state.
-func (client *Client) GetPackageVersions(ctx context.Context, args GetPackageVersionsArgs) (*[]PackageVersion, error) {
+func (client *ClientImpl) GetPackageVersions(ctx context.Context, args GetPackageVersionsArgs) (*[]PackageVersion, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -1182,7 +1249,7 @@ type GetPackageVersionsArgs struct {
 }
 
 // [Preview API] Create a new view on the referenced feed.
-func (client *Client) CreateFeedView(ctx context.Context, args CreateFeedViewArgs) (*FeedView, error) {
+func (client *ClientImpl) CreateFeedView(ctx context.Context, args CreateFeedViewArgs) (*FeedView, error) {
 	if args.View == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.View"}
 	}
@@ -1221,7 +1288,7 @@ type CreateFeedViewArgs struct {
 }
 
 // [Preview API] Delete a feed view.
-func (client *Client) DeleteFeedView(ctx context.Context, args DeleteFeedViewArgs) error {
+func (client *ClientImpl) DeleteFeedView(ctx context.Context, args DeleteFeedViewArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -1255,7 +1322,7 @@ type DeleteFeedViewArgs struct {
 }
 
 // [Preview API] Get a view by Id.
-func (client *Client) GetFeedView(ctx context.Context, args GetFeedViewArgs) (*FeedView, error) {
+func (client *ClientImpl) GetFeedView(ctx context.Context, args GetFeedViewArgs) (*FeedView, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -1291,7 +1358,7 @@ type GetFeedViewArgs struct {
 }
 
 // [Preview API] Get all views for a feed.
-func (client *Client) GetFeedViews(ctx context.Context, args GetFeedViewsArgs) (*[]FeedView, error) {
+func (client *ClientImpl) GetFeedViews(ctx context.Context, args GetFeedViewsArgs) (*[]FeedView, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -1321,7 +1388,7 @@ type GetFeedViewsArgs struct {
 }
 
 // [Preview API] Update a view.
-func (client *Client) UpdateFeedView(ctx context.Context, args UpdateFeedViewArgs) (*FeedView, error) {
+func (client *ClientImpl) UpdateFeedView(ctx context.Context, args UpdateFeedViewArgs) (*FeedView, error) {
 	if args.View == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.View"}
 	}

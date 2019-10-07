@@ -22,22 +22,45 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("1814ab31-2f4f-4a9f-8761-f4d77dc5a5d7")
 
-type Client struct {
+type Client interface {
+	// [Preview API] Proxy for a GET request defined by a service endpoint.
+	ExecuteServiceEndpointRequest(context.Context, ExecuteServiceEndpointRequestArgs) (*ServiceEndpointRequestResult, error)
+	// [Preview API] Create a service endpoint.
+	CreateServiceEndpoint(context.Context, CreateServiceEndpointArgs) (*ServiceEndpoint, error)
+	// [Preview API] Delete a service endpoint.
+	DeleteServiceEndpoint(context.Context, DeleteServiceEndpointArgs) error
+	// [Preview API] Get the service endpoint details.
+	GetServiceEndpointDetails(context.Context, GetServiceEndpointDetailsArgs) (*ServiceEndpoint, error)
+	// [Preview API] Get the service endpoints.
+	GetServiceEndpoints(context.Context, GetServiceEndpointsArgs) (*[]ServiceEndpoint, error)
+	// [Preview API] Get the service endpoints by name.
+	GetServiceEndpointsByNames(context.Context, GetServiceEndpointsByNamesArgs) (*[]ServiceEndpoint, error)
+	// [Preview API] Update a service endpoint.
+	UpdateServiceEndpoint(context.Context, UpdateServiceEndpointArgs) (*ServiceEndpoint, error)
+	// [Preview API] Update the service endpoints.
+	UpdateServiceEndpoints(context.Context, UpdateServiceEndpointsArgs) (*[]ServiceEndpoint, error)
+	// [Preview API] Get service endpoint execution records.
+	GetServiceEndpointExecutionRecords(context.Context, GetServiceEndpointExecutionRecordsArgs) (*GetServiceEndpointExecutionRecordsResponseValue, error)
+	// [Preview API] Get service endpoint types.
+	GetServiceEndpointTypes(context.Context, GetServiceEndpointTypesArgs) (*[]ServiceEndpointType, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
 // [Preview API] Proxy for a GET request defined by a service endpoint.
-func (client *Client) ExecuteServiceEndpointRequest(ctx context.Context, args ExecuteServiceEndpointRequestArgs) (*ServiceEndpointRequestResult, error) {
+func (client *ClientImpl) ExecuteServiceEndpointRequest(ctx context.Context, args ExecuteServiceEndpointRequestArgs) (*ServiceEndpointRequestResult, error) {
 	if args.ServiceEndpointRequest == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ServiceEndpointRequest"}
 	}
@@ -78,7 +101,7 @@ type ExecuteServiceEndpointRequestArgs struct {
 }
 
 // [Preview API] Create a service endpoint.
-func (client *Client) CreateServiceEndpoint(ctx context.Context, args CreateServiceEndpointArgs) (*ServiceEndpoint, error) {
+func (client *ClientImpl) CreateServiceEndpoint(ctx context.Context, args CreateServiceEndpointArgs) (*ServiceEndpoint, error) {
 	if args.Endpoint == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Endpoint"}
 	}
@@ -112,7 +135,7 @@ type CreateServiceEndpointArgs struct {
 }
 
 // [Preview API] Delete a service endpoint.
-func (client *Client) DeleteServiceEndpoint(ctx context.Context, args DeleteServiceEndpointArgs) error {
+func (client *ClientImpl) DeleteServiceEndpoint(ctx context.Context, args DeleteServiceEndpointArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -147,7 +170,7 @@ type DeleteServiceEndpointArgs struct {
 }
 
 // [Preview API] Get the service endpoint details.
-func (client *Client) GetServiceEndpointDetails(ctx context.Context, args GetServiceEndpointDetailsArgs) (*ServiceEndpoint, error) {
+func (client *ClientImpl) GetServiceEndpointDetails(ctx context.Context, args GetServiceEndpointDetailsArgs) (*ServiceEndpoint, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -178,7 +201,7 @@ type GetServiceEndpointDetailsArgs struct {
 }
 
 // [Preview API] Get the service endpoints.
-func (client *Client) GetServiceEndpoints(ctx context.Context, args GetServiceEndpointsArgs) (*[]ServiceEndpoint, error) {
+func (client *ClientImpl) GetServiceEndpoints(ctx context.Context, args GetServiceEndpointsArgs) (*[]ServiceEndpoint, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -240,7 +263,7 @@ type GetServiceEndpointsArgs struct {
 }
 
 // [Preview API] Get the service endpoints by name.
-func (client *Client) GetServiceEndpointsByNames(ctx context.Context, args GetServiceEndpointsByNamesArgs) (*[]ServiceEndpoint, error) {
+func (client *ClientImpl) GetServiceEndpointsByNames(ctx context.Context, args GetServiceEndpointsByNamesArgs) (*[]ServiceEndpoint, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -299,7 +322,7 @@ type GetServiceEndpointsByNamesArgs struct {
 }
 
 // [Preview API] Update a service endpoint.
-func (client *Client) UpdateServiceEndpoint(ctx context.Context, args UpdateServiceEndpointArgs) (*ServiceEndpoint, error) {
+func (client *ClientImpl) UpdateServiceEndpoint(ctx context.Context, args UpdateServiceEndpointArgs) (*ServiceEndpoint, error) {
 	if args.Endpoint == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Endpoint"}
 	}
@@ -345,7 +368,7 @@ type UpdateServiceEndpointArgs struct {
 }
 
 // [Preview API] Update the service endpoints.
-func (client *Client) UpdateServiceEndpoints(ctx context.Context, args UpdateServiceEndpointsArgs) (*[]ServiceEndpoint, error) {
+func (client *ClientImpl) UpdateServiceEndpoints(ctx context.Context, args UpdateServiceEndpointsArgs) (*[]ServiceEndpoint, error) {
 	if args.Endpoints == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Endpoints"}
 	}
@@ -379,7 +402,7 @@ type UpdateServiceEndpointsArgs struct {
 }
 
 // [Preview API] Get service endpoint execution records.
-func (client *Client) GetServiceEndpointExecutionRecords(ctx context.Context, args GetServiceEndpointExecutionRecordsArgs) (*GetServiceEndpointExecutionRecordsResponseValue, error) {
+func (client *ClientImpl) GetServiceEndpointExecutionRecords(ctx context.Context, args GetServiceEndpointExecutionRecordsArgs) (*GetServiceEndpointExecutionRecordsResponseValue, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -429,7 +452,7 @@ type GetServiceEndpointExecutionRecordsResponseValue struct {
 }
 
 // [Preview API] Get service endpoint types.
-func (client *Client) GetServiceEndpointTypes(ctx context.Context, args GetServiceEndpointTypesArgs) (*[]ServiceEndpointType, error) {
+func (client *ClientImpl) GetServiceEndpointTypes(ctx context.Context, args GetServiceEndpointTypesArgs) (*[]ServiceEndpointType, error) {
 	queryParams := url.Values{}
 	if args.Type != nil {
 		queryParams.Add("type", *args.Type)

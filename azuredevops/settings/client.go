@@ -17,19 +17,34 @@ import (
 	"net/http"
 )
 
-type Client struct {
+type Client interface {
+	// [Preview API] Get all setting entries for the given user/all-users scope
+	GetEntries(context.Context, GetEntriesArgs) (*map[string]interface{}, error)
+	// [Preview API] Remove the entry or entries under the specified path
+	RemoveEntries(context.Context, RemoveEntriesArgs) error
+	// [Preview API] Set the specified setting entry values for the given user/all-users scope
+	SetEntries(context.Context, SetEntriesArgs) error
+	// [Preview API] Get all setting entries for the given named scope
+	GetEntriesForScope(context.Context, GetEntriesForScopeArgs) (*map[string]interface{}, error)
+	// [Preview API] Remove the entry or entries under the specified path
+	RemoveEntriesForScope(context.Context, RemoveEntriesForScopeArgs) error
+	// [Preview API] Set the specified entries for the given named scope
+	SetEntriesForScope(context.Context, SetEntriesForScopeArgs) error
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) *Client {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) Client {
 	client := connection.GetClientByUrl(connection.BaseUrl)
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}
 }
 
 // [Preview API] Get all setting entries for the given user/all-users scope
-func (client *Client) GetEntries(ctx context.Context, args GetEntriesArgs) (*map[string]interface{}, error) {
+func (client *ClientImpl) GetEntries(ctx context.Context, args GetEntriesArgs) (*map[string]interface{}, error) {
 	routeValues := make(map[string]string)
 	if args.UserScope == nil || *args.UserScope == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.UserScope"}
@@ -59,7 +74,7 @@ type GetEntriesArgs struct {
 }
 
 // [Preview API] Remove the entry or entries under the specified path
-func (client *Client) RemoveEntries(ctx context.Context, args RemoveEntriesArgs) error {
+func (client *ClientImpl) RemoveEntries(ctx context.Context, args RemoveEntriesArgs) error {
 	routeValues := make(map[string]string)
 	if args.UserScope == nil || *args.UserScope == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.UserScope"}
@@ -88,7 +103,7 @@ type RemoveEntriesArgs struct {
 }
 
 // [Preview API] Set the specified setting entry values for the given user/all-users scope
-func (client *Client) SetEntries(ctx context.Context, args SetEntriesArgs) error {
+func (client *ClientImpl) SetEntries(ctx context.Context, args SetEntriesArgs) error {
 	if args.Entries == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.Entries"}
 	}
@@ -120,7 +135,7 @@ type SetEntriesArgs struct {
 }
 
 // [Preview API] Get all setting entries for the given named scope
-func (client *Client) GetEntriesForScope(ctx context.Context, args GetEntriesForScopeArgs) (*map[string]interface{}, error) {
+func (client *ClientImpl) GetEntriesForScope(ctx context.Context, args GetEntriesForScopeArgs) (*map[string]interface{}, error) {
 	routeValues := make(map[string]string)
 	if args.UserScope == nil || *args.UserScope == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.UserScope"}
@@ -162,7 +177,7 @@ type GetEntriesForScopeArgs struct {
 }
 
 // [Preview API] Remove the entry or entries under the specified path
-func (client *Client) RemoveEntriesForScope(ctx context.Context, args RemoveEntriesForScopeArgs) error {
+func (client *ClientImpl) RemoveEntriesForScope(ctx context.Context, args RemoveEntriesForScopeArgs) error {
 	routeValues := make(map[string]string)
 	if args.UserScope == nil || *args.UserScope == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.UserScope"}
@@ -203,7 +218,7 @@ type RemoveEntriesForScopeArgs struct {
 }
 
 // [Preview API] Set the specified entries for the given named scope
-func (client *Client) SetEntriesForScope(ctx context.Context, args SetEntriesForScopeArgs) error {
+func (client *ClientImpl) SetEntriesForScope(ctx context.Context, args SetEntriesForScopeArgs) error {
 	if args.Entries == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.Entries"}
 	}

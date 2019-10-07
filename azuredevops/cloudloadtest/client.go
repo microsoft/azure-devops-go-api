@@ -22,21 +22,49 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("7ae6d0a6-cda5-44cf-a261-28c392bed25c")
 
-type Client struct {
+type Client interface {
+	CreateAgentGroup(context.Context, CreateAgentGroupArgs) (*testservice.AgentGroup, error)
+	GetAgentGroups(context.Context, GetAgentGroupsArgs) (interface{}, error)
+	DeleteStaticAgent(context.Context, DeleteStaticAgentArgs) (*string, error)
+	GetStaticAgents(context.Context, GetStaticAgentsArgs) (interface{}, error)
+	GetApplication(context.Context, GetApplicationArgs) (*testservice.Application, error)
+	GetApplications(context.Context, GetApplicationsArgs) (*[]testservice.Application, error)
+	GetCounters(context.Context, GetCountersArgs) (*[]testservice.TestRunCounterInstance, error)
+	GetApplicationCounters(context.Context, GetApplicationCountersArgs) (*[]testservice.ApplicationCounters, error)
+	GetCounterSamples(context.Context, GetCounterSamplesArgs) (*testservice.CounterSamplesResult, error)
+	GetLoadTestRunErrors(context.Context, GetLoadTestRunErrorsArgs) (*testservice.LoadTestErrors, error)
+	GetTestRunMessages(context.Context, GetTestRunMessagesArgs) (*[]testservice.TestRunMessage, error)
+	GetPlugin(context.Context, GetPluginArgs) (*testservice.ApplicationType, error)
+	GetPlugins(context.Context, GetPluginsArgs) (*[]testservice.ApplicationType, error)
+	GetLoadTestResult(context.Context, GetLoadTestResultArgs) (*testservice.TestResults, error)
+	CreateTestDefinition(context.Context, CreateTestDefinitionArgs) (*testservice.TestDefinition, error)
+	GetTestDefinition(context.Context, GetTestDefinitionArgs) (*testservice.TestDefinition, error)
+	GetTestDefinitions(context.Context, GetTestDefinitionsArgs) (*[]testservice.TestDefinitionBasic, error)
+	UpdateTestDefinition(context.Context, UpdateTestDefinitionArgs) (*testservice.TestDefinition, error)
+	CreateTestDrop(context.Context, CreateTestDropArgs) (*testservice.TestDrop, error)
+	GetTestDrop(context.Context, GetTestDropArgs) (*testservice.TestDrop, error)
+	CreateTestRun(context.Context, CreateTestRunArgs) (*testservice.TestRun, error)
+	GetTestRun(context.Context, GetTestRunArgs) (*testservice.TestRun, error)
+	// Returns test runs based on the filter specified. Returns all runs of the tenant if there is no filter.
+	GetTestRuns(context.Context, GetTestRunsArgs) (interface{}, error)
+	UpdateTestRun(context.Context, UpdateTestRunArgs) error
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
-func (client *Client) CreateAgentGroup(ctx context.Context, args CreateAgentGroupArgs) (*testservice.AgentGroup, error) {
+func (client *ClientImpl) CreateAgentGroup(ctx context.Context, args CreateAgentGroupArgs) (*testservice.AgentGroup, error) {
 	if args.Group == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Group"}
 	}
@@ -61,7 +89,7 @@ type CreateAgentGroupArgs struct {
 	Group *testservice.AgentGroup
 }
 
-func (client *Client) GetAgentGroups(ctx context.Context, args GetAgentGroupsArgs) (interface{}, error) {
+func (client *ClientImpl) GetAgentGroups(ctx context.Context, args GetAgentGroupsArgs) (interface{}, error) {
 	routeValues := make(map[string]string)
 	if args.AgentGroupId != nil && *args.AgentGroupId != "" {
 		routeValues["agentGroupId"] = *args.AgentGroupId
@@ -105,7 +133,7 @@ type GetAgentGroupsArgs struct {
 	AgentGroupName *string
 }
 
-func (client *Client) DeleteStaticAgent(ctx context.Context, args DeleteStaticAgentArgs) (*string, error) {
+func (client *ClientImpl) DeleteStaticAgent(ctx context.Context, args DeleteStaticAgentArgs) (*string, error) {
 	routeValues := make(map[string]string)
 	if args.AgentGroupId == nil || *args.AgentGroupId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.AgentGroupId"}
@@ -136,7 +164,7 @@ type DeleteStaticAgentArgs struct {
 	AgentName *string
 }
 
-func (client *Client) GetStaticAgents(ctx context.Context, args GetStaticAgentsArgs) (interface{}, error) {
+func (client *ClientImpl) GetStaticAgents(ctx context.Context, args GetStaticAgentsArgs) (interface{}, error) {
 	routeValues := make(map[string]string)
 	if args.AgentGroupId == nil || *args.AgentGroupId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.AgentGroupId"}
@@ -166,7 +194,7 @@ type GetStaticAgentsArgs struct {
 	AgentName *string
 }
 
-func (client *Client) GetApplication(ctx context.Context, args GetApplicationArgs) (*testservice.Application, error) {
+func (client *ClientImpl) GetApplication(ctx context.Context, args GetApplicationArgs) (*testservice.Application, error) {
 	routeValues := make(map[string]string)
 	if args.ApplicationId == nil || *args.ApplicationId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ApplicationId"}
@@ -190,7 +218,7 @@ type GetApplicationArgs struct {
 	ApplicationId *string
 }
 
-func (client *Client) GetApplications(ctx context.Context, args GetApplicationsArgs) (*[]testservice.Application, error) {
+func (client *ClientImpl) GetApplications(ctx context.Context, args GetApplicationsArgs) (*[]testservice.Application, error) {
 	queryParams := url.Values{}
 	if args.Type != nil {
 		queryParams.Add("type", *args.Type)
@@ -212,7 +240,7 @@ type GetApplicationsArgs struct {
 	Type *string
 }
 
-func (client *Client) GetCounters(ctx context.Context, args GetCountersArgs) (*[]testservice.TestRunCounterInstance, error) {
+func (client *ClientImpl) GetCounters(ctx context.Context, args GetCountersArgs) (*[]testservice.TestRunCounterInstance, error) {
 	routeValues := make(map[string]string)
 	if args.TestRunId == nil || *args.TestRunId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.TestRunId"}
@@ -248,7 +276,7 @@ type GetCountersArgs struct {
 	IncludeSummary *bool
 }
 
-func (client *Client) GetApplicationCounters(ctx context.Context, args GetApplicationCountersArgs) (*[]testservice.ApplicationCounters, error) {
+func (client *ClientImpl) GetApplicationCounters(ctx context.Context, args GetApplicationCountersArgs) (*[]testservice.ApplicationCounters, error) {
 	queryParams := url.Values{}
 	if args.ApplicationId != nil {
 		queryParams.Add("applicationId", *args.ApplicationId)
@@ -275,7 +303,7 @@ type GetApplicationCountersArgs struct {
 	Plugintype *string
 }
 
-func (client *Client) GetCounterSamples(ctx context.Context, args GetCounterSamplesArgs) (*testservice.CounterSamplesResult, error) {
+func (client *ClientImpl) GetCounterSamples(ctx context.Context, args GetCounterSamplesArgs) (*testservice.CounterSamplesResult, error) {
 	if args.CounterSampleQueryDetails == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CounterSampleQueryDetails"}
 	}
@@ -308,7 +336,7 @@ type GetCounterSamplesArgs struct {
 	TestRunId *string
 }
 
-func (client *Client) GetLoadTestRunErrors(ctx context.Context, args GetLoadTestRunErrorsArgs) (*testservice.LoadTestErrors, error) {
+func (client *ClientImpl) GetLoadTestRunErrors(ctx context.Context, args GetLoadTestRunErrorsArgs) (*testservice.LoadTestErrors, error) {
 	routeValues := make(map[string]string)
 	if args.TestRunId == nil || *args.TestRunId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.TestRunId"}
@@ -348,7 +376,7 @@ type GetLoadTestRunErrorsArgs struct {
 	Detailed *bool
 }
 
-func (client *Client) GetTestRunMessages(ctx context.Context, args GetTestRunMessagesArgs) (*[]testservice.TestRunMessage, error) {
+func (client *ClientImpl) GetTestRunMessages(ctx context.Context, args GetTestRunMessagesArgs) (*[]testservice.TestRunMessage, error) {
 	routeValues := make(map[string]string)
 	if args.TestRunId == nil || *args.TestRunId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.TestRunId"}
@@ -372,7 +400,7 @@ type GetTestRunMessagesArgs struct {
 	TestRunId *string
 }
 
-func (client *Client) GetPlugin(ctx context.Context, args GetPluginArgs) (*testservice.ApplicationType, error) {
+func (client *ClientImpl) GetPlugin(ctx context.Context, args GetPluginArgs) (*testservice.ApplicationType, error) {
 	routeValues := make(map[string]string)
 	if args.Type == nil || *args.Type == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Type"}
@@ -396,7 +424,7 @@ type GetPluginArgs struct {
 	Type *string
 }
 
-func (client *Client) GetPlugins(ctx context.Context, args GetPluginsArgs) (*[]testservice.ApplicationType, error) {
+func (client *ClientImpl) GetPlugins(ctx context.Context, args GetPluginsArgs) (*[]testservice.ApplicationType, error) {
 	locationId, _ := uuid.Parse("7dcb0bb2-42d5-4729-9958-c0401d5e7693")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, nil, nil, "", "application/json", nil)
 	if err != nil {
@@ -412,7 +440,7 @@ func (client *Client) GetPlugins(ctx context.Context, args GetPluginsArgs) (*[]t
 type GetPluginsArgs struct {
 }
 
-func (client *Client) GetLoadTestResult(ctx context.Context, args GetLoadTestResultArgs) (*testservice.TestResults, error) {
+func (client *ClientImpl) GetLoadTestResult(ctx context.Context, args GetLoadTestResultArgs) (*testservice.TestResults, error) {
 	routeValues := make(map[string]string)
 	if args.TestRunId == nil || *args.TestRunId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.TestRunId"}
@@ -436,7 +464,7 @@ type GetLoadTestResultArgs struct {
 	TestRunId *string
 }
 
-func (client *Client) CreateTestDefinition(ctx context.Context, args CreateTestDefinitionArgs) (*testservice.TestDefinition, error) {
+func (client *ClientImpl) CreateTestDefinition(ctx context.Context, args CreateTestDefinitionArgs) (*testservice.TestDefinition, error) {
 	if args.TestDefinition == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestDefinition"}
 	}
@@ -461,7 +489,7 @@ type CreateTestDefinitionArgs struct {
 	TestDefinition *testservice.TestDefinition
 }
 
-func (client *Client) GetTestDefinition(ctx context.Context, args GetTestDefinitionArgs) (*testservice.TestDefinition, error) {
+func (client *ClientImpl) GetTestDefinition(ctx context.Context, args GetTestDefinitionArgs) (*testservice.TestDefinition, error) {
 	routeValues := make(map[string]string)
 	if args.TestDefinitionId == nil || *args.TestDefinitionId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.TestDefinitionId"}
@@ -485,7 +513,7 @@ type GetTestDefinitionArgs struct {
 	TestDefinitionId *string
 }
 
-func (client *Client) GetTestDefinitions(ctx context.Context, args GetTestDefinitionsArgs) (*[]testservice.TestDefinitionBasic, error) {
+func (client *ClientImpl) GetTestDefinitions(ctx context.Context, args GetTestDefinitionsArgs) (*[]testservice.TestDefinitionBasic, error) {
 	queryParams := url.Values{}
 	if args.FromDate != nil {
 		queryParams.Add("fromDate", *args.FromDate)
@@ -517,7 +545,7 @@ type GetTestDefinitionsArgs struct {
 	Top *int
 }
 
-func (client *Client) UpdateTestDefinition(ctx context.Context, args UpdateTestDefinitionArgs) (*testservice.TestDefinition, error) {
+func (client *ClientImpl) UpdateTestDefinition(ctx context.Context, args UpdateTestDefinitionArgs) (*testservice.TestDefinition, error) {
 	if args.TestDefinition == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestDefinition"}
 	}
@@ -542,7 +570,7 @@ type UpdateTestDefinitionArgs struct {
 	TestDefinition *testservice.TestDefinition
 }
 
-func (client *Client) CreateTestDrop(ctx context.Context, args CreateTestDropArgs) (*testservice.TestDrop, error) {
+func (client *ClientImpl) CreateTestDrop(ctx context.Context, args CreateTestDropArgs) (*testservice.TestDrop, error) {
 	if args.WebTestDrop == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WebTestDrop"}
 	}
@@ -567,7 +595,7 @@ type CreateTestDropArgs struct {
 	WebTestDrop *testservice.TestDrop
 }
 
-func (client *Client) GetTestDrop(ctx context.Context, args GetTestDropArgs) (*testservice.TestDrop, error) {
+func (client *ClientImpl) GetTestDrop(ctx context.Context, args GetTestDropArgs) (*testservice.TestDrop, error) {
 	routeValues := make(map[string]string)
 	if args.TestDropId == nil || *args.TestDropId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.TestDropId"}
@@ -591,7 +619,7 @@ type GetTestDropArgs struct {
 	TestDropId *string
 }
 
-func (client *Client) CreateTestRun(ctx context.Context, args CreateTestRunArgs) (*testservice.TestRun, error) {
+func (client *ClientImpl) CreateTestRun(ctx context.Context, args CreateTestRunArgs) (*testservice.TestRun, error) {
 	if args.WebTestRun == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WebTestRun"}
 	}
@@ -616,7 +644,7 @@ type CreateTestRunArgs struct {
 	WebTestRun *testservice.TestRun
 }
 
-func (client *Client) GetTestRun(ctx context.Context, args GetTestRunArgs) (*testservice.TestRun, error) {
+func (client *ClientImpl) GetTestRun(ctx context.Context, args GetTestRunArgs) (*testservice.TestRun, error) {
 	routeValues := make(map[string]string)
 	if args.TestRunId == nil || *args.TestRunId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.TestRunId"}
@@ -641,7 +669,7 @@ type GetTestRunArgs struct {
 }
 
 // Returns test runs based on the filter specified. Returns all runs of the tenant if there is no filter.
-func (client *Client) GetTestRuns(ctx context.Context, args GetTestRunsArgs) (interface{}, error) {
+func (client *ClientImpl) GetTestRuns(ctx context.Context, args GetTestRunsArgs) (interface{}, error) {
 	queryParams := url.Values{}
 	if args.Name != nil {
 		queryParams.Add("name", *args.Name)
@@ -708,7 +736,7 @@ type GetTestRunsArgs struct {
 	RetentionState *string
 }
 
-func (client *Client) UpdateTestRun(ctx context.Context, args UpdateTestRunArgs) error {
+func (client *ClientImpl) UpdateTestRun(ctx context.Context, args UpdateTestRunArgs) error {
 	if args.WebTestRun == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.WebTestRun"}
 	}

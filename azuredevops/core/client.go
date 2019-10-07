@@ -24,22 +24,77 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("79134c72-4a58-4b42-976c-04e7115f32bf")
 
-type Client struct {
+type Client interface {
+	// [Preview API] Removes the avatar for the project.
+	RemoveProjectAvatar(context.Context, RemoveProjectAvatarArgs) error
+	// [Preview API] Sets the avatar for the project.
+	SetProjectAvatar(context.Context, SetProjectAvatarArgs) error
+	// [Preview API]
+	CreateConnectedService(context.Context, CreateConnectedServiceArgs) (*WebApiConnectedService, error)
+	// [Preview API]
+	GetConnectedServiceDetails(context.Context, GetConnectedServiceDetailsArgs) (*WebApiConnectedServiceDetails, error)
+	// [Preview API]
+	GetConnectedServices(context.Context, GetConnectedServicesArgs) (*[]WebApiConnectedService, error)
+	// Get a list of members for a specific team.
+	GetTeamMembersWithExtendedProperties(context.Context, GetTeamMembersWithExtendedPropertiesArgs) (*[]webapi.TeamMember, error)
+	// Get a process by ID.
+	GetProcessById(context.Context, GetProcessByIdArgs) (*Process, error)
+	// Get a list of processes.
+	GetProcesses(context.Context, GetProcessesArgs) (*[]Process, error)
+	// Get project collection with the specified id or name.
+	GetProjectCollection(context.Context, GetProjectCollectionArgs) (*TeamProjectCollection, error)
+	// Get project collection references for this application.
+	GetProjectCollections(context.Context, GetProjectCollectionsArgs) (*[]TeamProjectCollectionReference, error)
+	// Get project with the specified id or name, optionally including capabilities.
+	GetProject(context.Context, GetProjectArgs) (*TeamProject, error)
+	// Get all projects in the organization that the authenticated user has access to.
+	GetProjects(context.Context, GetProjectsArgs) (*GetProjectsResponseValue, error)
+	// Queues a project to be created. Use the [GetOperation](../../operations/operations/get) to periodically check for create project status.
+	QueueCreateProject(context.Context, QueueCreateProjectArgs) (*operations.OperationReference, error)
+	// Queues a project to be deleted. Use the [GetOperation](../../operations/operations/get) to periodically check for delete project status.
+	QueueDeleteProject(context.Context, QueueDeleteProjectArgs) (*operations.OperationReference, error)
+	// Update an existing project's name, abbreviation, description, or restore a project.
+	UpdateProject(context.Context, UpdateProjectArgs) (*operations.OperationReference, error)
+	// [Preview API] Get a collection of team project properties.
+	GetProjectProperties(context.Context, GetProjectPropertiesArgs) (*[]ProjectProperty, error)
+	// [Preview API] Create, update, and delete team project properties.
+	SetProjectProperties(context.Context, SetProjectPropertiesArgs) error
+	// [Preview API]
+	CreateOrUpdateProxy(context.Context, CreateOrUpdateProxyArgs) (*Proxy, error)
+	// [Preview API]
+	DeleteProxy(context.Context, DeleteProxyArgs) error
+	// [Preview API]
+	GetProxies(context.Context, GetProxiesArgs) (*[]Proxy, error)
+	// Create a team in a team project.
+	CreateTeam(context.Context, CreateTeamArgs) (*WebApiTeam, error)
+	// Delete a team.
+	DeleteTeam(context.Context, DeleteTeamArgs) error
+	// Get a specific team.
+	GetTeam(context.Context, GetTeamArgs) (*WebApiTeam, error)
+	// Get a list of teams.
+	GetTeams(context.Context, GetTeamsArgs) (*[]WebApiTeam, error)
+	// Update a team's name and/or description.
+	UpdateTeam(context.Context, UpdateTeamArgs) (*WebApiTeam, error)
+	// [Preview API] Get a list of all teams.
+	GetAllTeams(context.Context, GetAllTeamsArgs) (*[]WebApiTeam, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
 // [Preview API] Removes the avatar for the project.
-func (client *Client) RemoveProjectAvatar(ctx context.Context, args RemoveProjectAvatarArgs) error {
+func (client *ClientImpl) RemoveProjectAvatar(ctx context.Context, args RemoveProjectAvatarArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProjectId == nil || *args.ProjectId == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ProjectId"}
@@ -62,7 +117,7 @@ type RemoveProjectAvatarArgs struct {
 }
 
 // [Preview API] Sets the avatar for the project.
-func (client *Client) SetProjectAvatar(ctx context.Context, args SetProjectAvatarArgs) error {
+func (client *ClientImpl) SetProjectAvatar(ctx context.Context, args SetProjectAvatarArgs) error {
 	if args.AvatarBlob == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.AvatarBlob"}
 	}
@@ -94,7 +149,7 @@ type SetProjectAvatarArgs struct {
 }
 
 // [Preview API]
-func (client *Client) CreateConnectedService(ctx context.Context, args CreateConnectedServiceArgs) (*WebApiConnectedService, error) {
+func (client *ClientImpl) CreateConnectedService(ctx context.Context, args CreateConnectedServiceArgs) (*WebApiConnectedService, error) {
 	if args.ConnectedServiceCreationData == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ConnectedServiceCreationData"}
 	}
@@ -128,7 +183,7 @@ type CreateConnectedServiceArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetConnectedServiceDetails(ctx context.Context, args GetConnectedServiceDetailsArgs) (*WebApiConnectedServiceDetails, error) {
+func (client *ClientImpl) GetConnectedServiceDetails(ctx context.Context, args GetConnectedServiceDetailsArgs) (*WebApiConnectedServiceDetails, error) {
 	routeValues := make(map[string]string)
 	if args.ProjectId == nil || *args.ProjectId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ProjectId"}
@@ -159,7 +214,7 @@ type GetConnectedServiceDetailsArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetConnectedServices(ctx context.Context, args GetConnectedServicesArgs) (*[]WebApiConnectedService, error) {
+func (client *ClientImpl) GetConnectedServices(ctx context.Context, args GetConnectedServicesArgs) (*[]WebApiConnectedService, error) {
 	routeValues := make(map[string]string)
 	if args.ProjectId == nil || *args.ProjectId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ProjectId"}
@@ -190,7 +245,7 @@ type GetConnectedServicesArgs struct {
 }
 
 // Get a list of members for a specific team.
-func (client *Client) GetTeamMembersWithExtendedProperties(ctx context.Context, args GetTeamMembersWithExtendedPropertiesArgs) (*[]webapi.TeamMember, error) {
+func (client *ClientImpl) GetTeamMembersWithExtendedProperties(ctx context.Context, args GetTeamMembersWithExtendedPropertiesArgs) (*[]webapi.TeamMember, error) {
 	routeValues := make(map[string]string)
 	if args.ProjectId == nil || *args.ProjectId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ProjectId"}
@@ -232,7 +287,7 @@ type GetTeamMembersWithExtendedPropertiesArgs struct {
 }
 
 // Get a process by ID.
-func (client *Client) GetProcessById(ctx context.Context, args GetProcessByIdArgs) (*Process, error) {
+func (client *ClientImpl) GetProcessById(ctx context.Context, args GetProcessByIdArgs) (*Process, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -257,7 +312,7 @@ type GetProcessByIdArgs struct {
 }
 
 // Get a list of processes.
-func (client *Client) GetProcesses(ctx context.Context, args GetProcessesArgs) (*[]Process, error) {
+func (client *ClientImpl) GetProcesses(ctx context.Context, args GetProcessesArgs) (*[]Process, error) {
 	locationId, _ := uuid.Parse("93878975-88c5-4e6a-8abb-7ddd77a8a7d8")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, nil, nil, "", "application/json", nil)
 	if err != nil {
@@ -274,7 +329,7 @@ type GetProcessesArgs struct {
 }
 
 // Get project collection with the specified id or name.
-func (client *Client) GetProjectCollection(ctx context.Context, args GetProjectCollectionArgs) (*TeamProjectCollection, error) {
+func (client *ClientImpl) GetProjectCollection(ctx context.Context, args GetProjectCollectionArgs) (*TeamProjectCollection, error) {
 	routeValues := make(map[string]string)
 	if args.CollectionId == nil || *args.CollectionId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.CollectionId"}
@@ -299,7 +354,7 @@ type GetProjectCollectionArgs struct {
 }
 
 // Get project collection references for this application.
-func (client *Client) GetProjectCollections(ctx context.Context, args GetProjectCollectionsArgs) (*[]TeamProjectCollectionReference, error) {
+func (client *ClientImpl) GetProjectCollections(ctx context.Context, args GetProjectCollectionsArgs) (*[]TeamProjectCollectionReference, error) {
 	queryParams := url.Values{}
 	if args.Top != nil {
 		queryParams.Add("$top", strconv.Itoa(*args.Top))
@@ -327,7 +382,7 @@ type GetProjectCollectionsArgs struct {
 }
 
 // Get project with the specified id or name, optionally including capabilities.
-func (client *Client) GetProject(ctx context.Context, args GetProjectArgs) (*TeamProject, error) {
+func (client *ClientImpl) GetProject(ctx context.Context, args GetProjectArgs) (*TeamProject, error) {
 	routeValues := make(map[string]string)
 	if args.ProjectId == nil || *args.ProjectId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ProjectId"}
@@ -363,7 +418,7 @@ type GetProjectArgs struct {
 }
 
 // Get all projects in the organization that the authenticated user has access to.
-func (client *Client) GetProjects(ctx context.Context, args GetProjectsArgs) (*GetProjectsResponseValue, error) {
+func (client *ClientImpl) GetProjects(ctx context.Context, args GetProjectsArgs) (*GetProjectsResponseValue, error) {
 	queryParams := url.Values{}
 	if args.StateFilter != nil {
 		queryParams.Add("stateFilter", string(*args.StateFilter))
@@ -414,7 +469,7 @@ type GetProjectsResponseValue struct {
 }
 
 // Queues a project to be created. Use the [GetOperation](../../operations/operations/get) to periodically check for create project status.
-func (client *Client) QueueCreateProject(ctx context.Context, args QueueCreateProjectArgs) (*operations.OperationReference, error) {
+func (client *ClientImpl) QueueCreateProject(ctx context.Context, args QueueCreateProjectArgs) (*operations.OperationReference, error) {
 	if args.ProjectToCreate == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProjectToCreate"}
 	}
@@ -440,7 +495,7 @@ type QueueCreateProjectArgs struct {
 }
 
 // Queues a project to be deleted. Use the [GetOperation](../../operations/operations/get) to periodically check for delete project status.
-func (client *Client) QueueDeleteProject(ctx context.Context, args QueueDeleteProjectArgs) (*operations.OperationReference, error) {
+func (client *ClientImpl) QueueDeleteProject(ctx context.Context, args QueueDeleteProjectArgs) (*operations.OperationReference, error) {
 	routeValues := make(map[string]string)
 	if args.ProjectId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProjectId"}
@@ -465,7 +520,7 @@ type QueueDeleteProjectArgs struct {
 }
 
 // Update an existing project's name, abbreviation, description, or restore a project.
-func (client *Client) UpdateProject(ctx context.Context, args UpdateProjectArgs) (*operations.OperationReference, error) {
+func (client *ClientImpl) UpdateProject(ctx context.Context, args UpdateProjectArgs) (*operations.OperationReference, error) {
 	if args.ProjectUpdate == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProjectUpdate"}
 	}
@@ -499,7 +554,7 @@ type UpdateProjectArgs struct {
 }
 
 // [Preview API] Get a collection of team project properties.
-func (client *Client) GetProjectProperties(ctx context.Context, args GetProjectPropertiesArgs) (*[]ProjectProperty, error) {
+func (client *ClientImpl) GetProjectProperties(ctx context.Context, args GetProjectPropertiesArgs) (*[]ProjectProperty, error) {
 	routeValues := make(map[string]string)
 	if args.ProjectId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProjectId"}
@@ -531,7 +586,7 @@ type GetProjectPropertiesArgs struct {
 }
 
 // [Preview API] Create, update, and delete team project properties.
-func (client *Client) SetProjectProperties(ctx context.Context, args SetProjectPropertiesArgs) error {
+func (client *ClientImpl) SetProjectProperties(ctx context.Context, args SetProjectPropertiesArgs) error {
 	if args.PatchDocument == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.PatchDocument"}
 	}
@@ -563,7 +618,7 @@ type SetProjectPropertiesArgs struct {
 }
 
 // [Preview API]
-func (client *Client) CreateOrUpdateProxy(ctx context.Context, args CreateOrUpdateProxyArgs) (*Proxy, error) {
+func (client *ClientImpl) CreateOrUpdateProxy(ctx context.Context, args CreateOrUpdateProxyArgs) (*Proxy, error) {
 	if args.Proxy == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Proxy"}
 	}
@@ -589,7 +644,7 @@ type CreateOrUpdateProxyArgs struct {
 }
 
 // [Preview API]
-func (client *Client) DeleteProxy(ctx context.Context, args DeleteProxyArgs) error {
+func (client *ClientImpl) DeleteProxy(ctx context.Context, args DeleteProxyArgs) error {
 	queryParams := url.Values{}
 	if args.ProxyUrl == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "proxyUrl"}
@@ -616,7 +671,7 @@ type DeleteProxyArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetProxies(ctx context.Context, args GetProxiesArgs) (*[]Proxy, error) {
+func (client *ClientImpl) GetProxies(ctx context.Context, args GetProxiesArgs) (*[]Proxy, error) {
 	queryParams := url.Values{}
 	if args.ProxyUrl != nil {
 		queryParams.Add("proxyUrl", *args.ProxyUrl)
@@ -639,7 +694,7 @@ type GetProxiesArgs struct {
 }
 
 // Create a team in a team project.
-func (client *Client) CreateTeam(ctx context.Context, args CreateTeamArgs) (*WebApiTeam, error) {
+func (client *ClientImpl) CreateTeam(ctx context.Context, args CreateTeamArgs) (*WebApiTeam, error) {
 	if args.Team == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Team"}
 	}
@@ -673,7 +728,7 @@ type CreateTeamArgs struct {
 }
 
 // Delete a team.
-func (client *Client) DeleteTeam(ctx context.Context, args DeleteTeamArgs) error {
+func (client *ClientImpl) DeleteTeam(ctx context.Context, args DeleteTeamArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProjectId == nil || *args.ProjectId == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ProjectId"}
@@ -702,7 +757,7 @@ type DeleteTeamArgs struct {
 }
 
 // Get a specific team.
-func (client *Client) GetTeam(ctx context.Context, args GetTeamArgs) (*WebApiTeam, error) {
+func (client *ClientImpl) GetTeam(ctx context.Context, args GetTeamArgs) (*WebApiTeam, error) {
 	routeValues := make(map[string]string)
 	if args.ProjectId == nil || *args.ProjectId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ProjectId"}
@@ -739,7 +794,7 @@ type GetTeamArgs struct {
 }
 
 // Get a list of teams.
-func (client *Client) GetTeams(ctx context.Context, args GetTeamsArgs) (*[]WebApiTeam, error) {
+func (client *ClientImpl) GetTeams(ctx context.Context, args GetTeamsArgs) (*[]WebApiTeam, error) {
 	routeValues := make(map[string]string)
 	if args.ProjectId == nil || *args.ProjectId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ProjectId"}
@@ -785,7 +840,7 @@ type GetTeamsArgs struct {
 }
 
 // Update a team's name and/or description.
-func (client *Client) UpdateTeam(ctx context.Context, args UpdateTeamArgs) (*WebApiTeam, error) {
+func (client *ClientImpl) UpdateTeam(ctx context.Context, args UpdateTeamArgs) (*WebApiTeam, error) {
 	if args.TeamData == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TeamData"}
 	}
@@ -825,7 +880,7 @@ type UpdateTeamArgs struct {
 }
 
 // [Preview API] Get a list of all teams.
-func (client *Client) GetAllTeams(ctx context.Context, args GetAllTeamsArgs) (*[]WebApiTeam, error) {
+func (client *ClientImpl) GetAllTeams(ctx context.Context, args GetAllTeamsArgs) (*[]WebApiTeam, error) {
 	queryParams := url.Values{}
 	if args.Mine != nil {
 		queryParams.Add("$mine", strconv.FormatBool(*args.Mine))

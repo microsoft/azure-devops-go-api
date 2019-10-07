@@ -22,22 +22,123 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("1d4f49f9-02b9-4e26-b826-2cdb6195f2a9")
 
-type Client struct {
+type Client interface {
+	// Gets backlog configuration for a team
+	GetBacklogConfigurations(context.Context, GetBacklogConfigurationsArgs) (*BacklogConfiguration, error)
+	// [Preview API] Get a list of work items within a backlog level
+	GetBacklogLevelWorkItems(context.Context, GetBacklogLevelWorkItemsArgs) (*BacklogLevelWorkItems, error)
+	// [Preview API] Get a backlog level
+	GetBacklog(context.Context, GetBacklogArgs) (*BacklogLevelConfiguration, error)
+	// [Preview API] List all backlog levels
+	GetBacklogs(context.Context, GetBacklogsArgs) (*[]BacklogLevelConfiguration, error)
+	// Get available board columns in a project
+	GetColumnSuggestedValues(context.Context, GetColumnSuggestedValuesArgs) (*[]BoardSuggestedValue, error)
+	// [Preview API] Returns the list of parent field filter model for the given list of workitem ids
+	GetBoardMappingParentItems(context.Context, GetBoardMappingParentItemsArgs) (*[]ParentChildWIMap, error)
+	// Get available board rows in a project
+	GetRowSuggestedValues(context.Context, GetRowSuggestedValuesArgs) (*[]BoardSuggestedValue, error)
+	// Get board
+	GetBoard(context.Context, GetBoardArgs) (*Board, error)
+	// Get boards
+	GetBoards(context.Context, GetBoardsArgs) (*[]BoardReference, error)
+	// Update board options
+	SetBoardOptions(context.Context, SetBoardOptionsArgs) (*map[string]string, error)
+	// [Preview API] Get board user settings for a board id
+	GetBoardUserSettings(context.Context, GetBoardUserSettingsArgs) (*BoardUserSettings, error)
+	// [Preview API] Update board user settings for the board id
+	UpdateBoardUserSettings(context.Context, UpdateBoardUserSettingsArgs) (*BoardUserSettings, error)
+	// Get a team's capacity
+	GetCapacitiesWithIdentityRef(context.Context, GetCapacitiesWithIdentityRefArgs) (*[]TeamMemberCapacityIdentityRef, error)
+	// Get a team member's capacity
+	GetCapacityWithIdentityRef(context.Context, GetCapacityWithIdentityRefArgs) (*TeamMemberCapacityIdentityRef, error)
+	// Replace a team's capacity
+	ReplaceCapacitiesWithIdentityRef(context.Context, ReplaceCapacitiesWithIdentityRefArgs) (*[]TeamMemberCapacityIdentityRef, error)
+	// Update a team member's capacity
+	UpdateCapacityWithIdentityRef(context.Context, UpdateCapacityWithIdentityRefArgs) (*TeamMemberCapacityIdentityRef, error)
+	// Get board card Rule settings for the board id or board by name
+	GetBoardCardRuleSettings(context.Context, GetBoardCardRuleSettingsArgs) (*BoardCardRuleSettings, error)
+	// Update board card Rule settings for the board id or board by name
+	UpdateBoardCardRuleSettings(context.Context, UpdateBoardCardRuleSettingsArgs) (*BoardCardRuleSettings, error)
+	// [Preview API] Update taskboard card Rule settings
+	UpdateTaskboardCardRuleSettings(context.Context, UpdateTaskboardCardRuleSettingsArgs) error
+	// Get board card settings for the board id or board by name
+	GetBoardCardSettings(context.Context, GetBoardCardSettingsArgs) (*BoardCardSettings, error)
+	// Update board card settings for the board id or board by name
+	UpdateBoardCardSettings(context.Context, UpdateBoardCardSettingsArgs) (*BoardCardSettings, error)
+	// [Preview API] Update taskboard card settings
+	UpdateTaskboardCardSettings(context.Context, UpdateTaskboardCardSettingsArgs) error
+	// Get a board chart
+	GetBoardChart(context.Context, GetBoardChartArgs) (*BoardChart, error)
+	// Get board charts
+	GetBoardCharts(context.Context, GetBoardChartsArgs) (*[]BoardChartReference, error)
+	// Update a board chart
+	UpdateBoardChart(context.Context, UpdateBoardChartArgs) (*BoardChart, error)
+	// Get columns on a board
+	GetBoardColumns(context.Context, GetBoardColumnsArgs) (*[]BoardColumn, error)
+	// Update columns on a board
+	UpdateBoardColumns(context.Context, UpdateBoardColumnsArgs) (*[]BoardColumn, error)
+	// Get Delivery View Data
+	GetDeliveryTimelineData(context.Context, GetDeliveryTimelineDataArgs) (*DeliveryViewData, error)
+	// Delete a team's iteration by iterationId
+	DeleteTeamIteration(context.Context, DeleteTeamIterationArgs) error
+	// Get team's iteration by iterationId
+	GetTeamIteration(context.Context, GetTeamIterationArgs) (*TeamSettingsIteration, error)
+	// Get a team's iterations using timeframe filter
+	GetTeamIterations(context.Context, GetTeamIterationsArgs) (*[]TeamSettingsIteration, error)
+	// Add an iteration to the team
+	PostTeamIteration(context.Context, PostTeamIterationArgs) (*TeamSettingsIteration, error)
+	// Add a new plan for the team
+	CreatePlan(context.Context, CreatePlanArgs) (*Plan, error)
+	// Delete the specified plan
+	DeletePlan(context.Context, DeletePlanArgs) error
+	// Get the information for the specified plan
+	GetPlan(context.Context, GetPlanArgs) (*Plan, error)
+	// Get the information for all the plans configured for the given team
+	GetPlans(context.Context, GetPlansArgs) (*[]Plan, error)
+	// Update the information for the specified plan
+	UpdatePlan(context.Context, UpdatePlanArgs) (*Plan, error)
+	// [Preview API] Get process configuration
+	GetProcessConfiguration(context.Context, GetProcessConfigurationArgs) (*ProcessConfiguration, error)
+	// Get rows on a board
+	GetBoardRows(context.Context, GetBoardRowsArgs) (*[]BoardRow, error)
+	// Update rows on a board
+	UpdateBoardRows(context.Context, UpdateBoardRowsArgs) (*[]BoardRow, error)
+	// Get team's days off for an iteration
+	GetTeamDaysOff(context.Context, GetTeamDaysOffArgs) (*TeamSettingsDaysOff, error)
+	// Set a team's days off for an iteration
+	UpdateTeamDaysOff(context.Context, UpdateTeamDaysOffArgs) (*TeamSettingsDaysOff, error)
+	// Get a collection of team field values
+	GetTeamFieldValues(context.Context, GetTeamFieldValuesArgs) (*TeamFieldValues, error)
+	// Update team field values
+	UpdateTeamFieldValues(context.Context, UpdateTeamFieldValuesArgs) (*TeamFieldValues, error)
+	// Get a team's settings
+	GetTeamSettings(context.Context, GetTeamSettingsArgs) (*TeamSetting, error)
+	// Update a team's settings
+	UpdateTeamSettings(context.Context, UpdateTeamSettingsArgs) (*TeamSetting, error)
+	// [Preview API] Get work items for iteration
+	GetIterationWorkItems(context.Context, GetIterationWorkItemsArgs) (*IterationWorkItems, error)
+	// [Preview API] Reorder Product Backlog/Boards Work Items
+	ReorderBacklogWorkItems(context.Context, ReorderBacklogWorkItemsArgs) (*[]ReorderResult, error)
+	// [Preview API] Reorder Sprint Backlog/Taskboard Work Items
+	ReorderIterationWorkItems(context.Context, ReorderIterationWorkItemsArgs) (*[]ReorderResult, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
 // Gets backlog configuration for a team
-func (client *Client) GetBacklogConfigurations(ctx context.Context, args GetBacklogConfigurationsArgs) (*BacklogConfiguration, error) {
+func (client *ClientImpl) GetBacklogConfigurations(ctx context.Context, args GetBacklogConfigurationsArgs) (*BacklogConfiguration, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -67,7 +168,7 @@ type GetBacklogConfigurationsArgs struct {
 }
 
 // [Preview API] Get a list of work items within a backlog level
-func (client *Client) GetBacklogLevelWorkItems(ctx context.Context, args GetBacklogLevelWorkItemsArgs) (*BacklogLevelWorkItems, error) {
+func (client *ClientImpl) GetBacklogLevelWorkItems(ctx context.Context, args GetBacklogLevelWorkItemsArgs) (*BacklogLevelWorkItems, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -104,7 +205,7 @@ type GetBacklogLevelWorkItemsArgs struct {
 }
 
 // [Preview API] Get a backlog level
-func (client *Client) GetBacklog(ctx context.Context, args GetBacklogArgs) (*BacklogLevelConfiguration, error) {
+func (client *ClientImpl) GetBacklog(ctx context.Context, args GetBacklogArgs) (*BacklogLevelConfiguration, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -141,7 +242,7 @@ type GetBacklogArgs struct {
 }
 
 // [Preview API] List all backlog levels
-func (client *Client) GetBacklogs(ctx context.Context, args GetBacklogsArgs) (*[]BacklogLevelConfiguration, error) {
+func (client *ClientImpl) GetBacklogs(ctx context.Context, args GetBacklogsArgs) (*[]BacklogLevelConfiguration, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -172,7 +273,7 @@ type GetBacklogsArgs struct {
 }
 
 // Get available board columns in a project
-func (client *Client) GetColumnSuggestedValues(ctx context.Context, args GetColumnSuggestedValuesArgs) (*[]BoardSuggestedValue, error) {
+func (client *ClientImpl) GetColumnSuggestedValues(ctx context.Context, args GetColumnSuggestedValuesArgs) (*[]BoardSuggestedValue, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -196,7 +297,7 @@ type GetColumnSuggestedValuesArgs struct {
 }
 
 // [Preview API] Returns the list of parent field filter model for the given list of workitem ids
-func (client *Client) GetBoardMappingParentItems(ctx context.Context, args GetBoardMappingParentItemsArgs) (*[]ParentChildWIMap, error) {
+func (client *ClientImpl) GetBoardMappingParentItems(ctx context.Context, args GetBoardMappingParentItemsArgs) (*[]ParentChildWIMap, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -244,7 +345,7 @@ type GetBoardMappingParentItemsArgs struct {
 }
 
 // Get available board rows in a project
-func (client *Client) GetRowSuggestedValues(ctx context.Context, args GetRowSuggestedValuesArgs) (*[]BoardSuggestedValue, error) {
+func (client *ClientImpl) GetRowSuggestedValues(ctx context.Context, args GetRowSuggestedValuesArgs) (*[]BoardSuggestedValue, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -268,7 +369,7 @@ type GetRowSuggestedValuesArgs struct {
 }
 
 // Get board
-func (client *Client) GetBoard(ctx context.Context, args GetBoardArgs) (*Board, error) {
+func (client *ClientImpl) GetBoard(ctx context.Context, args GetBoardArgs) (*Board, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -304,7 +405,7 @@ type GetBoardArgs struct {
 }
 
 // Get boards
-func (client *Client) GetBoards(ctx context.Context, args GetBoardsArgs) (*[]BoardReference, error) {
+func (client *ClientImpl) GetBoards(ctx context.Context, args GetBoardsArgs) (*[]BoardReference, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -334,7 +435,7 @@ type GetBoardsArgs struct {
 }
 
 // Update board options
-func (client *Client) SetBoardOptions(ctx context.Context, args SetBoardOptionsArgs) (*map[string]string, error) {
+func (client *ClientImpl) SetBoardOptions(ctx context.Context, args SetBoardOptionsArgs) (*map[string]string, error) {
 	if args.Options == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Options"}
 	}
@@ -379,7 +480,7 @@ type SetBoardOptionsArgs struct {
 }
 
 // [Preview API] Get board user settings for a board id
-func (client *Client) GetBoardUserSettings(ctx context.Context, args GetBoardUserSettingsArgs) (*BoardUserSettings, error) {
+func (client *ClientImpl) GetBoardUserSettings(ctx context.Context, args GetBoardUserSettingsArgs) (*BoardUserSettings, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -415,7 +516,7 @@ type GetBoardUserSettingsArgs struct {
 }
 
 // [Preview API] Update board user settings for the board id
-func (client *Client) UpdateBoardUserSettings(ctx context.Context, args UpdateBoardUserSettingsArgs) (*BoardUserSettings, error) {
+func (client *ClientImpl) UpdateBoardUserSettings(ctx context.Context, args UpdateBoardUserSettingsArgs) (*BoardUserSettings, error) {
 	if args.BoardUserSettings == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.BoardUserSettings"}
 	}
@@ -460,7 +561,7 @@ type UpdateBoardUserSettingsArgs struct {
 }
 
 // Get a team's capacity
-func (client *Client) GetCapacitiesWithIdentityRef(ctx context.Context, args GetCapacitiesWithIdentityRefArgs) (*[]TeamMemberCapacityIdentityRef, error) {
+func (client *ClientImpl) GetCapacitiesWithIdentityRef(ctx context.Context, args GetCapacitiesWithIdentityRefArgs) (*[]TeamMemberCapacityIdentityRef, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -496,7 +597,7 @@ type GetCapacitiesWithIdentityRefArgs struct {
 }
 
 // Get a team member's capacity
-func (client *Client) GetCapacityWithIdentityRef(ctx context.Context, args GetCapacityWithIdentityRefArgs) (*TeamMemberCapacityIdentityRef, error) {
+func (client *ClientImpl) GetCapacityWithIdentityRef(ctx context.Context, args GetCapacityWithIdentityRefArgs) (*TeamMemberCapacityIdentityRef, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -538,7 +639,7 @@ type GetCapacityWithIdentityRefArgs struct {
 }
 
 // Replace a team's capacity
-func (client *Client) ReplaceCapacitiesWithIdentityRef(ctx context.Context, args ReplaceCapacitiesWithIdentityRefArgs) (*[]TeamMemberCapacityIdentityRef, error) {
+func (client *ClientImpl) ReplaceCapacitiesWithIdentityRef(ctx context.Context, args ReplaceCapacitiesWithIdentityRefArgs) (*[]TeamMemberCapacityIdentityRef, error) {
 	if args.Capacities == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Capacities"}
 	}
@@ -583,7 +684,7 @@ type ReplaceCapacitiesWithIdentityRefArgs struct {
 }
 
 // Update a team member's capacity
-func (client *Client) UpdateCapacityWithIdentityRef(ctx context.Context, args UpdateCapacityWithIdentityRefArgs) (*TeamMemberCapacityIdentityRef, error) {
+func (client *ClientImpl) UpdateCapacityWithIdentityRef(ctx context.Context, args UpdateCapacityWithIdentityRefArgs) (*TeamMemberCapacityIdentityRef, error) {
 	if args.Patch == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Patch"}
 	}
@@ -634,7 +735,7 @@ type UpdateCapacityWithIdentityRefArgs struct {
 }
 
 // Get board card Rule settings for the board id or board by name
-func (client *Client) GetBoardCardRuleSettings(ctx context.Context, args GetBoardCardRuleSettingsArgs) (*BoardCardRuleSettings, error) {
+func (client *ClientImpl) GetBoardCardRuleSettings(ctx context.Context, args GetBoardCardRuleSettingsArgs) (*BoardCardRuleSettings, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -670,7 +771,7 @@ type GetBoardCardRuleSettingsArgs struct {
 }
 
 // Update board card Rule settings for the board id or board by name
-func (client *Client) UpdateBoardCardRuleSettings(ctx context.Context, args UpdateBoardCardRuleSettingsArgs) (*BoardCardRuleSettings, error) {
+func (client *ClientImpl) UpdateBoardCardRuleSettings(ctx context.Context, args UpdateBoardCardRuleSettingsArgs) (*BoardCardRuleSettings, error) {
 	if args.BoardCardRuleSettings == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.BoardCardRuleSettings"}
 	}
@@ -715,7 +816,7 @@ type UpdateBoardCardRuleSettingsArgs struct {
 }
 
 // [Preview API] Update taskboard card Rule settings
-func (client *Client) UpdateTaskboardCardRuleSettings(ctx context.Context, args UpdateTaskboardCardRuleSettingsArgs) error {
+func (client *ClientImpl) UpdateTaskboardCardRuleSettings(ctx context.Context, args UpdateTaskboardCardRuleSettingsArgs) error {
 	if args.BoardCardRuleSettings == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.BoardCardRuleSettings"}
 	}
@@ -753,7 +854,7 @@ type UpdateTaskboardCardRuleSettingsArgs struct {
 }
 
 // Get board card settings for the board id or board by name
-func (client *Client) GetBoardCardSettings(ctx context.Context, args GetBoardCardSettingsArgs) (*BoardCardSettings, error) {
+func (client *ClientImpl) GetBoardCardSettings(ctx context.Context, args GetBoardCardSettingsArgs) (*BoardCardSettings, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -789,7 +890,7 @@ type GetBoardCardSettingsArgs struct {
 }
 
 // Update board card settings for the board id or board by name
-func (client *Client) UpdateBoardCardSettings(ctx context.Context, args UpdateBoardCardSettingsArgs) (*BoardCardSettings, error) {
+func (client *ClientImpl) UpdateBoardCardSettings(ctx context.Context, args UpdateBoardCardSettingsArgs) (*BoardCardSettings, error) {
 	if args.BoardCardSettingsToSave == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.BoardCardSettingsToSave"}
 	}
@@ -834,7 +935,7 @@ type UpdateBoardCardSettingsArgs struct {
 }
 
 // [Preview API] Update taskboard card settings
-func (client *Client) UpdateTaskboardCardSettings(ctx context.Context, args UpdateTaskboardCardSettingsArgs) error {
+func (client *ClientImpl) UpdateTaskboardCardSettings(ctx context.Context, args UpdateTaskboardCardSettingsArgs) error {
 	if args.BoardCardSettingsToSave == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.BoardCardSettingsToSave"}
 	}
@@ -872,7 +973,7 @@ type UpdateTaskboardCardSettingsArgs struct {
 }
 
 // Get a board chart
-func (client *Client) GetBoardChart(ctx context.Context, args GetBoardChartArgs) (*BoardChart, error) {
+func (client *ClientImpl) GetBoardChart(ctx context.Context, args GetBoardChartArgs) (*BoardChart, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -914,7 +1015,7 @@ type GetBoardChartArgs struct {
 }
 
 // Get board charts
-func (client *Client) GetBoardCharts(ctx context.Context, args GetBoardChartsArgs) (*[]BoardChartReference, error) {
+func (client *ClientImpl) GetBoardCharts(ctx context.Context, args GetBoardChartsArgs) (*[]BoardChartReference, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -950,7 +1051,7 @@ type GetBoardChartsArgs struct {
 }
 
 // Update a board chart
-func (client *Client) UpdateBoardChart(ctx context.Context, args UpdateBoardChartArgs) (*BoardChart, error) {
+func (client *ClientImpl) UpdateBoardChart(ctx context.Context, args UpdateBoardChartArgs) (*BoardChart, error) {
 	if args.Chart == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Chart"}
 	}
@@ -1001,7 +1102,7 @@ type UpdateBoardChartArgs struct {
 }
 
 // Get columns on a board
-func (client *Client) GetBoardColumns(ctx context.Context, args GetBoardColumnsArgs) (*[]BoardColumn, error) {
+func (client *ClientImpl) GetBoardColumns(ctx context.Context, args GetBoardColumnsArgs) (*[]BoardColumn, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1037,7 +1138,7 @@ type GetBoardColumnsArgs struct {
 }
 
 // Update columns on a board
-func (client *Client) UpdateBoardColumns(ctx context.Context, args UpdateBoardColumnsArgs) (*[]BoardColumn, error) {
+func (client *ClientImpl) UpdateBoardColumns(ctx context.Context, args UpdateBoardColumnsArgs) (*[]BoardColumn, error) {
 	if args.BoardColumns == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.BoardColumns"}
 	}
@@ -1082,7 +1183,7 @@ type UpdateBoardColumnsArgs struct {
 }
 
 // Get Delivery View Data
-func (client *Client) GetDeliveryTimelineData(ctx context.Context, args GetDeliveryTimelineDataArgs) (*DeliveryViewData, error) {
+func (client *ClientImpl) GetDeliveryTimelineData(ctx context.Context, args GetDeliveryTimelineDataArgs) (*DeliveryViewData, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1129,7 +1230,7 @@ type GetDeliveryTimelineDataArgs struct {
 }
 
 // Delete a team's iteration by iterationId
-func (client *Client) DeleteTeamIteration(ctx context.Context, args DeleteTeamIterationArgs) error {
+func (client *ClientImpl) DeleteTeamIteration(ctx context.Context, args DeleteTeamIterationArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1163,7 +1264,7 @@ type DeleteTeamIterationArgs struct {
 }
 
 // Get team's iteration by iterationId
-func (client *Client) GetTeamIteration(ctx context.Context, args GetTeamIterationArgs) (*TeamSettingsIteration, error) {
+func (client *ClientImpl) GetTeamIteration(ctx context.Context, args GetTeamIterationArgs) (*TeamSettingsIteration, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1199,7 +1300,7 @@ type GetTeamIterationArgs struct {
 }
 
 // Get a team's iterations using timeframe filter
-func (client *Client) GetTeamIterations(ctx context.Context, args GetTeamIterationsArgs) (*[]TeamSettingsIteration, error) {
+func (client *ClientImpl) GetTeamIterations(ctx context.Context, args GetTeamIterationsArgs) (*[]TeamSettingsIteration, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1235,7 +1336,7 @@ type GetTeamIterationsArgs struct {
 }
 
 // Add an iteration to the team
-func (client *Client) PostTeamIteration(ctx context.Context, args PostTeamIterationArgs) (*TeamSettingsIteration, error) {
+func (client *ClientImpl) PostTeamIteration(ctx context.Context, args PostTeamIterationArgs) (*TeamSettingsIteration, error) {
 	if args.Iteration == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Iteration"}
 	}
@@ -1274,7 +1375,7 @@ type PostTeamIterationArgs struct {
 }
 
 // Add a new plan for the team
-func (client *Client) CreatePlan(ctx context.Context, args CreatePlanArgs) (*Plan, error) {
+func (client *ClientImpl) CreatePlan(ctx context.Context, args CreatePlanArgs) (*Plan, error) {
 	if args.PostedPlan == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PostedPlan"}
 	}
@@ -1308,7 +1409,7 @@ type CreatePlanArgs struct {
 }
 
 // Delete the specified plan
-func (client *Client) DeletePlan(ctx context.Context, args DeletePlanArgs) error {
+func (client *ClientImpl) DeletePlan(ctx context.Context, args DeletePlanArgs) error {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1337,7 +1438,7 @@ type DeletePlanArgs struct {
 }
 
 // Get the information for the specified plan
-func (client *Client) GetPlan(ctx context.Context, args GetPlanArgs) (*Plan, error) {
+func (client *ClientImpl) GetPlan(ctx context.Context, args GetPlanArgs) (*Plan, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1368,7 +1469,7 @@ type GetPlanArgs struct {
 }
 
 // Get the information for all the plans configured for the given team
-func (client *Client) GetPlans(ctx context.Context, args GetPlansArgs) (*[]Plan, error) {
+func (client *ClientImpl) GetPlans(ctx context.Context, args GetPlansArgs) (*[]Plan, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1393,7 +1494,7 @@ type GetPlansArgs struct {
 }
 
 // Update the information for the specified plan
-func (client *Client) UpdatePlan(ctx context.Context, args UpdatePlanArgs) (*Plan, error) {
+func (client *ClientImpl) UpdatePlan(ctx context.Context, args UpdatePlanArgs) (*Plan, error) {
 	if args.UpdatedPlan == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UpdatedPlan"}
 	}
@@ -1433,7 +1534,7 @@ type UpdatePlanArgs struct {
 }
 
 // [Preview API] Get process configuration
-func (client *Client) GetProcessConfiguration(ctx context.Context, args GetProcessConfigurationArgs) (*ProcessConfiguration, error) {
+func (client *ClientImpl) GetProcessConfiguration(ctx context.Context, args GetProcessConfigurationArgs) (*ProcessConfiguration, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1458,7 +1559,7 @@ type GetProcessConfigurationArgs struct {
 }
 
 // Get rows on a board
-func (client *Client) GetBoardRows(ctx context.Context, args GetBoardRowsArgs) (*[]BoardRow, error) {
+func (client *ClientImpl) GetBoardRows(ctx context.Context, args GetBoardRowsArgs) (*[]BoardRow, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1494,7 +1595,7 @@ type GetBoardRowsArgs struct {
 }
 
 // Update rows on a board
-func (client *Client) UpdateBoardRows(ctx context.Context, args UpdateBoardRowsArgs) (*[]BoardRow, error) {
+func (client *ClientImpl) UpdateBoardRows(ctx context.Context, args UpdateBoardRowsArgs) (*[]BoardRow, error) {
 	if args.BoardRows == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.BoardRows"}
 	}
@@ -1539,7 +1640,7 @@ type UpdateBoardRowsArgs struct {
 }
 
 // Get team's days off for an iteration
-func (client *Client) GetTeamDaysOff(ctx context.Context, args GetTeamDaysOffArgs) (*TeamSettingsDaysOff, error) {
+func (client *ClientImpl) GetTeamDaysOff(ctx context.Context, args GetTeamDaysOffArgs) (*TeamSettingsDaysOff, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1575,7 +1676,7 @@ type GetTeamDaysOffArgs struct {
 }
 
 // Set a team's days off for an iteration
-func (client *Client) UpdateTeamDaysOff(ctx context.Context, args UpdateTeamDaysOffArgs) (*TeamSettingsDaysOff, error) {
+func (client *ClientImpl) UpdateTeamDaysOff(ctx context.Context, args UpdateTeamDaysOffArgs) (*TeamSettingsDaysOff, error) {
 	if args.DaysOffPatch == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.DaysOffPatch"}
 	}
@@ -1620,7 +1721,7 @@ type UpdateTeamDaysOffArgs struct {
 }
 
 // Get a collection of team field values
-func (client *Client) GetTeamFieldValues(ctx context.Context, args GetTeamFieldValuesArgs) (*TeamFieldValues, error) {
+func (client *ClientImpl) GetTeamFieldValues(ctx context.Context, args GetTeamFieldValuesArgs) (*TeamFieldValues, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1650,7 +1751,7 @@ type GetTeamFieldValuesArgs struct {
 }
 
 // Update team field values
-func (client *Client) UpdateTeamFieldValues(ctx context.Context, args UpdateTeamFieldValuesArgs) (*TeamFieldValues, error) {
+func (client *ClientImpl) UpdateTeamFieldValues(ctx context.Context, args UpdateTeamFieldValuesArgs) (*TeamFieldValues, error) {
 	if args.Patch == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Patch"}
 	}
@@ -1689,7 +1790,7 @@ type UpdateTeamFieldValuesArgs struct {
 }
 
 // Get a team's settings
-func (client *Client) GetTeamSettings(ctx context.Context, args GetTeamSettingsArgs) (*TeamSetting, error) {
+func (client *ClientImpl) GetTeamSettings(ctx context.Context, args GetTeamSettingsArgs) (*TeamSetting, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1719,7 +1820,7 @@ type GetTeamSettingsArgs struct {
 }
 
 // Update a team's settings
-func (client *Client) UpdateTeamSettings(ctx context.Context, args UpdateTeamSettingsArgs) (*TeamSetting, error) {
+func (client *ClientImpl) UpdateTeamSettings(ctx context.Context, args UpdateTeamSettingsArgs) (*TeamSetting, error) {
 	if args.TeamSettingsPatch == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TeamSettingsPatch"}
 	}
@@ -1758,7 +1859,7 @@ type UpdateTeamSettingsArgs struct {
 }
 
 // [Preview API] Get work items for iteration
-func (client *Client) GetIterationWorkItems(ctx context.Context, args GetIterationWorkItemsArgs) (*IterationWorkItems, error) {
+func (client *ClientImpl) GetIterationWorkItems(ctx context.Context, args GetIterationWorkItemsArgs) (*IterationWorkItems, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -1794,7 +1895,7 @@ type GetIterationWorkItemsArgs struct {
 }
 
 // [Preview API] Reorder Product Backlog/Boards Work Items
-func (client *Client) ReorderBacklogWorkItems(ctx context.Context, args ReorderBacklogWorkItemsArgs) (*[]ReorderResult, error) {
+func (client *ClientImpl) ReorderBacklogWorkItems(ctx context.Context, args ReorderBacklogWorkItemsArgs) (*[]ReorderResult, error) {
 	if args.Operation == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Operation"}
 	}
@@ -1834,7 +1935,7 @@ type ReorderBacklogWorkItemsArgs struct {
 }
 
 // [Preview API] Reorder Sprint Backlog/Taskboard Work Items
-func (client *Client) ReorderIterationWorkItems(ctx context.Context, args ReorderIterationWorkItemsArgs) (*[]ReorderResult, error) {
+func (client *ClientImpl) ReorderIterationWorkItems(ctx context.Context, args ReorderIterationWorkItemsArgs) (*[]ReorderResult, error) {
 	if args.Operation == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Operation"}
 	}

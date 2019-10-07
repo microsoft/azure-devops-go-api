@@ -21,19 +21,65 @@ import (
 	"strconv"
 )
 
-type Client struct {
+type Client interface {
+	// Get details about a specific consumer action.
+	GetConsumerAction(context.Context, GetConsumerActionArgs) (*ConsumerAction, error)
+	// Get a list of consumer actions for a specific consumer.
+	ListConsumerActions(context.Context, ListConsumerActionsArgs) (*[]ConsumerAction, error)
+	// Get a specific consumer service. Optionally filter out consumer actions that do not support any event types for the specified publisher.
+	GetConsumer(context.Context, GetConsumerArgs) (*Consumer, error)
+	// Get a list of available service hook consumer services. Optionally filter by consumers that support at least one event type from the specific publisher.
+	ListConsumers(context.Context, ListConsumersArgs) (*[]Consumer, error)
+	// [Preview API]
+	GetSubscriptionDiagnostics(context.Context, GetSubscriptionDiagnosticsArgs) (*notification.SubscriptionDiagnostics, error)
+	// [Preview API]
+	UpdateSubscriptionDiagnostics(context.Context, UpdateSubscriptionDiagnosticsArgs) (*notification.SubscriptionDiagnostics, error)
+	// Get a specific event type.
+	GetEventType(context.Context, GetEventTypeArgs) (*EventTypeDescriptor, error)
+	// Get the event types for a specific publisher.
+	ListEventTypes(context.Context, ListEventTypesArgs) (*[]EventTypeDescriptor, error)
+	// Get a specific notification for a subscription.
+	GetNotification(context.Context, GetNotificationArgs) (*Notification, error)
+	// Get a list of notifications for a specific subscription. A notification includes details about the event, the request to and the response from the consumer service.
+	GetNotifications(context.Context, GetNotificationsArgs) (*[]Notification, error)
+	// Query for notifications. A notification includes details about the event, the request to and the response from the consumer service.
+	QueryNotifications(context.Context, QueryNotificationsArgs) (*NotificationsQuery, error)
+	QueryInputValues(context.Context, QueryInputValuesArgs) (*forminput.InputValuesQuery, error)
+	// Get a specific service hooks publisher.
+	GetPublisher(context.Context, GetPublisherArgs) (*Publisher, error)
+	// Get a list of publishers.
+	ListPublishers(context.Context, ListPublishersArgs) (*[]Publisher, error)
+	// Query for service hook publishers.
+	QueryPublishers(context.Context, QueryPublishersArgs) (*PublishersQuery, error)
+	// Create a subscription.
+	CreateSubscription(context.Context, CreateSubscriptionArgs) (*Subscription, error)
+	// Delete a specific service hooks subscription.
+	DeleteSubscription(context.Context, DeleteSubscriptionArgs) error
+	// Get a specific service hooks subscription.
+	GetSubscription(context.Context, GetSubscriptionArgs) (*Subscription, error)
+	// Get a list of subscriptions.
+	ListSubscriptions(context.Context, ListSubscriptionsArgs) (*[]Subscription, error)
+	// Update a subscription. <param name="subscriptionId">ID for a subscription that you wish to update.</param>
+	ReplaceSubscription(context.Context, ReplaceSubscriptionArgs) (*Subscription, error)
+	// Query for service hook subscriptions.
+	CreateSubscriptionsQuery(context.Context, CreateSubscriptionsQueryArgs) (*SubscriptionsQuery, error)
+	// Sends a test notification. This is useful for verifying the configuration of an updated or new service hooks subscription.
+	CreateTestNotification(context.Context, CreateTestNotificationArgs) (*Notification, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) *Client {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) Client {
 	client := connection.GetClientByUrl(connection.BaseUrl)
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}
 }
 
 // Get details about a specific consumer action.
-func (client *Client) GetConsumerAction(ctx context.Context, args GetConsumerActionArgs) (*ConsumerAction, error) {
+func (client *ClientImpl) GetConsumerAction(ctx context.Context, args GetConsumerActionArgs) (*ConsumerAction, error) {
 	routeValues := make(map[string]string)
 	if args.ConsumerId == nil || *args.ConsumerId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ConsumerId"}
@@ -70,7 +116,7 @@ type GetConsumerActionArgs struct {
 }
 
 // Get a list of consumer actions for a specific consumer.
-func (client *Client) ListConsumerActions(ctx context.Context, args ListConsumerActionsArgs) (*[]ConsumerAction, error) {
+func (client *ClientImpl) ListConsumerActions(ctx context.Context, args ListConsumerActionsArgs) (*[]ConsumerAction, error) {
 	routeValues := make(map[string]string)
 	if args.ConsumerId == nil || *args.ConsumerId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ConsumerId"}
@@ -101,7 +147,7 @@ type ListConsumerActionsArgs struct {
 }
 
 // Get a specific consumer service. Optionally filter out consumer actions that do not support any event types for the specified publisher.
-func (client *Client) GetConsumer(ctx context.Context, args GetConsumerArgs) (*Consumer, error) {
+func (client *ClientImpl) GetConsumer(ctx context.Context, args GetConsumerArgs) (*Consumer, error) {
 	routeValues := make(map[string]string)
 	if args.ConsumerId == nil || *args.ConsumerId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ConsumerId"}
@@ -132,7 +178,7 @@ type GetConsumerArgs struct {
 }
 
 // Get a list of available service hook consumer services. Optionally filter by consumers that support at least one event type from the specific publisher.
-func (client *Client) ListConsumers(ctx context.Context, args ListConsumersArgs) (*[]Consumer, error) {
+func (client *ClientImpl) ListConsumers(ctx context.Context, args ListConsumersArgs) (*[]Consumer, error) {
 	queryParams := url.Values{}
 	if args.PublisherId != nil {
 		queryParams.Add("publisherId", *args.PublisherId)
@@ -155,7 +201,7 @@ type ListConsumersArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetSubscriptionDiagnostics(ctx context.Context, args GetSubscriptionDiagnosticsArgs) (*notification.SubscriptionDiagnostics, error) {
+func (client *ClientImpl) GetSubscriptionDiagnostics(ctx context.Context, args GetSubscriptionDiagnosticsArgs) (*notification.SubscriptionDiagnostics, error) {
 	routeValues := make(map[string]string)
 	if args.SubscriptionId == nil || *args.SubscriptionId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubscriptionId"}
@@ -180,7 +226,7 @@ type GetSubscriptionDiagnosticsArgs struct {
 }
 
 // [Preview API]
-func (client *Client) UpdateSubscriptionDiagnostics(ctx context.Context, args UpdateSubscriptionDiagnosticsArgs) (*notification.SubscriptionDiagnostics, error) {
+func (client *ClientImpl) UpdateSubscriptionDiagnostics(ctx context.Context, args UpdateSubscriptionDiagnosticsArgs) (*notification.SubscriptionDiagnostics, error) {
 	if args.UpdateParameters == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UpdateParameters"}
 	}
@@ -214,7 +260,7 @@ type UpdateSubscriptionDiagnosticsArgs struct {
 }
 
 // Get a specific event type.
-func (client *Client) GetEventType(ctx context.Context, args GetEventTypeArgs) (*EventTypeDescriptor, error) {
+func (client *ClientImpl) GetEventType(ctx context.Context, args GetEventTypeArgs) (*EventTypeDescriptor, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherId == nil || *args.PublisherId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherId"}
@@ -245,7 +291,7 @@ type GetEventTypeArgs struct {
 }
 
 // Get the event types for a specific publisher.
-func (client *Client) ListEventTypes(ctx context.Context, args ListEventTypesArgs) (*[]EventTypeDescriptor, error) {
+func (client *ClientImpl) ListEventTypes(ctx context.Context, args ListEventTypesArgs) (*[]EventTypeDescriptor, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherId == nil || *args.PublisherId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherId"}
@@ -270,7 +316,7 @@ type ListEventTypesArgs struct {
 }
 
 // Get a specific notification for a subscription.
-func (client *Client) GetNotification(ctx context.Context, args GetNotificationArgs) (*Notification, error) {
+func (client *ClientImpl) GetNotification(ctx context.Context, args GetNotificationArgs) (*Notification, error) {
 	routeValues := make(map[string]string)
 	if args.SubscriptionId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SubscriptionId"}
@@ -301,7 +347,7 @@ type GetNotificationArgs struct {
 }
 
 // Get a list of notifications for a specific subscription. A notification includes details about the event, the request to and the response from the consumer service.
-func (client *Client) GetNotifications(ctx context.Context, args GetNotificationsArgs) (*[]Notification, error) {
+func (client *ClientImpl) GetNotifications(ctx context.Context, args GetNotificationsArgs) (*[]Notification, error) {
 	routeValues := make(map[string]string)
 	if args.SubscriptionId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SubscriptionId"}
@@ -342,7 +388,7 @@ type GetNotificationsArgs struct {
 }
 
 // Query for notifications. A notification includes details about the event, the request to and the response from the consumer service.
-func (client *Client) QueryNotifications(ctx context.Context, args QueryNotificationsArgs) (*NotificationsQuery, error) {
+func (client *ClientImpl) QueryNotifications(ctx context.Context, args QueryNotificationsArgs) (*NotificationsQuery, error) {
 	if args.Query == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Query"}
 	}
@@ -367,7 +413,7 @@ type QueryNotificationsArgs struct {
 	Query *NotificationsQuery
 }
 
-func (client *Client) QueryInputValues(ctx context.Context, args QueryInputValuesArgs) (*forminput.InputValuesQuery, error) {
+func (client *ClientImpl) QueryInputValues(ctx context.Context, args QueryInputValuesArgs) (*forminput.InputValuesQuery, error) {
 	if args.InputValuesQuery == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.InputValuesQuery"}
 	}
@@ -401,7 +447,7 @@ type QueryInputValuesArgs struct {
 }
 
 // Get a specific service hooks publisher.
-func (client *Client) GetPublisher(ctx context.Context, args GetPublisherArgs) (*Publisher, error) {
+func (client *ClientImpl) GetPublisher(ctx context.Context, args GetPublisherArgs) (*Publisher, error) {
 	routeValues := make(map[string]string)
 	if args.PublisherId == nil || *args.PublisherId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PublisherId"}
@@ -426,7 +472,7 @@ type GetPublisherArgs struct {
 }
 
 // Get a list of publishers.
-func (client *Client) ListPublishers(ctx context.Context, args ListPublishersArgs) (*[]Publisher, error) {
+func (client *ClientImpl) ListPublishers(ctx context.Context, args ListPublishersArgs) (*[]Publisher, error) {
 	locationId, _ := uuid.Parse("1e83a210-5b53-43bc-90f0-d476a4e5d731")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, nil, nil, "", "application/json", nil)
 	if err != nil {
@@ -443,7 +489,7 @@ type ListPublishersArgs struct {
 }
 
 // Query for service hook publishers.
-func (client *Client) QueryPublishers(ctx context.Context, args QueryPublishersArgs) (*PublishersQuery, error) {
+func (client *ClientImpl) QueryPublishers(ctx context.Context, args QueryPublishersArgs) (*PublishersQuery, error) {
 	if args.Query == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Query"}
 	}
@@ -469,7 +515,7 @@ type QueryPublishersArgs struct {
 }
 
 // Create a subscription.
-func (client *Client) CreateSubscription(ctx context.Context, args CreateSubscriptionArgs) (*Subscription, error) {
+func (client *ClientImpl) CreateSubscription(ctx context.Context, args CreateSubscriptionArgs) (*Subscription, error) {
 	if args.Subscription == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Subscription"}
 	}
@@ -495,7 +541,7 @@ type CreateSubscriptionArgs struct {
 }
 
 // Delete a specific service hooks subscription.
-func (client *Client) DeleteSubscription(ctx context.Context, args DeleteSubscriptionArgs) error {
+func (client *ClientImpl) DeleteSubscription(ctx context.Context, args DeleteSubscriptionArgs) error {
 	routeValues := make(map[string]string)
 	if args.SubscriptionId == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.SubscriptionId"}
@@ -518,7 +564,7 @@ type DeleteSubscriptionArgs struct {
 }
 
 // Get a specific service hooks subscription.
-func (client *Client) GetSubscription(ctx context.Context, args GetSubscriptionArgs) (*Subscription, error) {
+func (client *ClientImpl) GetSubscription(ctx context.Context, args GetSubscriptionArgs) (*Subscription, error) {
 	routeValues := make(map[string]string)
 	if args.SubscriptionId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SubscriptionId"}
@@ -543,7 +589,7 @@ type GetSubscriptionArgs struct {
 }
 
 // Get a list of subscriptions.
-func (client *Client) ListSubscriptions(ctx context.Context, args ListSubscriptionsArgs) (*[]Subscription, error) {
+func (client *ClientImpl) ListSubscriptions(ctx context.Context, args ListSubscriptionsArgs) (*[]Subscription, error) {
 	queryParams := url.Values{}
 	if args.PublisherId != nil {
 		queryParams.Add("publisherId", *args.PublisherId)
@@ -581,7 +627,7 @@ type ListSubscriptionsArgs struct {
 }
 
 // Update a subscription. <param name="subscriptionId">ID for a subscription that you wish to update.</param>
-func (client *Client) ReplaceSubscription(ctx context.Context, args ReplaceSubscriptionArgs) (*Subscription, error) {
+func (client *ClientImpl) ReplaceSubscription(ctx context.Context, args ReplaceSubscriptionArgs) (*Subscription, error) {
 	if args.Subscription == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Subscription"}
 	}
@@ -614,7 +660,7 @@ type ReplaceSubscriptionArgs struct {
 }
 
 // Query for service hook subscriptions.
-func (client *Client) CreateSubscriptionsQuery(ctx context.Context, args CreateSubscriptionsQueryArgs) (*SubscriptionsQuery, error) {
+func (client *ClientImpl) CreateSubscriptionsQuery(ctx context.Context, args CreateSubscriptionsQueryArgs) (*SubscriptionsQuery, error) {
 	if args.Query == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Query"}
 	}
@@ -640,7 +686,7 @@ type CreateSubscriptionsQueryArgs struct {
 }
 
 // Sends a test notification. This is useful for verifying the configuration of an updated or new service hooks subscription.
-func (client *Client) CreateTestNotification(ctx context.Context, args CreateTestNotificationArgs) (*Notification, error) {
+func (client *ClientImpl) CreateTestNotification(ctx context.Context, args CreateTestNotificationArgs) (*Notification, error) {
 	if args.TestNotification == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestNotification"}
 	}

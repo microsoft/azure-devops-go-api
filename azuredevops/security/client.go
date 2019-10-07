@@ -19,19 +19,40 @@ import (
 	"strconv"
 )
 
-type Client struct {
+type Client interface {
+	// Remove the specified ACEs from the ACL belonging to the specified token.
+	RemoveAccessControlEntries(context.Context, RemoveAccessControlEntriesArgs) (*bool, error)
+	// Add or update ACEs in the ACL for the provided token. The request body contains the target token, a list of [ACEs](https://docs.microsoft.com/en-us/rest/api/azure/devops/security/access%20control%20entries/set%20access%20control%20entries?#accesscontrolentry) and a optional merge parameter. In the case of a collision (by identity descriptor) with an existing ACE in the ACL, the "merge" parameter determines the behavior. If set, the existing ACE has its allow and deny merged with the incoming ACE's allow and deny. If unset, the existing ACE is displaced.
+	SetAccessControlEntries(context.Context, SetAccessControlEntriesArgs) (*[]AccessControlEntry, error)
+	// Return a list of access control lists for the specified security namespace and token. All ACLs in the security namespace will be retrieved if no optional parameters are provided.
+	QueryAccessControlLists(context.Context, QueryAccessControlListsArgs) (*[]AccessControlList, error)
+	// Remove access control lists under the specfied security namespace.
+	RemoveAccessControlLists(context.Context, RemoveAccessControlListsArgs) (*bool, error)
+	// Create or update one or more access control lists. All data that currently exists for the ACLs supplied will be overwritten.
+	SetAccessControlLists(context.Context, SetAccessControlListsArgs) error
+	// Evaluates multiple permissions for the calling user.  Note: This method does not aggregate the results, nor does it short-circuit if one of the permissions evaluates to false.
+	HasPermissionsBatch(context.Context, HasPermissionsBatchArgs) (*PermissionEvaluationBatch, error)
+	// Evaluates whether the caller has the specified permissions on the specified set of security tokens.
+	HasPermissions(context.Context, HasPermissionsArgs) (*[]bool, error)
+	// Removes the specified permissions on a security token for a user or group.
+	RemovePermission(context.Context, RemovePermissionArgs) (*AccessControlEntry, error)
+	// List all security namespaces or just the specified namespace.
+	QuerySecurityNamespaces(context.Context, QuerySecurityNamespacesArgs) (*[]SecurityNamespaceDescription, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) *Client {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) Client {
 	client := connection.GetClientByUrl(connection.BaseUrl)
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}
 }
 
 // Remove the specified ACEs from the ACL belonging to the specified token.
-func (client *Client) RemoveAccessControlEntries(ctx context.Context, args RemoveAccessControlEntriesArgs) (*bool, error) {
+func (client *ClientImpl) RemoveAccessControlEntries(ctx context.Context, args RemoveAccessControlEntriesArgs) (*bool, error) {
 	routeValues := make(map[string]string)
 	if args.SecurityNamespaceId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SecurityNamespaceId"}
@@ -67,7 +88,7 @@ type RemoveAccessControlEntriesArgs struct {
 }
 
 // Add or update ACEs in the ACL for the provided token. The request body contains the target token, a list of [ACEs](https://docs.microsoft.com/en-us/rest/api/azure/devops/security/access%20control%20entries/set%20access%20control%20entries?#accesscontrolentry) and a optional merge parameter. In the case of a collision (by identity descriptor) with an existing ACE in the ACL, the "merge" parameter determines the behavior. If set, the existing ACE has its allow and deny merged with the incoming ACE's allow and deny. If unset, the existing ACE is displaced.
-func (client *Client) SetAccessControlEntries(ctx context.Context, args SetAccessControlEntriesArgs) (*[]AccessControlEntry, error) {
+func (client *ClientImpl) SetAccessControlEntries(ctx context.Context, args SetAccessControlEntriesArgs) (*[]AccessControlEntry, error) {
 	if args.Container == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Container"}
 	}
@@ -101,7 +122,7 @@ type SetAccessControlEntriesArgs struct {
 }
 
 // Return a list of access control lists for the specified security namespace and token. All ACLs in the security namespace will be retrieved if no optional parameters are provided.
-func (client *Client) QueryAccessControlLists(ctx context.Context, args QueryAccessControlListsArgs) (*[]AccessControlList, error) {
+func (client *ClientImpl) QueryAccessControlLists(ctx context.Context, args QueryAccessControlListsArgs) (*[]AccessControlList, error) {
 	routeValues := make(map[string]string)
 	if args.SecurityNamespaceId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SecurityNamespaceId"}
@@ -147,7 +168,7 @@ type QueryAccessControlListsArgs struct {
 }
 
 // Remove access control lists under the specfied security namespace.
-func (client *Client) RemoveAccessControlLists(ctx context.Context, args RemoveAccessControlListsArgs) (*bool, error) {
+func (client *ClientImpl) RemoveAccessControlLists(ctx context.Context, args RemoveAccessControlListsArgs) (*bool, error) {
 	routeValues := make(map[string]string)
 	if args.SecurityNamespaceId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SecurityNamespaceId"}
@@ -183,7 +204,7 @@ type RemoveAccessControlListsArgs struct {
 }
 
 // Create or update one or more access control lists. All data that currently exists for the ACLs supplied will be overwritten.
-func (client *Client) SetAccessControlLists(ctx context.Context, args SetAccessControlListsArgs) error {
+func (client *ClientImpl) SetAccessControlLists(ctx context.Context, args SetAccessControlListsArgs) error {
 	if args.AccessControlLists == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.AccessControlLists"}
 	}
@@ -215,7 +236,7 @@ type SetAccessControlListsArgs struct {
 }
 
 // Evaluates multiple permissions for the calling user.  Note: This method does not aggregate the results, nor does it short-circuit if one of the permissions evaluates to false.
-func (client *Client) HasPermissionsBatch(ctx context.Context, args HasPermissionsBatchArgs) (*PermissionEvaluationBatch, error) {
+func (client *ClientImpl) HasPermissionsBatch(ctx context.Context, args HasPermissionsBatchArgs) (*PermissionEvaluationBatch, error) {
 	if args.EvalBatch == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.EvalBatch"}
 	}
@@ -241,7 +262,7 @@ type HasPermissionsBatchArgs struct {
 }
 
 // Evaluates whether the caller has the specified permissions on the specified set of security tokens.
-func (client *Client) HasPermissions(ctx context.Context, args HasPermissionsArgs) (*[]bool, error) {
+func (client *ClientImpl) HasPermissions(ctx context.Context, args HasPermissionsArgs) (*[]bool, error) {
 	routeValues := make(map[string]string)
 	if args.SecurityNamespaceId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SecurityNamespaceId"}
@@ -287,7 +308,7 @@ type HasPermissionsArgs struct {
 }
 
 // Removes the specified permissions on a security token for a user or group.
-func (client *Client) RemovePermission(ctx context.Context, args RemovePermissionArgs) (*AccessControlEntry, error) {
+func (client *ClientImpl) RemovePermission(ctx context.Context, args RemovePermissionArgs) (*AccessControlEntry, error) {
 	routeValues := make(map[string]string)
 	if args.SecurityNamespaceId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SecurityNamespaceId"}
@@ -329,7 +350,7 @@ type RemovePermissionArgs struct {
 }
 
 // List all security namespaces or just the specified namespace.
-func (client *Client) QuerySecurityNamespaces(ctx context.Context, args QuerySecurityNamespacesArgs) (*[]SecurityNamespaceDescription, error) {
+func (client *ClientImpl) QuerySecurityNamespaces(ctx context.Context, args QuerySecurityNamespacesArgs) (*[]SecurityNamespaceDescription, error) {
 	routeValues := make(map[string]string)
 	if args.SecurityNamespaceId != nil {
 		routeValues["securityNamespaceId"] = (*args.SecurityNamespaceId).String()

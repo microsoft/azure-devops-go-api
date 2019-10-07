@@ -23,22 +23,59 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("bf7d82a0-8aa5-4613-94ef-6172a5ea01f3")
 
-type Client struct {
+type Client interface {
+	// Creates an attachment in the wiki.
+	CreateAttachment(context.Context, CreateAttachmentArgs) (*WikiAttachmentResponse, error)
+	// Creates a page move operation that updates the path and order of the page as provided in the parameters.
+	CreatePageMove(context.Context, CreatePageMoveArgs) (*WikiPageMoveResponse, error)
+	// [Preview API] Deletes a wiki page.
+	DeletePageById(context.Context, DeletePageByIdArgs) (*WikiPageResponse, error)
+	// [Preview API] Gets metadata or content of the wiki page for the provided page id. Content negotiation is done based on the `Accept` header sent in the request.
+	GetPageById(context.Context, GetPageByIdArgs) (*WikiPageResponse, error)
+	// [Preview API] Gets metadata or content of the wiki page for the provided page id. Content negotiation is done based on the `Accept` header sent in the request.
+	GetPageByIdText(context.Context, GetPageByIdTextArgs) (io.ReadCloser, error)
+	// [Preview API] Gets metadata or content of the wiki page for the provided page id. Content negotiation is done based on the `Accept` header sent in the request.
+	GetPageByIdZip(context.Context, GetPageByIdZipArgs) (io.ReadCloser, error)
+	// [Preview API] Edits a wiki page.
+	UpdatePageById(context.Context, UpdatePageByIdArgs) (*WikiPageResponse, error)
+	// Creates or edits a wiki page.
+	CreateOrUpdatePage(context.Context, CreateOrUpdatePageArgs) (*WikiPageResponse, error)
+	// Deletes a wiki page.
+	DeletePage(context.Context, DeletePageArgs) (*WikiPageResponse, error)
+	// Gets metadata or content of the wiki page for the provided path. Content negotiation is done based on the `Accept` header sent in the request.
+	GetPage(context.Context, GetPageArgs) (*WikiPageResponse, error)
+	// Gets metadata or content of the wiki page for the provided path. Content negotiation is done based on the `Accept` header sent in the request.
+	GetPageText(context.Context, GetPageTextArgs) (io.ReadCloser, error)
+	// Gets metadata or content of the wiki page for the provided path. Content negotiation is done based on the `Accept` header sent in the request.
+	GetPageZip(context.Context, GetPageZipArgs) (io.ReadCloser, error)
+	// Creates the wiki resource.
+	CreateWiki(context.Context, CreateWikiArgs) (*WikiV2, error)
+	// Deletes the wiki corresponding to the wiki name or Id provided.
+	DeleteWiki(context.Context, DeleteWikiArgs) (*WikiV2, error)
+	// Gets all wikis in a project or collection.
+	GetAllWikis(context.Context, GetAllWikisArgs) (*[]WikiV2, error)
+	// Gets the wiki corresponding to the wiki name or Id provided.
+	GetWiki(context.Context, GetWikiArgs) (*WikiV2, error)
+	// Updates the wiki corresponding to the wiki Id or name provided using the update parameters.
+	UpdateWiki(context.Context, UpdateWikiArgs) (*WikiV2, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
 // Creates an attachment in the wiki.
-func (client *Client) CreateAttachment(ctx context.Context, args CreateAttachmentArgs) (*WikiAttachmentResponse, error) {
+func (client *ClientImpl) CreateAttachment(ctx context.Context, args CreateAttachmentArgs) (*WikiAttachmentResponse, error) {
 	if args.UploadStream == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UploadStream"}
 	}
@@ -103,7 +140,7 @@ type CreateAttachmentArgs struct {
 }
 
 // Creates a page move operation that updates the path and order of the page as provided in the parameters.
-func (client *Client) CreatePageMove(ctx context.Context, args CreatePageMoveArgs) (*WikiPageMoveResponse, error) {
+func (client *ClientImpl) CreatePageMove(ctx context.Context, args CreatePageMoveArgs) (*WikiPageMoveResponse, error) {
 	if args.PageMoveParameters == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PageMoveParameters"}
 	}
@@ -171,7 +208,7 @@ type CreatePageMoveArgs struct {
 }
 
 // [Preview API] Deletes a wiki page.
-func (client *Client) DeletePageById(ctx context.Context, args DeletePageByIdArgs) (*WikiPageResponse, error) {
+func (client *ClientImpl) DeletePageById(ctx context.Context, args DeletePageByIdArgs) (*WikiPageResponse, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -223,7 +260,7 @@ type DeletePageByIdArgs struct {
 }
 
 // [Preview API] Gets metadata or content of the wiki page for the provided page id. Content negotiation is done based on the `Accept` header sent in the request.
-func (client *Client) GetPageById(ctx context.Context, args GetPageByIdArgs) (*WikiPageResponse, error) {
+func (client *ClientImpl) GetPageById(ctx context.Context, args GetPageByIdArgs) (*WikiPageResponse, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -280,7 +317,7 @@ type GetPageByIdArgs struct {
 }
 
 // [Preview API] Gets metadata or content of the wiki page for the provided page id. Content negotiation is done based on the `Accept` header sent in the request.
-func (client *Client) GetPageByIdText(ctx context.Context, args GetPageByIdTextArgs) (io.ReadCloser, error) {
+func (client *ClientImpl) GetPageByIdText(ctx context.Context, args GetPageByIdTextArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -326,7 +363,7 @@ type GetPageByIdTextArgs struct {
 }
 
 // [Preview API] Gets metadata or content of the wiki page for the provided page id. Content negotiation is done based on the `Accept` header sent in the request.
-func (client *Client) GetPageByIdZip(ctx context.Context, args GetPageByIdZipArgs) (io.ReadCloser, error) {
+func (client *ClientImpl) GetPageByIdZip(ctx context.Context, args GetPageByIdZipArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -372,7 +409,7 @@ type GetPageByIdZipArgs struct {
 }
 
 // [Preview API] Edits a wiki page.
-func (client *Client) UpdatePageById(ctx context.Context, args UpdatePageByIdArgs) (*WikiPageResponse, error) {
+func (client *ClientImpl) UpdatePageById(ctx context.Context, args UpdatePageByIdArgs) (*WikiPageResponse, error) {
 	if args.Parameters == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Parameters"}
 	}
@@ -439,7 +476,7 @@ type UpdatePageByIdArgs struct {
 }
 
 // Creates or edits a wiki page.
-func (client *Client) CreateOrUpdatePage(ctx context.Context, args CreateOrUpdatePageArgs) (*WikiPageResponse, error) {
+func (client *ClientImpl) CreateOrUpdatePage(ctx context.Context, args CreateOrUpdatePageArgs) (*WikiPageResponse, error) {
 	if args.Parameters == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Parameters"}
 	}
@@ -519,7 +556,7 @@ type CreateOrUpdatePageArgs struct {
 }
 
 // Deletes a wiki page.
-func (client *Client) DeletePage(ctx context.Context, args DeletePageArgs) (*WikiPageResponse, error) {
+func (client *ClientImpl) DeletePage(ctx context.Context, args DeletePageArgs) (*WikiPageResponse, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -584,7 +621,7 @@ type DeletePageArgs struct {
 }
 
 // Gets metadata or content of the wiki page for the provided path. Content negotiation is done based on the `Accept` header sent in the request.
-func (client *Client) GetPage(ctx context.Context, args GetPageArgs) (*WikiPageResponse, error) {
+func (client *ClientImpl) GetPage(ctx context.Context, args GetPageArgs) (*WikiPageResponse, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -653,7 +690,7 @@ type GetPageArgs struct {
 }
 
 // Gets metadata or content of the wiki page for the provided path. Content negotiation is done based on the `Accept` header sent in the request.
-func (client *Client) GetPageText(ctx context.Context, args GetPageTextArgs) (io.ReadCloser, error) {
+func (client *ClientImpl) GetPageText(ctx context.Context, args GetPageTextArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -711,7 +748,7 @@ type GetPageTextArgs struct {
 }
 
 // Gets metadata or content of the wiki page for the provided path. Content negotiation is done based on the `Accept` header sent in the request.
-func (client *Client) GetPageZip(ctx context.Context, args GetPageZipArgs) (io.ReadCloser, error) {
+func (client *ClientImpl) GetPageZip(ctx context.Context, args GetPageZipArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
@@ -769,7 +806,7 @@ type GetPageZipArgs struct {
 }
 
 // Creates the wiki resource.
-func (client *Client) CreateWiki(ctx context.Context, args CreateWikiArgs) (*WikiV2, error) {
+func (client *ClientImpl) CreateWiki(ctx context.Context, args CreateWikiArgs) (*WikiV2, error) {
 	if args.WikiCreateParams == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WikiCreateParams"}
 	}
@@ -802,7 +839,7 @@ type CreateWikiArgs struct {
 }
 
 // Deletes the wiki corresponding to the wiki name or Id provided.
-func (client *Client) DeleteWiki(ctx context.Context, args DeleteWikiArgs) (*WikiV2, error) {
+func (client *ClientImpl) DeleteWiki(ctx context.Context, args DeleteWikiArgs) (*WikiV2, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -832,7 +869,7 @@ type DeleteWikiArgs struct {
 }
 
 // Gets all wikis in a project or collection.
-func (client *Client) GetAllWikis(ctx context.Context, args GetAllWikisArgs) (*[]WikiV2, error) {
+func (client *ClientImpl) GetAllWikis(ctx context.Context, args GetAllWikisArgs) (*[]WikiV2, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -856,7 +893,7 @@ type GetAllWikisArgs struct {
 }
 
 // Gets the wiki corresponding to the wiki name or Id provided.
-func (client *Client) GetWiki(ctx context.Context, args GetWikiArgs) (*WikiV2, error) {
+func (client *ClientImpl) GetWiki(ctx context.Context, args GetWikiArgs) (*WikiV2, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -886,7 +923,7 @@ type GetWikiArgs struct {
 }
 
 // Updates the wiki corresponding to the wiki Id or name provided using the update parameters.
-func (client *Client) UpdateWiki(ctx context.Context, args UpdateWikiArgs) (*WikiV2, error) {
+func (client *ClientImpl) UpdateWiki(ctx context.Context, args UpdateWikiArgs) (*WikiV2, error) {
 	if args.UpdateParameters == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UpdateParameters"}
 	}

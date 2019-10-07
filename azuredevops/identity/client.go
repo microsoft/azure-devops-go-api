@@ -23,22 +23,76 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("8a3d49b8-91f0-46ef-b33d-dda338c25db3")
 
-type Client struct {
+type Client interface {
+	// [Preview API]
+	CreateOrBindWithClaims(context.Context, CreateOrBindWithClaimsArgs) (*Identity, error)
+	// [Preview API]
+	GetDescriptorById(context.Context, GetDescriptorByIdArgs) (*string, error)
+	CreateGroups(context.Context, CreateGroupsArgs) (*[]Identity, error)
+	DeleteGroup(context.Context, DeleteGroupArgs) error
+	ListGroups(context.Context, ListGroupsArgs) (*[]Identity, error)
+	GetIdentityChanges(context.Context, GetIdentityChangesArgs) (*ChangedIdentities, error)
+	GetUserIdentityIdsByDomainId(context.Context, GetUserIdentityIdsByDomainIdArgs) (*[]uuid.UUID, error)
+	ReadIdentities(context.Context, ReadIdentitiesArgs) (*[]Identity, error)
+	ReadIdentitiesByScope(context.Context, ReadIdentitiesByScopeArgs) (*[]Identity, error)
+	ReadIdentity(context.Context, ReadIdentityArgs) (*Identity, error)
+	UpdateIdentities(context.Context, UpdateIdentitiesArgs) (*[]IdentityUpdateData, error)
+	UpdateIdentity(context.Context, UpdateIdentityArgs) error
+	CreateIdentity(context.Context, CreateIdentityArgs) (*Identity, error)
+	// [Preview API]
+	ReadIdentityBatch(context.Context, ReadIdentityBatchArgs) (*[]Identity, error)
+	// [Preview API]
+	GetIdentitySnapshot(context.Context, GetIdentitySnapshotArgs) (*IdentitySnapshot, error)
+	// Read the max sequence id of all the identities.
+	GetMaxSequenceId(context.Context, GetMaxSequenceIdArgs) (*uint64, error)
+	// Read identity of the home tenant request user.
+	GetSelf(context.Context, GetSelfArgs) (*IdentitySelf, error)
+	// [Preview API]
+	AddMember(context.Context, AddMemberArgs) (*bool, error)
+	// [Preview API]
+	ReadMember(context.Context, ReadMemberArgs) (*string, error)
+	// [Preview API]
+	ReadMembers(context.Context, ReadMembersArgs) (*[]string, error)
+	// [Preview API]
+	RemoveMember(context.Context, RemoveMemberArgs) (*bool, error)
+	// [Preview API]
+	ReadMemberOf(context.Context, ReadMemberOfArgs) (*string, error)
+	// [Preview API]
+	ReadMembersOf(context.Context, ReadMembersOfArgs) (*[]string, error)
+	// [Preview API]
+	CreateScope(context.Context, CreateScopeArgs) (*IdentityScope, error)
+	// [Preview API]
+	DeleteScope(context.Context, DeleteScopeArgs) error
+	// [Preview API]
+	GetScopeById(context.Context, GetScopeByIdArgs) (*IdentityScope, error)
+	// [Preview API]
+	GetScopeByName(context.Context, GetScopeByNameArgs) (*IdentityScope, error)
+	// [Preview API]
+	UpdateScope(context.Context, UpdateScopeArgs) error
+	// [Preview API]
+	GetSignedInToken(context.Context, GetSignedInTokenArgs) (*delegatedauthorization.AccessTokenResult, error)
+	// [Preview API]
+	GetSignoutToken(context.Context, GetSignoutTokenArgs) (*delegatedauthorization.AccessTokenResult, error)
+	// [Preview API]
+	GetTenant(context.Context, GetTenantArgs) (*TenantInfo, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
 // [Preview API]
-func (client *Client) CreateOrBindWithClaims(ctx context.Context, args CreateOrBindWithClaimsArgs) (*Identity, error) {
+func (client *ClientImpl) CreateOrBindWithClaims(ctx context.Context, args CreateOrBindWithClaimsArgs) (*Identity, error) {
 	if args.SourceIdentity == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SourceIdentity"}
 	}
@@ -64,7 +118,7 @@ type CreateOrBindWithClaimsArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetDescriptorById(ctx context.Context, args GetDescriptorByIdArgs) (*string, error) {
+func (client *ClientImpl) GetDescriptorById(ctx context.Context, args GetDescriptorByIdArgs) (*string, error) {
 	routeValues := make(map[string]string)
 	if args.Id == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
@@ -94,7 +148,7 @@ type GetDescriptorByIdArgs struct {
 	IsMasterId *bool
 }
 
-func (client *Client) CreateGroups(ctx context.Context, args CreateGroupsArgs) (*[]Identity, error) {
+func (client *ClientImpl) CreateGroups(ctx context.Context, args CreateGroupsArgs) (*[]Identity, error) {
 	if args.Container == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Container"}
 	}
@@ -119,7 +173,7 @@ type CreateGroupsArgs struct {
 	Container interface{}
 }
 
-func (client *Client) DeleteGroup(ctx context.Context, args DeleteGroupArgs) error {
+func (client *ClientImpl) DeleteGroup(ctx context.Context, args DeleteGroupArgs) error {
 	routeValues := make(map[string]string)
 	if args.GroupId == nil || *args.GroupId == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.GroupId"}
@@ -141,7 +195,7 @@ type DeleteGroupArgs struct {
 	GroupId *string
 }
 
-func (client *Client) ListGroups(ctx context.Context, args ListGroupsArgs) (*[]Identity, error) {
+func (client *ClientImpl) ListGroups(ctx context.Context, args ListGroupsArgs) (*[]Identity, error) {
 	queryParams := url.Values{}
 	if args.ScopeIds != nil {
 		queryParams.Add("scopeIds", *args.ScopeIds)
@@ -178,7 +232,7 @@ type ListGroupsArgs struct {
 	Properties *string
 }
 
-func (client *Client) GetIdentityChanges(ctx context.Context, args GetIdentityChangesArgs) (*ChangedIdentities, error) {
+func (client *ClientImpl) GetIdentityChanges(ctx context.Context, args GetIdentityChangesArgs) (*ChangedIdentities, error) {
 	queryParams := url.Values{}
 	if args.IdentitySequenceId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "identitySequenceId"}
@@ -222,7 +276,7 @@ type GetIdentityChangesArgs struct {
 	ScopeId *uuid.UUID
 }
 
-func (client *Client) GetUserIdentityIdsByDomainId(ctx context.Context, args GetUserIdentityIdsByDomainIdArgs) (*[]uuid.UUID, error) {
+func (client *ClientImpl) GetUserIdentityIdsByDomainId(ctx context.Context, args GetUserIdentityIdsByDomainIdArgs) (*[]uuid.UUID, error) {
 	queryParams := url.Values{}
 	if args.DomainId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "domainId"}
@@ -245,7 +299,7 @@ type GetUserIdentityIdsByDomainIdArgs struct {
 	DomainId *uuid.UUID
 }
 
-func (client *Client) ReadIdentities(ctx context.Context, args ReadIdentitiesArgs) (*[]Identity, error) {
+func (client *ClientImpl) ReadIdentities(ctx context.Context, args ReadIdentitiesArgs) (*[]Identity, error) {
 	queryParams := url.Values{}
 	if args.Descriptors != nil {
 		queryParams.Add("descriptors", *args.Descriptors)
@@ -312,7 +366,7 @@ type ReadIdentitiesArgs struct {
 	Options *ReadIdentitiesOptions
 }
 
-func (client *Client) ReadIdentitiesByScope(ctx context.Context, args ReadIdentitiesByScopeArgs) (*[]Identity, error) {
+func (client *ClientImpl) ReadIdentitiesByScope(ctx context.Context, args ReadIdentitiesByScopeArgs) (*[]Identity, error) {
 	queryParams := url.Values{}
 	if args.ScopeId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "scopeId"}
@@ -345,7 +399,7 @@ type ReadIdentitiesByScopeArgs struct {
 	Properties *string
 }
 
-func (client *Client) ReadIdentity(ctx context.Context, args ReadIdentityArgs) (*Identity, error) {
+func (client *ClientImpl) ReadIdentity(ctx context.Context, args ReadIdentityArgs) (*Identity, error) {
 	routeValues := make(map[string]string)
 	if args.IdentityId == nil || *args.IdentityId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.IdentityId"}
@@ -380,7 +434,7 @@ type ReadIdentityArgs struct {
 	Properties *string
 }
 
-func (client *Client) UpdateIdentities(ctx context.Context, args UpdateIdentitiesArgs) (*[]IdentityUpdateData, error) {
+func (client *ClientImpl) UpdateIdentities(ctx context.Context, args UpdateIdentitiesArgs) (*[]IdentityUpdateData, error) {
 	if args.Identities == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Identities"}
 	}
@@ -405,7 +459,7 @@ type UpdateIdentitiesArgs struct {
 	Identities *azuredevops.VssJsonCollectionWrapper
 }
 
-func (client *Client) UpdateIdentity(ctx context.Context, args UpdateIdentityArgs) error {
+func (client *ClientImpl) UpdateIdentity(ctx context.Context, args UpdateIdentityArgs) error {
 	if args.Identity == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.Identity"}
 	}
@@ -436,7 +490,7 @@ type UpdateIdentityArgs struct {
 	IdentityId *uuid.UUID
 }
 
-func (client *Client) CreateIdentity(ctx context.Context, args CreateIdentityArgs) (*Identity, error) {
+func (client *ClientImpl) CreateIdentity(ctx context.Context, args CreateIdentityArgs) (*Identity, error) {
 	if args.FrameworkIdentityInfo == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.FrameworkIdentityInfo"}
 	}
@@ -462,7 +516,7 @@ type CreateIdentityArgs struct {
 }
 
 // [Preview API]
-func (client *Client) ReadIdentityBatch(ctx context.Context, args ReadIdentityBatchArgs) (*[]Identity, error) {
+func (client *ClientImpl) ReadIdentityBatch(ctx context.Context, args ReadIdentityBatchArgs) (*[]Identity, error) {
 	if args.BatchInfo == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.BatchInfo"}
 	}
@@ -488,7 +542,7 @@ type ReadIdentityBatchArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetIdentitySnapshot(ctx context.Context, args GetIdentitySnapshotArgs) (*IdentitySnapshot, error) {
+func (client *ClientImpl) GetIdentitySnapshot(ctx context.Context, args GetIdentitySnapshotArgs) (*IdentitySnapshot, error) {
 	routeValues := make(map[string]string)
 	if args.ScopeId == nil || *args.ScopeId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ScopeId"}
@@ -513,7 +567,7 @@ type GetIdentitySnapshotArgs struct {
 }
 
 // Read the max sequence id of all the identities.
-func (client *Client) GetMaxSequenceId(ctx context.Context, args GetMaxSequenceIdArgs) (*uint64, error) {
+func (client *ClientImpl) GetMaxSequenceId(ctx context.Context, args GetMaxSequenceIdArgs) (*uint64, error) {
 	locationId, _ := uuid.Parse("e4a70778-cb2c-4e85-b7cc-3f3c7ae2d408")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, nil, nil, "", "application/json", nil)
 	if err != nil {
@@ -530,7 +584,7 @@ type GetMaxSequenceIdArgs struct {
 }
 
 // Read identity of the home tenant request user.
-func (client *Client) GetSelf(ctx context.Context, args GetSelfArgs) (*IdentitySelf, error) {
+func (client *ClientImpl) GetSelf(ctx context.Context, args GetSelfArgs) (*IdentitySelf, error) {
 	locationId, _ := uuid.Parse("4bb02b5b-c120-4be2-b68e-21f7c50a4b82")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, nil, nil, "", "application/json", nil)
 	if err != nil {
@@ -547,7 +601,7 @@ type GetSelfArgs struct {
 }
 
 // [Preview API]
-func (client *Client) AddMember(ctx context.Context, args AddMemberArgs) (*bool, error) {
+func (client *ClientImpl) AddMember(ctx context.Context, args AddMemberArgs) (*bool, error) {
 	routeValues := make(map[string]string)
 	if args.ContainerId == nil || *args.ContainerId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ContainerId"}
@@ -578,7 +632,7 @@ type AddMemberArgs struct {
 }
 
 // [Preview API]
-func (client *Client) ReadMember(ctx context.Context, args ReadMemberArgs) (*string, error) {
+func (client *ClientImpl) ReadMember(ctx context.Context, args ReadMemberArgs) (*string, error) {
 	routeValues := make(map[string]string)
 	if args.ContainerId == nil || *args.ContainerId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ContainerId"}
@@ -615,7 +669,7 @@ type ReadMemberArgs struct {
 }
 
 // [Preview API]
-func (client *Client) ReadMembers(ctx context.Context, args ReadMembersArgs) (*[]string, error) {
+func (client *ClientImpl) ReadMembers(ctx context.Context, args ReadMembersArgs) (*[]string, error) {
 	routeValues := make(map[string]string)
 	if args.ContainerId == nil || *args.ContainerId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ContainerId"}
@@ -646,7 +700,7 @@ type ReadMembersArgs struct {
 }
 
 // [Preview API]
-func (client *Client) RemoveMember(ctx context.Context, args RemoveMemberArgs) (*bool, error) {
+func (client *ClientImpl) RemoveMember(ctx context.Context, args RemoveMemberArgs) (*bool, error) {
 	routeValues := make(map[string]string)
 	if args.ContainerId == nil || *args.ContainerId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ContainerId"}
@@ -677,7 +731,7 @@ type RemoveMemberArgs struct {
 }
 
 // [Preview API]
-func (client *Client) ReadMemberOf(ctx context.Context, args ReadMemberOfArgs) (*string, error) {
+func (client *ClientImpl) ReadMemberOf(ctx context.Context, args ReadMemberOfArgs) (*string, error) {
 	routeValues := make(map[string]string)
 	if args.MemberId == nil || *args.MemberId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.MemberId"}
@@ -714,7 +768,7 @@ type ReadMemberOfArgs struct {
 }
 
 // [Preview API]
-func (client *Client) ReadMembersOf(ctx context.Context, args ReadMembersOfArgs) (*[]string, error) {
+func (client *ClientImpl) ReadMembersOf(ctx context.Context, args ReadMembersOfArgs) (*[]string, error) {
 	routeValues := make(map[string]string)
 	if args.MemberId == nil || *args.MemberId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.MemberId"}
@@ -745,7 +799,7 @@ type ReadMembersOfArgs struct {
 }
 
 // [Preview API]
-func (client *Client) CreateScope(ctx context.Context, args CreateScopeArgs) (*IdentityScope, error) {
+func (client *ClientImpl) CreateScope(ctx context.Context, args CreateScopeArgs) (*IdentityScope, error) {
 	if args.Info == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Info"}
 	}
@@ -779,7 +833,7 @@ type CreateScopeArgs struct {
 }
 
 // [Preview API]
-func (client *Client) DeleteScope(ctx context.Context, args DeleteScopeArgs) error {
+func (client *ClientImpl) DeleteScope(ctx context.Context, args DeleteScopeArgs) error {
 	routeValues := make(map[string]string)
 	if args.ScopeId == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.ScopeId"}
@@ -802,7 +856,7 @@ type DeleteScopeArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetScopeById(ctx context.Context, args GetScopeByIdArgs) (*IdentityScope, error) {
+func (client *ClientImpl) GetScopeById(ctx context.Context, args GetScopeByIdArgs) (*IdentityScope, error) {
 	routeValues := make(map[string]string)
 	if args.ScopeId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ScopeId"}
@@ -827,7 +881,7 @@ type GetScopeByIdArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetScopeByName(ctx context.Context, args GetScopeByNameArgs) (*IdentityScope, error) {
+func (client *ClientImpl) GetScopeByName(ctx context.Context, args GetScopeByNameArgs) (*IdentityScope, error) {
 	queryParams := url.Values{}
 	if args.ScopeName == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "scopeName"}
@@ -851,7 +905,7 @@ type GetScopeByNameArgs struct {
 }
 
 // [Preview API]
-func (client *Client) UpdateScope(ctx context.Context, args UpdateScopeArgs) error {
+func (client *ClientImpl) UpdateScope(ctx context.Context, args UpdateScopeArgs) error {
 	if args.PatchDocument == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.PatchDocument"}
 	}
@@ -883,7 +937,7 @@ type UpdateScopeArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetSignedInToken(ctx context.Context, args GetSignedInTokenArgs) (*delegatedauthorization.AccessTokenResult, error) {
+func (client *ClientImpl) GetSignedInToken(ctx context.Context, args GetSignedInTokenArgs) (*delegatedauthorization.AccessTokenResult, error) {
 	locationId, _ := uuid.Parse("6074ff18-aaad-4abb-a41e-5c75f6178057")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, nil, nil, "", "application/json", nil)
 	if err != nil {
@@ -900,7 +954,7 @@ type GetSignedInTokenArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetSignoutToken(ctx context.Context, args GetSignoutTokenArgs) (*delegatedauthorization.AccessTokenResult, error) {
+func (client *ClientImpl) GetSignoutToken(ctx context.Context, args GetSignoutTokenArgs) (*delegatedauthorization.AccessTokenResult, error) {
 	locationId, _ := uuid.Parse("be39e83c-7529-45e9-9c67-0410885880da")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, nil, nil, "", "application/json", nil)
 	if err != nil {
@@ -917,7 +971,7 @@ type GetSignoutTokenArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetTenant(ctx context.Context, args GetTenantArgs) (*TenantInfo, error) {
+func (client *ClientImpl) GetTenant(ctx context.Context, args GetTenantArgs) (*TenantInfo, error) {
 	routeValues := make(map[string]string)
 	if args.TenantId == nil || *args.TenantId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.TenantId"}

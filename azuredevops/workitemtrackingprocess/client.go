@@ -20,22 +20,133 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("5264459e-e5e0-4bd8-b118-0985e68a4ec5")
 
-type Client struct {
+type Client interface {
+	// [Preview API] Creates a single behavior in the given process.
+	CreateProcessBehavior(context.Context, CreateProcessBehaviorArgs) (*ProcessBehavior, error)
+	// [Preview API] Removes a behavior in the process.
+	DeleteProcessBehavior(context.Context, DeleteProcessBehaviorArgs) error
+	// [Preview API] Returns a behavior of the process.
+	GetProcessBehavior(context.Context, GetProcessBehaviorArgs) (*ProcessBehavior, error)
+	// [Preview API] Returns a list of all behaviors in the process.
+	GetProcessBehaviors(context.Context, GetProcessBehaviorsArgs) (*[]ProcessBehavior, error)
+	// [Preview API] Replaces a behavior in the process.
+	UpdateProcessBehavior(context.Context, UpdateProcessBehaviorArgs) (*ProcessBehavior, error)
+	// [Preview API] Creates a control in a group.
+	CreateControlInGroup(context.Context, CreateControlInGroupArgs) (*Control, error)
+	// [Preview API] Moves a control to a specified group.
+	MoveControlToGroup(context.Context, MoveControlToGroupArgs) (*Control, error)
+	// [Preview API] Removes a control from the work item form.
+	RemoveControlFromGroup(context.Context, RemoveControlFromGroupArgs) error
+	// [Preview API] Updates a control on the work item form.
+	UpdateControl(context.Context, UpdateControlArgs) (*Control, error)
+	// [Preview API] Adds a field to a work item type.
+	AddFieldToWorkItemType(context.Context, AddFieldToWorkItemTypeArgs) (*ProcessWorkItemTypeField, error)
+	// [Preview API] Returns a list of all fields in a work item type.
+	GetAllWorkItemTypeFields(context.Context, GetAllWorkItemTypeFieldsArgs) (*[]ProcessWorkItemTypeField, error)
+	// [Preview API] Returns a field in a work item type.
+	GetWorkItemTypeField(context.Context, GetWorkItemTypeFieldArgs) (*ProcessWorkItemTypeField, error)
+	// [Preview API] Removes a field from a work item type. Does not permanently delete the field.
+	RemoveWorkItemTypeField(context.Context, RemoveWorkItemTypeFieldArgs) error
+	// [Preview API] Updates a field in a work item type.
+	UpdateWorkItemTypeField(context.Context, UpdateWorkItemTypeFieldArgs) (*ProcessWorkItemTypeField, error)
+	// [Preview API] Adds a group to the work item form.
+	AddGroup(context.Context, AddGroupArgs) (*Group, error)
+	// [Preview API] Moves a group to a different page and section.
+	MoveGroupToPage(context.Context, MoveGroupToPageArgs) (*Group, error)
+	// [Preview API] Moves a group to a different section.
+	MoveGroupToSection(context.Context, MoveGroupToSectionArgs) (*Group, error)
+	// [Preview API] Removes a group from the work item form.
+	RemoveGroup(context.Context, RemoveGroupArgs) error
+	// [Preview API] Updates a group in the work item form.
+	UpdateGroup(context.Context, UpdateGroupArgs) (*Group, error)
+	// [Preview API] Gets the form layout.
+	GetFormLayout(context.Context, GetFormLayoutArgs) (*FormLayout, error)
+	// [Preview API] Creates a picklist.
+	CreateList(context.Context, CreateListArgs) (*PickList, error)
+	// [Preview API] Removes a picklist.
+	DeleteList(context.Context, DeleteListArgs) error
+	// [Preview API] Returns a picklist.
+	GetList(context.Context, GetListArgs) (*PickList, error)
+	// [Preview API] Returns meta data of the picklist.
+	GetListsMetadata(context.Context, GetListsMetadataArgs) (*[]PickListMetadata, error)
+	// [Preview API] Updates a list.
+	UpdateList(context.Context, UpdateListArgs) (*PickList, error)
+	// [Preview API] Adds a page to the work item form.
+	AddPage(context.Context, AddPageArgs) (*Page, error)
+	// [Preview API] Removes a page from the work item form
+	RemovePage(context.Context, RemovePageArgs) error
+	// [Preview API] Updates a page on the work item form
+	UpdatePage(context.Context, UpdatePageArgs) (*Page, error)
+	// [Preview API] Creates a process.
+	CreateNewProcess(context.Context, CreateNewProcessArgs) (*ProcessInfo, error)
+	// [Preview API] Removes a process of a specific ID.
+	DeleteProcessById(context.Context, DeleteProcessByIdArgs) error
+	// [Preview API] Edit a process of a specific ID.
+	EditProcess(context.Context, EditProcessArgs) (*ProcessInfo, error)
+	// [Preview API] Get list of all processes including system and inherited.
+	GetListOfProcesses(context.Context, GetListOfProcessesArgs) (*[]ProcessInfo, error)
+	// [Preview API] Get a single process of a specified ID.
+	GetProcessByItsId(context.Context, GetProcessByItsIdArgs) (*ProcessInfo, error)
+	// [Preview API] Adds a rule to work item type in the process.
+	AddProcessWorkItemTypeRule(context.Context, AddProcessWorkItemTypeRuleArgs) (*ProcessRule, error)
+	// [Preview API] Removes a rule from the work item type in the process.
+	DeleteProcessWorkItemTypeRule(context.Context, DeleteProcessWorkItemTypeRuleArgs) error
+	// [Preview API] Returns a single rule in the work item type of the process.
+	GetProcessWorkItemTypeRule(context.Context, GetProcessWorkItemTypeRuleArgs) (*ProcessRule, error)
+	// [Preview API] Returns a list of all rules in the work item type of the process.
+	GetProcessWorkItemTypeRules(context.Context, GetProcessWorkItemTypeRulesArgs) (*[]ProcessRule, error)
+	// [Preview API] Updates a rule in the work item type of the process.
+	UpdateProcessWorkItemTypeRule(context.Context, UpdateProcessWorkItemTypeRuleArgs) (*ProcessRule, error)
+	// [Preview API] Creates a state definition in the work item type of the process.
+	CreateStateDefinition(context.Context, CreateStateDefinitionArgs) (*WorkItemStateResultModel, error)
+	// [Preview API] Removes a state definition in the work item type of the process.
+	DeleteStateDefinition(context.Context, DeleteStateDefinitionArgs) error
+	// [Preview API] Returns a single state definition in a work item type of the process.
+	GetStateDefinition(context.Context, GetStateDefinitionArgs) (*WorkItemStateResultModel, error)
+	// [Preview API] Returns a list of all state definitions in a work item type of the process.
+	GetStateDefinitions(context.Context, GetStateDefinitionsArgs) (*[]WorkItemStateResultModel, error)
+	// [Preview API] Hides a state definition in the work item type of the process.Only states with customizationType:System can be hidden.
+	HideStateDefinition(context.Context, HideStateDefinitionArgs) (*WorkItemStateResultModel, error)
+	// [Preview API] Updates a given state definition in the work item type of the process.
+	UpdateStateDefinition(context.Context, UpdateStateDefinitionArgs) (*WorkItemStateResultModel, error)
+	// [Preview API] Creates a work item type in the process.
+	CreateProcessWorkItemType(context.Context, CreateProcessWorkItemTypeArgs) (*ProcessWorkItemType, error)
+	// [Preview API] Removes a work itewm type in the process.
+	DeleteProcessWorkItemType(context.Context, DeleteProcessWorkItemTypeArgs) error
+	// [Preview API] Returns a single work item type in a process.
+	GetProcessWorkItemType(context.Context, GetProcessWorkItemTypeArgs) (*ProcessWorkItemType, error)
+	// [Preview API] Returns a list of all work item types in a process.
+	GetProcessWorkItemTypes(context.Context, GetProcessWorkItemTypesArgs) (*[]ProcessWorkItemType, error)
+	// [Preview API] Updates a work item type of the process.
+	UpdateProcessWorkItemType(context.Context, UpdateProcessWorkItemTypeArgs) (*ProcessWorkItemType, error)
+	// [Preview API] Adds a behavior to the work item type of the process.
+	AddBehaviorToWorkItemType(context.Context, AddBehaviorToWorkItemTypeArgs) (*WorkItemTypeBehavior, error)
+	// [Preview API] Returns a behavior for the work item type of the process.
+	GetBehaviorForWorkItemType(context.Context, GetBehaviorForWorkItemTypeArgs) (*WorkItemTypeBehavior, error)
+	// [Preview API] Returns a list of all behaviors for the work item type of the process.
+	GetBehaviorsForWorkItemType(context.Context, GetBehaviorsForWorkItemTypeArgs) (*[]WorkItemTypeBehavior, error)
+	// [Preview API] Removes a behavior for the work item type of the process.
+	RemoveBehaviorFromWorkItemType(context.Context, RemoveBehaviorFromWorkItemTypeArgs) error
+	// [Preview API] Updates a behavior for the work item type of the process.
+	UpdateBehaviorToWorkItemType(context.Context, UpdateBehaviorToWorkItemTypeArgs) (*WorkItemTypeBehavior, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
 // [Preview API] Creates a single behavior in the given process.
-func (client *Client) CreateProcessBehavior(ctx context.Context, args CreateProcessBehaviorArgs) (*ProcessBehavior, error) {
+func (client *ClientImpl) CreateProcessBehavior(ctx context.Context, args CreateProcessBehaviorArgs) (*ProcessBehavior, error) {
 	if args.Behavior == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Behavior"}
 	}
@@ -69,7 +180,7 @@ type CreateProcessBehaviorArgs struct {
 }
 
 // [Preview API] Removes a behavior in the process.
-func (client *Client) DeleteProcessBehavior(ctx context.Context, args DeleteProcessBehaviorArgs) error {
+func (client *ClientImpl) DeleteProcessBehavior(ctx context.Context, args DeleteProcessBehaviorArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -98,7 +209,7 @@ type DeleteProcessBehaviorArgs struct {
 }
 
 // [Preview API] Returns a behavior of the process.
-func (client *Client) GetProcessBehavior(ctx context.Context, args GetProcessBehaviorArgs) (*ProcessBehavior, error) {
+func (client *ClientImpl) GetProcessBehavior(ctx context.Context, args GetProcessBehaviorArgs) (*ProcessBehavior, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -135,7 +246,7 @@ type GetProcessBehaviorArgs struct {
 }
 
 // [Preview API] Returns a list of all behaviors in the process.
-func (client *Client) GetProcessBehaviors(ctx context.Context, args GetProcessBehaviorsArgs) (*[]ProcessBehavior, error) {
+func (client *ClientImpl) GetProcessBehaviors(ctx context.Context, args GetProcessBehaviorsArgs) (*[]ProcessBehavior, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -166,7 +277,7 @@ type GetProcessBehaviorsArgs struct {
 }
 
 // [Preview API] Replaces a behavior in the process.
-func (client *Client) UpdateProcessBehavior(ctx context.Context, args UpdateProcessBehaviorArgs) (*ProcessBehavior, error) {
+func (client *ClientImpl) UpdateProcessBehavior(ctx context.Context, args UpdateProcessBehaviorArgs) (*ProcessBehavior, error) {
 	if args.BehaviorData == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.BehaviorData"}
 	}
@@ -206,7 +317,7 @@ type UpdateProcessBehaviorArgs struct {
 }
 
 // [Preview API] Creates a control in a group.
-func (client *Client) CreateControlInGroup(ctx context.Context, args CreateControlInGroupArgs) (*Control, error) {
+func (client *ClientImpl) CreateControlInGroup(ctx context.Context, args CreateControlInGroupArgs) (*Control, error) {
 	if args.Control == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Control"}
 	}
@@ -252,7 +363,7 @@ type CreateControlInGroupArgs struct {
 }
 
 // [Preview API] Moves a control to a specified group.
-func (client *Client) MoveControlToGroup(ctx context.Context, args MoveControlToGroupArgs) (*Control, error) {
+func (client *ClientImpl) MoveControlToGroup(ctx context.Context, args MoveControlToGroupArgs) (*Control, error) {
 	if args.Control == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Control"}
 	}
@@ -310,7 +421,7 @@ type MoveControlToGroupArgs struct {
 }
 
 // [Preview API] Removes a control from the work item form.
-func (client *Client) RemoveControlFromGroup(ctx context.Context, args RemoveControlFromGroupArgs) error {
+func (client *ClientImpl) RemoveControlFromGroup(ctx context.Context, args RemoveControlFromGroupArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -351,7 +462,7 @@ type RemoveControlFromGroupArgs struct {
 }
 
 // [Preview API] Updates a control on the work item form.
-func (client *Client) UpdateControl(ctx context.Context, args UpdateControlArgs) (*Control, error) {
+func (client *ClientImpl) UpdateControl(ctx context.Context, args UpdateControlArgs) (*Control, error) {
 	if args.Control == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Control"}
 	}
@@ -403,7 +514,7 @@ type UpdateControlArgs struct {
 }
 
 // [Preview API] Adds a field to a work item type.
-func (client *Client) AddFieldToWorkItemType(ctx context.Context, args AddFieldToWorkItemTypeArgs) (*ProcessWorkItemTypeField, error) {
+func (client *ClientImpl) AddFieldToWorkItemType(ctx context.Context, args AddFieldToWorkItemTypeArgs) (*ProcessWorkItemTypeField, error) {
 	if args.Field == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Field"}
 	}
@@ -443,7 +554,7 @@ type AddFieldToWorkItemTypeArgs struct {
 }
 
 // [Preview API] Returns a list of all fields in a work item type.
-func (client *Client) GetAllWorkItemTypeFields(ctx context.Context, args GetAllWorkItemTypeFieldsArgs) (*[]ProcessWorkItemTypeField, error) {
+func (client *ClientImpl) GetAllWorkItemTypeFields(ctx context.Context, args GetAllWorkItemTypeFieldsArgs) (*[]ProcessWorkItemTypeField, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -474,7 +585,7 @@ type GetAllWorkItemTypeFieldsArgs struct {
 }
 
 // [Preview API] Returns a field in a work item type.
-func (client *Client) GetWorkItemTypeField(ctx context.Context, args GetWorkItemTypeFieldArgs) (*ProcessWorkItemTypeField, error) {
+func (client *ClientImpl) GetWorkItemTypeField(ctx context.Context, args GetWorkItemTypeFieldArgs) (*ProcessWorkItemTypeField, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -511,7 +622,7 @@ type GetWorkItemTypeFieldArgs struct {
 }
 
 // [Preview API] Removes a field from a work item type. Does not permanently delete the field.
-func (client *Client) RemoveWorkItemTypeField(ctx context.Context, args RemoveWorkItemTypeFieldArgs) error {
+func (client *ClientImpl) RemoveWorkItemTypeField(ctx context.Context, args RemoveWorkItemTypeFieldArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -546,7 +657,7 @@ type RemoveWorkItemTypeFieldArgs struct {
 }
 
 // [Preview API] Updates a field in a work item type.
-func (client *Client) UpdateWorkItemTypeField(ctx context.Context, args UpdateWorkItemTypeFieldArgs) (*ProcessWorkItemTypeField, error) {
+func (client *ClientImpl) UpdateWorkItemTypeField(ctx context.Context, args UpdateWorkItemTypeFieldArgs) (*ProcessWorkItemTypeField, error) {
 	if args.Field == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Field"}
 	}
@@ -592,7 +703,7 @@ type UpdateWorkItemTypeFieldArgs struct {
 }
 
 // [Preview API] Adds a group to the work item form.
-func (client *Client) AddGroup(ctx context.Context, args AddGroupArgs) (*Group, error) {
+func (client *ClientImpl) AddGroup(ctx context.Context, args AddGroupArgs) (*Group, error) {
 	if args.Group == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Group"}
 	}
@@ -644,7 +755,7 @@ type AddGroupArgs struct {
 }
 
 // [Preview API] Moves a group to a different page and section.
-func (client *Client) MoveGroupToPage(ctx context.Context, args MoveGroupToPageArgs) (*Group, error) {
+func (client *ClientImpl) MoveGroupToPage(ctx context.Context, args MoveGroupToPageArgs) (*Group, error) {
 	if args.Group == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Group"}
 	}
@@ -715,7 +826,7 @@ type MoveGroupToPageArgs struct {
 }
 
 // [Preview API] Moves a group to a different section.
-func (client *Client) MoveGroupToSection(ctx context.Context, args MoveGroupToSectionArgs) (*Group, error) {
+func (client *ClientImpl) MoveGroupToSection(ctx context.Context, args MoveGroupToSectionArgs) (*Group, error) {
 	if args.Group == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Group"}
 	}
@@ -780,7 +891,7 @@ type MoveGroupToSectionArgs struct {
 }
 
 // [Preview API] Removes a group from the work item form.
-func (client *Client) RemoveGroup(ctx context.Context, args RemoveGroupArgs) error {
+func (client *ClientImpl) RemoveGroup(ctx context.Context, args RemoveGroupArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -827,7 +938,7 @@ type RemoveGroupArgs struct {
 }
 
 // [Preview API] Updates a group in the work item form.
-func (client *Client) UpdateGroup(ctx context.Context, args UpdateGroupArgs) (*Group, error) {
+func (client *ClientImpl) UpdateGroup(ctx context.Context, args UpdateGroupArgs) (*Group, error) {
 	if args.Group == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Group"}
 	}
@@ -885,7 +996,7 @@ type UpdateGroupArgs struct {
 }
 
 // [Preview API] Gets the form layout.
-func (client *Client) GetFormLayout(ctx context.Context, args GetFormLayoutArgs) (*FormLayout, error) {
+func (client *ClientImpl) GetFormLayout(ctx context.Context, args GetFormLayoutArgs) (*FormLayout, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -916,7 +1027,7 @@ type GetFormLayoutArgs struct {
 }
 
 // [Preview API] Creates a picklist.
-func (client *Client) CreateList(ctx context.Context, args CreateListArgs) (*PickList, error) {
+func (client *ClientImpl) CreateList(ctx context.Context, args CreateListArgs) (*PickList, error) {
 	if args.Picklist == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Picklist"}
 	}
@@ -942,7 +1053,7 @@ type CreateListArgs struct {
 }
 
 // [Preview API] Removes a picklist.
-func (client *Client) DeleteList(ctx context.Context, args DeleteListArgs) error {
+func (client *ClientImpl) DeleteList(ctx context.Context, args DeleteListArgs) error {
 	routeValues := make(map[string]string)
 	if args.ListId == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.ListId"}
@@ -965,7 +1076,7 @@ type DeleteListArgs struct {
 }
 
 // [Preview API] Returns a picklist.
-func (client *Client) GetList(ctx context.Context, args GetListArgs) (*PickList, error) {
+func (client *ClientImpl) GetList(ctx context.Context, args GetListArgs) (*PickList, error) {
 	routeValues := make(map[string]string)
 	if args.ListId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ListId"}
@@ -990,7 +1101,7 @@ type GetListArgs struct {
 }
 
 // [Preview API] Returns meta data of the picklist.
-func (client *Client) GetListsMetadata(ctx context.Context, args GetListsMetadataArgs) (*[]PickListMetadata, error) {
+func (client *ClientImpl) GetListsMetadata(ctx context.Context, args GetListsMetadataArgs) (*[]PickListMetadata, error) {
 	locationId, _ := uuid.Parse("01e15468-e27c-4e20-a974-bd957dcccebc")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, nil, nil, "", "application/json", nil)
 	if err != nil {
@@ -1007,7 +1118,7 @@ type GetListsMetadataArgs struct {
 }
 
 // [Preview API] Updates a list.
-func (client *Client) UpdateList(ctx context.Context, args UpdateListArgs) (*PickList, error) {
+func (client *ClientImpl) UpdateList(ctx context.Context, args UpdateListArgs) (*PickList, error) {
 	if args.Picklist == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Picklist"}
 	}
@@ -1041,7 +1152,7 @@ type UpdateListArgs struct {
 }
 
 // [Preview API] Adds a page to the work item form.
-func (client *Client) AddPage(ctx context.Context, args AddPageArgs) (*Page, error) {
+func (client *ClientImpl) AddPage(ctx context.Context, args AddPageArgs) (*Page, error) {
 	if args.Page == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Page"}
 	}
@@ -1081,7 +1192,7 @@ type AddPageArgs struct {
 }
 
 // [Preview API] Removes a page from the work item form
-func (client *Client) RemovePage(ctx context.Context, args RemovePageArgs) error {
+func (client *ClientImpl) RemovePage(ctx context.Context, args RemovePageArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -1116,7 +1227,7 @@ type RemovePageArgs struct {
 }
 
 // [Preview API] Updates a page on the work item form
-func (client *Client) UpdatePage(ctx context.Context, args UpdatePageArgs) (*Page, error) {
+func (client *ClientImpl) UpdatePage(ctx context.Context, args UpdatePageArgs) (*Page, error) {
 	if args.Page == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Page"}
 	}
@@ -1156,7 +1267,7 @@ type UpdatePageArgs struct {
 }
 
 // [Preview API] Creates a process.
-func (client *Client) CreateNewProcess(ctx context.Context, args CreateNewProcessArgs) (*ProcessInfo, error) {
+func (client *ClientImpl) CreateNewProcess(ctx context.Context, args CreateNewProcessArgs) (*ProcessInfo, error) {
 	if args.CreateRequest == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CreateRequest"}
 	}
@@ -1182,7 +1293,7 @@ type CreateNewProcessArgs struct {
 }
 
 // [Preview API] Removes a process of a specific ID.
-func (client *Client) DeleteProcessById(ctx context.Context, args DeleteProcessByIdArgs) error {
+func (client *ClientImpl) DeleteProcessById(ctx context.Context, args DeleteProcessByIdArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProcessTypeId == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessTypeId"}
@@ -1205,7 +1316,7 @@ type DeleteProcessByIdArgs struct {
 }
 
 // [Preview API] Edit a process of a specific ID.
-func (client *Client) EditProcess(ctx context.Context, args EditProcessArgs) (*ProcessInfo, error) {
+func (client *ClientImpl) EditProcess(ctx context.Context, args EditProcessArgs) (*ProcessInfo, error) {
 	if args.UpdateRequest == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UpdateRequest"}
 	}
@@ -1239,7 +1350,7 @@ type EditProcessArgs struct {
 }
 
 // [Preview API] Get list of all processes including system and inherited.
-func (client *Client) GetListOfProcesses(ctx context.Context, args GetListOfProcessesArgs) (*[]ProcessInfo, error) {
+func (client *ClientImpl) GetListOfProcesses(ctx context.Context, args GetListOfProcessesArgs) (*[]ProcessInfo, error) {
 	queryParams := url.Values{}
 	if args.Expand != nil {
 		queryParams.Add("$expand", string(*args.Expand))
@@ -1262,7 +1373,7 @@ type GetListOfProcessesArgs struct {
 }
 
 // [Preview API] Get a single process of a specified ID.
-func (client *Client) GetProcessByItsId(ctx context.Context, args GetProcessByItsIdArgs) (*ProcessInfo, error) {
+func (client *ClientImpl) GetProcessByItsId(ctx context.Context, args GetProcessByItsIdArgs) (*ProcessInfo, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessTypeId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessTypeId"}
@@ -1293,7 +1404,7 @@ type GetProcessByItsIdArgs struct {
 }
 
 // [Preview API] Adds a rule to work item type in the process.
-func (client *Client) AddProcessWorkItemTypeRule(ctx context.Context, args AddProcessWorkItemTypeRuleArgs) (*ProcessRule, error) {
+func (client *ClientImpl) AddProcessWorkItemTypeRule(ctx context.Context, args AddProcessWorkItemTypeRuleArgs) (*ProcessRule, error) {
 	if args.ProcessRuleCreate == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessRuleCreate"}
 	}
@@ -1333,7 +1444,7 @@ type AddProcessWorkItemTypeRuleArgs struct {
 }
 
 // [Preview API] Removes a rule from the work item type in the process.
-func (client *Client) DeleteProcessWorkItemTypeRule(ctx context.Context, args DeleteProcessWorkItemTypeRuleArgs) error {
+func (client *ClientImpl) DeleteProcessWorkItemTypeRule(ctx context.Context, args DeleteProcessWorkItemTypeRuleArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -1368,7 +1479,7 @@ type DeleteProcessWorkItemTypeRuleArgs struct {
 }
 
 // [Preview API] Returns a single rule in the work item type of the process.
-func (client *Client) GetProcessWorkItemTypeRule(ctx context.Context, args GetProcessWorkItemTypeRuleArgs) (*ProcessRule, error) {
+func (client *ClientImpl) GetProcessWorkItemTypeRule(ctx context.Context, args GetProcessWorkItemTypeRuleArgs) (*ProcessRule, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -1405,7 +1516,7 @@ type GetProcessWorkItemTypeRuleArgs struct {
 }
 
 // [Preview API] Returns a list of all rules in the work item type of the process.
-func (client *Client) GetProcessWorkItemTypeRules(ctx context.Context, args GetProcessWorkItemTypeRulesArgs) (*[]ProcessRule, error) {
+func (client *ClientImpl) GetProcessWorkItemTypeRules(ctx context.Context, args GetProcessWorkItemTypeRulesArgs) (*[]ProcessRule, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -1436,7 +1547,7 @@ type GetProcessWorkItemTypeRulesArgs struct {
 }
 
 // [Preview API] Updates a rule in the work item type of the process.
-func (client *Client) UpdateProcessWorkItemTypeRule(ctx context.Context, args UpdateProcessWorkItemTypeRuleArgs) (*ProcessRule, error) {
+func (client *ClientImpl) UpdateProcessWorkItemTypeRule(ctx context.Context, args UpdateProcessWorkItemTypeRuleArgs) (*ProcessRule, error) {
 	if args.ProcessRule == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessRule"}
 	}
@@ -1482,7 +1593,7 @@ type UpdateProcessWorkItemTypeRuleArgs struct {
 }
 
 // [Preview API] Creates a state definition in the work item type of the process.
-func (client *Client) CreateStateDefinition(ctx context.Context, args CreateStateDefinitionArgs) (*WorkItemStateResultModel, error) {
+func (client *ClientImpl) CreateStateDefinition(ctx context.Context, args CreateStateDefinitionArgs) (*WorkItemStateResultModel, error) {
 	if args.StateModel == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.StateModel"}
 	}
@@ -1522,7 +1633,7 @@ type CreateStateDefinitionArgs struct {
 }
 
 // [Preview API] Removes a state definition in the work item type of the process.
-func (client *Client) DeleteStateDefinition(ctx context.Context, args DeleteStateDefinitionArgs) error {
+func (client *ClientImpl) DeleteStateDefinition(ctx context.Context, args DeleteStateDefinitionArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -1557,7 +1668,7 @@ type DeleteStateDefinitionArgs struct {
 }
 
 // [Preview API] Returns a single state definition in a work item type of the process.
-func (client *Client) GetStateDefinition(ctx context.Context, args GetStateDefinitionArgs) (*WorkItemStateResultModel, error) {
+func (client *ClientImpl) GetStateDefinition(ctx context.Context, args GetStateDefinitionArgs) (*WorkItemStateResultModel, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -1594,7 +1705,7 @@ type GetStateDefinitionArgs struct {
 }
 
 // [Preview API] Returns a list of all state definitions in a work item type of the process.
-func (client *Client) GetStateDefinitions(ctx context.Context, args GetStateDefinitionsArgs) (*[]WorkItemStateResultModel, error) {
+func (client *ClientImpl) GetStateDefinitions(ctx context.Context, args GetStateDefinitionsArgs) (*[]WorkItemStateResultModel, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -1625,7 +1736,7 @@ type GetStateDefinitionsArgs struct {
 }
 
 // [Preview API] Hides a state definition in the work item type of the process.Only states with customizationType:System can be hidden.
-func (client *Client) HideStateDefinition(ctx context.Context, args HideStateDefinitionArgs) (*WorkItemStateResultModel, error) {
+func (client *ClientImpl) HideStateDefinition(ctx context.Context, args HideStateDefinitionArgs) (*WorkItemStateResultModel, error) {
 	if args.HideStateModel == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.HideStateModel"}
 	}
@@ -1671,7 +1782,7 @@ type HideStateDefinitionArgs struct {
 }
 
 // [Preview API] Updates a given state definition in the work item type of the process.
-func (client *Client) UpdateStateDefinition(ctx context.Context, args UpdateStateDefinitionArgs) (*WorkItemStateResultModel, error) {
+func (client *ClientImpl) UpdateStateDefinition(ctx context.Context, args UpdateStateDefinitionArgs) (*WorkItemStateResultModel, error) {
 	if args.StateModel == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.StateModel"}
 	}
@@ -1717,7 +1828,7 @@ type UpdateStateDefinitionArgs struct {
 }
 
 // [Preview API] Creates a work item type in the process.
-func (client *Client) CreateProcessWorkItemType(ctx context.Context, args CreateProcessWorkItemTypeArgs) (*ProcessWorkItemType, error) {
+func (client *ClientImpl) CreateProcessWorkItemType(ctx context.Context, args CreateProcessWorkItemTypeArgs) (*ProcessWorkItemType, error) {
 	if args.WorkItemType == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WorkItemType"}
 	}
@@ -1751,7 +1862,7 @@ type CreateProcessWorkItemTypeArgs struct {
 }
 
 // [Preview API] Removes a work itewm type in the process.
-func (client *Client) DeleteProcessWorkItemType(ctx context.Context, args DeleteProcessWorkItemTypeArgs) error {
+func (client *ClientImpl) DeleteProcessWorkItemType(ctx context.Context, args DeleteProcessWorkItemTypeArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -1780,7 +1891,7 @@ type DeleteProcessWorkItemTypeArgs struct {
 }
 
 // [Preview API] Returns a single work item type in a process.
-func (client *Client) GetProcessWorkItemType(ctx context.Context, args GetProcessWorkItemTypeArgs) (*ProcessWorkItemType, error) {
+func (client *ClientImpl) GetProcessWorkItemType(ctx context.Context, args GetProcessWorkItemTypeArgs) (*ProcessWorkItemType, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -1817,7 +1928,7 @@ type GetProcessWorkItemTypeArgs struct {
 }
 
 // [Preview API] Returns a list of all work item types in a process.
-func (client *Client) GetProcessWorkItemTypes(ctx context.Context, args GetProcessWorkItemTypesArgs) (*[]ProcessWorkItemType, error) {
+func (client *ClientImpl) GetProcessWorkItemTypes(ctx context.Context, args GetProcessWorkItemTypesArgs) (*[]ProcessWorkItemType, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -1848,7 +1959,7 @@ type GetProcessWorkItemTypesArgs struct {
 }
 
 // [Preview API] Updates a work item type of the process.
-func (client *Client) UpdateProcessWorkItemType(ctx context.Context, args UpdateProcessWorkItemTypeArgs) (*ProcessWorkItemType, error) {
+func (client *ClientImpl) UpdateProcessWorkItemType(ctx context.Context, args UpdateProcessWorkItemTypeArgs) (*ProcessWorkItemType, error) {
 	if args.WorkItemTypeUpdate == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WorkItemTypeUpdate"}
 	}
@@ -1888,7 +1999,7 @@ type UpdateProcessWorkItemTypeArgs struct {
 }
 
 // [Preview API] Adds a behavior to the work item type of the process.
-func (client *Client) AddBehaviorToWorkItemType(ctx context.Context, args AddBehaviorToWorkItemTypeArgs) (*WorkItemTypeBehavior, error) {
+func (client *ClientImpl) AddBehaviorToWorkItemType(ctx context.Context, args AddBehaviorToWorkItemTypeArgs) (*WorkItemTypeBehavior, error) {
 	if args.Behavior == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Behavior"}
 	}
@@ -1928,7 +2039,7 @@ type AddBehaviorToWorkItemTypeArgs struct {
 }
 
 // [Preview API] Returns a behavior for the work item type of the process.
-func (client *Client) GetBehaviorForWorkItemType(ctx context.Context, args GetBehaviorForWorkItemTypeArgs) (*WorkItemTypeBehavior, error) {
+func (client *ClientImpl) GetBehaviorForWorkItemType(ctx context.Context, args GetBehaviorForWorkItemTypeArgs) (*WorkItemTypeBehavior, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -1965,7 +2076,7 @@ type GetBehaviorForWorkItemTypeArgs struct {
 }
 
 // [Preview API] Returns a list of all behaviors for the work item type of the process.
-func (client *Client) GetBehaviorsForWorkItemType(ctx context.Context, args GetBehaviorsForWorkItemTypeArgs) (*[]WorkItemTypeBehavior, error) {
+func (client *ClientImpl) GetBehaviorsForWorkItemType(ctx context.Context, args GetBehaviorsForWorkItemTypeArgs) (*[]WorkItemTypeBehavior, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -1996,7 +2107,7 @@ type GetBehaviorsForWorkItemTypeArgs struct {
 }
 
 // [Preview API] Removes a behavior for the work item type of the process.
-func (client *Client) RemoveBehaviorFromWorkItemType(ctx context.Context, args RemoveBehaviorFromWorkItemTypeArgs) error {
+func (client *ClientImpl) RemoveBehaviorFromWorkItemType(ctx context.Context, args RemoveBehaviorFromWorkItemTypeArgs) error {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -2031,7 +2142,7 @@ type RemoveBehaviorFromWorkItemTypeArgs struct {
 }
 
 // [Preview API] Updates a behavior for the work item type of the process.
-func (client *Client) UpdateBehaviorToWorkItemType(ctx context.Context, args UpdateBehaviorToWorkItemTypeArgs) (*WorkItemTypeBehavior, error) {
+func (client *ClientImpl) UpdateBehaviorToWorkItemType(ctx context.Context, args UpdateBehaviorToWorkItemTypeArgs) (*WorkItemTypeBehavior, error) {
 	if args.Behavior == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Behavior"}
 	}
