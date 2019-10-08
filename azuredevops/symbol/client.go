@@ -21,22 +21,51 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("af607f94-69ba-4821-8159-f04e37b66350")
 
-type Client struct {
+type Client interface {
+	// [Preview API] Check the availability of symbol service. This includes checking for feature flag, and possibly license in future. Note this is NOT an anonymous endpoint, and the caller will be redirected to authentication before hitting it.
+	CheckAvailability(context.Context, CheckAvailabilityArgs) error
+	// [Preview API] Create a new symbol request.
+	CreateRequests(context.Context, CreateRequestsArgs) (*Request, error)
+	// [Preview API] Create debug entries for a symbol request as specified by its identifier.
+	CreateRequestsRequestIdDebugEntries(context.Context, CreateRequestsRequestIdDebugEntriesArgs) (*[]DebugEntry, error)
+	// [Preview API] Create debug entries for a symbol request as specified by its name.
+	CreateRequestsRequestNameDebugEntries(context.Context, CreateRequestsRequestNameDebugEntriesArgs) (*[]DebugEntry, error)
+	// [Preview API] Delete a symbol request by request identifier.
+	DeleteRequestsRequestId(context.Context, DeleteRequestsRequestIdArgs) error
+	// [Preview API] Delete a symbol request by request name.
+	DeleteRequestsRequestName(context.Context, DeleteRequestsRequestNameArgs) error
+	// [Preview API] Get the client package.
+	GetClient(context.Context, GetClientArgs) (interface{}, error)
+	// [Preview API] Get a symbol request by request identifier.
+	GetRequestsRequestId(context.Context, GetRequestsRequestIdArgs) (*Request, error)
+	// [Preview API] Get a symbol request by request name.
+	GetRequestsRequestName(context.Context, GetRequestsRequestNameArgs) (*Request, error)
+	// [Preview API] Given a client key, returns the best matched debug entry.
+	GetSymSrvDebugEntryClientKey(context.Context, GetSymSrvDebugEntryClientKeyArgs) error
+	// [Preview API] Get client version information.
+	HeadClient(context.Context, HeadClientArgs) error
+	// [Preview API] Update a symbol request by request identifier.
+	UpdateRequestsRequestId(context.Context, UpdateRequestsRequestIdArgs) (*Request, error)
+	// [Preview API] Update a symbol request by request name.
+	UpdateRequestsRequestName(context.Context, UpdateRequestsRequestNameArgs) (*Request, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
 // [Preview API] Check the availability of symbol service. This includes checking for feature flag, and possibly license in future. Note this is NOT an anonymous endpoint, and the caller will be redirected to authentication before hitting it.
-func (client *Client) CheckAvailability(ctx context.Context, args CheckAvailabilityArgs) error {
+func (client *ClientImpl) CheckAvailability(ctx context.Context, args CheckAvailabilityArgs) error {
 	locationId, _ := uuid.Parse("97c893cc-e861-4ef4-8c43-9bad4a963dee")
 	_, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, nil, nil, "", "application/json", nil)
 	if err != nil {
@@ -50,48 +79,8 @@ func (client *Client) CheckAvailability(ctx context.Context, args CheckAvailabil
 type CheckAvailabilityArgs struct {
 }
 
-// [Preview API] Get the client package.
-func (client *Client) GetClient(ctx context.Context, args GetClientArgs) (interface{}, error) {
-	routeValues := make(map[string]string)
-	if args.ClientType == nil || *args.ClientType == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ClientType"}
-	}
-	routeValues["clientType"] = *args.ClientType
-
-	locationId, _ := uuid.Parse("79c83865-4de3-460c-8a16-01be238e0818")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue interface{}
-	err = client.Client.UnmarshalBody(resp, responseValue)
-	return responseValue, err
-}
-
-// Arguments for the GetClient function
-type GetClientArgs struct {
-	// (required) Either "EXE" for a zip file containing a Windows symbol client (a.k.a. symbol.exe) along with dependencies, or "TASK" for a VSTS task that can be run on a VSTS build agent. All the other values are invalid. The parameter is case-insensitive.
-	ClientType *string
-}
-
-// [Preview API] Get client version information.
-func (client *Client) HeadClient(ctx context.Context, args HeadClientArgs) error {
-	locationId, _ := uuid.Parse("79c83865-4de3-460c-8a16-01be238e0818")
-	_, err := client.Client.Send(ctx, http.MethodHead, locationId, "5.1-preview.1", nil, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the HeadClient function
-type HeadClientArgs struct {
-}
-
 // [Preview API] Create a new symbol request.
-func (client *Client) CreateRequests(ctx context.Context, args CreateRequestsArgs) (*Request, error) {
+func (client *ClientImpl) CreateRequests(ctx context.Context, args CreateRequestsArgs) (*Request, error) {
 	if args.RequestToCreate == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RequestToCreate"}
 	}
@@ -117,7 +106,7 @@ type CreateRequestsArgs struct {
 }
 
 // [Preview API] Create debug entries for a symbol request as specified by its identifier.
-func (client *Client) CreateRequestsRequestIdDebugEntries(ctx context.Context, args CreateRequestsRequestIdDebugEntriesArgs) (*[]DebugEntry, error) {
+func (client *ClientImpl) CreateRequestsRequestIdDebugEntries(ctx context.Context, args CreateRequestsRequestIdDebugEntriesArgs) (*[]DebugEntry, error) {
 	if args.Batch == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Batch"}
 	}
@@ -158,7 +147,7 @@ type CreateRequestsRequestIdDebugEntriesArgs struct {
 }
 
 // [Preview API] Create debug entries for a symbol request as specified by its name.
-func (client *Client) CreateRequestsRequestNameDebugEntries(ctx context.Context, args CreateRequestsRequestNameDebugEntriesArgs) (*[]DebugEntry, error) {
+func (client *ClientImpl) CreateRequestsRequestNameDebugEntries(ctx context.Context, args CreateRequestsRequestNameDebugEntriesArgs) (*[]DebugEntry, error) {
 	if args.Batch == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Batch"}
 	}
@@ -197,7 +186,7 @@ type CreateRequestsRequestNameDebugEntriesArgs struct {
 }
 
 // [Preview API] Delete a symbol request by request identifier.
-func (client *Client) DeleteRequestsRequestId(ctx context.Context, args DeleteRequestsRequestIdArgs) error {
+func (client *ClientImpl) DeleteRequestsRequestId(ctx context.Context, args DeleteRequestsRequestIdArgs) error {
 	routeValues := make(map[string]string)
 	if args.RequestId == nil || *args.RequestId == "" {
 		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RequestId"}
@@ -226,7 +215,7 @@ type DeleteRequestsRequestIdArgs struct {
 }
 
 // [Preview API] Delete a symbol request by request name.
-func (client *Client) DeleteRequestsRequestName(ctx context.Context, args DeleteRequestsRequestNameArgs) error {
+func (client *ClientImpl) DeleteRequestsRequestName(ctx context.Context, args DeleteRequestsRequestNameArgs) error {
 	queryParams := url.Values{}
 	if args.RequestName == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "requestName"}
@@ -252,8 +241,33 @@ type DeleteRequestsRequestNameArgs struct {
 	Synchronous *bool
 }
 
+// [Preview API] Get the client package.
+func (client *ClientImpl) GetClient(ctx context.Context, args GetClientArgs) (interface{}, error) {
+	routeValues := make(map[string]string)
+	if args.ClientType == nil || *args.ClientType == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ClientType"}
+	}
+	routeValues["clientType"] = *args.ClientType
+
+	locationId, _ := uuid.Parse("79c83865-4de3-460c-8a16-01be238e0818")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue interface{}
+	err = client.Client.UnmarshalBody(resp, responseValue)
+	return responseValue, err
+}
+
+// Arguments for the GetClient function
+type GetClientArgs struct {
+	// (required) Either "EXE" for a zip file containing a Windows symbol client (a.k.a. symbol.exe) along with dependencies, or "TASK" for a VSTS task that can be run on a VSTS build agent. All the other values are invalid. The parameter is case-insensitive.
+	ClientType *string
+}
+
 // [Preview API] Get a symbol request by request identifier.
-func (client *Client) GetRequestsRequestId(ctx context.Context, args GetRequestsRequestIdArgs) (*Request, error) {
+func (client *ClientImpl) GetRequestsRequestId(ctx context.Context, args GetRequestsRequestIdArgs) (*Request, error) {
 	routeValues := make(map[string]string)
 	if args.RequestId == nil || *args.RequestId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RequestId"}
@@ -278,7 +292,7 @@ type GetRequestsRequestIdArgs struct {
 }
 
 // [Preview API] Get a symbol request by request name.
-func (client *Client) GetRequestsRequestName(ctx context.Context, args GetRequestsRequestNameArgs) (*Request, error) {
+func (client *ClientImpl) GetRequestsRequestName(ctx context.Context, args GetRequestsRequestNameArgs) (*Request, error) {
 	queryParams := url.Values{}
 	if args.RequestName == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "requestName"}
@@ -301,8 +315,46 @@ type GetRequestsRequestNameArgs struct {
 	RequestName *string
 }
 
+// [Preview API] Given a client key, returns the best matched debug entry.
+func (client *ClientImpl) GetSymSrvDebugEntryClientKey(ctx context.Context, args GetSymSrvDebugEntryClientKeyArgs) error {
+	routeValues := make(map[string]string)
+	if args.DebugEntryClientKey == nil || *args.DebugEntryClientKey == "" {
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.DebugEntryClientKey"}
+	}
+	routeValues["debugEntryClientKey"] = *args.DebugEntryClientKey
+
+	locationId, _ := uuid.Parse("9648e256-c9f9-4f16-8a27-630b06396942")
+	_, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the GetSymSrvDebugEntryClientKey function
+type GetSymSrvDebugEntryClientKeyArgs struct {
+	// (required) A "client key" used by both ends of Microsoft's symbol protocol to identify a debug entry. The semantics of client key is governed by symsrv and is beyond the scope of this documentation.
+	DebugEntryClientKey *string
+}
+
+// [Preview API] Get client version information.
+func (client *ClientImpl) HeadClient(ctx context.Context, args HeadClientArgs) error {
+	locationId, _ := uuid.Parse("79c83865-4de3-460c-8a16-01be238e0818")
+	_, err := client.Client.Send(ctx, http.MethodHead, locationId, "5.1-preview.1", nil, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the HeadClient function
+type HeadClientArgs struct {
+}
+
 // [Preview API] Update a symbol request by request identifier.
-func (client *Client) UpdateRequestsRequestId(ctx context.Context, args UpdateRequestsRequestIdArgs) (*Request, error) {
+func (client *ClientImpl) UpdateRequestsRequestId(ctx context.Context, args UpdateRequestsRequestIdArgs) (*Request, error) {
 	if args.UpdateRequest == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UpdateRequest"}
 	}
@@ -336,7 +388,7 @@ type UpdateRequestsRequestIdArgs struct {
 }
 
 // [Preview API] Update a symbol request by request name.
-func (client *Client) UpdateRequestsRequestName(ctx context.Context, args UpdateRequestsRequestNameArgs) (*Request, error) {
+func (client *ClientImpl) UpdateRequestsRequestName(ctx context.Context, args UpdateRequestsRequestNameArgs) (*Request, error) {
 	if args.UpdateRequest == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UpdateRequest"}
 	}
@@ -366,27 +418,4 @@ type UpdateRequestsRequestNameArgs struct {
 	UpdateRequest *Request
 	// (required) The symbol request name.
 	RequestName *string
-}
-
-// [Preview API] Given a client key, returns the best matched debug entry.
-func (client *Client) GetSymSrvDebugEntryClientKey(ctx context.Context, args GetSymSrvDebugEntryClientKeyArgs) error {
-	routeValues := make(map[string]string)
-	if args.DebugEntryClientKey == nil || *args.DebugEntryClientKey == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.DebugEntryClientKey"}
-	}
-	routeValues["debugEntryClientKey"] = *args.DebugEntryClientKey
-
-	locationId, _ := uuid.Parse("9648e256-c9f9-4f16-8a27-630b06396942")
-	_, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the GetSymSrvDebugEntryClientKey function
-type GetSymSrvDebugEntryClientKeyArgs struct {
-	// (required) A "client key" used by both ends of Microsoft's symbol protocol to identify a debug entry. The semantics of client key is governed by symsrv and is beyond the scope of this documentation.
-	DebugEntryClientKey *string
 }

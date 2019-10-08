@@ -23,22 +23,31 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("95935461-9e54-44bd-b9fb-04f4dd05d640")
 
-type Client struct {
+type Client interface {
+	// [Preview API] Revokes the listed OAuth authorizations.
+	ListIdentitiesWithGlobalAccessTokens(context.Context, ListIdentitiesWithGlobalAccessTokensArgs) (*[]uuid.UUID, error)
+	// [Preview API] Lists of all the session token details of the personal access tokens (PATs) for a particular user.
+	ListPersonalAccessTokens(context.Context, ListPersonalAccessTokensArgs) (*tokenadmin.TokenAdminPagedSessionTokens, error)
+	// [Preview API] Revokes the listed OAuth authorizations.
+	RevokeAuthorizations(context.Context, RevokeAuthorizationsArgs) (*[]delegatedauthorization.SessionToken, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
 // [Preview API] Revokes the listed OAuth authorizations.
-func (client *Client) ListIdentitiesWithGlobalAccessTokens(ctx context.Context, args ListIdentitiesWithGlobalAccessTokensArgs) (*[]uuid.UUID, error) {
+func (client *ClientImpl) ListIdentitiesWithGlobalAccessTokens(ctx context.Context, args ListIdentitiesWithGlobalAccessTokensArgs) (*[]uuid.UUID, error) {
 	if args.Revocations == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Revocations"}
 	}
@@ -70,7 +79,7 @@ type ListIdentitiesWithGlobalAccessTokensArgs struct {
 }
 
 // [Preview API] Lists of all the session token details of the personal access tokens (PATs) for a particular user.
-func (client *Client) ListPersonalAccessTokens(ctx context.Context, args ListPersonalAccessTokensArgs) (*tokenadmin.TokenAdminPagedSessionTokens, error) {
+func (client *ClientImpl) ListPersonalAccessTokens(ctx context.Context, args ListPersonalAccessTokensArgs) (*tokenadmin.TokenAdminPagedSessionTokens, error) {
 	if args.Audience == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Audience"}
 	}
@@ -120,7 +129,7 @@ type ListPersonalAccessTokensArgs struct {
 }
 
 // [Preview API] Revokes the listed OAuth authorizations.
-func (client *Client) RevokeAuthorizations(ctx context.Context, args RevokeAuthorizationsArgs) (*[]delegatedauthorization.SessionToken, error) {
+func (client *ClientImpl) RevokeAuthorizations(ctx context.Context, args RevokeAuthorizationsArgs) (*[]delegatedauthorization.SessionToken, error) {
 	if args.Revocations == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Revocations"}
 	}

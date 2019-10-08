@@ -18,22 +18,27 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("0d55247a-1c47-4462-9b1f-5e2125590ee6")
 
-type Client struct {
+type Client interface {
+	// Get a list of accounts for a specific owner or a specific member.
+	GetAccounts(context.Context, GetAccountsArgs) (*[]Account, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
 // Get a list of accounts for a specific owner or a specific member.
-func (client *Client) GetAccounts(ctx context.Context, args GetAccountsArgs) (*[]Account, error) {
+func (client *ClientImpl) GetAccounts(ctx context.Context, args GetAccountsArgs) (*[]Account, error) {
 	queryParams := url.Values{}
 	if args.OwnerId != nil {
 		queryParams.Add("ownerId", (*args.OwnerId).String())

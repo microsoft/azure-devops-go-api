@@ -17,19 +17,24 @@ import (
 	"net/http"
 )
 
-type Client struct {
+type Client interface {
+	// [Preview API]
+	PublishEvents(context.Context, PublishEventsArgs) error
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) *Client {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) Client {
 	client := connection.GetClientByUrl(connection.BaseUrl)
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}
 }
 
 // [Preview API]
-func (client *Client) PublishEvents(ctx context.Context, args PublishEventsArgs) error {
+func (client *ClientImpl) PublishEvents(ctx context.Context, args PublishEventsArgs) error {
 	if args.Events == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.Events"}
 	}

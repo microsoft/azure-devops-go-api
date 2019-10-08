@@ -20,22 +20,31 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("d397749b-f115-4027-b6dd-77a65dd10d21")
 
-type Client struct {
+type Client interface {
+	// [Preview API]
+	AddPackage(context.Context, AddPackageArgs) error
+	// [Preview API]
+	GetPackageMetadata(context.Context, GetPackageMetadataArgs) (*UPackPackageMetadata, error)
+	// [Preview API]
+	GetPackageVersionsMetadata(context.Context, GetPackageVersionsMetadataArgs) (*UPackLimitedPackageMetadataListResponse, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
 // [Preview API]
-func (client *Client) AddPackage(ctx context.Context, args AddPackageArgs) error {
+func (client *ClientImpl) AddPackage(ctx context.Context, args AddPackageArgs) error {
 	if args.Metadata == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.Metadata"}
 	}
@@ -79,7 +88,7 @@ type AddPackageArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetPackageMetadata(ctx context.Context, args GetPackageMetadataArgs) (*UPackPackageMetadata, error) {
+func (client *ClientImpl) GetPackageMetadata(ctx context.Context, args GetPackageMetadataArgs) (*UPackPackageMetadata, error) {
 	routeValues := make(map[string]string)
 	if args.FeedId == nil || *args.FeedId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FeedId"}
@@ -122,7 +131,7 @@ type GetPackageMetadataArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetPackageVersionsMetadata(ctx context.Context, args GetPackageVersionsMetadataArgs) (*UPackLimitedPackageMetadataListResponse, error) {
+func (client *ClientImpl) GetPackageVersionsMetadata(ctx context.Context, args GetPackageVersionsMetadataArgs) (*UPackLimitedPackageMetadataListResponse, error) {
 	routeValues := make(map[string]string)
 	if args.FeedId == nil || *args.FeedId == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FeedId"}

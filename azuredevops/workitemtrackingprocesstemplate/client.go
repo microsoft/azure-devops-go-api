@@ -20,22 +20,59 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("5264459e-e5e0-4bd8-b118-0985e68a4ec5")
 
-type Client struct {
+type Client interface {
+	// [Preview API] Returns requested process template.
+	ExportProcessTemplate(context.Context, ExportProcessTemplateArgs) (io.ReadCloser, error)
+	// [Preview API] Returns a behavior for the process.
+	GetBehavior(context.Context, GetBehaviorArgs) (*AdminBehavior, error)
+	// [Preview API] Returns a list of behaviors for the process.
+	GetBehaviors(context.Context, GetBehaviorsArgs) (*[]AdminBehavior, error)
+	// [Preview API] Imports a process from zip file.
+	ImportProcessTemplate(context.Context, ImportProcessTemplateArgs) (*ProcessImportResult, error)
+	// [Preview API] Tells whether promote has completed for the specified promote job ID.
+	ImportProcessTemplateStatus(context.Context, ImportProcessTemplateStatusArgs) (*ProcessPromoteStatus, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
+// [Preview API] Returns requested process template.
+func (client *ClientImpl) ExportProcessTemplate(ctx context.Context, args ExportProcessTemplateArgs) (io.ReadCloser, error) {
+	routeValues := make(map[string]string)
+	if args.Id == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
+	}
+	routeValues["id"] = (*args.Id).String()
+	routeValues["action"] = "Export"
+
+	locationId, _ := uuid.Parse("29e1f38d-9e9c-4358-86a5-cdf9896a5759")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/zip", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Body, err
+}
+
+// Arguments for the ExportProcessTemplate function
+type ExportProcessTemplateArgs struct {
+	// (required) The ID of the process
+	Id *uuid.UUID
+}
+
 // [Preview API] Returns a behavior for the process.
-func (client *Client) GetBehavior(ctx context.Context, args GetBehaviorArgs) (*AdminBehavior, error) {
+func (client *ClientImpl) GetBehavior(ctx context.Context, args GetBehaviorArgs) (*AdminBehavior, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -67,7 +104,7 @@ type GetBehaviorArgs struct {
 }
 
 // [Preview API] Returns a list of behaviors for the process.
-func (client *Client) GetBehaviors(ctx context.Context, args GetBehaviorsArgs) (*[]AdminBehavior, error) {
+func (client *ClientImpl) GetBehaviors(ctx context.Context, args GetBehaviorsArgs) (*[]AdminBehavior, error) {
 	routeValues := make(map[string]string)
 	if args.ProcessId == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ProcessId"}
@@ -91,32 +128,8 @@ type GetBehaviorsArgs struct {
 	ProcessId *uuid.UUID
 }
 
-// [Preview API] Returns requested process template.
-func (client *Client) ExportProcessTemplate(ctx context.Context, args ExportProcessTemplateArgs) (io.ReadCloser, error) {
-	routeValues := make(map[string]string)
-	if args.Id == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}
-	}
-	routeValues["id"] = (*args.Id).String()
-	routeValues["action"] = "Export"
-
-	locationId, _ := uuid.Parse("29e1f38d-9e9c-4358-86a5-cdf9896a5759")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/zip", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp.Body, err
-}
-
-// Arguments for the ExportProcessTemplate function
-type ExportProcessTemplateArgs struct {
-	// (required) The ID of the process
-	Id *uuid.UUID
-}
-
 // [Preview API] Imports a process from zip file.
-func (client *Client) ImportProcessTemplate(ctx context.Context, args ImportProcessTemplateArgs) (*ProcessImportResult, error) {
+func (client *ClientImpl) ImportProcessTemplate(ctx context.Context, args ImportProcessTemplateArgs) (*ProcessImportResult, error) {
 	if args.UploadStream == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UploadStream"}
 	}
@@ -152,7 +165,7 @@ type ImportProcessTemplateArgs struct {
 }
 
 // [Preview API] Tells whether promote has completed for the specified promote job ID.
-func (client *Client) ImportProcessTemplateStatus(ctx context.Context, args ImportProcessTemplateStatusArgs) (*ProcessPromoteStatus, error) {
+func (client *ClientImpl) ImportProcessTemplateStatus(ctx context.Context, args ImportProcessTemplateStatusArgs) (*ProcessPromoteStatus, error) {
 	routeValues := make(map[string]string)
 	if args.Id == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Id"}

@@ -20,22 +20,61 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("94ff054d-5ee1-413d-9341-3f4a7827de2e")
 
-type Client struct {
+type Client interface {
+	// [Preview API] Downloads audit log entries.
+	DownloadLog(context.Context, DownloadLogArgs) (io.ReadCloser, error)
+	// [Preview API] Queries audit log entries
+	QueryLog(context.Context, QueryLogArgs) (*AuditLogQueryResult, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
+// [Preview API] Downloads audit log entries.
+func (client *ClientImpl) DownloadLog(ctx context.Context, args DownloadLogArgs) (io.ReadCloser, error) {
+	queryParams := url.Values{}
+	if args.Format == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "format"}
+	}
+	queryParams.Add("format", *args.Format)
+	if args.StartTime != nil {
+		queryParams.Add("startTime", (*args.StartTime).String())
+	}
+	if args.EndTime != nil {
+		queryParams.Add("endTime", (*args.EndTime).String())
+	}
+	locationId, _ := uuid.Parse("b7b98a76-04e8-4f4d-ac72-9d46492caaac")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/octet-stream", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Body, err
+}
+
+// Arguments for the DownloadLog function
+type DownloadLogArgs struct {
+	// (required) File format for download. Can be "json" or "csv".
+	Format *string
+	// (optional) Start time of download window. Optional
+	StartTime *azuredevops.Time
+	// (optional) End time of download window. Optional
+	EndTime *azuredevops.Time
+}
+
 // [Preview API] Queries audit log entries
-func (client *Client) QueryLog(ctx context.Context, args QueryLogArgs) (*AuditLogQueryResult, error) {
+func (client *ClientImpl) QueryLog(ctx context.Context, args QueryLogArgs) (*AuditLogQueryResult, error) {
 	queryParams := url.Values{}
 	if args.StartTime != nil {
 		queryParams.Add("startTime", (*args.StartTime).String())
@@ -75,36 +114,4 @@ type QueryLogArgs struct {
 	ContinuationToken *string
 	// (optional) Skips aggregating events and leaves them as individual entries instead. By default events are aggregated. Event types that are aggregated: AuditLog.AccessLog.
 	SkipAggregation *bool
-}
-
-// [Preview API] Downloads audit log entries.
-func (client *Client) DownloadLog(ctx context.Context, args DownloadLogArgs) (io.ReadCloser, error) {
-	queryParams := url.Values{}
-	if args.Format == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "format"}
-	}
-	queryParams.Add("format", *args.Format)
-	if args.StartTime != nil {
-		queryParams.Add("startTime", (*args.StartTime).String())
-	}
-	if args.EndTime != nil {
-		queryParams.Add("endTime", (*args.EndTime).String())
-	}
-	locationId, _ := uuid.Parse("b7b98a76-04e8-4f4d-ac72-9d46492caaac")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/octet-stream", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp.Body, err
-}
-
-// Arguments for the DownloadLog function
-type DownloadLogArgs struct {
-	// (required) File format for download. Can be "json" or "csv".
-	Format *string
-	// (optional) Start time of download window. Optional
-	StartTime *azuredevops.Time
-	// (optional) End time of download window. Optional
-	EndTime *azuredevops.Time
 }
