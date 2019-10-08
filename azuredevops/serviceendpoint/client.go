@@ -23,26 +23,26 @@ import (
 var ResourceAreaId, _ = uuid.Parse("1814ab31-2f4f-4a9f-8761-f4d77dc5a5d7")
 
 type Client interface {
-	// [Preview API] Proxy for a GET request defined by a service endpoint.
-	ExecuteServiceEndpointRequest(context.Context, ExecuteServiceEndpointRequestArgs) (*ServiceEndpointRequestResult, error)
 	// [Preview API] Create a service endpoint.
 	CreateServiceEndpoint(context.Context, CreateServiceEndpointArgs) (*ServiceEndpoint, error)
 	// [Preview API] Delete a service endpoint.
 	DeleteServiceEndpoint(context.Context, DeleteServiceEndpointArgs) error
+	// [Preview API] Proxy for a GET request defined by a service endpoint.
+	ExecuteServiceEndpointRequest(context.Context, ExecuteServiceEndpointRequestArgs) (*ServiceEndpointRequestResult, error)
 	// [Preview API] Get the service endpoint details.
 	GetServiceEndpointDetails(context.Context, GetServiceEndpointDetailsArgs) (*ServiceEndpoint, error)
+	// [Preview API] Get service endpoint execution records.
+	GetServiceEndpointExecutionRecords(context.Context, GetServiceEndpointExecutionRecordsArgs) (*GetServiceEndpointExecutionRecordsResponseValue, error)
 	// [Preview API] Get the service endpoints.
 	GetServiceEndpoints(context.Context, GetServiceEndpointsArgs) (*[]ServiceEndpoint, error)
 	// [Preview API] Get the service endpoints by name.
 	GetServiceEndpointsByNames(context.Context, GetServiceEndpointsByNamesArgs) (*[]ServiceEndpoint, error)
+	// [Preview API] Get service endpoint types.
+	GetServiceEndpointTypes(context.Context, GetServiceEndpointTypesArgs) (*[]ServiceEndpointType, error)
 	// [Preview API] Update a service endpoint.
 	UpdateServiceEndpoint(context.Context, UpdateServiceEndpointArgs) (*ServiceEndpoint, error)
 	// [Preview API] Update the service endpoints.
 	UpdateServiceEndpoints(context.Context, UpdateServiceEndpointsArgs) (*[]ServiceEndpoint, error)
-	// [Preview API] Get service endpoint execution records.
-	GetServiceEndpointExecutionRecords(context.Context, GetServiceEndpointExecutionRecordsArgs) (*GetServiceEndpointExecutionRecordsResponseValue, error)
-	// [Preview API] Get service endpoint types.
-	GetServiceEndpointTypes(context.Context, GetServiceEndpointTypesArgs) (*[]ServiceEndpointType, error)
 }
 
 type ClientImpl struct {
@@ -57,47 +57,6 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client,
 	return &ClientImpl{
 		Client: *client,
 	}, nil
-}
-
-// [Preview API] Proxy for a GET request defined by a service endpoint.
-func (client *ClientImpl) ExecuteServiceEndpointRequest(ctx context.Context, args ExecuteServiceEndpointRequestArgs) (*ServiceEndpointRequestResult, error) {
-	if args.ServiceEndpointRequest == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ServiceEndpointRequest"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
-	}
-	routeValues["project"] = *args.Project
-
-	queryParams := url.Values{}
-	if args.EndpointId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "endpointId"}
-	}
-	queryParams.Add("endpointId", *args.EndpointId)
-	body, marshalErr := json.Marshal(*args.ServiceEndpointRequest)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("cc63bb57-2a5f-4a7a-b79c-c142d308657e")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue ServiceEndpointRequestResult
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the ExecuteServiceEndpointRequest function
-type ExecuteServiceEndpointRequestArgs struct {
-	// (required) Service endpoint request.
-	ServiceEndpointRequest *ServiceEndpointRequest
-	// (required) Project ID or project name
-	Project *string
-	// (required) Id of the service endpoint.
-	EndpointId *string
 }
 
 // [Preview API] Create a service endpoint.
@@ -169,6 +128,47 @@ type DeleteServiceEndpointArgs struct {
 	Deep *bool
 }
 
+// [Preview API] Proxy for a GET request defined by a service endpoint.
+func (client *ClientImpl) ExecuteServiceEndpointRequest(ctx context.Context, args ExecuteServiceEndpointRequestArgs) (*ServiceEndpointRequestResult, error) {
+	if args.ServiceEndpointRequest == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ServiceEndpointRequest"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project == nil || *args.Project == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
+	}
+	routeValues["project"] = *args.Project
+
+	queryParams := url.Values{}
+	if args.EndpointId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "endpointId"}
+	}
+	queryParams.Add("endpointId", *args.EndpointId)
+	body, marshalErr := json.Marshal(*args.ServiceEndpointRequest)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("cc63bb57-2a5f-4a7a-b79c-c142d308657e")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue ServiceEndpointRequestResult
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the ExecuteServiceEndpointRequest function
+type ExecuteServiceEndpointRequestArgs struct {
+	// (required) Service endpoint request.
+	ServiceEndpointRequest *ServiceEndpointRequest
+	// (required) Project ID or project name
+	Project *string
+	// (required) Id of the service endpoint.
+	EndpointId *string
+}
+
 // [Preview API] Get the service endpoint details.
 func (client *ClientImpl) GetServiceEndpointDetails(ctx context.Context, args GetServiceEndpointDetailsArgs) (*ServiceEndpoint, error) {
 	routeValues := make(map[string]string)
@@ -198,6 +198,56 @@ type GetServiceEndpointDetailsArgs struct {
 	Project *string
 	// (required) Id of the service endpoint.
 	EndpointId *uuid.UUID
+}
+
+// [Preview API] Get service endpoint execution records.
+func (client *ClientImpl) GetServiceEndpointExecutionRecords(ctx context.Context, args GetServiceEndpointExecutionRecordsArgs) (*GetServiceEndpointExecutionRecordsResponseValue, error) {
+	routeValues := make(map[string]string)
+	if args.Project == nil || *args.Project == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
+	}
+	routeValues["project"] = *args.Project
+	if args.EndpointId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.EndpointId"}
+	}
+	routeValues["endpointId"] = (*args.EndpointId).String()
+
+	queryParams := url.Values{}
+	if args.Top != nil {
+		queryParams.Add("top", strconv.Itoa(*args.Top))
+	}
+	if args.ContinuationToken != nil {
+		queryParams.Add("continuationToken", strconv.FormatUint(*args.ContinuationToken, 10))
+	}
+	locationId, _ := uuid.Parse("10a16738-9299-4cd1-9a81-fd23ad6200d0")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GetServiceEndpointExecutionRecordsResponseValue
+	responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
+	err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
+	return &responseValue, err
+}
+
+// Arguments for the GetServiceEndpointExecutionRecords function
+type GetServiceEndpointExecutionRecordsArgs struct {
+	// (required) Project ID or project name
+	Project *string
+	// (required) Id of the service endpoint.
+	EndpointId *uuid.UUID
+	// (optional) Number of service endpoint execution records to get.
+	Top *int
+	// (optional) A continuation token, returned by a previous call to this method, that can be used to return the next set of records
+	ContinuationToken *uint64
+}
+
+// Return type for the GetServiceEndpointExecutionRecords function
+type GetServiceEndpointExecutionRecordsResponseValue struct {
+	Value []ServiceEndpointExecutionRecord
+	// The continuation token to be used to get the next page of results.
+	ContinuationToken string
 }
 
 // [Preview API] Get the service endpoints.
@@ -321,6 +371,34 @@ type GetServiceEndpointsByNamesArgs struct {
 	IncludeDetails *bool
 }
 
+// [Preview API] Get service endpoint types.
+func (client *ClientImpl) GetServiceEndpointTypes(ctx context.Context, args GetServiceEndpointTypesArgs) (*[]ServiceEndpointType, error) {
+	queryParams := url.Values{}
+	if args.Type != nil {
+		queryParams.Add("type", *args.Type)
+	}
+	if args.Scheme != nil {
+		queryParams.Add("scheme", *args.Scheme)
+	}
+	locationId, _ := uuid.Parse("5a7938a4-655e-486c-b562-b78c54a7e87b")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue []ServiceEndpointType
+	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the GetServiceEndpointTypes function
+type GetServiceEndpointTypesArgs struct {
+	// (optional) Type of service endpoint.
+	Type *string
+	// (optional) Scheme of service endpoint.
+	Scheme *string
+}
+
 // [Preview API] Update a service endpoint.
 func (client *ClientImpl) UpdateServiceEndpoint(ctx context.Context, args UpdateServiceEndpointArgs) (*ServiceEndpoint, error) {
 	if args.Endpoint == nil {
@@ -399,82 +477,4 @@ type UpdateServiceEndpointsArgs struct {
 	Endpoints *[]ServiceEndpoint
 	// (required) Project ID or project name
 	Project *string
-}
-
-// [Preview API] Get service endpoint execution records.
-func (client *ClientImpl) GetServiceEndpointExecutionRecords(ctx context.Context, args GetServiceEndpointExecutionRecordsArgs) (*GetServiceEndpointExecutionRecordsResponseValue, error) {
-	routeValues := make(map[string]string)
-	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
-	}
-	routeValues["project"] = *args.Project
-	if args.EndpointId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.EndpointId"}
-	}
-	routeValues["endpointId"] = (*args.EndpointId).String()
-
-	queryParams := url.Values{}
-	if args.Top != nil {
-		queryParams.Add("top", strconv.Itoa(*args.Top))
-	}
-	if args.ContinuationToken != nil {
-		queryParams.Add("continuationToken", strconv.FormatUint(*args.ContinuationToken, 10))
-	}
-	locationId, _ := uuid.Parse("10a16738-9299-4cd1-9a81-fd23ad6200d0")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GetServiceEndpointExecutionRecordsResponseValue
-	responseValue.ContinuationToken = resp.Header.Get(azuredevops.HeaderKeyContinuationToken)
-	err = client.Client.UnmarshalCollectionBody(resp, &responseValue.Value)
-	return &responseValue, err
-}
-
-// Arguments for the GetServiceEndpointExecutionRecords function
-type GetServiceEndpointExecutionRecordsArgs struct {
-	// (required) Project ID or project name
-	Project *string
-	// (required) Id of the service endpoint.
-	EndpointId *uuid.UUID
-	// (optional) Number of service endpoint execution records to get.
-	Top *int
-	// (optional) A continuation token, returned by a previous call to this method, that can be used to return the next set of records
-	ContinuationToken *uint64
-}
-
-// Return type for the GetServiceEndpointExecutionRecords function
-type GetServiceEndpointExecutionRecordsResponseValue struct {
-	Value []ServiceEndpointExecutionRecord
-	// The continuation token to be used to get the next page of results.
-	ContinuationToken string
-}
-
-// [Preview API] Get service endpoint types.
-func (client *ClientImpl) GetServiceEndpointTypes(ctx context.Context, args GetServiceEndpointTypesArgs) (*[]ServiceEndpointType, error) {
-	queryParams := url.Values{}
-	if args.Type != nil {
-		queryParams.Add("type", *args.Type)
-	}
-	if args.Scheme != nil {
-		queryParams.Add("scheme", *args.Scheme)
-	}
-	locationId, _ := uuid.Parse("5a7938a4-655e-486c-b562-b78c54a7e87b")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue []ServiceEndpointType
-	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the GetServiceEndpointTypes function
-type GetServiceEndpointTypesArgs struct {
-	// (optional) Type of service endpoint.
-	Type *string
-	// (optional) Scheme of service endpoint.
-	Scheme *string
 }

@@ -22,11 +22,11 @@ var ResourceAreaId, _ = uuid.Parse("ea48a0a1-269c-42d8-b8ad-ddc8fcdcf578")
 
 type Client interface {
 	// [Preview API] Provides a set of results for the search text.
-	FetchScrollCodeSearchResults(context.Context, FetchScrollCodeSearchResultsArgs) (*CodeSearchResponse, error)
-	// [Preview API] Provides a set of results for the search text.
 	FetchCodeSearchResults(context.Context, FetchCodeSearchResultsArgs) (*CodeSearchResponse, error)
 	// [Preview API] Provides a set of results for the search text.
 	FetchPackageSearchResults(context.Context, FetchPackageSearchResultsArgs) (*searchshared.PackageSearchResponse, error)
+	// [Preview API] Provides a set of results for the search text.
+	FetchScrollCodeSearchResults(context.Context, FetchScrollCodeSearchResultsArgs) (*CodeSearchResponse, error)
 	// [Preview API] Provides a set of results for the search request.
 	FetchWikiSearchResults(context.Context, FetchWikiSearchResultsArgs) (*searchshared.WikiSearchResponse, error)
 	// [Preview API] Provides a set of results for the search text.
@@ -45,39 +45,6 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client,
 	return &ClientImpl{
 		Client: *client,
 	}, nil
-}
-
-// [Preview API] Provides a set of results for the search text.
-func (client *ClientImpl) FetchScrollCodeSearchResults(ctx context.Context, args FetchScrollCodeSearchResultsArgs) (*CodeSearchResponse, error) {
-	if args.Request == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Request"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-
-	body, marshalErr := json.Marshal(*args.Request)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("852dac94-e8f7-45a2-9910-927ae35766a2")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue CodeSearchResponse
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the FetchScrollCodeSearchResults function
-type FetchScrollCodeSearchResultsArgs struct {
-	// (required) The Code Search Request.
-	Request *searchshared.ScrollSearchRequest
-	// (optional) Project ID or project name
-	Project *string
 }
 
 // [Preview API] Provides a set of results for the search text.
@@ -146,6 +113,39 @@ func (client *ClientImpl) FetchPackageSearchResults(ctx context.Context, args Fe
 type FetchPackageSearchResultsArgs struct {
 	// (required) The Package Search Request.
 	Request *searchshared.PackageSearchRequest
+}
+
+// [Preview API] Provides a set of results for the search text.
+func (client *ClientImpl) FetchScrollCodeSearchResults(ctx context.Context, args FetchScrollCodeSearchResultsArgs) (*CodeSearchResponse, error) {
+	if args.Request == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Request"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+
+	body, marshalErr := json.Marshal(*args.Request)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("852dac94-e8f7-45a2-9910-927ae35766a2")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue CodeSearchResponse
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the FetchScrollCodeSearchResults function
+type FetchScrollCodeSearchResultsArgs struct {
+	// (required) The Code Search Request.
+	Request *searchshared.ScrollSearchRequest
+	// (optional) Project ID or project name
+	Project *string
 }
 
 // [Preview API] Provides a set of results for the search request.

@@ -28,8 +28,72 @@ var ResourceAreaId, _ = uuid.Parse("4e080c62-fa21-4fbc-8fef-2a10a2b38049")
 type Client interface {
 	// [Preview API] Create an annotated tag.
 	CreateAnnotatedTag(context.Context, CreateAnnotatedTagArgs) (*GitAnnotatedTag, error)
+	// [Preview API] Attach a new file to a pull request.
+	CreateAttachment(context.Context, CreateAttachmentArgs) (*Attachment, error)
+	// [Preview API] Cherry pick a specific commit or commits that are associated to a pull request into a new branch.
+	CreateCherryPick(context.Context, CreateCherryPickArgs) (*GitCherryPick, error)
+	// Create a comment on a specific thread in a pull request (up to 500 comments can be created per thread).
+	CreateComment(context.Context, CreateCommentArgs) (*Comment, error)
+	// Create Git commit status.
+	CreateCommitStatus(context.Context, CreateCommitStatusArgs) (*GitStatus, error)
+	// [Preview API] Creates a ref favorite
+	CreateFavorite(context.Context, CreateFavoriteArgs) (*GitRefFavorite, error)
+	// [Preview API] Request that another repository's refs be fetched into this one. It syncs two existing forks. To create a fork, please see the <a href="https://docs.microsoft.com/en-us/rest/api/vsts/git/repositories/create?view=azure-devops-rest-5.1"> repositories endpoint</a>
+	CreateForkSyncRequest(context.Context, CreateForkSyncRequestArgs) (*GitForkSyncRequest, error)
+	// [Preview API] Create an import request.
+	CreateImportRequest(context.Context, CreateImportRequestArgs) (*GitImportRequest, error)
+	// [Preview API] Add a like on a comment.
+	CreateLike(context.Context, CreateLikeArgs) error
+	// [Preview API] Request a git merge operation. Currently we support merging only 2 commits.
+	CreateMergeRequest(context.Context, CreateMergeRequestArgs) (*GitMerge, error)
+	// Create a pull request.
+	CreatePullRequest(context.Context, CreatePullRequestArgs) (*GitPullRequest, error)
+	// [Preview API] Create a pull request status on the iteration. This operation will have the same result as Create status on pull request with specified iteration ID in the request body.
+	CreatePullRequestIterationStatus(context.Context, CreatePullRequestIterationStatusArgs) (*GitPullRequestStatus, error)
+	// [Preview API] Create a label for a specified pull request. The only required field is the name of the new label.
+	CreatePullRequestLabel(context.Context, CreatePullRequestLabelArgs) (*core.WebApiTagDefinition, error)
+	// Add a reviewer to a pull request or cast a vote.
+	CreatePullRequestReviewer(context.Context, CreatePullRequestReviewerArgs) (*IdentityRefWithVote, error)
+	// Add reviewers to a pull request.
+	CreatePullRequestReviewers(context.Context, CreatePullRequestReviewersArgs) (*[]IdentityRefWithVote, error)
+	// [Preview API] Create a pull request status.
+	CreatePullRequestStatus(context.Context, CreatePullRequestStatusArgs) (*GitPullRequestStatus, error)
+	// Push changes to the repository.
+	CreatePush(context.Context, CreatePushArgs) (*GitPush, error)
+	// Create a git repository in a team project.
+	CreateRepository(context.Context, CreateRepositoryArgs) (*GitRepository, error)
+	// [Preview API] Starts the operation to create a new branch which reverts changes introduced by either a specific commit or commits that are associated to a pull request.
+	CreateRevert(context.Context, CreateRevertArgs) (*GitRevert, error)
+	// Create a thread in a pull request.
+	CreateThread(context.Context, CreateThreadArgs) (*GitPullRequestCommentThread, error)
+	// [Preview API] Delete a pull request attachment.
+	DeleteAttachment(context.Context, DeleteAttachmentArgs) error
+	// Delete a comment associated with a specific thread in a pull request.
+	DeleteComment(context.Context, DeleteCommentArgs) error
+	// [Preview API] Delete a like on a comment.
+	DeleteLike(context.Context, DeleteLikeArgs) error
+	// [Preview API] Delete pull request iteration status.
+	DeletePullRequestIterationStatus(context.Context, DeletePullRequestIterationStatusArgs) error
+	// [Preview API] Removes a label from the set of those assigned to the pull request.
+	DeletePullRequestLabels(context.Context, DeletePullRequestLabelsArgs) error
+	// Remove a reviewer from a pull request.
+	DeletePullRequestReviewer(context.Context, DeletePullRequestReviewerArgs) error
+	// [Preview API] Delete pull request status.
+	DeletePullRequestStatus(context.Context, DeletePullRequestStatusArgs) error
+	// [Preview API] Deletes the refs favorite specified
+	DeleteRefFavorite(context.Context, DeleteRefFavoriteArgs) error
+	// Delete a git repository
+	DeleteRepository(context.Context, DeleteRepositoryArgs) error
+	// [Preview API] Destroy (hard delete) a soft-deleted Git repository.
+	DeleteRepositoryFromRecycleBin(context.Context, DeleteRepositoryFromRecycleBinArgs) error
 	// [Preview API] Get an annotated tag.
 	GetAnnotatedTag(context.Context, GetAnnotatedTagArgs) (*GitAnnotatedTag, error)
+	// [Preview API] Get the file content of a pull request attachment.
+	GetAttachmentContent(context.Context, GetAttachmentContentArgs) (io.ReadCloser, error)
+	// [Preview API] Get a list of files attached to a given pull request.
+	GetAttachments(context.Context, GetAttachmentsArgs) (*[]Attachment, error)
+	// [Preview API] Get the file content of a pull request attachment.
+	GetAttachmentZip(context.Context, GetAttachmentZipArgs) (io.ReadCloser, error)
 	// Get a single blob.
 	GetBlob(context.Context, GetBlobArgs) (*GitBlobRef, error)
 	// Get a single blob.
@@ -44,220 +108,156 @@ type Client interface {
 	GetBranches(context.Context, GetBranchesArgs) (*[]GitBranchStats, error)
 	// Retrieve changes for a particular commit.
 	GetChanges(context.Context, GetChangesArgs) (*GitCommitChanges, error)
-	// [Preview API] Cherry pick a specific commit or commits that are associated to a pull request into a new branch.
-	CreateCherryPick(context.Context, CreateCherryPickArgs) (*GitCherryPick, error)
 	// [Preview API] Retrieve information about a cherry pick by cherry pick Id.
 	GetCherryPick(context.Context, GetCherryPickArgs) (*GitCherryPick, error)
 	// [Preview API] Retrieve information about a cherry pick for a specific branch.
 	GetCherryPickForRefName(context.Context, GetCherryPickForRefNameArgs) (*GitCherryPick, error)
-	// Find the closest common commit (the merge base) between base and target commits, and get the diff between either the base and target commits or common and target commits.
-	GetCommitDiffs(context.Context, GetCommitDiffsArgs) (*GitCommitDiffs, error)
+	// Retrieve a comment associated with a specific thread in a pull request.
+	GetComment(context.Context, GetCommentArgs) (*Comment, error)
+	// Retrieve all comments associated with a specific thread in a pull request.
+	GetComments(context.Context, GetCommentsArgs) (*[]Comment, error)
 	// Retrieve a particular commit.
 	GetCommit(context.Context, GetCommitArgs) (*GitCommit, error)
+	// Find the closest common commit (the merge base) between base and target commits, and get the diff between either the base and target commits or common and target commits.
+	GetCommitDiffs(context.Context, GetCommitDiffsArgs) (*GitCommitDiffs, error)
 	// Retrieve git commits for a project
 	GetCommits(context.Context, GetCommitsArgs) (*[]GitCommitRef, error)
-	// Retrieve a list of commits associated with a particular push.
-	GetPushCommits(context.Context, GetPushCommitsArgs) (*[]GitCommitRef, error)
 	// Retrieve git commits for a project matching the search criteria
 	GetCommitsBatch(context.Context, GetCommitsBatchArgs) (*[]GitCommitRef, error)
 	// [Preview API] Retrieve deleted git repositories.
 	GetDeletedRepositories(context.Context, GetDeletedRepositoriesArgs) (*[]GitDeletedRepository, error)
 	// [Preview API] Retrieve all forks of a repository in the collection.
 	GetForks(context.Context, GetForksArgs) (*[]GitRepositoryRef, error)
-	// [Preview API] Request that another repository's refs be fetched into this one. It syncs two existing forks. To create a fork, please see the <a href="https://docs.microsoft.com/en-us/rest/api/vsts/git/repositories/create?view=azure-devops-rest-5.1"> repositories endpoint</a>
-	CreateForkSyncRequest(context.Context, CreateForkSyncRequestArgs) (*GitForkSyncRequest, error)
 	// [Preview API] Get a specific fork sync operation's details.
 	GetForkSyncRequest(context.Context, GetForkSyncRequestArgs) (*GitForkSyncRequest, error)
 	// [Preview API] Retrieve all requested fork sync operations on this repository.
 	GetForkSyncRequests(context.Context, GetForkSyncRequestsArgs) (*[]GitForkSyncRequest, error)
-	// [Preview API] Create an import request.
-	CreateImportRequest(context.Context, CreateImportRequestArgs) (*GitImportRequest, error)
 	// [Preview API] Retrieve a particular import request.
 	GetImportRequest(context.Context, GetImportRequestArgs) (*GitImportRequest, error)
-	// [Preview API] Retrieve import requests for a repository.
-	QueryImportRequests(context.Context, QueryImportRequestsArgs) (*[]GitImportRequest, error)
-	// [Preview API] Retry or abandon a failed import request.
-	UpdateImportRequest(context.Context, UpdateImportRequestArgs) (*GitImportRequest, error)
 	// Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content, which is always returned as a download.
 	GetItem(context.Context, GetItemArgs) (*GitItem, error)
 	// Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content, which is always returned as a download.
 	GetItemContent(context.Context, GetItemContentArgs) (io.ReadCloser, error)
 	// Get Item Metadata and/or Content for a collection of items. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content which is always returned as a download.
 	GetItems(context.Context, GetItemsArgs) (*[]GitItem, error)
+	// Post for retrieving a creating a batch out of a set of items in a repo / project given a list of paths or a long path
+	GetItemsBatch(context.Context, GetItemsBatchArgs) (*[][]GitItem, error)
 	// Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content, which is always returned as a download.
 	GetItemText(context.Context, GetItemTextArgs) (io.ReadCloser, error)
 	// Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content, which is always returned as a download.
 	GetItemZip(context.Context, GetItemZipArgs) (io.ReadCloser, error)
-	// Post for retrieving a creating a batch out of a set of items in a repo / project given a list of paths or a long path
-	GetItemsBatch(context.Context, GetItemsBatchArgs) (*[][]GitItem, error)
+	// [Preview API] Get likes for a comment.
+	GetLikes(context.Context, GetLikesArgs) (*[]webapi.IdentityRef, error)
 	// [Preview API] Find the merge bases of two commits, optionally across forks. If otherRepositoryId is not specified, the merge bases will only be calculated within the context of the local repositoryNameOrId.
 	GetMergeBases(context.Context, GetMergeBasesArgs) (*[]GitCommitRef, error)
-	// [Preview API] Request a git merge operation. Currently we support merging only 2 commits.
-	CreateMergeRequest(context.Context, CreateMergeRequestArgs) (*GitMerge, error)
 	// [Preview API] Get a specific merge operation's details.
 	GetMergeRequest(context.Context, GetMergeRequestArgs) (*GitMerge, error)
 	// [Preview API] Retrieve a list of policy configurations by a given set of scope/filtering criteria.
 	GetPolicyConfigurations(context.Context, GetPolicyConfigurationsArgs) (*GitPolicyConfigurationResponse, error)
-	// [Preview API] Attach a new file to a pull request.
-	CreateAttachment(context.Context, CreateAttachmentArgs) (*Attachment, error)
-	// [Preview API] Delete a pull request attachment.
-	DeleteAttachment(context.Context, DeleteAttachmentArgs) error
-	// [Preview API] Get the file content of a pull request attachment.
-	GetAttachmentContent(context.Context, GetAttachmentContentArgs) (io.ReadCloser, error)
-	// [Preview API] Get a list of files attached to a given pull request.
-	GetAttachments(context.Context, GetAttachmentsArgs) (*[]Attachment, error)
-	// [Preview API] Get the file content of a pull request attachment.
-	GetAttachmentZip(context.Context, GetAttachmentZipArgs) (io.ReadCloser, error)
-	// [Preview API] Add a like on a comment.
-	CreateLike(context.Context, CreateLikeArgs) error
-	// [Preview API] Delete a like on a comment.
-	DeleteLike(context.Context, DeleteLikeArgs) error
-	// [Preview API] Get likes for a comment.
-	GetLikes(context.Context, GetLikesArgs) (*[]webapi.IdentityRef, error)
-	// Get the commits for the specified iteration of a pull request.
-	GetPullRequestIterationCommits(context.Context, GetPullRequestIterationCommitsArgs) (*[]GitCommitRef, error)
+	// Retrieve a pull request.
+	GetPullRequest(context.Context, GetPullRequestArgs) (*GitPullRequest, error)
+	// Retrieve a pull request.
+	GetPullRequestById(context.Context, GetPullRequestByIdArgs) (*GitPullRequest, error)
 	// Get the commits for the specified pull request.
 	GetPullRequestCommits(context.Context, GetPullRequestCommitsArgs) (*GetPullRequestCommitsResponseValue, error)
-	// Retrieve the changes made in a pull request between two iterations.
-	GetPullRequestIterationChanges(context.Context, GetPullRequestIterationChangesArgs) (*GitPullRequestIterationChanges, error)
 	// Get the specified iteration for a pull request.
 	GetPullRequestIteration(context.Context, GetPullRequestIterationArgs) (*GitPullRequestIteration, error)
+	// Retrieve the changes made in a pull request between two iterations.
+	GetPullRequestIterationChanges(context.Context, GetPullRequestIterationChangesArgs) (*GitPullRequestIterationChanges, error)
+	// Get the commits for the specified iteration of a pull request.
+	GetPullRequestIterationCommits(context.Context, GetPullRequestIterationCommitsArgs) (*[]GitCommitRef, error)
 	// Get the list of iterations for the specified pull request.
 	GetPullRequestIterations(context.Context, GetPullRequestIterationsArgs) (*[]GitPullRequestIteration, error)
-	// [Preview API] Create a pull request status on the iteration. This operation will have the same result as Create status on pull request with specified iteration ID in the request body.
-	CreatePullRequestIterationStatus(context.Context, CreatePullRequestIterationStatusArgs) (*GitPullRequestStatus, error)
-	// [Preview API] Delete pull request iteration status.
-	DeletePullRequestIterationStatus(context.Context, DeletePullRequestIterationStatusArgs) error
 	// [Preview API] Get the specific pull request iteration status by ID. The status ID is unique within the pull request across all iterations.
 	GetPullRequestIterationStatus(context.Context, GetPullRequestIterationStatusArgs) (*GitPullRequestStatus, error)
 	// [Preview API] Get all the statuses associated with a pull request iteration.
 	GetPullRequestIterationStatuses(context.Context, GetPullRequestIterationStatusesArgs) (*[]GitPullRequestStatus, error)
-	// [Preview API] Update pull request iteration statuses collection. The only supported operation type is `remove`.
-	UpdatePullRequestIterationStatuses(context.Context, UpdatePullRequestIterationStatusesArgs) error
-	// [Preview API] Create a label for a specified pull request. The only required field is the name of the new label.
-	CreatePullRequestLabel(context.Context, CreatePullRequestLabelArgs) (*core.WebApiTagDefinition, error)
-	// [Preview API] Removes a label from the set of those assigned to the pull request.
-	DeletePullRequestLabels(context.Context, DeletePullRequestLabelsArgs) error
 	// [Preview API] Retrieves a single label that has been assigned to a pull request.
 	GetPullRequestLabel(context.Context, GetPullRequestLabelArgs) (*core.WebApiTagDefinition, error)
 	// [Preview API] Get all the labels assigned to a pull request.
 	GetPullRequestLabels(context.Context, GetPullRequestLabelsArgs) (*[]core.WebApiTagDefinition, error)
 	// [Preview API] Get external properties of the pull request.
 	GetPullRequestProperties(context.Context, GetPullRequestPropertiesArgs) (interface{}, error)
-	// [Preview API] Create or update pull request external properties. The patch operation can be `add`, `replace` or `remove`. For `add` operation, the path can be empty. If the path is empty, the value must be a list of key value pairs. For `replace` operation, the path cannot be empty. If the path does not exist, the property will be added to the collection. For `remove` operation, the path cannot be empty. If the path does not exist, no action will be performed.
-	UpdatePullRequestProperties(context.Context, UpdatePullRequestPropertiesArgs) (interface{}, error)
 	// This API is used to find what pull requests are related to a given commit.  It can be used to either find the pull request that created a particular merge commit or it can be used to find all pull requests that have ever merged a particular commit.  The input is a list of queries which each contain a list of commits. For each commit that you search against, you will get back a dictionary of commit -> pull requests.
 	GetPullRequestQuery(context.Context, GetPullRequestQueryArgs) (*GitPullRequestQuery, error)
-	// Add a reviewer to a pull request or cast a vote.
-	CreatePullRequestReviewer(context.Context, CreatePullRequestReviewerArgs) (*IdentityRefWithVote, error)
-	// Add reviewers to a pull request.
-	CreatePullRequestReviewers(context.Context, CreatePullRequestReviewersArgs) (*[]IdentityRefWithVote, error)
-	// Remove a reviewer from a pull request.
-	DeletePullRequestReviewer(context.Context, DeletePullRequestReviewerArgs) error
 	// Retrieve information about a particular reviewer on a pull request
 	GetPullRequestReviewer(context.Context, GetPullRequestReviewerArgs) (*IdentityRefWithVote, error)
 	// Retrieve the reviewers for a pull request
 	GetPullRequestReviewers(context.Context, GetPullRequestReviewersArgs) (*[]IdentityRefWithVote, error)
-	// Reset the votes of multiple reviewers on a pull request.  NOTE: This endpoint only supports updating votes, but does not support updating required reviewers (use policy) or display names.
-	UpdatePullRequestReviewers(context.Context, UpdatePullRequestReviewersArgs) error
-	// Retrieve a pull request.
-	GetPullRequestById(context.Context, GetPullRequestByIdArgs) (*GitPullRequest, error)
-	// Retrieve all pull requests matching a specified criteria.
-	GetPullRequestsByProject(context.Context, GetPullRequestsByProjectArgs) (*[]GitPullRequest, error)
-	// Create a pull request.
-	CreatePullRequest(context.Context, CreatePullRequestArgs) (*GitPullRequest, error)
-	// Retrieve a pull request.
-	GetPullRequest(context.Context, GetPullRequestArgs) (*GitPullRequest, error)
 	// Retrieve all pull requests matching a specified criteria.
 	GetPullRequests(context.Context, GetPullRequestsArgs) (*[]GitPullRequest, error)
-	// Update a pull request
-	UpdatePullRequest(context.Context, UpdatePullRequestArgs) (*GitPullRequest, error)
-	// [Preview API] Sends an e-mail notification about a specific pull request to a set of recipients
-	SharePullRequest(context.Context, SharePullRequestArgs) error
-	// [Preview API] Create a pull request status.
-	CreatePullRequestStatus(context.Context, CreatePullRequestStatusArgs) (*GitPullRequestStatus, error)
-	// [Preview API] Delete pull request status.
-	DeletePullRequestStatus(context.Context, DeletePullRequestStatusArgs) error
+	// Retrieve all pull requests matching a specified criteria.
+	GetPullRequestsByProject(context.Context, GetPullRequestsByProjectArgs) (*[]GitPullRequest, error)
 	// [Preview API] Get the specific pull request status by ID. The status ID is unique within the pull request across all iterations.
 	GetPullRequestStatus(context.Context, GetPullRequestStatusArgs) (*GitPullRequestStatus, error)
 	// [Preview API] Get all the statuses associated with a pull request.
 	GetPullRequestStatuses(context.Context, GetPullRequestStatusesArgs) (*[]GitPullRequestStatus, error)
-	// [Preview API] Update pull request statuses collection. The only supported operation type is `remove`.
-	UpdatePullRequestStatuses(context.Context, UpdatePullRequestStatusesArgs) error
-	// Create a comment on a specific thread in a pull request (up to 500 comments can be created per thread).
-	CreateComment(context.Context, CreateCommentArgs) (*Comment, error)
-	// Delete a comment associated with a specific thread in a pull request.
-	DeleteComment(context.Context, DeleteCommentArgs) error
-	// Retrieve a comment associated with a specific thread in a pull request.
-	GetComment(context.Context, GetCommentArgs) (*Comment, error)
-	// Retrieve all comments associated with a specific thread in a pull request.
-	GetComments(context.Context, GetCommentsArgs) (*[]Comment, error)
-	// Update a comment associated with a specific thread in a pull request.
-	UpdateComment(context.Context, UpdateCommentArgs) (*Comment, error)
-	// Create a thread in a pull request.
-	CreateThread(context.Context, CreateThreadArgs) (*GitPullRequestCommentThread, error)
 	// Retrieve a thread in a pull request.
 	GetPullRequestThread(context.Context, GetPullRequestThreadArgs) (*GitPullRequestCommentThread, error)
-	// Retrieve all threads in a pull request.
-	GetThreads(context.Context, GetThreadsArgs) (*[]GitPullRequestCommentThread, error)
-	// Update a thread in a pull request.
-	UpdateThread(context.Context, UpdateThreadArgs) (*GitPullRequestCommentThread, error)
 	// Retrieve a list of work items associated with a pull request.
 	GetPullRequestWorkItemRefs(context.Context, GetPullRequestWorkItemRefsArgs) (*[]webapi.ResourceRef, error)
-	// Push changes to the repository.
-	CreatePush(context.Context, CreatePushArgs) (*GitPush, error)
 	// Retrieves a particular push.
 	GetPush(context.Context, GetPushArgs) (*GitPush, error)
+	// Retrieve a list of commits associated with a particular push.
+	GetPushCommits(context.Context, GetPushCommitsArgs) (*[]GitCommitRef, error)
 	// Retrieves pushes associated with the specified repository.
 	GetPushes(context.Context, GetPushesArgs) (*[]GitPush, error)
-	// [Preview API] Destroy (hard delete) a soft-deleted Git repository.
-	DeleteRepositoryFromRecycleBin(context.Context, DeleteRepositoryFromRecycleBinArgs) error
 	// [Preview API] Retrieve soft-deleted git repositories from the recycle bin.
 	GetRecycleBinRepositories(context.Context, GetRecycleBinRepositoriesArgs) (*[]GitDeletedRepository, error)
-	// [Preview API] Recover a soft-deleted Git repository. Recently deleted repositories go into a soft-delete state for a period of time before they are hard deleted and become unrecoverable.
-	RestoreRepositoryFromRecycleBin(context.Context, RestoreRepositoryFromRecycleBinArgs) (*GitRepository, error)
-	// Queries the provided repository for its refs and returns them.
-	GetRefs(context.Context, GetRefsArgs) (*GetRefsResponseValue, error)
-	// Lock or Unlock a branch.
-	UpdateRef(context.Context, UpdateRefArgs) (*GitRef, error)
-	// Creating, updating, or deleting refs(branches).
-	UpdateRefs(context.Context, UpdateRefsArgs) (*[]GitRefUpdateResult, error)
-	// [Preview API] Creates a ref favorite
-	CreateFavorite(context.Context, CreateFavoriteArgs) (*GitRefFavorite, error)
-	// [Preview API] Deletes the refs favorite specified
-	DeleteRefFavorite(context.Context, DeleteRefFavoriteArgs) error
 	// [Preview API] Gets the refs favorite for a favorite Id.
 	GetRefFavorite(context.Context, GetRefFavoriteArgs) (*GitRefFavorite, error)
 	// [Preview API] Gets the refs favorites for a repo and an identity.
 	GetRefFavorites(context.Context, GetRefFavoritesArgs) (*[]GitRefFavorite, error)
-	// Create a git repository in a team project.
-	CreateRepository(context.Context, CreateRepositoryArgs) (*GitRepository, error)
-	// Delete a git repository
-	DeleteRepository(context.Context, DeleteRepositoryArgs) error
+	// Queries the provided repository for its refs and returns them.
+	GetRefs(context.Context, GetRefsArgs) (*GetRefsResponseValue, error)
 	// Retrieve git repositories.
 	GetRepositories(context.Context, GetRepositoriesArgs) (*[]GitRepository, error)
 	// Retrieve a git repository.
 	GetRepository(context.Context, GetRepositoryArgs) (*GitRepository, error)
 	// Retrieve a git repository.
 	GetRepositoryWithParent(context.Context, GetRepositoryWithParentArgs) (*GitRepository, error)
-	// Updates the Git repository with either a new repo name or a new default branch.
-	UpdateRepository(context.Context, UpdateRepositoryArgs) (*GitRepository, error)
-	// [Preview API] Starts the operation to create a new branch which reverts changes introduced by either a specific commit or commits that are associated to a pull request.
-	CreateRevert(context.Context, CreateRevertArgs) (*GitRevert, error)
 	// [Preview API] Retrieve information about a revert operation by revert Id.
 	GetRevert(context.Context, GetRevertArgs) (*GitRevert, error)
 	// [Preview API] Retrieve information about a revert operation for a specific branch.
 	GetRevertForRefName(context.Context, GetRevertForRefNameArgs) (*GitRevert, error)
-	// Create Git commit status.
-	CreateCommitStatus(context.Context, CreateCommitStatusArgs) (*GitStatus, error)
 	// Get statuses associated with the Git commit.
 	GetStatuses(context.Context, GetStatusesArgs) (*[]GitStatus, error)
 	// [Preview API] Retrieve a pull request suggestion for a particular repository or team project.
 	GetSuggestions(context.Context, GetSuggestionsArgs) (*[]GitSuggestion, error)
+	// Retrieve all threads in a pull request.
+	GetThreads(context.Context, GetThreadsArgs) (*[]GitPullRequestCommentThread, error)
 	// The Tree endpoint returns the collection of objects underneath the specified tree. Trees are folders in a Git repository.
 	GetTree(context.Context, GetTreeArgs) (*GitTreeRef, error)
 	// The Tree endpoint returns the collection of objects underneath the specified tree. Trees are folders in a Git repository.
 	GetTreeZip(context.Context, GetTreeZipArgs) (io.ReadCloser, error)
+	// [Preview API] Retrieve import requests for a repository.
+	QueryImportRequests(context.Context, QueryImportRequestsArgs) (*[]GitImportRequest, error)
+	// [Preview API] Recover a soft-deleted Git repository. Recently deleted repositories go into a soft-delete state for a period of time before they are hard deleted and become unrecoverable.
+	RestoreRepositoryFromRecycleBin(context.Context, RestoreRepositoryFromRecycleBinArgs) (*GitRepository, error)
+	// [Preview API] Sends an e-mail notification about a specific pull request to a set of recipients
+	SharePullRequest(context.Context, SharePullRequestArgs) error
+	// Update a comment associated with a specific thread in a pull request.
+	UpdateComment(context.Context, UpdateCommentArgs) (*Comment, error)
+	// [Preview API] Retry or abandon a failed import request.
+	UpdateImportRequest(context.Context, UpdateImportRequestArgs) (*GitImportRequest, error)
+	// Update a pull request
+	UpdatePullRequest(context.Context, UpdatePullRequestArgs) (*GitPullRequest, error)
+	// [Preview API] Update pull request iteration statuses collection. The only supported operation type is `remove`.
+	UpdatePullRequestIterationStatuses(context.Context, UpdatePullRequestIterationStatusesArgs) error
+	// [Preview API] Create or update pull request external properties. The patch operation can be `add`, `replace` or `remove`. For `add` operation, the path can be empty. If the path is empty, the value must be a list of key value pairs. For `replace` operation, the path cannot be empty. If the path does not exist, the property will be added to the collection. For `remove` operation, the path cannot be empty. If the path does not exist, no action will be performed.
+	UpdatePullRequestProperties(context.Context, UpdatePullRequestPropertiesArgs) (interface{}, error)
+	// Reset the votes of multiple reviewers on a pull request.  NOTE: This endpoint only supports updating votes, but does not support updating required reviewers (use policy) or display names.
+	UpdatePullRequestReviewers(context.Context, UpdatePullRequestReviewersArgs) error
+	// [Preview API] Update pull request statuses collection. The only supported operation type is `remove`.
+	UpdatePullRequestStatuses(context.Context, UpdatePullRequestStatusesArgs) error
+	// Lock or Unlock a branch.
+	UpdateRef(context.Context, UpdateRefArgs) (*GitRef, error)
+	// Creating, updating, or deleting refs(branches).
+	UpdateRefs(context.Context, UpdateRefsArgs) (*[]GitRefUpdateResult, error)
+	// Updates the Git repository with either a new repo name or a new default branch.
+	UpdateRepository(context.Context, UpdateRepositoryArgs) (*GitRepository, error)
+	// Update a thread in a pull request.
+	UpdateThread(context.Context, UpdateThreadArgs) (*GitPullRequestCommentThread, error)
 }
 
 type ClientImpl struct {
@@ -314,6 +314,1241 @@ type CreateAnnotatedTagArgs struct {
 	RepositoryId *string
 }
 
+// [Preview API] Attach a new file to a pull request.
+func (client *ClientImpl) CreateAttachment(ctx context.Context, args CreateAttachmentArgs) (*Attachment, error) {
+	if args.UploadStream == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UploadStream"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.FileName == nil || *args.FileName == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FileName"}
+	}
+	routeValues["fileName"] = *args.FileName
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+
+	locationId, _ := uuid.Parse("965d9361-878b-413b-a494-45d5b5fd8ab7")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, args.UploadStream, "application/octet-stream", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue Attachment
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreateAttachment function
+type CreateAttachmentArgs struct {
+	// (required) Stream to upload
+	UploadStream io.Reader
+	// (required) The name of the file.
+	FileName *string
+	// (required) The repository ID of the pull request’s target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// [Preview API] Cherry pick a specific commit or commits that are associated to a pull request into a new branch.
+func (client *ClientImpl) CreateCherryPick(ctx context.Context, args CreateCherryPickArgs) (*GitCherryPick, error) {
+	if args.CherryPickToCreate == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CherryPickToCreate"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project == nil || *args.Project == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
+	}
+	routeValues["project"] = *args.Project
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+
+	body, marshalErr := json.Marshal(*args.CherryPickToCreate)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("033bad68-9a14-43d1-90e0-59cb8856fef6")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitCherryPick
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreateCherryPick function
+type CreateCherryPickArgs struct {
+	// (required)
+	CherryPickToCreate *GitAsyncRefOperationParameters
+	// (required) Project ID or project name
+	Project *string
+	// (required) ID of the repository.
+	RepositoryId *string
+}
+
+// Create a comment on a specific thread in a pull request (up to 500 comments can be created per thread).
+func (client *ClientImpl) CreateComment(ctx context.Context, args CreateCommentArgs) (*Comment, error) {
+	if args.Comment == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Comment"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+	if args.ThreadId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ThreadId"}
+	}
+	routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
+
+	body, marshalErr := json.Marshal(*args.Comment)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("965a3ec7-5ed8-455a-bdcb-835a5ea7fe7b")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue Comment
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreateComment function
+type CreateCommentArgs struct {
+	// (required) The comment to create. Comments can be up to 150,000 characters.
+	Comment *Comment
+	// (required) The repository ID of the pull request's target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (required) ID of the thread that the desired comment is in.
+	ThreadId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// Create Git commit status.
+func (client *ClientImpl) CreateCommitStatus(ctx context.Context, args CreateCommitStatusArgs) (*GitStatus, error) {
+	if args.GitCommitStatusToCreate == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.GitCommitStatusToCreate"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.CommitId == nil || *args.CommitId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.CommitId"}
+	}
+	routeValues["commitId"] = *args.CommitId
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+
+	body, marshalErr := json.Marshal(*args.GitCommitStatusToCreate)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("428dd4fb-fda5-4722-af02-9313b80305da")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitStatus
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreateCommitStatus function
+type CreateCommitStatusArgs struct {
+	// (required) Git commit status object to create.
+	GitCommitStatusToCreate *GitStatus
+	// (required) ID of the Git commit.
+	CommitId *string
+	// (required) ID of the repository.
+	RepositoryId *string
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// [Preview API] Creates a ref favorite
+func (client *ClientImpl) CreateFavorite(ctx context.Context, args CreateFavoriteArgs) (*GitRefFavorite, error) {
+	if args.Favorite == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Favorite"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project == nil || *args.Project == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
+	}
+	routeValues["project"] = *args.Project
+
+	body, marshalErr := json.Marshal(*args.Favorite)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("876f70af-5792-485a-a1c7-d0a7b2f42bbb")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitRefFavorite
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreateFavorite function
+type CreateFavoriteArgs struct {
+	// (required) The ref favorite to create.
+	Favorite *GitRefFavorite
+	// (required) Project ID or project name
+	Project *string
+}
+
+// [Preview API] Request that another repository's refs be fetched into this one. It syncs two existing forks. To create a fork, please see the <a href="https://docs.microsoft.com/en-us/rest/api/vsts/git/repositories/create?view=azure-devops-rest-5.1"> repositories endpoint</a>
+func (client *ClientImpl) CreateForkSyncRequest(ctx context.Context, args CreateForkSyncRequestArgs) (*GitForkSyncRequest, error) {
+	if args.SyncParams == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SyncParams"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryNameOrId == nil || *args.RepositoryNameOrId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryNameOrId"}
+	}
+	routeValues["repositoryNameOrId"] = *args.RepositoryNameOrId
+
+	queryParams := url.Values{}
+	if args.IncludeLinks != nil {
+		queryParams.Add("includeLinks", strconv.FormatBool(*args.IncludeLinks))
+	}
+	body, marshalErr := json.Marshal(*args.SyncParams)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("1703f858-b9d1-46af-ab62-483e9e1055b5")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitForkSyncRequest
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreateForkSyncRequest function
+type CreateForkSyncRequestArgs struct {
+	// (required) Source repository and ref mapping.
+	SyncParams *GitForkSyncRequestParameters
+	// (required) The name or ID of the repository.
+	RepositoryNameOrId *string
+	// (optional) Project ID or project name
+	Project *string
+	// (optional) True to include links
+	IncludeLinks *bool
+}
+
+// [Preview API] Create an import request.
+func (client *ClientImpl) CreateImportRequest(ctx context.Context, args CreateImportRequestArgs) (*GitImportRequest, error) {
+	if args.ImportRequest == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ImportRequest"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project == nil || *args.Project == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
+	}
+	routeValues["project"] = *args.Project
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+
+	body, marshalErr := json.Marshal(*args.ImportRequest)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("01828ddc-3600-4a41-8633-99b3a73a0eb3")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitImportRequest
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreateImportRequest function
+type CreateImportRequestArgs struct {
+	// (required) The import request to create.
+	ImportRequest *GitImportRequest
+	// (required) Project ID or project name
+	Project *string
+	// (required) The name or ID of the repository.
+	RepositoryId *string
+}
+
+// [Preview API] Add a like on a comment.
+func (client *ClientImpl) CreateLike(ctx context.Context, args CreateLikeArgs) error {
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+	if args.ThreadId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.ThreadId"}
+	}
+	routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
+	if args.CommentId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.CommentId"}
+	}
+	routeValues["commentId"] = strconv.Itoa(*args.CommentId)
+
+	locationId, _ := uuid.Parse("5f2e2851-1389-425b-a00b-fb2adb3ef31b")
+	_, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the CreateLike function
+type CreateLikeArgs struct {
+	// (required) The repository ID of the pull request's target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (required) The ID of the thread that contains the comment.
+	ThreadId *int
+	// (required) The ID of the comment.
+	CommentId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// [Preview API] Request a git merge operation. Currently we support merging only 2 commits.
+func (client *ClientImpl) CreateMergeRequest(ctx context.Context, args CreateMergeRequestArgs) (*GitMerge, error) {
+	if args.MergeParameters == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.MergeParameters"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project == nil || *args.Project == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
+	}
+	routeValues["project"] = *args.Project
+	if args.RepositoryNameOrId == nil || *args.RepositoryNameOrId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryNameOrId"}
+	}
+	routeValues["repositoryNameOrId"] = *args.RepositoryNameOrId
+
+	queryParams := url.Values{}
+	if args.IncludeLinks != nil {
+		queryParams.Add("includeLinks", strconv.FormatBool(*args.IncludeLinks))
+	}
+	body, marshalErr := json.Marshal(*args.MergeParameters)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("985f7ae9-844f-4906-9897-7ef41516c0e2")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitMerge
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreateMergeRequest function
+type CreateMergeRequestArgs struct {
+	// (required) Parents commitIds and merge commit messsage.
+	MergeParameters *GitMergeParameters
+	// (required) Project ID or project name
+	Project *string
+	// (required) The name or ID of the repository.
+	RepositoryNameOrId *string
+	// (optional) True to include links
+	IncludeLinks *bool
+}
+
+// Create a pull request.
+func (client *ClientImpl) CreatePullRequest(ctx context.Context, args CreatePullRequestArgs) (*GitPullRequest, error) {
+	if args.GitPullRequestToCreate == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.GitPullRequestToCreate"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+
+	queryParams := url.Values{}
+	if args.SupportsIterations != nil {
+		queryParams.Add("supportsIterations", strconv.FormatBool(*args.SupportsIterations))
+	}
+	body, marshalErr := json.Marshal(*args.GitPullRequestToCreate)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("9946fd70-0d40-406e-b686-b4744cbbcc37")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitPullRequest
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreatePullRequest function
+type CreatePullRequestArgs struct {
+	// (required) The pull request to create.
+	GitPullRequestToCreate *GitPullRequest
+	// (required) The repository ID of the pull request's target branch.
+	RepositoryId *string
+	// (optional) Project ID or project name
+	Project *string
+	// (optional) If true, subsequent pushes to the pull request will be individually reviewable. Set this to false for large pull requests for performance reasons if this functionality is not needed.
+	SupportsIterations *bool
+}
+
+// [Preview API] Create a pull request status on the iteration. This operation will have the same result as Create status on pull request with specified iteration ID in the request body.
+func (client *ClientImpl) CreatePullRequestIterationStatus(ctx context.Context, args CreatePullRequestIterationStatusArgs) (*GitPullRequestStatus, error) {
+	if args.Status == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Status"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+	if args.IterationId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.IterationId"}
+	}
+	routeValues["iterationId"] = strconv.Itoa(*args.IterationId)
+
+	body, marshalErr := json.Marshal(*args.Status)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("75cf11c5-979f-4038-a76e-058a06adf2bf")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitPullRequestStatus
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreatePullRequestIterationStatus function
+type CreatePullRequestIterationStatusArgs struct {
+	// (required) Pull request status to create.
+	Status *GitPullRequestStatus
+	// (required) The repository ID of the pull request’s target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (required) ID of the pull request iteration.
+	IterationId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// [Preview API] Create a label for a specified pull request. The only required field is the name of the new label.
+func (client *ClientImpl) CreatePullRequestLabel(ctx context.Context, args CreatePullRequestLabelArgs) (*core.WebApiTagDefinition, error) {
+	if args.Label == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Label"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+
+	queryParams := url.Values{}
+	if args.ProjectId != nil {
+		queryParams.Add("projectId", *args.ProjectId)
+	}
+	body, marshalErr := json.Marshal(*args.Label)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("f22387e3-984e-4c52-9c6d-fbb8f14c812d")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue core.WebApiTagDefinition
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreatePullRequestLabel function
+type CreatePullRequestLabelArgs struct {
+	// (required) Label to assign to the pull request.
+	Label *core.WebApiCreateTagRequestData
+	// (required) The repository ID of the pull request’s target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (optional) Project ID or project name
+	Project *string
+	// (optional) Project ID or project name.
+	ProjectId *string
+}
+
+// Add a reviewer to a pull request or cast a vote.
+func (client *ClientImpl) CreatePullRequestReviewer(ctx context.Context, args CreatePullRequestReviewerArgs) (*IdentityRefWithVote, error) {
+	if args.Reviewer == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Reviewer"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+	if args.ReviewerId == nil || *args.ReviewerId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ReviewerId"}
+	}
+	routeValues["reviewerId"] = *args.ReviewerId
+
+	body, marshalErr := json.Marshal(*args.Reviewer)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("4b6702c7-aa35-4b89-9c96-b9abf6d3e540")
+	resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue IdentityRefWithVote
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreatePullRequestReviewer function
+type CreatePullRequestReviewerArgs struct {
+	// (required) Reviewer's vote.<br />If the reviewer's ID is included here, it must match the reviewerID parameter.<br />Reviewers can set their own vote with this method.  When adding other reviewers, vote must be set to zero.
+	Reviewer *IdentityRefWithVote
+	// (required) The repository ID of the pull request’s target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (required) ID of the reviewer.
+	ReviewerId *string
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// Add reviewers to a pull request.
+func (client *ClientImpl) CreatePullRequestReviewers(ctx context.Context, args CreatePullRequestReviewersArgs) (*[]IdentityRefWithVote, error) {
+	if args.Reviewers == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Reviewers"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+
+	body, marshalErr := json.Marshal(*args.Reviewers)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("4b6702c7-aa35-4b89-9c96-b9abf6d3e540")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue []IdentityRefWithVote
+	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreatePullRequestReviewers function
+type CreatePullRequestReviewersArgs struct {
+	// (required) Reviewers to add to the pull request.
+	Reviewers *[]webapi.IdentityRef
+	// (required) The repository ID of the pull request’s target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// [Preview API] Create a pull request status.
+func (client *ClientImpl) CreatePullRequestStatus(ctx context.Context, args CreatePullRequestStatusArgs) (*GitPullRequestStatus, error) {
+	if args.Status == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Status"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+
+	body, marshalErr := json.Marshal(*args.Status)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("b5f6bb4f-8d1e-4d79-8d11-4c9172c99c35")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitPullRequestStatus
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreatePullRequestStatus function
+type CreatePullRequestStatusArgs struct {
+	// (required) Pull request status to create.
+	Status *GitPullRequestStatus
+	// (required) The repository ID of the pull request’s target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// Push changes to the repository.
+func (client *ClientImpl) CreatePush(ctx context.Context, args CreatePushArgs) (*GitPush, error) {
+	if args.Push == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Push"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+
+	body, marshalErr := json.Marshal(*args.Push)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("ea98d07b-3c87-4971-8ede-a613694ffb55")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitPush
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreatePush function
+type CreatePushArgs struct {
+	// (required)
+	Push *GitPush
+	// (required) The name or ID of the repository.
+	RepositoryId *string
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// Create a git repository in a team project.
+func (client *ClientImpl) CreateRepository(ctx context.Context, args CreateRepositoryArgs) (*GitRepository, error) {
+	if args.GitRepositoryToCreate == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.GitRepositoryToCreate"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+
+	queryParams := url.Values{}
+	if args.SourceRef != nil {
+		queryParams.Add("sourceRef", *args.SourceRef)
+	}
+	body, marshalErr := json.Marshal(*args.GitRepositoryToCreate)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("225f7195-f9c7-4d14-ab28-a83f7ff77e1f")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitRepository
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreateRepository function
+type CreateRepositoryArgs struct {
+	// (required) Specify the repo name, team project and/or parent repository. Team project information can be ommitted from gitRepositoryToCreate if the request is project-scoped (i.e., includes project Id).
+	GitRepositoryToCreate *GitRepositoryCreateOptions
+	// (optional) Project ID or project name
+	Project *string
+	// (optional) [optional] Specify the source refs to use while creating a fork repo
+	SourceRef *string
+}
+
+// [Preview API] Starts the operation to create a new branch which reverts changes introduced by either a specific commit or commits that are associated to a pull request.
+func (client *ClientImpl) CreateRevert(ctx context.Context, args CreateRevertArgs) (*GitRevert, error) {
+	if args.RevertToCreate == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RevertToCreate"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project == nil || *args.Project == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
+	}
+	routeValues["project"] = *args.Project
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+
+	body, marshalErr := json.Marshal(*args.RevertToCreate)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("bc866058-5449-4715-9cf1-a510b6ff193c")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitRevert
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreateRevert function
+type CreateRevertArgs struct {
+	// (required)
+	RevertToCreate *GitAsyncRefOperationParameters
+	// (required) Project ID or project name
+	Project *string
+	// (required) ID of the repository.
+	RepositoryId *string
+}
+
+// Create a thread in a pull request.
+func (client *ClientImpl) CreateThread(ctx context.Context, args CreateThreadArgs) (*GitPullRequestCommentThread, error) {
+	if args.CommentThread == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CommentThread"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+
+	body, marshalErr := json.Marshal(*args.CommentThread)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("ab6e2e5d-a0b7-4153-b64a-a4efe0d49449")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitPullRequestCommentThread
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreateThread function
+type CreateThreadArgs struct {
+	// (required) The thread to create. Thread must contain at least one comment.
+	CommentThread *GitPullRequestCommentThread
+	// (required) Repository ID of the pull request's target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// [Preview API] Delete a pull request attachment.
+func (client *ClientImpl) DeleteAttachment(ctx context.Context, args DeleteAttachmentArgs) error {
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.FileName == nil || *args.FileName == "" {
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FileName"}
+	}
+	routeValues["fileName"] = *args.FileName
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+
+	locationId, _ := uuid.Parse("965d9361-878b-413b-a494-45d5b5fd8ab7")
+	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the DeleteAttachment function
+type DeleteAttachmentArgs struct {
+	// (required) The name of the attachment to delete.
+	FileName *string
+	// (required) The repository ID of the pull request’s target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// Delete a comment associated with a specific thread in a pull request.
+func (client *ClientImpl) DeleteComment(ctx context.Context, args DeleteCommentArgs) error {
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+	if args.ThreadId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.ThreadId"}
+	}
+	routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
+	if args.CommentId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.CommentId"}
+	}
+	routeValues["commentId"] = strconv.Itoa(*args.CommentId)
+
+	locationId, _ := uuid.Parse("965a3ec7-5ed8-455a-bdcb-835a5ea7fe7b")
+	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the DeleteComment function
+type DeleteCommentArgs struct {
+	// (required) The repository ID of the pull request's target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (required) ID of the thread that the desired comment is in.
+	ThreadId *int
+	// (required) ID of the comment.
+	CommentId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// [Preview API] Delete a like on a comment.
+func (client *ClientImpl) DeleteLike(ctx context.Context, args DeleteLikeArgs) error {
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+	if args.ThreadId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.ThreadId"}
+	}
+	routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
+	if args.CommentId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.CommentId"}
+	}
+	routeValues["commentId"] = strconv.Itoa(*args.CommentId)
+
+	locationId, _ := uuid.Parse("5f2e2851-1389-425b-a00b-fb2adb3ef31b")
+	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the DeleteLike function
+type DeleteLikeArgs struct {
+	// (required) The repository ID of the pull request's target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (required) The ID of the thread that contains the comment.
+	ThreadId *int
+	// (required) The ID of the comment.
+	CommentId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// [Preview API] Delete pull request iteration status.
+func (client *ClientImpl) DeletePullRequestIterationStatus(ctx context.Context, args DeletePullRequestIterationStatusArgs) error {
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+	if args.IterationId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.IterationId"}
+	}
+	routeValues["iterationId"] = strconv.Itoa(*args.IterationId)
+	if args.StatusId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.StatusId"}
+	}
+	routeValues["statusId"] = strconv.Itoa(*args.StatusId)
+
+	locationId, _ := uuid.Parse("75cf11c5-979f-4038-a76e-058a06adf2bf")
+	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the DeletePullRequestIterationStatus function
+type DeletePullRequestIterationStatusArgs struct {
+	// (required) The repository ID of the pull request’s target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (required) ID of the pull request iteration.
+	IterationId *int
+	// (required) ID of the pull request status.
+	StatusId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// [Preview API] Removes a label from the set of those assigned to the pull request.
+func (client *ClientImpl) DeletePullRequestLabels(ctx context.Context, args DeletePullRequestLabelsArgs) error {
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+	if args.LabelIdOrName == nil || *args.LabelIdOrName == "" {
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.LabelIdOrName"}
+	}
+	routeValues["labelIdOrName"] = *args.LabelIdOrName
+
+	queryParams := url.Values{}
+	if args.ProjectId != nil {
+		queryParams.Add("projectId", *args.ProjectId)
+	}
+	locationId, _ := uuid.Parse("f22387e3-984e-4c52-9c6d-fbb8f14c812d")
+	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the DeletePullRequestLabels function
+type DeletePullRequestLabelsArgs struct {
+	// (required) The repository ID of the pull request’s target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (required) The name or ID of the label requested.
+	LabelIdOrName *string
+	// (optional) Project ID or project name
+	Project *string
+	// (optional) Project ID or project name.
+	ProjectId *string
+}
+
+// Remove a reviewer from a pull request.
+func (client *ClientImpl) DeletePullRequestReviewer(ctx context.Context, args DeletePullRequestReviewerArgs) error {
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+	if args.ReviewerId == nil || *args.ReviewerId == "" {
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ReviewerId"}
+	}
+	routeValues["reviewerId"] = *args.ReviewerId
+
+	locationId, _ := uuid.Parse("4b6702c7-aa35-4b89-9c96-b9abf6d3e540")
+	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the DeletePullRequestReviewer function
+type DeletePullRequestReviewerArgs struct {
+	// (required) The repository ID of the pull request’s target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (required) ID of the reviewer to remove.
+	ReviewerId *string
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// [Preview API] Delete pull request status.
+func (client *ClientImpl) DeletePullRequestStatus(ctx context.Context, args DeletePullRequestStatusArgs) error {
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+	if args.StatusId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.StatusId"}
+	}
+	routeValues["statusId"] = strconv.Itoa(*args.StatusId)
+
+	locationId, _ := uuid.Parse("b5f6bb4f-8d1e-4d79-8d11-4c9172c99c35")
+	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the DeletePullRequestStatus function
+type DeletePullRequestStatusArgs struct {
+	// (required) The repository ID of the pull request’s target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (required) ID of the pull request status.
+	StatusId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// [Preview API] Deletes the refs favorite specified
+func (client *ClientImpl) DeleteRefFavorite(ctx context.Context, args DeleteRefFavoriteArgs) error {
+	routeValues := make(map[string]string)
+	if args.Project == nil || *args.Project == "" {
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
+	}
+	routeValues["project"] = *args.Project
+	if args.FavoriteId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.FavoriteId"}
+	}
+	routeValues["favoriteId"] = strconv.Itoa(*args.FavoriteId)
+
+	locationId, _ := uuid.Parse("876f70af-5792-485a-a1c7-d0a7b2f42bbb")
+	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the DeleteRefFavorite function
+type DeleteRefFavoriteArgs struct {
+	// (required) Project ID or project name
+	Project *string
+	// (required) The Id of the ref favorite to delete.
+	FavoriteId *int
+}
+
+// Delete a git repository
+func (client *ClientImpl) DeleteRepository(ctx context.Context, args DeleteRepositoryArgs) error {
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = (*args.RepositoryId).String()
+
+	locationId, _ := uuid.Parse("225f7195-f9c7-4d14-ab28-a83f7ff77e1f")
+	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the DeleteRepository function
+type DeleteRepositoryArgs struct {
+	// (required) The name or ID of the repository.
+	RepositoryId *uuid.UUID
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// [Preview API] Destroy (hard delete) a soft-deleted Git repository.
+func (client *ClientImpl) DeleteRepositoryFromRecycleBin(ctx context.Context, args DeleteRepositoryFromRecycleBinArgs) error {
+	routeValues := make(map[string]string)
+	if args.Project == nil || *args.Project == "" {
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
+	}
+	routeValues["project"] = *args.Project
+	if args.RepositoryId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = (*args.RepositoryId).String()
+
+	locationId, _ := uuid.Parse("a663da97-81db-4eb3-8b83-287670f63073")
+	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the DeleteRepositoryFromRecycleBin function
+type DeleteRepositoryFromRecycleBinArgs struct {
+	// (required) Project ID or project name
+	Project *string
+	// (required) The ID of the repository.
+	RepositoryId *uuid.UUID
+}
+
 // [Preview API] Get an annotated tag.
 func (client *ClientImpl) GetAnnotatedTag(ctx context.Context, args GetAnnotatedTagArgs) (*GitAnnotatedTag, error) {
 	routeValues := make(map[string]string)
@@ -349,6 +1584,122 @@ type GetAnnotatedTagArgs struct {
 	RepositoryId *string
 	// (required) ObjectId (Sha1Id) of tag to get.
 	ObjectId *string
+}
+
+// [Preview API] Get the file content of a pull request attachment.
+func (client *ClientImpl) GetAttachmentContent(ctx context.Context, args GetAttachmentContentArgs) (io.ReadCloser, error) {
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.FileName == nil || *args.FileName == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FileName"}
+	}
+	routeValues["fileName"] = *args.FileName
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+
+	locationId, _ := uuid.Parse("965d9361-878b-413b-a494-45d5b5fd8ab7")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/octet-stream", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Body, err
+}
+
+// Arguments for the GetAttachmentContent function
+type GetAttachmentContentArgs struct {
+	// (required) The name of the attachment.
+	FileName *string
+	// (required) The repository ID of the pull request’s target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// [Preview API] Get a list of files attached to a given pull request.
+func (client *ClientImpl) GetAttachments(ctx context.Context, args GetAttachmentsArgs) (*[]Attachment, error) {
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+
+	locationId, _ := uuid.Parse("965d9361-878b-413b-a494-45d5b5fd8ab7")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue []Attachment
+	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the GetAttachments function
+type GetAttachmentsArgs struct {
+	// (required) The repository ID of the pull request’s target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// [Preview API] Get the file content of a pull request attachment.
+func (client *ClientImpl) GetAttachmentZip(ctx context.Context, args GetAttachmentZipArgs) (io.ReadCloser, error) {
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.FileName == nil || *args.FileName == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FileName"}
+	}
+	routeValues["fileName"] = *args.FileName
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+
+	locationId, _ := uuid.Parse("965d9361-878b-413b-a494-45d5b5fd8ab7")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/zip", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Body, err
+}
+
+// Arguments for the GetAttachmentZip function
+type GetAttachmentZipArgs struct {
+	// (required) The name of the attachment.
+	FileName *string
+	// (required) The repository ID of the pull request’s target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (optional) Project ID or project name
+	Project *string
 }
 
 // Get a single blob.
@@ -687,46 +2038,6 @@ type GetChangesArgs struct {
 	Skip *int
 }
 
-// [Preview API] Cherry pick a specific commit or commits that are associated to a pull request into a new branch.
-func (client *ClientImpl) CreateCherryPick(ctx context.Context, args CreateCherryPickArgs) (*GitCherryPick, error) {
-	if args.CherryPickToCreate == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CherryPickToCreate"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
-	}
-	routeValues["project"] = *args.Project
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-
-	body, marshalErr := json.Marshal(*args.CherryPickToCreate)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("033bad68-9a14-43d1-90e0-59cb8856fef6")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GitCherryPick
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreateCherryPick function
-type CreateCherryPickArgs struct {
-	// (required)
-	CherryPickToCreate *GitAsyncRefOperationParameters
-	// (required) Project ID or project name
-	Project *string
-	// (required) ID of the repository.
-	RepositoryId *string
-}
-
 // [Preview API] Retrieve information about a cherry pick by cherry pick Id.
 func (client *ClientImpl) GetCherryPick(ctx context.Context, args GetCherryPickArgs) (*GitCherryPick, error) {
 	routeValues := make(map[string]string)
@@ -802,6 +2113,138 @@ type GetCherryPickForRefNameArgs struct {
 	RefName *string
 }
 
+// Retrieve a comment associated with a specific thread in a pull request.
+func (client *ClientImpl) GetComment(ctx context.Context, args GetCommentArgs) (*Comment, error) {
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+	if args.ThreadId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ThreadId"}
+	}
+	routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
+	if args.CommentId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CommentId"}
+	}
+	routeValues["commentId"] = strconv.Itoa(*args.CommentId)
+
+	locationId, _ := uuid.Parse("965a3ec7-5ed8-455a-bdcb-835a5ea7fe7b")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue Comment
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the GetComment function
+type GetCommentArgs struct {
+	// (required) The repository ID of the pull request's target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (required) ID of the thread that the desired comment is in.
+	ThreadId *int
+	// (required) ID of the comment.
+	CommentId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// Retrieve all comments associated with a specific thread in a pull request.
+func (client *ClientImpl) GetComments(ctx context.Context, args GetCommentsArgs) (*[]Comment, error) {
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+	if args.ThreadId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ThreadId"}
+	}
+	routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
+
+	locationId, _ := uuid.Parse("965a3ec7-5ed8-455a-bdcb-835a5ea7fe7b")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue []Comment
+	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the GetComments function
+type GetCommentsArgs struct {
+	// (required) The repository ID of the pull request's target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (required) ID of the thread.
+	ThreadId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// Retrieve a particular commit.
+func (client *ClientImpl) GetCommit(ctx context.Context, args GetCommitArgs) (*GitCommit, error) {
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.CommitId == nil || *args.CommitId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.CommitId"}
+	}
+	routeValues["commitId"] = *args.CommitId
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+
+	queryParams := url.Values{}
+	if args.ChangeCount != nil {
+		queryParams.Add("changeCount", strconv.Itoa(*args.ChangeCount))
+	}
+	locationId, _ := uuid.Parse("c2570c3b-5b3f-41b8-98bf-5407bfde8d58")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitCommit
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the GetCommit function
+type GetCommitArgs struct {
+	// (required) The id of the commit.
+	CommitId *string
+	// (required) The id or friendly name of the repository. To use the friendly name, projectId must also be specified.
+	RepositoryId *string
+	// (optional) Project ID or project name
+	Project *string
+	// (optional) The number of changes to include in the result.
+	ChangeCount *int
+}
+
 // Find the closest common commit (the merge base) between base and target commits, and get the diff between either the base and target commits or common and target commits.
 func (client *ClientImpl) GetCommitDiffs(ctx context.Context, args GetCommitDiffsArgs) (*GitCommitDiffs, error) {
 	routeValues := make(map[string]string)
@@ -872,48 +2315,6 @@ type GetCommitDiffsArgs struct {
 	BaseVersionDescriptor *GitBaseVersionDescriptor
 	// (optional) Descriptor for target commit.
 	TargetVersionDescriptor *GitTargetVersionDescriptor
-}
-
-// Retrieve a particular commit.
-func (client *ClientImpl) GetCommit(ctx context.Context, args GetCommitArgs) (*GitCommit, error) {
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.CommitId == nil || *args.CommitId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.CommitId"}
-	}
-	routeValues["commitId"] = *args.CommitId
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-
-	queryParams := url.Values{}
-	if args.ChangeCount != nil {
-		queryParams.Add("changeCount", strconv.Itoa(*args.ChangeCount))
-	}
-	locationId, _ := uuid.Parse("c2570c3b-5b3f-41b8-98bf-5407bfde8d58")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GitCommit
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the GetCommit function
-type GetCommitArgs struct {
-	// (required) The id of the commit.
-	CommitId *string
-	// (required) The id or friendly name of the repository. To use the friendly name, projectId must also be specified.
-	RepositoryId *string
-	// (optional) Project ID or project name
-	Project *string
-	// (optional) The number of changes to include in the result.
-	ChangeCount *int
 }
 
 // Retrieve git commits for a project
@@ -1032,58 +2433,6 @@ type GetCommitsArgs struct {
 	Skip *int
 	// (optional)
 	Top *int
-}
-
-// Retrieve a list of commits associated with a particular push.
-func (client *ClientImpl) GetPushCommits(ctx context.Context, args GetPushCommitsArgs) (*[]GitCommitRef, error) {
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-
-	queryParams := url.Values{}
-	if args.PushId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "pushId"}
-	}
-	queryParams.Add("pushId", strconv.Itoa(*args.PushId))
-	if args.Top != nil {
-		queryParams.Add("top", strconv.Itoa(*args.Top))
-	}
-	if args.Skip != nil {
-		queryParams.Add("skip", strconv.Itoa(*args.Skip))
-	}
-	if args.IncludeLinks != nil {
-		queryParams.Add("includeLinks", strconv.FormatBool(*args.IncludeLinks))
-	}
-	locationId, _ := uuid.Parse("c2570c3b-5b3f-41b8-98bf-5407bfde8d58")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue []GitCommitRef
-	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the GetPushCommits function
-type GetPushCommitsArgs struct {
-	// (required) The id or friendly name of the repository. To use the friendly name, projectId must also be specified.
-	RepositoryId *string
-	// (required) The id of the push.
-	PushId *int
-	// (optional) Project ID or project name
-	Project *string
-	// (optional) The maximum number of commits to return ("get the top x commits").
-	Top *int
-	// (optional) The number of commits to skip.
-	Skip *int
-	// (optional) Set to false to avoid including REST Url links for resources. Defaults to true.
-	IncludeLinks *bool
 }
 
 // Retrieve git commits for a project matching the search criteria
@@ -1208,51 +2557,6 @@ type GetForksArgs struct {
 	IncludeLinks *bool
 }
 
-// [Preview API] Request that another repository's refs be fetched into this one. It syncs two existing forks. To create a fork, please see the <a href="https://docs.microsoft.com/en-us/rest/api/vsts/git/repositories/create?view=azure-devops-rest-5.1"> repositories endpoint</a>
-func (client *ClientImpl) CreateForkSyncRequest(ctx context.Context, args CreateForkSyncRequestArgs) (*GitForkSyncRequest, error) {
-	if args.SyncParams == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.SyncParams"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryNameOrId == nil || *args.RepositoryNameOrId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryNameOrId"}
-	}
-	routeValues["repositoryNameOrId"] = *args.RepositoryNameOrId
-
-	queryParams := url.Values{}
-	if args.IncludeLinks != nil {
-		queryParams.Add("includeLinks", strconv.FormatBool(*args.IncludeLinks))
-	}
-	body, marshalErr := json.Marshal(*args.SyncParams)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("1703f858-b9d1-46af-ab62-483e9e1055b5")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GitForkSyncRequest
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreateForkSyncRequest function
-type CreateForkSyncRequestArgs struct {
-	// (required) Source repository and ref mapping.
-	SyncParams *GitForkSyncRequestParameters
-	// (required) The name or ID of the repository.
-	RepositoryNameOrId *string
-	// (optional) Project ID or project name
-	Project *string
-	// (optional) True to include links
-	IncludeLinks *bool
-}
-
 // [Preview API] Get a specific fork sync operation's details.
 func (client *ClientImpl) GetForkSyncRequest(ctx context.Context, args GetForkSyncRequestArgs) (*GitForkSyncRequest, error) {
 	routeValues := make(map[string]string)
@@ -1336,46 +2640,6 @@ type GetForkSyncRequestsArgs struct {
 	IncludeLinks *bool
 }
 
-// [Preview API] Create an import request.
-func (client *ClientImpl) CreateImportRequest(ctx context.Context, args CreateImportRequestArgs) (*GitImportRequest, error) {
-	if args.ImportRequest == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ImportRequest"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
-	}
-	routeValues["project"] = *args.Project
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-
-	body, marshalErr := json.Marshal(*args.ImportRequest)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("01828ddc-3600-4a41-8633-99b3a73a0eb3")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GitImportRequest
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreateImportRequest function
-type CreateImportRequestArgs struct {
-	// (required) The import request to create.
-	ImportRequest *GitImportRequest
-	// (required) Project ID or project name
-	Project *string
-	// (required) The name or ID of the repository.
-	RepositoryId *string
-}
-
 // [Preview API] Retrieve a particular import request.
 func (client *ClientImpl) GetImportRequest(ctx context.Context, args GetImportRequestArgs) (*GitImportRequest, error) {
 	routeValues := make(map[string]string)
@@ -1410,89 +2674,6 @@ type GetImportRequestArgs struct {
 	// (required) The name or ID of the repository.
 	RepositoryId *string
 	// (required) The unique identifier for the import request.
-	ImportRequestId *int
-}
-
-// [Preview API] Retrieve import requests for a repository.
-func (client *ClientImpl) QueryImportRequests(ctx context.Context, args QueryImportRequestsArgs) (*[]GitImportRequest, error) {
-	routeValues := make(map[string]string)
-	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
-	}
-	routeValues["project"] = *args.Project
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-
-	queryParams := url.Values{}
-	if args.IncludeAbandoned != nil {
-		queryParams.Add("includeAbandoned", strconv.FormatBool(*args.IncludeAbandoned))
-	}
-	locationId, _ := uuid.Parse("01828ddc-3600-4a41-8633-99b3a73a0eb3")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue []GitImportRequest
-	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the QueryImportRequests function
-type QueryImportRequestsArgs struct {
-	// (required) Project ID or project name
-	Project *string
-	// (required) The name or ID of the repository.
-	RepositoryId *string
-	// (optional) True to include abandoned import requests in the results.
-	IncludeAbandoned *bool
-}
-
-// [Preview API] Retry or abandon a failed import request.
-func (client *ClientImpl) UpdateImportRequest(ctx context.Context, args UpdateImportRequestArgs) (*GitImportRequest, error) {
-	if args.ImportRequestToUpdate == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ImportRequestToUpdate"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
-	}
-	routeValues["project"] = *args.Project
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.ImportRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ImportRequestId"}
-	}
-	routeValues["importRequestId"] = strconv.Itoa(*args.ImportRequestId)
-
-	body, marshalErr := json.Marshal(*args.ImportRequestToUpdate)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("01828ddc-3600-4a41-8633-99b3a73a0eb3")
-	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GitImportRequest
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the UpdateImportRequest function
-type UpdateImportRequestArgs struct {
-	// (required) The updated version of the import request. Currently, the only change allowed is setting the Status to Queued or Abandoned.
-	ImportRequestToUpdate *GitImportRequest
-	// (required) Project ID or project name
-	Project *string
-	// (required) The name or ID of the repository.
-	RepositoryId *string
-	// (required) The unique identifier for the import request to update.
 	ImportRequestId *int
 }
 
@@ -1738,6 +2919,45 @@ type GetItemsArgs struct {
 	VersionDescriptor *GitVersionDescriptor
 }
 
+// Post for retrieving a creating a batch out of a set of items in a repo / project given a list of paths or a long path
+func (client *ClientImpl) GetItemsBatch(ctx context.Context, args GetItemsBatchArgs) (*[][]GitItem, error) {
+	if args.RequestData == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RequestData"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+
+	body, marshalErr := json.Marshal(*args.RequestData)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("630fd2e4-fb88-4f85-ad21-13f3fd1fbca9")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue [][]GitItem
+	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the GetItemsBatch function
+type GetItemsBatchArgs struct {
+	// (required) Request data attributes: ItemDescriptors, IncludeContentMetadata, LatestProcessedChange, IncludeLinks. ItemDescriptors: Collection of items to fetch, including path, version, and recursion level. IncludeContentMetadata: Whether to include metadata for all items LatestProcessedChange: Whether to include shallow ref to commit that last changed each item. IncludeLinks: Whether to include the _links field on the shallow references.
+	RequestData *GitItemRequestData
+	// (required) The name or ID of the repository
+	RepositoryId *string
+	// (optional) Project ID or project name
+	Project *string
+}
+
 // Get Item Metadata and/or Content for a single item. The download parameter is to indicate whether the content should be available as a download or just sent as a stream in the response. Doesn't apply to zipped content, which is always returned as a download.
 func (client *ClientImpl) GetItemText(ctx context.Context, args GetItemTextArgs) (io.ReadCloser, error) {
 	routeValues := make(map[string]string)
@@ -1904,11 +3124,8 @@ type GetItemZipArgs struct {
 	ResolveLfs *bool
 }
 
-// Post for retrieving a creating a batch out of a set of items in a repo / project given a list of paths or a long path
-func (client *ClientImpl) GetItemsBatch(ctx context.Context, args GetItemsBatchArgs) (*[][]GitItem, error) {
-	if args.RequestData == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RequestData"}
-	}
+// [Preview API] Get likes for a comment.
+func (client *ClientImpl) GetLikes(ctx context.Context, args GetLikesArgs) (*[]webapi.IdentityRef, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -1917,28 +3134,40 @@ func (client *ClientImpl) GetItemsBatch(ctx context.Context, args GetItemsBatchA
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
 	}
 	routeValues["repositoryId"] = *args.RepositoryId
-
-	body, marshalErr := json.Marshal(*args.RequestData)
-	if marshalErr != nil {
-		return nil, marshalErr
+	if args.PullRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
 	}
-	locationId, _ := uuid.Parse("630fd2e4-fb88-4f85-ad21-13f3fd1fbca9")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+	if args.ThreadId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ThreadId"}
+	}
+	routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
+	if args.CommentId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CommentId"}
+	}
+	routeValues["commentId"] = strconv.Itoa(*args.CommentId)
+
+	locationId, _ := uuid.Parse("5f2e2851-1389-425b-a00b-fb2adb3ef31b")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var responseValue [][]GitItem
+	var responseValue []webapi.IdentityRef
 	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
 	return &responseValue, err
 }
 
-// Arguments for the GetItemsBatch function
-type GetItemsBatchArgs struct {
-	// (required) Request data attributes: ItemDescriptors, IncludeContentMetadata, LatestProcessedChange, IncludeLinks. ItemDescriptors: Collection of items to fetch, including path, version, and recursion level. IncludeContentMetadata: Whether to include metadata for all items LatestProcessedChange: Whether to include shallow ref to commit that last changed each item. IncludeLinks: Whether to include the _links field on the shallow references.
-	RequestData *GitItemRequestData
-	// (required) The name or ID of the repository
+// Arguments for the GetLikes function
+type GetLikesArgs struct {
+	// (required) The repository ID of the pull request's target branch.
 	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (required) The ID of the thread that contains the comment.
+	ThreadId *int
+	// (required) The ID of the comment.
+	CommentId *int
 	// (optional) Project ID or project name
 	Project *string
 }
@@ -1994,52 +3223,6 @@ type GetMergeBasesArgs struct {
 	OtherCollectionId *uuid.UUID
 	// (optional) The repository ID where otherCommitId lives.
 	OtherRepositoryId *uuid.UUID
-}
-
-// [Preview API] Request a git merge operation. Currently we support merging only 2 commits.
-func (client *ClientImpl) CreateMergeRequest(ctx context.Context, args CreateMergeRequestArgs) (*GitMerge, error) {
-	if args.MergeParameters == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.MergeParameters"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
-	}
-	routeValues["project"] = *args.Project
-	if args.RepositoryNameOrId == nil || *args.RepositoryNameOrId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryNameOrId"}
-	}
-	routeValues["repositoryNameOrId"] = *args.RepositoryNameOrId
-
-	queryParams := url.Values{}
-	if args.IncludeLinks != nil {
-		queryParams.Add("includeLinks", strconv.FormatBool(*args.IncludeLinks))
-	}
-	body, marshalErr := json.Marshal(*args.MergeParameters)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("985f7ae9-844f-4906-9897-7ef41516c0e2")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GitMerge
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreateMergeRequest function
-type CreateMergeRequestArgs struct {
-	// (required) Parents commitIds and merge commit messsage.
-	MergeParameters *GitMergeParameters
-	// (required) Project ID or project name
-	Project *string
-	// (required) The name or ID of the repository.
-	RepositoryNameOrId *string
-	// (optional) True to include links
-	IncludeLinks *bool
 }
 
 // [Preview API] Get a specific merge operation's details.
@@ -2146,135 +3329,8 @@ type GetPolicyConfigurationsArgs struct {
 	ContinuationToken *string
 }
 
-// [Preview API] Attach a new file to a pull request.
-func (client *ClientImpl) CreateAttachment(ctx context.Context, args CreateAttachmentArgs) (*Attachment, error) {
-	if args.UploadStream == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UploadStream"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.FileName == nil || *args.FileName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FileName"}
-	}
-	routeValues["fileName"] = *args.FileName
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-
-	locationId, _ := uuid.Parse("965d9361-878b-413b-a494-45d5b5fd8ab7")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, args.UploadStream, "application/octet-stream", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue Attachment
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreateAttachment function
-type CreateAttachmentArgs struct {
-	// (required) Stream to upload
-	UploadStream io.Reader
-	// (required) The name of the file.
-	FileName *string
-	// (required) The repository ID of the pull request’s target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// [Preview API] Delete a pull request attachment.
-func (client *ClientImpl) DeleteAttachment(ctx context.Context, args DeleteAttachmentArgs) error {
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.FileName == nil || *args.FileName == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FileName"}
-	}
-	routeValues["fileName"] = *args.FileName
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-
-	locationId, _ := uuid.Parse("965d9361-878b-413b-a494-45d5b5fd8ab7")
-	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the DeleteAttachment function
-type DeleteAttachmentArgs struct {
-	// (required) The name of the attachment to delete.
-	FileName *string
-	// (required) The repository ID of the pull request’s target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// [Preview API] Get the file content of a pull request attachment.
-func (client *ClientImpl) GetAttachmentContent(ctx context.Context, args GetAttachmentContentArgs) (io.ReadCloser, error) {
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.FileName == nil || *args.FileName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FileName"}
-	}
-	routeValues["fileName"] = *args.FileName
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-
-	locationId, _ := uuid.Parse("965d9361-878b-413b-a494-45d5b5fd8ab7")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/octet-stream", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp.Body, err
-}
-
-// Arguments for the GetAttachmentContent function
-type GetAttachmentContentArgs struct {
-	// (required) The name of the attachment.
-	FileName *string
-	// (required) The repository ID of the pull request’s target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// [Preview API] Get a list of files attached to a given pull request.
-func (client *ClientImpl) GetAttachments(ctx context.Context, args GetAttachmentsArgs) (*[]Attachment, error) {
+// Retrieve a pull request.
+func (client *ClientImpl) GetPullRequest(ctx context.Context, args GetPullRequestArgs) (*GitPullRequest, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -2287,259 +3343,82 @@ func (client *ClientImpl) GetAttachments(ctx context.Context, args GetAttachment
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
 	}
 	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-
-	locationId, _ := uuid.Parse("965d9361-878b-413b-a494-45d5b5fd8ab7")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue []Attachment
-	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the GetAttachments function
-type GetAttachmentsArgs struct {
-	// (required) The repository ID of the pull request’s target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// [Preview API] Get the file content of a pull request attachment.
-func (client *ClientImpl) GetAttachmentZip(ctx context.Context, args GetAttachmentZipArgs) (io.ReadCloser, error) {
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.FileName == nil || *args.FileName == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.FileName"}
-	}
-	routeValues["fileName"] = *args.FileName
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-
-	locationId, _ := uuid.Parse("965d9361-878b-413b-a494-45d5b5fd8ab7")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/zip", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp.Body, err
-}
-
-// Arguments for the GetAttachmentZip function
-type GetAttachmentZipArgs struct {
-	// (required) The name of the attachment.
-	FileName *string
-	// (required) The repository ID of the pull request’s target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// [Preview API] Add a like on a comment.
-func (client *ClientImpl) CreateLike(ctx context.Context, args CreateLikeArgs) error {
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-	if args.ThreadId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.ThreadId"}
-	}
-	routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
-	if args.CommentId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.CommentId"}
-	}
-	routeValues["commentId"] = strconv.Itoa(*args.CommentId)
-
-	locationId, _ := uuid.Parse("5f2e2851-1389-425b-a00b-fb2adb3ef31b")
-	_, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the CreateLike function
-type CreateLikeArgs struct {
-	// (required) The repository ID of the pull request's target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (required) The ID of the thread that contains the comment.
-	ThreadId *int
-	// (required) The ID of the comment.
-	CommentId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// [Preview API] Delete a like on a comment.
-func (client *ClientImpl) DeleteLike(ctx context.Context, args DeleteLikeArgs) error {
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-	if args.ThreadId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.ThreadId"}
-	}
-	routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
-	if args.CommentId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.CommentId"}
-	}
-	routeValues["commentId"] = strconv.Itoa(*args.CommentId)
-
-	locationId, _ := uuid.Parse("5f2e2851-1389-425b-a00b-fb2adb3ef31b")
-	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the DeleteLike function
-type DeleteLikeArgs struct {
-	// (required) The repository ID of the pull request's target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (required) The ID of the thread that contains the comment.
-	ThreadId *int
-	// (required) The ID of the comment.
-	CommentId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// [Preview API] Get likes for a comment.
-func (client *ClientImpl) GetLikes(ctx context.Context, args GetLikesArgs) (*[]webapi.IdentityRef, error) {
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-	if args.ThreadId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ThreadId"}
-	}
-	routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
-	if args.CommentId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CommentId"}
-	}
-	routeValues["commentId"] = strconv.Itoa(*args.CommentId)
-
-	locationId, _ := uuid.Parse("5f2e2851-1389-425b-a00b-fb2adb3ef31b")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue []webapi.IdentityRef
-	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the GetLikes function
-type GetLikesArgs struct {
-	// (required) The repository ID of the pull request's target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (required) The ID of the thread that contains the comment.
-	ThreadId *int
-	// (required) The ID of the comment.
-	CommentId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// Get the commits for the specified iteration of a pull request.
-func (client *ClientImpl) GetPullRequestIterationCommits(ctx context.Context, args GetPullRequestIterationCommitsArgs) (*[]GitCommitRef, error) {
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-	if args.IterationId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.IterationId"}
-	}
-	routeValues["iterationId"] = strconv.Itoa(*args.IterationId)
 
 	queryParams := url.Values{}
-	if args.Top != nil {
-		queryParams.Add("top", strconv.Itoa(*args.Top))
+	if args.MaxCommentLength != nil {
+		queryParams.Add("maxCommentLength", strconv.Itoa(*args.MaxCommentLength))
 	}
 	if args.Skip != nil {
-		queryParams.Add("skip", strconv.Itoa(*args.Skip))
+		queryParams.Add("$skip", strconv.Itoa(*args.Skip))
 	}
-	locationId, _ := uuid.Parse("e7ea0883-095f-4926-b5fb-f24691c26fb9")
+	if args.Top != nil {
+		queryParams.Add("$top", strconv.Itoa(*args.Top))
+	}
+	if args.IncludeCommits != nil {
+		queryParams.Add("includeCommits", strconv.FormatBool(*args.IncludeCommits))
+	}
+	if args.IncludeWorkItemRefs != nil {
+		queryParams.Add("includeWorkItemRefs", strconv.FormatBool(*args.IncludeWorkItemRefs))
+	}
+	locationId, _ := uuid.Parse("9946fd70-0d40-406e-b686-b4744cbbcc37")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var responseValue []GitCommitRef
-	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+	var responseValue GitPullRequest
+	err = client.Client.UnmarshalBody(resp, &responseValue)
 	return &responseValue, err
 }
 
-// Arguments for the GetPullRequestIterationCommits function
-type GetPullRequestIterationCommitsArgs struct {
-	// (required) ID or name of the repository.
+// Arguments for the GetPullRequest function
+type GetPullRequestArgs struct {
+	// (required) The repository ID of the pull request's target branch.
 	RepositoryId *string
-	// (required) ID of the pull request.
+	// (required) The ID of the pull request to retrieve.
 	PullRequestId *int
-	// (required) ID of the iteration from which to get the commits.
-	IterationId *int
 	// (optional) Project ID or project name
 	Project *string
-	// (optional) Maximum number of commits to return. The maximum number of commits that can be returned per batch is 500.
-	Top *int
-	// (optional) Number of commits to skip.
+	// (optional) Not used.
+	MaxCommentLength *int
+	// (optional) Not used.
 	Skip *int
+	// (optional) Not used.
+	Top *int
+	// (optional) If true, the pull request will be returned with the associated commits.
+	IncludeCommits *bool
+	// (optional) If true, the pull request will be returned with the associated work item references.
+	IncludeWorkItemRefs *bool
+}
+
+// Retrieve a pull request.
+func (client *ClientImpl) GetPullRequestById(ctx context.Context, args GetPullRequestByIdArgs) (*GitPullRequest, error) {
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.PullRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+
+	locationId, _ := uuid.Parse("01a46dea-7d46-4d40-bc84-319e7c260d99")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitPullRequest
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the GetPullRequestById function
+type GetPullRequestByIdArgs struct {
+	// (required) The ID of the pull request to retrieve.
+	PullRequestId *int
+	// (optional) Project ID or project name
+	Project *string
 }
 
 // Get the commits for the specified pull request.
@@ -2584,6 +3463,48 @@ type GetPullRequestCommitsResponseValue struct {
 	Value []GitCommitRef
 	// The continuation token to be used to get the next page of results.
 	ContinuationToken string
+}
+
+// Get the specified iteration for a pull request.
+func (client *ClientImpl) GetPullRequestIteration(ctx context.Context, args GetPullRequestIterationArgs) (*GitPullRequestIteration, error) {
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+	if args.IterationId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.IterationId"}
+	}
+	routeValues["iterationId"] = strconv.Itoa(*args.IterationId)
+
+	locationId, _ := uuid.Parse("d43911ee-6958-46b0-a42b-8445b8a0d004")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitPullRequestIteration
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the GetPullRequestIteration function
+type GetPullRequestIterationArgs struct {
+	// (required) ID or name of the repository.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (required) ID of the pull request iteration to return.
+	IterationId *int
+	// (optional) Project ID or project name
+	Project *string
 }
 
 // Retrieve the changes made in a pull request between two iterations.
@@ -2644,8 +3565,8 @@ type GetPullRequestIterationChangesArgs struct {
 	CompareTo *int
 }
 
-// Get the specified iteration for a pull request.
-func (client *ClientImpl) GetPullRequestIteration(ctx context.Context, args GetPullRequestIterationArgs) (*GitPullRequestIteration, error) {
+// Get the commits for the specified iteration of a pull request.
+func (client *ClientImpl) GetPullRequestIterationCommits(ctx context.Context, args GetPullRequestIterationCommitsArgs) (*[]GitCommitRef, error) {
 	routeValues := make(map[string]string)
 	if args.Project != nil && *args.Project != "" {
 		routeValues["project"] = *args.Project
@@ -2663,27 +3584,38 @@ func (client *ClientImpl) GetPullRequestIteration(ctx context.Context, args GetP
 	}
 	routeValues["iterationId"] = strconv.Itoa(*args.IterationId)
 
-	locationId, _ := uuid.Parse("d43911ee-6958-46b0-a42b-8445b8a0d004")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+	queryParams := url.Values{}
+	if args.Top != nil {
+		queryParams.Add("top", strconv.Itoa(*args.Top))
+	}
+	if args.Skip != nil {
+		queryParams.Add("skip", strconv.Itoa(*args.Skip))
+	}
+	locationId, _ := uuid.Parse("e7ea0883-095f-4926-b5fb-f24691c26fb9")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var responseValue GitPullRequestIteration
-	err = client.Client.UnmarshalBody(resp, &responseValue)
+	var responseValue []GitCommitRef
+	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
 	return &responseValue, err
 }
 
-// Arguments for the GetPullRequestIteration function
-type GetPullRequestIterationArgs struct {
+// Arguments for the GetPullRequestIterationCommits function
+type GetPullRequestIterationCommitsArgs struct {
 	// (required) ID or name of the repository.
 	RepositoryId *string
 	// (required) ID of the pull request.
 	PullRequestId *int
-	// (required) ID of the pull request iteration to return.
+	// (required) ID of the iteration from which to get the commits.
 	IterationId *int
 	// (optional) Project ID or project name
 	Project *string
+	// (optional) Maximum number of commits to return. The maximum number of commits that can be returned per batch is 500.
+	Top *int
+	// (optional) Number of commits to skip.
+	Skip *int
 }
 
 // Get the list of iterations for the specified pull request.
@@ -2726,103 +3658,6 @@ type GetPullRequestIterationsArgs struct {
 	Project *string
 	// (optional) If true, include the commits associated with each iteration in the response.
 	IncludeCommits *bool
-}
-
-// [Preview API] Create a pull request status on the iteration. This operation will have the same result as Create status on pull request with specified iteration ID in the request body.
-func (client *ClientImpl) CreatePullRequestIterationStatus(ctx context.Context, args CreatePullRequestIterationStatusArgs) (*GitPullRequestStatus, error) {
-	if args.Status == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Status"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-	if args.IterationId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.IterationId"}
-	}
-	routeValues["iterationId"] = strconv.Itoa(*args.IterationId)
-
-	body, marshalErr := json.Marshal(*args.Status)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("75cf11c5-979f-4038-a76e-058a06adf2bf")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GitPullRequestStatus
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreatePullRequestIterationStatus function
-type CreatePullRequestIterationStatusArgs struct {
-	// (required) Pull request status to create.
-	Status *GitPullRequestStatus
-	// (required) The repository ID of the pull request’s target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (required) ID of the pull request iteration.
-	IterationId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// [Preview API] Delete pull request iteration status.
-func (client *ClientImpl) DeletePullRequestIterationStatus(ctx context.Context, args DeletePullRequestIterationStatusArgs) error {
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-	if args.IterationId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.IterationId"}
-	}
-	routeValues["iterationId"] = strconv.Itoa(*args.IterationId)
-	if args.StatusId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.StatusId"}
-	}
-	routeValues["statusId"] = strconv.Itoa(*args.StatusId)
-
-	locationId, _ := uuid.Parse("75cf11c5-979f-4038-a76e-058a06adf2bf")
-	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the DeletePullRequestIterationStatus function
-type DeletePullRequestIterationStatusArgs struct {
-	// (required) The repository ID of the pull request’s target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (required) ID of the pull request iteration.
-	IterationId *int
-	// (required) ID of the pull request status.
-	StatusId *int
-	// (optional) Project ID or project name
-	Project *string
 }
 
 // [Preview API] Get the specific pull request iteration status by ID. The status ID is unique within the pull request across all iterations.
@@ -2913,152 +3748,6 @@ type GetPullRequestIterationStatusesArgs struct {
 	IterationId *int
 	// (optional) Project ID or project name
 	Project *string
-}
-
-// [Preview API] Update pull request iteration statuses collection. The only supported operation type is `remove`.
-func (client *ClientImpl) UpdatePullRequestIterationStatuses(ctx context.Context, args UpdatePullRequestIterationStatusesArgs) error {
-	if args.PatchDocument == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.PatchDocument"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-	if args.IterationId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.IterationId"}
-	}
-	routeValues["iterationId"] = strconv.Itoa(*args.IterationId)
-
-	body, marshalErr := json.Marshal(*args.PatchDocument)
-	if marshalErr != nil {
-		return marshalErr
-	}
-	locationId, _ := uuid.Parse("75cf11c5-979f-4038-a76e-058a06adf2bf")
-	_, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json-patch+json", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the UpdatePullRequestIterationStatuses function
-type UpdatePullRequestIterationStatusesArgs struct {
-	// (required) Operations to apply to the pull request statuses in JSON Patch format.
-	PatchDocument *[]webapi.JsonPatchOperation
-	// (required) The repository ID of the pull request’s target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (required) ID of the pull request iteration.
-	IterationId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// [Preview API] Create a label for a specified pull request. The only required field is the name of the new label.
-func (client *ClientImpl) CreatePullRequestLabel(ctx context.Context, args CreatePullRequestLabelArgs) (*core.WebApiTagDefinition, error) {
-	if args.Label == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Label"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-
-	queryParams := url.Values{}
-	if args.ProjectId != nil {
-		queryParams.Add("projectId", *args.ProjectId)
-	}
-	body, marshalErr := json.Marshal(*args.Label)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("f22387e3-984e-4c52-9c6d-fbb8f14c812d")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue core.WebApiTagDefinition
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreatePullRequestLabel function
-type CreatePullRequestLabelArgs struct {
-	// (required) Label to assign to the pull request.
-	Label *core.WebApiCreateTagRequestData
-	// (required) The repository ID of the pull request’s target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (optional) Project ID or project name
-	Project *string
-	// (optional) Project ID or project name.
-	ProjectId *string
-}
-
-// [Preview API] Removes a label from the set of those assigned to the pull request.
-func (client *ClientImpl) DeletePullRequestLabels(ctx context.Context, args DeletePullRequestLabelsArgs) error {
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-	if args.LabelIdOrName == nil || *args.LabelIdOrName == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.LabelIdOrName"}
-	}
-	routeValues["labelIdOrName"] = *args.LabelIdOrName
-
-	queryParams := url.Values{}
-	if args.ProjectId != nil {
-		queryParams.Add("projectId", *args.ProjectId)
-	}
-	locationId, _ := uuid.Parse("f22387e3-984e-4c52-9c6d-fbb8f14c812d")
-	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the DeletePullRequestLabels function
-type DeletePullRequestLabelsArgs struct {
-	// (required) The repository ID of the pull request’s target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (required) The name or ID of the label requested.
-	LabelIdOrName *string
-	// (optional) Project ID or project name
-	Project *string
-	// (optional) Project ID or project name.
-	ProjectId *string
 }
 
 // [Preview API] Retrieves a single label that has been assigned to a pull request.
@@ -3187,51 +3876,6 @@ type GetPullRequestPropertiesArgs struct {
 	Project *string
 }
 
-// [Preview API] Create or update pull request external properties. The patch operation can be `add`, `replace` or `remove`. For `add` operation, the path can be empty. If the path is empty, the value must be a list of key value pairs. For `replace` operation, the path cannot be empty. If the path does not exist, the property will be added to the collection. For `remove` operation, the path cannot be empty. If the path does not exist, no action will be performed.
-func (client *ClientImpl) UpdatePullRequestProperties(ctx context.Context, args UpdatePullRequestPropertiesArgs) (interface{}, error) {
-	if args.PatchDocument == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PatchDocument"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-
-	body, marshalErr := json.Marshal(*args.PatchDocument)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("48a52185-5b9e-4736-9dc1-bb1e2feac80b")
-	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json-patch+json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue interface{}
-	err = client.Client.UnmarshalBody(resp, responseValue)
-	return responseValue, err
-}
-
-// Arguments for the UpdatePullRequestProperties function
-type UpdatePullRequestPropertiesArgs struct {
-	// (required) Properties to add, replace or remove in JSON Patch format.
-	PatchDocument *[]webapi.JsonPatchOperation
-	// (required) The repository ID of the pull request’s target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
 // This API is used to find what pull requests are related to a given commit.  It can be used to either find the pull request that created a particular merge commit or it can be used to find all pull requests that have ever merged a particular commit.  The input is a list of queries which each contain a list of commits. For each commit that you search against, you will get back a dictionary of commit -> pull requests.
 func (client *ClientImpl) GetPullRequestQuery(ctx context.Context, args GetPullRequestQueryArgs) (*GitPullRequestQuery, error) {
 	if args.Queries == nil {
@@ -3267,142 +3911,6 @@ type GetPullRequestQueryArgs struct {
 	Queries *GitPullRequestQuery
 	// (required) ID of the repository.
 	RepositoryId *string
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// Add a reviewer to a pull request or cast a vote.
-func (client *ClientImpl) CreatePullRequestReviewer(ctx context.Context, args CreatePullRequestReviewerArgs) (*IdentityRefWithVote, error) {
-	if args.Reviewer == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Reviewer"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-	if args.ReviewerId == nil || *args.ReviewerId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ReviewerId"}
-	}
-	routeValues["reviewerId"] = *args.ReviewerId
-
-	body, marshalErr := json.Marshal(*args.Reviewer)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("4b6702c7-aa35-4b89-9c96-b9abf6d3e540")
-	resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue IdentityRefWithVote
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreatePullRequestReviewer function
-type CreatePullRequestReviewerArgs struct {
-	// (required) Reviewer's vote.<br />If the reviewer's ID is included here, it must match the reviewerID parameter.<br />Reviewers can set their own vote with this method.  When adding other reviewers, vote must be set to zero.
-	Reviewer *IdentityRefWithVote
-	// (required) The repository ID of the pull request’s target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (required) ID of the reviewer.
-	ReviewerId *string
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// Add reviewers to a pull request.
-func (client *ClientImpl) CreatePullRequestReviewers(ctx context.Context, args CreatePullRequestReviewersArgs) (*[]IdentityRefWithVote, error) {
-	if args.Reviewers == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Reviewers"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-
-	body, marshalErr := json.Marshal(*args.Reviewers)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("4b6702c7-aa35-4b89-9c96-b9abf6d3e540")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue []IdentityRefWithVote
-	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreatePullRequestReviewers function
-type CreatePullRequestReviewersArgs struct {
-	// (required) Reviewers to add to the pull request.
-	Reviewers *[]webapi.IdentityRef
-	// (required) The repository ID of the pull request’s target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// Remove a reviewer from a pull request.
-func (client *ClientImpl) DeletePullRequestReviewer(ctx context.Context, args DeletePullRequestReviewerArgs) error {
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-	if args.ReviewerId == nil || *args.ReviewerId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ReviewerId"}
-	}
-	routeValues["reviewerId"] = *args.ReviewerId
-
-	locationId, _ := uuid.Parse("4b6702c7-aa35-4b89-9c96-b9abf6d3e540")
-	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the DeletePullRequestReviewer function
-type DeletePullRequestReviewerArgs struct {
-	// (required) The repository ID of the pull request’s target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (required) ID of the reviewer to remove.
-	ReviewerId *string
 	// (optional) Project ID or project name
 	Project *string
 }
@@ -3485,256 +3993,6 @@ type GetPullRequestReviewersArgs struct {
 	Project *string
 }
 
-// Reset the votes of multiple reviewers on a pull request.  NOTE: This endpoint only supports updating votes, but does not support updating required reviewers (use policy) or display names.
-func (client *ClientImpl) UpdatePullRequestReviewers(ctx context.Context, args UpdatePullRequestReviewersArgs) error {
-	if args.PatchVotes == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.PatchVotes"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-
-	body, marshalErr := json.Marshal(*args.PatchVotes)
-	if marshalErr != nil {
-		return marshalErr
-	}
-	locationId, _ := uuid.Parse("4b6702c7-aa35-4b89-9c96-b9abf6d3e540")
-	_, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the UpdatePullRequestReviewers function
-type UpdatePullRequestReviewersArgs struct {
-	// (required) IDs of the reviewers whose votes will be reset to zero
-	PatchVotes *[]IdentityRefWithVote
-	// (required) The repository ID of the pull request’s target branch.
-	RepositoryId *string
-	// (required) ID of the pull request
-	PullRequestId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// Retrieve a pull request.
-func (client *ClientImpl) GetPullRequestById(ctx context.Context, args GetPullRequestByIdArgs) (*GitPullRequest, error) {
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.PullRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-
-	locationId, _ := uuid.Parse("01a46dea-7d46-4d40-bc84-319e7c260d99")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GitPullRequest
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the GetPullRequestById function
-type GetPullRequestByIdArgs struct {
-	// (required) The ID of the pull request to retrieve.
-	PullRequestId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// Retrieve all pull requests matching a specified criteria.
-func (client *ClientImpl) GetPullRequestsByProject(ctx context.Context, args GetPullRequestsByProjectArgs) (*[]GitPullRequest, error) {
-	routeValues := make(map[string]string)
-	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
-	}
-	routeValues["project"] = *args.Project
-
-	queryParams := url.Values{}
-	if args.SearchCriteria == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "searchCriteria"}
-	}
-	if args.SearchCriteria.RepositoryId != nil {
-		queryParams.Add("searchCriteria.repositoryId", (*args.SearchCriteria.RepositoryId).String())
-	}
-	if args.SearchCriteria.CreatorId != nil {
-		queryParams.Add("searchCriteria.creatorId", (*args.SearchCriteria.CreatorId).String())
-	}
-	if args.SearchCriteria.ReviewerId != nil {
-		queryParams.Add("searchCriteria.reviewerId", (*args.SearchCriteria.ReviewerId).String())
-	}
-	if args.SearchCriteria.Status != nil {
-		queryParams.Add("searchCriteria.status", string(*args.SearchCriteria.Status))
-	}
-	if args.SearchCriteria.TargetRefName != nil {
-		queryParams.Add("searchCriteria.targetRefName", *args.SearchCriteria.TargetRefName)
-	}
-	if args.SearchCriteria.SourceRepositoryId != nil {
-		queryParams.Add("searchCriteria.sourceRepositoryId", (*args.SearchCriteria.SourceRepositoryId).String())
-	}
-	if args.SearchCriteria.SourceRefName != nil {
-		queryParams.Add("searchCriteria.sourceRefName", *args.SearchCriteria.SourceRefName)
-	}
-	if args.SearchCriteria.IncludeLinks != nil {
-		queryParams.Add("searchCriteria.includeLinks", strconv.FormatBool(*args.SearchCriteria.IncludeLinks))
-	}
-	if args.MaxCommentLength != nil {
-		queryParams.Add("maxCommentLength", strconv.Itoa(*args.MaxCommentLength))
-	}
-	if args.Skip != nil {
-		queryParams.Add("$skip", strconv.Itoa(*args.Skip))
-	}
-	if args.Top != nil {
-		queryParams.Add("$top", strconv.Itoa(*args.Top))
-	}
-	locationId, _ := uuid.Parse("a5d28130-9cd2-40fa-9f08-902e7daa9efb")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue []GitPullRequest
-	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the GetPullRequestsByProject function
-type GetPullRequestsByProjectArgs struct {
-	// (required) Project ID or project name
-	Project *string
-	// (required) Pull requests will be returned that match this search criteria.
-	SearchCriteria *GitPullRequestSearchCriteria
-	// (optional) Not used.
-	MaxCommentLength *int
-	// (optional) The number of pull requests to ignore. For example, to retrieve results 101-150, set top to 50 and skip to 100.
-	Skip *int
-	// (optional) The number of pull requests to retrieve.
-	Top *int
-}
-
-// Create a pull request.
-func (client *ClientImpl) CreatePullRequest(ctx context.Context, args CreatePullRequestArgs) (*GitPullRequest, error) {
-	if args.GitPullRequestToCreate == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.GitPullRequestToCreate"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-
-	queryParams := url.Values{}
-	if args.SupportsIterations != nil {
-		queryParams.Add("supportsIterations", strconv.FormatBool(*args.SupportsIterations))
-	}
-	body, marshalErr := json.Marshal(*args.GitPullRequestToCreate)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("9946fd70-0d40-406e-b686-b4744cbbcc37")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GitPullRequest
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreatePullRequest function
-type CreatePullRequestArgs struct {
-	// (required) The pull request to create.
-	GitPullRequestToCreate *GitPullRequest
-	// (required) The repository ID of the pull request's target branch.
-	RepositoryId *string
-	// (optional) Project ID or project name
-	Project *string
-	// (optional) If true, subsequent pushes to the pull request will be individually reviewable. Set this to false for large pull requests for performance reasons if this functionality is not needed.
-	SupportsIterations *bool
-}
-
-// Retrieve a pull request.
-func (client *ClientImpl) GetPullRequest(ctx context.Context, args GetPullRequestArgs) (*GitPullRequest, error) {
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-
-	queryParams := url.Values{}
-	if args.MaxCommentLength != nil {
-		queryParams.Add("maxCommentLength", strconv.Itoa(*args.MaxCommentLength))
-	}
-	if args.Skip != nil {
-		queryParams.Add("$skip", strconv.Itoa(*args.Skip))
-	}
-	if args.Top != nil {
-		queryParams.Add("$top", strconv.Itoa(*args.Top))
-	}
-	if args.IncludeCommits != nil {
-		queryParams.Add("includeCommits", strconv.FormatBool(*args.IncludeCommits))
-	}
-	if args.IncludeWorkItemRefs != nil {
-		queryParams.Add("includeWorkItemRefs", strconv.FormatBool(*args.IncludeWorkItemRefs))
-	}
-	locationId, _ := uuid.Parse("9946fd70-0d40-406e-b686-b4744cbbcc37")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GitPullRequest
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the GetPullRequest function
-type GetPullRequestArgs struct {
-	// (required) The repository ID of the pull request's target branch.
-	RepositoryId *string
-	// (required) The ID of the pull request to retrieve.
-	PullRequestId *int
-	// (optional) Project ID or project name
-	Project *string
-	// (optional) Not used.
-	MaxCommentLength *int
-	// (optional) Not used.
-	Skip *int
-	// (optional) Not used.
-	Top *int
-	// (optional) If true, the pull request will be returned with the associated commits.
-	IncludeCommits *bool
-	// (optional) If true, the pull request will be returned with the associated work item references.
-	IncludeWorkItemRefs *bool
-}
-
 // Retrieve all pull requests matching a specified criteria.
 func (client *ClientImpl) GetPullRequests(ctx context.Context, args GetPullRequestsArgs) (*[]GitPullRequest, error) {
 	routeValues := make(map[string]string)
@@ -3810,177 +4068,74 @@ type GetPullRequestsArgs struct {
 	Top *int
 }
 
-// Update a pull request
-func (client *ClientImpl) UpdatePullRequest(ctx context.Context, args UpdatePullRequestArgs) (*GitPullRequest, error) {
-	if args.GitPullRequestToUpdate == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.GitPullRequestToUpdate"}
-	}
+// Retrieve all pull requests matching a specified criteria.
+func (client *ClientImpl) GetPullRequestsByProject(ctx context.Context, args GetPullRequestsByProjectArgs) (*[]GitPullRequest, error) {
 	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
+	if args.Project == nil || *args.Project == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+	routeValues["project"] = *args.Project
 
-	body, marshalErr := json.Marshal(*args.GitPullRequestToUpdate)
-	if marshalErr != nil {
-		return nil, marshalErr
+	queryParams := url.Values{}
+	if args.SearchCriteria == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "searchCriteria"}
 	}
-	locationId, _ := uuid.Parse("9946fd70-0d40-406e-b686-b4744cbbcc37")
-	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if args.SearchCriteria.RepositoryId != nil {
+		queryParams.Add("searchCriteria.repositoryId", (*args.SearchCriteria.RepositoryId).String())
+	}
+	if args.SearchCriteria.CreatorId != nil {
+		queryParams.Add("searchCriteria.creatorId", (*args.SearchCriteria.CreatorId).String())
+	}
+	if args.SearchCriteria.ReviewerId != nil {
+		queryParams.Add("searchCriteria.reviewerId", (*args.SearchCriteria.ReviewerId).String())
+	}
+	if args.SearchCriteria.Status != nil {
+		queryParams.Add("searchCriteria.status", string(*args.SearchCriteria.Status))
+	}
+	if args.SearchCriteria.TargetRefName != nil {
+		queryParams.Add("searchCriteria.targetRefName", *args.SearchCriteria.TargetRefName)
+	}
+	if args.SearchCriteria.SourceRepositoryId != nil {
+		queryParams.Add("searchCriteria.sourceRepositoryId", (*args.SearchCriteria.SourceRepositoryId).String())
+	}
+	if args.SearchCriteria.SourceRefName != nil {
+		queryParams.Add("searchCriteria.sourceRefName", *args.SearchCriteria.SourceRefName)
+	}
+	if args.SearchCriteria.IncludeLinks != nil {
+		queryParams.Add("searchCriteria.includeLinks", strconv.FormatBool(*args.SearchCriteria.IncludeLinks))
+	}
+	if args.MaxCommentLength != nil {
+		queryParams.Add("maxCommentLength", strconv.Itoa(*args.MaxCommentLength))
+	}
+	if args.Skip != nil {
+		queryParams.Add("$skip", strconv.Itoa(*args.Skip))
+	}
+	if args.Top != nil {
+		queryParams.Add("$top", strconv.Itoa(*args.Top))
+	}
+	locationId, _ := uuid.Parse("a5d28130-9cd2-40fa-9f08-902e7daa9efb")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var responseValue GitPullRequest
-	err = client.Client.UnmarshalBody(resp, &responseValue)
+	var responseValue []GitPullRequest
+	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
 	return &responseValue, err
 }
 
-// Arguments for the UpdatePullRequest function
-type UpdatePullRequestArgs struct {
-	// (required) The pull request content that should be updated.
-	GitPullRequestToUpdate *GitPullRequest
-	// (required) The repository ID of the pull request's target branch.
-	RepositoryId *string
-	// (required) ID of the pull request to update.
-	PullRequestId *int
-	// (optional) Project ID or project name
+// Arguments for the GetPullRequestsByProject function
+type GetPullRequestsByProjectArgs struct {
+	// (required) Project ID or project name
 	Project *string
-}
-
-// [Preview API] Sends an e-mail notification about a specific pull request to a set of recipients
-func (client *ClientImpl) SharePullRequest(ctx context.Context, args SharePullRequestArgs) error {
-	if args.UserMessage == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.UserMessage"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-
-	body, marshalErr := json.Marshal(*args.UserMessage)
-	if marshalErr != nil {
-		return marshalErr
-	}
-	locationId, _ := uuid.Parse("696f3a82-47c9-487f-9117-b9d00972ca84")
-	_, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the SharePullRequest function
-type SharePullRequestArgs struct {
-	// (required)
-	UserMessage *ShareNotificationContext
-	// (required) ID of the git repository.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// [Preview API] Create a pull request status.
-func (client *ClientImpl) CreatePullRequestStatus(ctx context.Context, args CreatePullRequestStatusArgs) (*GitPullRequestStatus, error) {
-	if args.Status == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Status"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-
-	body, marshalErr := json.Marshal(*args.Status)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("b5f6bb4f-8d1e-4d79-8d11-4c9172c99c35")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GitPullRequestStatus
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreatePullRequestStatus function
-type CreatePullRequestStatusArgs struct {
-	// (required) Pull request status to create.
-	Status *GitPullRequestStatus
-	// (required) The repository ID of the pull request’s target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// [Preview API] Delete pull request status.
-func (client *ClientImpl) DeletePullRequestStatus(ctx context.Context, args DeletePullRequestStatusArgs) error {
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-	if args.StatusId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.StatusId"}
-	}
-	routeValues["statusId"] = strconv.Itoa(*args.StatusId)
-
-	locationId, _ := uuid.Parse("b5f6bb4f-8d1e-4d79-8d11-4c9172c99c35")
-	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the DeletePullRequestStatus function
-type DeletePullRequestStatusArgs struct {
-	// (required) The repository ID of the pull request’s target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (required) ID of the pull request status.
-	StatusId *int
-	// (optional) Project ID or project name
-	Project *string
+	// (required) Pull requests will be returned that match this search criteria.
+	SearchCriteria *GitPullRequestSearchCriteria
+	// (optional) Not used.
+	MaxCommentLength *int
+	// (optional) The number of pull requests to ignore. For example, to retrieve results 101-150, set top to 50 and skip to 100.
+	Skip *int
+	// (optional) The number of pull requests to retrieve.
+	Top *int
 }
 
 // [Preview API] Get the specific pull request status by ID. The status ID is unique within the pull request across all iterations.
@@ -4061,338 +4216,6 @@ type GetPullRequestStatusesArgs struct {
 	Project *string
 }
 
-// [Preview API] Update pull request statuses collection. The only supported operation type is `remove`.
-func (client *ClientImpl) UpdatePullRequestStatuses(ctx context.Context, args UpdatePullRequestStatusesArgs) error {
-	if args.PatchDocument == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.PatchDocument"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-
-	body, marshalErr := json.Marshal(*args.PatchDocument)
-	if marshalErr != nil {
-		return marshalErr
-	}
-	locationId, _ := uuid.Parse("b5f6bb4f-8d1e-4d79-8d11-4c9172c99c35")
-	_, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json-patch+json", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the UpdatePullRequestStatuses function
-type UpdatePullRequestStatusesArgs struct {
-	// (required) Operations to apply to the pull request statuses in JSON Patch format.
-	PatchDocument *[]webapi.JsonPatchOperation
-	// (required) The repository ID of the pull request’s target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// Create a comment on a specific thread in a pull request (up to 500 comments can be created per thread).
-func (client *ClientImpl) CreateComment(ctx context.Context, args CreateCommentArgs) (*Comment, error) {
-	if args.Comment == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Comment"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-	if args.ThreadId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ThreadId"}
-	}
-	routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
-
-	body, marshalErr := json.Marshal(*args.Comment)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("965a3ec7-5ed8-455a-bdcb-835a5ea7fe7b")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue Comment
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreateComment function
-type CreateCommentArgs struct {
-	// (required) The comment to create. Comments can be up to 150,000 characters.
-	Comment *Comment
-	// (required) The repository ID of the pull request's target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (required) ID of the thread that the desired comment is in.
-	ThreadId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// Delete a comment associated with a specific thread in a pull request.
-func (client *ClientImpl) DeleteComment(ctx context.Context, args DeleteCommentArgs) error {
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-	if args.ThreadId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.ThreadId"}
-	}
-	routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
-	if args.CommentId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.CommentId"}
-	}
-	routeValues["commentId"] = strconv.Itoa(*args.CommentId)
-
-	locationId, _ := uuid.Parse("965a3ec7-5ed8-455a-bdcb-835a5ea7fe7b")
-	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the DeleteComment function
-type DeleteCommentArgs struct {
-	// (required) The repository ID of the pull request's target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (required) ID of the thread that the desired comment is in.
-	ThreadId *int
-	// (required) ID of the comment.
-	CommentId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// Retrieve a comment associated with a specific thread in a pull request.
-func (client *ClientImpl) GetComment(ctx context.Context, args GetCommentArgs) (*Comment, error) {
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-	if args.ThreadId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ThreadId"}
-	}
-	routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
-	if args.CommentId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CommentId"}
-	}
-	routeValues["commentId"] = strconv.Itoa(*args.CommentId)
-
-	locationId, _ := uuid.Parse("965a3ec7-5ed8-455a-bdcb-835a5ea7fe7b")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue Comment
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the GetComment function
-type GetCommentArgs struct {
-	// (required) The repository ID of the pull request's target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (required) ID of the thread that the desired comment is in.
-	ThreadId *int
-	// (required) ID of the comment.
-	CommentId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// Retrieve all comments associated with a specific thread in a pull request.
-func (client *ClientImpl) GetComments(ctx context.Context, args GetCommentsArgs) (*[]Comment, error) {
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-	if args.ThreadId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ThreadId"}
-	}
-	routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
-
-	locationId, _ := uuid.Parse("965a3ec7-5ed8-455a-bdcb-835a5ea7fe7b")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue []Comment
-	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the GetComments function
-type GetCommentsArgs struct {
-	// (required) The repository ID of the pull request's target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (required) ID of the thread.
-	ThreadId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// Update a comment associated with a specific thread in a pull request.
-func (client *ClientImpl) UpdateComment(ctx context.Context, args UpdateCommentArgs) (*Comment, error) {
-	if args.Comment == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Comment"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-	if args.ThreadId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ThreadId"}
-	}
-	routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
-	if args.CommentId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CommentId"}
-	}
-	routeValues["commentId"] = strconv.Itoa(*args.CommentId)
-
-	body, marshalErr := json.Marshal(*args.Comment)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("965a3ec7-5ed8-455a-bdcb-835a5ea7fe7b")
-	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue Comment
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the UpdateComment function
-type UpdateCommentArgs struct {
-	// (required) The comment content that should be updated. Comments can be up to 150,000 characters.
-	Comment *Comment
-	// (required) The repository ID of the pull request's target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (required) ID of the thread that the desired comment is in.
-	ThreadId *int
-	// (required) ID of the comment to update.
-	CommentId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// Create a thread in a pull request.
-func (client *ClientImpl) CreateThread(ctx context.Context, args CreateThreadArgs) (*GitPullRequestCommentThread, error) {
-	if args.CommentThread == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CommentThread"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-
-	body, marshalErr := json.Marshal(*args.CommentThread)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("ab6e2e5d-a0b7-4153-b64a-a4efe0d49449")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GitPullRequestCommentThread
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreateThread function
-type CreateThreadArgs struct {
-	// (required) The thread to create. Thread must contain at least one comment.
-	CommentThread *GitPullRequestCommentThread
-	// (required) Repository ID of the pull request's target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
 // Retrieve a thread in a pull request.
 func (client *ClientImpl) GetPullRequestThread(ctx context.Context, args GetPullRequestThreadArgs) (*GitPullRequestCommentThread, error) {
 	routeValues := make(map[string]string)
@@ -4446,104 +4269,6 @@ type GetPullRequestThreadArgs struct {
 	BaseIteration *int
 }
 
-// Retrieve all threads in a pull request.
-func (client *ClientImpl) GetThreads(ctx context.Context, args GetThreadsArgs) (*[]GitPullRequestCommentThread, error) {
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-
-	queryParams := url.Values{}
-	if args.Iteration != nil {
-		queryParams.Add("$iteration", strconv.Itoa(*args.Iteration))
-	}
-	if args.BaseIteration != nil {
-		queryParams.Add("$baseIteration", strconv.Itoa(*args.BaseIteration))
-	}
-	locationId, _ := uuid.Parse("ab6e2e5d-a0b7-4153-b64a-a4efe0d49449")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue []GitPullRequestCommentThread
-	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the GetThreads function
-type GetThreadsArgs struct {
-	// (required) The repository ID of the pull request's target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (optional) Project ID or project name
-	Project *string
-	// (optional) If specified, thread positions will be tracked using this iteration as the right side of the diff.
-	Iteration *int
-	// (optional) If specified, thread positions will be tracked using this iteration as the left side of the diff.
-	BaseIteration *int
-}
-
-// Update a thread in a pull request.
-func (client *ClientImpl) UpdateThread(ctx context.Context, args UpdateThreadArgs) (*GitPullRequestCommentThread, error) {
-	if args.CommentThread == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CommentThread"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-	if args.PullRequestId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
-	}
-	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
-	if args.ThreadId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ThreadId"}
-	}
-	routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
-
-	body, marshalErr := json.Marshal(*args.CommentThread)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("ab6e2e5d-a0b7-4153-b64a-a4efe0d49449")
-	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GitPullRequestCommentThread
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the UpdateThread function
-type UpdateThreadArgs struct {
-	// (required) The thread content that should be updated.
-	CommentThread *GitPullRequestCommentThread
-	// (required) The repository ID of the pull request's target branch.
-	RepositoryId *string
-	// (required) ID of the pull request.
-	PullRequestId *int
-	// (required) ID of the thread to update.
-	ThreadId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
 // Retrieve a list of work items associated with a pull request.
 func (client *ClientImpl) GetPullRequestWorkItemRefs(ctx context.Context, args GetPullRequestWorkItemRefsArgs) (*[]webapi.ResourceRef, error) {
 	routeValues := make(map[string]string)
@@ -4576,45 +4301,6 @@ type GetPullRequestWorkItemRefsArgs struct {
 	RepositoryId *string
 	// (required) ID of the pull request.
 	PullRequestId *int
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// Push changes to the repository.
-func (client *ClientImpl) CreatePush(ctx context.Context, args CreatePushArgs) (*GitPush, error) {
-	if args.Push == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Push"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-
-	body, marshalErr := json.Marshal(*args.Push)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("ea98d07b-3c87-4971-8ede-a613694ffb55")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GitPush
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreatePush function
-type CreatePushArgs struct {
-	// (required)
-	Push *GitPush
-	// (required) The name or ID of the repository.
-	RepositoryId *string
 	// (optional) Project ID or project name
 	Project *string
 }
@@ -4664,6 +4350,58 @@ type GetPushArgs struct {
 	IncludeCommits *int
 	// (optional) If true, include the list of refs that were updated by the push.
 	IncludeRefUpdates *bool
+}
+
+// Retrieve a list of commits associated with a particular push.
+func (client *ClientImpl) GetPushCommits(ctx context.Context, args GetPushCommitsArgs) (*[]GitCommitRef, error) {
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+
+	queryParams := url.Values{}
+	if args.PushId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "pushId"}
+	}
+	queryParams.Add("pushId", strconv.Itoa(*args.PushId))
+	if args.Top != nil {
+		queryParams.Add("top", strconv.Itoa(*args.Top))
+	}
+	if args.Skip != nil {
+		queryParams.Add("skip", strconv.Itoa(*args.Skip))
+	}
+	if args.IncludeLinks != nil {
+		queryParams.Add("includeLinks", strconv.FormatBool(*args.IncludeLinks))
+	}
+	locationId, _ := uuid.Parse("c2570c3b-5b3f-41b8-98bf-5407bfde8d58")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue []GitCommitRef
+	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the GetPushCommits function
+type GetPushCommitsArgs struct {
+	// (required) The id or friendly name of the repository. To use the friendly name, projectId must also be specified.
+	RepositoryId *string
+	// (required) The id of the push.
+	PushId *int
+	// (optional) Project ID or project name
+	Project *string
+	// (optional) The maximum number of commits to return ("get the top x commits").
+	Top *int
+	// (optional) The number of commits to skip.
+	Skip *int
+	// (optional) Set to false to avoid including REST Url links for resources. Defaults to true.
+	IncludeLinks *bool
 }
 
 // Retrieves pushes associated with the specified repository.
@@ -4729,35 +4467,6 @@ type GetPushesArgs struct {
 	SearchCriteria *GitPushSearchCriteria
 }
 
-// [Preview API] Destroy (hard delete) a soft-deleted Git repository.
-func (client *ClientImpl) DeleteRepositoryFromRecycleBin(ctx context.Context, args DeleteRepositoryFromRecycleBinArgs) error {
-	routeValues := make(map[string]string)
-	if args.Project == nil || *args.Project == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
-	}
-	routeValues["project"] = *args.Project
-	if args.RepositoryId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = (*args.RepositoryId).String()
-
-	locationId, _ := uuid.Parse("a663da97-81db-4eb3-8b83-287670f63073")
-	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the DeleteRepositoryFromRecycleBin function
-type DeleteRepositoryFromRecycleBinArgs struct {
-	// (required) Project ID or project name
-	Project *string
-	// (required) The ID of the repository.
-	RepositoryId *uuid.UUID
-}
-
 // [Preview API] Retrieve soft-deleted git repositories from the recycle bin.
 func (client *ClientImpl) GetRecycleBinRepositories(ctx context.Context, args GetRecycleBinRepositoriesArgs) (*[]GitDeletedRepository, error) {
 	routeValues := make(map[string]string)
@@ -4783,44 +4492,71 @@ type GetRecycleBinRepositoriesArgs struct {
 	Project *string
 }
 
-// [Preview API] Recover a soft-deleted Git repository. Recently deleted repositories go into a soft-delete state for a period of time before they are hard deleted and become unrecoverable.
-func (client *ClientImpl) RestoreRepositoryFromRecycleBin(ctx context.Context, args RestoreRepositoryFromRecycleBinArgs) (*GitRepository, error) {
-	if args.RepositoryDetails == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RepositoryDetails"}
-	}
+// [Preview API] Gets the refs favorite for a favorite Id.
+func (client *ClientImpl) GetRefFavorite(ctx context.Context, args GetRefFavoriteArgs) (*GitRefFavorite, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
-	if args.RepositoryId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RepositoryId"}
+	if args.FavoriteId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.FavoriteId"}
 	}
-	routeValues["repositoryId"] = (*args.RepositoryId).String()
+	routeValues["favoriteId"] = strconv.Itoa(*args.FavoriteId)
 
-	body, marshalErr := json.Marshal(*args.RepositoryDetails)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("a663da97-81db-4eb3-8b83-287670f63073")
-	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	locationId, _ := uuid.Parse("876f70af-5792-485a-a1c7-d0a7b2f42bbb")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var responseValue GitRepository
+	var responseValue GitRefFavorite
 	err = client.Client.UnmarshalBody(resp, &responseValue)
 	return &responseValue, err
 }
 
-// Arguments for the RestoreRepositoryFromRecycleBin function
-type RestoreRepositoryFromRecycleBinArgs struct {
-	// (required)
-	RepositoryDetails *GitRecycleBinRepositoryDetails
+// Arguments for the GetRefFavorite function
+type GetRefFavoriteArgs struct {
 	// (required) Project ID or project name
 	Project *string
-	// (required) The ID of the repository.
-	RepositoryId *uuid.UUID
+	// (required) The Id of the requested ref favorite.
+	FavoriteId *int
+}
+
+// [Preview API] Gets the refs favorites for a repo and an identity.
+func (client *ClientImpl) GetRefFavorites(ctx context.Context, args GetRefFavoritesArgs) (*[]GitRefFavorite, error) {
+	routeValues := make(map[string]string)
+	if args.Project == nil || *args.Project == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
+	}
+	routeValues["project"] = *args.Project
+
+	queryParams := url.Values{}
+	if args.RepositoryId != nil {
+		queryParams.Add("repositoryId", *args.RepositoryId)
+	}
+	if args.IdentityId != nil {
+		queryParams.Add("identityId", *args.IdentityId)
+	}
+	locationId, _ := uuid.Parse("876f70af-5792-485a-a1c7-d0a7b2f42bbb")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue []GitRefFavorite
+	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the GetRefFavorites function
+type GetRefFavoritesArgs struct {
+	// (required) Project ID or project name
+	Project *string
+	// (optional) The id of the repository.
+	RepositoryId *string
+	// (optional) The id of the identity whose favorites are to be retrieved. If null, the requesting identity is used.
+	IdentityId *string
 }
 
 // Queries the provided repository for its refs and returns them.
@@ -4905,299 +4641,6 @@ type GetRefsResponseValue struct {
 	Value []GitRef
 	// The continuation token to be used to get the next page of results.
 	ContinuationToken string
-}
-
-// Lock or Unlock a branch.
-func (client *ClientImpl) UpdateRef(ctx context.Context, args UpdateRefArgs) (*GitRef, error) {
-	if args.NewRefInfo == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.NewRefInfo"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-
-	queryParams := url.Values{}
-	if args.Filter == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "filter"}
-	}
-	queryParams.Add("filter", *args.Filter)
-	if args.ProjectId != nil {
-		queryParams.Add("projectId", *args.ProjectId)
-	}
-	body, marshalErr := json.Marshal(*args.NewRefInfo)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("2d874a60-a811-4f62-9c9f-963a6ea0a55b")
-	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GitRef
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the UpdateRef function
-type UpdateRefArgs struct {
-	// (required) The ref update action (lock/unlock) to perform
-	NewRefInfo *GitRefUpdate
-	// (required) The name or ID of the repository.
-	RepositoryId *string
-	// (required) The name of the branch to lock/unlock
-	Filter *string
-	// (optional) Project ID or project name
-	Project *string
-	// (optional) ID or name of the team project. Optional if specifying an ID for repository.
-	ProjectId *string
-}
-
-// Creating, updating, or deleting refs(branches).
-func (client *ClientImpl) UpdateRefs(ctx context.Context, args UpdateRefsArgs) (*[]GitRefUpdateResult, error) {
-	if args.RefUpdates == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RefUpdates"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-
-	queryParams := url.Values{}
-	if args.ProjectId != nil {
-		queryParams.Add("projectId", *args.ProjectId)
-	}
-	body, marshalErr := json.Marshal(*args.RefUpdates)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("2d874a60-a811-4f62-9c9f-963a6ea0a55b")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue []GitRefUpdateResult
-	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the UpdateRefs function
-type UpdateRefsArgs struct {
-	// (required) List of ref updates to attempt to perform
-	RefUpdates *[]GitRefUpdate
-	// (required) The name or ID of the repository.
-	RepositoryId *string
-	// (optional) Project ID or project name
-	Project *string
-	// (optional) ID or name of the team project. Optional if specifying an ID for repository.
-	ProjectId *string
-}
-
-// [Preview API] Creates a ref favorite
-func (client *ClientImpl) CreateFavorite(ctx context.Context, args CreateFavoriteArgs) (*GitRefFavorite, error) {
-	if args.Favorite == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Favorite"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
-	}
-	routeValues["project"] = *args.Project
-
-	body, marshalErr := json.Marshal(*args.Favorite)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("876f70af-5792-485a-a1c7-d0a7b2f42bbb")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GitRefFavorite
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreateFavorite function
-type CreateFavoriteArgs struct {
-	// (required) The ref favorite to create.
-	Favorite *GitRefFavorite
-	// (required) Project ID or project name
-	Project *string
-}
-
-// [Preview API] Deletes the refs favorite specified
-func (client *ClientImpl) DeleteRefFavorite(ctx context.Context, args DeleteRefFavoriteArgs) error {
-	routeValues := make(map[string]string)
-	if args.Project == nil || *args.Project == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
-	}
-	routeValues["project"] = *args.Project
-	if args.FavoriteId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.FavoriteId"}
-	}
-	routeValues["favoriteId"] = strconv.Itoa(*args.FavoriteId)
-
-	locationId, _ := uuid.Parse("876f70af-5792-485a-a1c7-d0a7b2f42bbb")
-	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the DeleteRefFavorite function
-type DeleteRefFavoriteArgs struct {
-	// (required) Project ID or project name
-	Project *string
-	// (required) The Id of the ref favorite to delete.
-	FavoriteId *int
-}
-
-// [Preview API] Gets the refs favorite for a favorite Id.
-func (client *ClientImpl) GetRefFavorite(ctx context.Context, args GetRefFavoriteArgs) (*GitRefFavorite, error) {
-	routeValues := make(map[string]string)
-	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
-	}
-	routeValues["project"] = *args.Project
-	if args.FavoriteId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.FavoriteId"}
-	}
-	routeValues["favoriteId"] = strconv.Itoa(*args.FavoriteId)
-
-	locationId, _ := uuid.Parse("876f70af-5792-485a-a1c7-d0a7b2f42bbb")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GitRefFavorite
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the GetRefFavorite function
-type GetRefFavoriteArgs struct {
-	// (required) Project ID or project name
-	Project *string
-	// (required) The Id of the requested ref favorite.
-	FavoriteId *int
-}
-
-// [Preview API] Gets the refs favorites for a repo and an identity.
-func (client *ClientImpl) GetRefFavorites(ctx context.Context, args GetRefFavoritesArgs) (*[]GitRefFavorite, error) {
-	routeValues := make(map[string]string)
-	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
-	}
-	routeValues["project"] = *args.Project
-
-	queryParams := url.Values{}
-	if args.RepositoryId != nil {
-		queryParams.Add("repositoryId", *args.RepositoryId)
-	}
-	if args.IdentityId != nil {
-		queryParams.Add("identityId", *args.IdentityId)
-	}
-	locationId, _ := uuid.Parse("876f70af-5792-485a-a1c7-d0a7b2f42bbb")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue []GitRefFavorite
-	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the GetRefFavorites function
-type GetRefFavoritesArgs struct {
-	// (required) Project ID or project name
-	Project *string
-	// (optional) The id of the repository.
-	RepositoryId *string
-	// (optional) The id of the identity whose favorites are to be retrieved. If null, the requesting identity is used.
-	IdentityId *string
-}
-
-// Create a git repository in a team project.
-func (client *ClientImpl) CreateRepository(ctx context.Context, args CreateRepositoryArgs) (*GitRepository, error) {
-	if args.GitRepositoryToCreate == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.GitRepositoryToCreate"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-
-	queryParams := url.Values{}
-	if args.SourceRef != nil {
-		queryParams.Add("sourceRef", *args.SourceRef)
-	}
-	body, marshalErr := json.Marshal(*args.GitRepositoryToCreate)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("225f7195-f9c7-4d14-ab28-a83f7ff77e1f")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GitRepository
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreateRepository function
-type CreateRepositoryArgs struct {
-	// (required) Specify the repo name, team project and/or parent repository. Team project information can be ommitted from gitRepositoryToCreate if the request is project-scoped (i.e., includes project Id).
-	GitRepositoryToCreate *GitRepositoryCreateOptions
-	// (optional) Project ID or project name
-	Project *string
-	// (optional) [optional] Specify the source refs to use while creating a fork repo
-	SourceRef *string
-}
-
-// Delete a git repository
-func (client *ClientImpl) DeleteRepository(ctx context.Context, args DeleteRepositoryArgs) error {
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = (*args.RepositoryId).String()
-
-	locationId, _ := uuid.Parse("225f7195-f9c7-4d14-ab28-a83f7ff77e1f")
-	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the DeleteRepository function
-type DeleteRepositoryArgs struct {
-	// (required) The name or ID of the repository.
-	RepositoryId *uuid.UUID
-	// (optional) Project ID or project name
-	Project *string
 }
 
 // Retrieve git repositories.
@@ -5307,85 +4750,6 @@ type GetRepositoryWithParentArgs struct {
 	Project *string
 }
 
-// Updates the Git repository with either a new repo name or a new default branch.
-func (client *ClientImpl) UpdateRepository(ctx context.Context, args UpdateRepositoryArgs) (*GitRepository, error) {
-	if args.NewRepositoryInfo == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.NewRepositoryInfo"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.RepositoryId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = (*args.RepositoryId).String()
-
-	body, marshalErr := json.Marshal(*args.NewRepositoryInfo)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("225f7195-f9c7-4d14-ab28-a83f7ff77e1f")
-	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GitRepository
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the UpdateRepository function
-type UpdateRepositoryArgs struct {
-	// (required) Specify a new repo name or a new default branch of the repository
-	NewRepositoryInfo *GitRepository
-	// (required) The name or ID of the repository.
-	RepositoryId *uuid.UUID
-	// (optional) Project ID or project name
-	Project *string
-}
-
-// [Preview API] Starts the operation to create a new branch which reverts changes introduced by either a specific commit or commits that are associated to a pull request.
-func (client *ClientImpl) CreateRevert(ctx context.Context, args CreateRevertArgs) (*GitRevert, error) {
-	if args.RevertToCreate == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RevertToCreate"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
-	}
-	routeValues["project"] = *args.Project
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-
-	body, marshalErr := json.Marshal(*args.RevertToCreate)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("bc866058-5449-4715-9cf1-a510b6ff193c")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GitRevert
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreateRevert function
-type CreateRevertArgs struct {
-	// (required)
-	RevertToCreate *GitAsyncRefOperationParameters
-	// (required) Project ID or project name
-	Project *string
-	// (required) ID of the repository.
-	RepositoryId *string
-}
-
 // [Preview API] Retrieve information about a revert operation by revert Id.
 func (client *ClientImpl) GetRevert(ctx context.Context, args GetRevertArgs) (*GitRevert, error) {
 	routeValues := make(map[string]string)
@@ -5459,51 +4823,6 @@ type GetRevertForRefNameArgs struct {
 	RepositoryId *string
 	// (required) The GitAsyncRefOperationParameters generatedRefName used for the revert operation.
 	RefName *string
-}
-
-// Create Git commit status.
-func (client *ClientImpl) CreateCommitStatus(ctx context.Context, args CreateCommitStatusArgs) (*GitStatus, error) {
-	if args.GitCommitStatusToCreate == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.GitCommitStatusToCreate"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project != nil && *args.Project != "" {
-		routeValues["project"] = *args.Project
-	}
-	if args.CommitId == nil || *args.CommitId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.CommitId"}
-	}
-	routeValues["commitId"] = *args.CommitId
-	if args.RepositoryId == nil || *args.RepositoryId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
-	}
-	routeValues["repositoryId"] = *args.RepositoryId
-
-	body, marshalErr := json.Marshal(*args.GitCommitStatusToCreate)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("428dd4fb-fda5-4722-af02-9313b80305da")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GitStatus
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreateCommitStatus function
-type CreateCommitStatusArgs struct {
-	// (required) Git commit status object to create.
-	GitCommitStatusToCreate *GitStatus
-	// (required) ID of the Git commit.
-	CommitId *string
-	// (required) ID of the repository.
-	RepositoryId *string
-	// (optional) Project ID or project name
-	Project *string
 }
 
 // Get statuses associated with the Git commit.
@@ -5586,6 +4905,53 @@ type GetSuggestionsArgs struct {
 	RepositoryId *string
 	// (optional) Project ID or project name
 	Project *string
+}
+
+// Retrieve all threads in a pull request.
+func (client *ClientImpl) GetThreads(ctx context.Context, args GetThreadsArgs) (*[]GitPullRequestCommentThread, error) {
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+
+	queryParams := url.Values{}
+	if args.Iteration != nil {
+		queryParams.Add("$iteration", strconv.Itoa(*args.Iteration))
+	}
+	if args.BaseIteration != nil {
+		queryParams.Add("$baseIteration", strconv.Itoa(*args.BaseIteration))
+	}
+	locationId, _ := uuid.Parse("ab6e2e5d-a0b7-4153-b64a-a4efe0d49449")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue []GitPullRequestCommentThread
+	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the GetThreads function
+type GetThreadsArgs struct {
+	// (required) The repository ID of the pull request's target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (optional) Project ID or project name
+	Project *string
+	// (optional) If specified, thread positions will be tracked using this iteration as the right side of the diff.
+	Iteration *int
+	// (optional) If specified, thread positions will be tracked using this iteration as the left side of the diff.
+	BaseIteration *int
 }
 
 // The Tree endpoint returns the collection of objects underneath the specified tree. Trees are folders in a Git repository.
@@ -5688,4 +5054,638 @@ type GetTreeZipArgs struct {
 	Recursive *bool
 	// (optional) Name to use if a .zip file is returned. Default is the object ID.
 	FileName *string
+}
+
+// [Preview API] Retrieve import requests for a repository.
+func (client *ClientImpl) QueryImportRequests(ctx context.Context, args QueryImportRequestsArgs) (*[]GitImportRequest, error) {
+	routeValues := make(map[string]string)
+	if args.Project == nil || *args.Project == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
+	}
+	routeValues["project"] = *args.Project
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+
+	queryParams := url.Values{}
+	if args.IncludeAbandoned != nil {
+		queryParams.Add("includeAbandoned", strconv.FormatBool(*args.IncludeAbandoned))
+	}
+	locationId, _ := uuid.Parse("01828ddc-3600-4a41-8633-99b3a73a0eb3")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue []GitImportRequest
+	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the QueryImportRequests function
+type QueryImportRequestsArgs struct {
+	// (required) Project ID or project name
+	Project *string
+	// (required) The name or ID of the repository.
+	RepositoryId *string
+	// (optional) True to include abandoned import requests in the results.
+	IncludeAbandoned *bool
+}
+
+// [Preview API] Recover a soft-deleted Git repository. Recently deleted repositories go into a soft-delete state for a period of time before they are hard deleted and become unrecoverable.
+func (client *ClientImpl) RestoreRepositoryFromRecycleBin(ctx context.Context, args RestoreRepositoryFromRecycleBinArgs) (*GitRepository, error) {
+	if args.RepositoryDetails == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RepositoryDetails"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project == nil || *args.Project == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
+	}
+	routeValues["project"] = *args.Project
+	if args.RepositoryId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = (*args.RepositoryId).String()
+
+	body, marshalErr := json.Marshal(*args.RepositoryDetails)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("a663da97-81db-4eb3-8b83-287670f63073")
+	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitRepository
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the RestoreRepositoryFromRecycleBin function
+type RestoreRepositoryFromRecycleBinArgs struct {
+	// (required)
+	RepositoryDetails *GitRecycleBinRepositoryDetails
+	// (required) Project ID or project name
+	Project *string
+	// (required) The ID of the repository.
+	RepositoryId *uuid.UUID
+}
+
+// [Preview API] Sends an e-mail notification about a specific pull request to a set of recipients
+func (client *ClientImpl) SharePullRequest(ctx context.Context, args SharePullRequestArgs) error {
+	if args.UserMessage == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.UserMessage"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+
+	body, marshalErr := json.Marshal(*args.UserMessage)
+	if marshalErr != nil {
+		return marshalErr
+	}
+	locationId, _ := uuid.Parse("696f3a82-47c9-487f-9117-b9d00972ca84")
+	_, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the SharePullRequest function
+type SharePullRequestArgs struct {
+	// (required)
+	UserMessage *ShareNotificationContext
+	// (required) ID of the git repository.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// Update a comment associated with a specific thread in a pull request.
+func (client *ClientImpl) UpdateComment(ctx context.Context, args UpdateCommentArgs) (*Comment, error) {
+	if args.Comment == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Comment"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+	if args.ThreadId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ThreadId"}
+	}
+	routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
+	if args.CommentId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CommentId"}
+	}
+	routeValues["commentId"] = strconv.Itoa(*args.CommentId)
+
+	body, marshalErr := json.Marshal(*args.Comment)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("965a3ec7-5ed8-455a-bdcb-835a5ea7fe7b")
+	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue Comment
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the UpdateComment function
+type UpdateCommentArgs struct {
+	// (required) The comment content that should be updated. Comments can be up to 150,000 characters.
+	Comment *Comment
+	// (required) The repository ID of the pull request's target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (required) ID of the thread that the desired comment is in.
+	ThreadId *int
+	// (required) ID of the comment to update.
+	CommentId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// [Preview API] Retry or abandon a failed import request.
+func (client *ClientImpl) UpdateImportRequest(ctx context.Context, args UpdateImportRequestArgs) (*GitImportRequest, error) {
+	if args.ImportRequestToUpdate == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ImportRequestToUpdate"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project == nil || *args.Project == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
+	}
+	routeValues["project"] = *args.Project
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.ImportRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ImportRequestId"}
+	}
+	routeValues["importRequestId"] = strconv.Itoa(*args.ImportRequestId)
+
+	body, marshalErr := json.Marshal(*args.ImportRequestToUpdate)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("01828ddc-3600-4a41-8633-99b3a73a0eb3")
+	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitImportRequest
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the UpdateImportRequest function
+type UpdateImportRequestArgs struct {
+	// (required) The updated version of the import request. Currently, the only change allowed is setting the Status to Queued or Abandoned.
+	ImportRequestToUpdate *GitImportRequest
+	// (required) Project ID or project name
+	Project *string
+	// (required) The name or ID of the repository.
+	RepositoryId *string
+	// (required) The unique identifier for the import request to update.
+	ImportRequestId *int
+}
+
+// Update a pull request
+func (client *ClientImpl) UpdatePullRequest(ctx context.Context, args UpdatePullRequestArgs) (*GitPullRequest, error) {
+	if args.GitPullRequestToUpdate == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.GitPullRequestToUpdate"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+
+	body, marshalErr := json.Marshal(*args.GitPullRequestToUpdate)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("9946fd70-0d40-406e-b686-b4744cbbcc37")
+	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitPullRequest
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the UpdatePullRequest function
+type UpdatePullRequestArgs struct {
+	// (required) The pull request content that should be updated.
+	GitPullRequestToUpdate *GitPullRequest
+	// (required) The repository ID of the pull request's target branch.
+	RepositoryId *string
+	// (required) ID of the pull request to update.
+	PullRequestId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// [Preview API] Update pull request iteration statuses collection. The only supported operation type is `remove`.
+func (client *ClientImpl) UpdatePullRequestIterationStatuses(ctx context.Context, args UpdatePullRequestIterationStatusesArgs) error {
+	if args.PatchDocument == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.PatchDocument"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+	if args.IterationId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.IterationId"}
+	}
+	routeValues["iterationId"] = strconv.Itoa(*args.IterationId)
+
+	body, marshalErr := json.Marshal(*args.PatchDocument)
+	if marshalErr != nil {
+		return marshalErr
+	}
+	locationId, _ := uuid.Parse("75cf11c5-979f-4038-a76e-058a06adf2bf")
+	_, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json-patch+json", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the UpdatePullRequestIterationStatuses function
+type UpdatePullRequestIterationStatusesArgs struct {
+	// (required) Operations to apply to the pull request statuses in JSON Patch format.
+	PatchDocument *[]webapi.JsonPatchOperation
+	// (required) The repository ID of the pull request’s target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (required) ID of the pull request iteration.
+	IterationId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// [Preview API] Create or update pull request external properties. The patch operation can be `add`, `replace` or `remove`. For `add` operation, the path can be empty. If the path is empty, the value must be a list of key value pairs. For `replace` operation, the path cannot be empty. If the path does not exist, the property will be added to the collection. For `remove` operation, the path cannot be empty. If the path does not exist, no action will be performed.
+func (client *ClientImpl) UpdatePullRequestProperties(ctx context.Context, args UpdatePullRequestPropertiesArgs) (interface{}, error) {
+	if args.PatchDocument == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PatchDocument"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+
+	body, marshalErr := json.Marshal(*args.PatchDocument)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("48a52185-5b9e-4736-9dc1-bb1e2feac80b")
+	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json-patch+json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue interface{}
+	err = client.Client.UnmarshalBody(resp, responseValue)
+	return responseValue, err
+}
+
+// Arguments for the UpdatePullRequestProperties function
+type UpdatePullRequestPropertiesArgs struct {
+	// (required) Properties to add, replace or remove in JSON Patch format.
+	PatchDocument *[]webapi.JsonPatchOperation
+	// (required) The repository ID of the pull request’s target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// Reset the votes of multiple reviewers on a pull request.  NOTE: This endpoint only supports updating votes, but does not support updating required reviewers (use policy) or display names.
+func (client *ClientImpl) UpdatePullRequestReviewers(ctx context.Context, args UpdatePullRequestReviewersArgs) error {
+	if args.PatchVotes == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.PatchVotes"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+
+	body, marshalErr := json.Marshal(*args.PatchVotes)
+	if marshalErr != nil {
+		return marshalErr
+	}
+	locationId, _ := uuid.Parse("4b6702c7-aa35-4b89-9c96-b9abf6d3e540")
+	_, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the UpdatePullRequestReviewers function
+type UpdatePullRequestReviewersArgs struct {
+	// (required) IDs of the reviewers whose votes will be reset to zero
+	PatchVotes *[]IdentityRefWithVote
+	// (required) The repository ID of the pull request’s target branch.
+	RepositoryId *string
+	// (required) ID of the pull request
+	PullRequestId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// [Preview API] Update pull request statuses collection. The only supported operation type is `remove`.
+func (client *ClientImpl) UpdatePullRequestStatuses(ctx context.Context, args UpdatePullRequestStatusesArgs) error {
+	if args.PatchDocument == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.PatchDocument"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+
+	body, marshalErr := json.Marshal(*args.PatchDocument)
+	if marshalErr != nil {
+		return marshalErr
+	}
+	locationId, _ := uuid.Parse("b5f6bb4f-8d1e-4d79-8d11-4c9172c99c35")
+	_, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json-patch+json", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the UpdatePullRequestStatuses function
+type UpdatePullRequestStatusesArgs struct {
+	// (required) Operations to apply to the pull request statuses in JSON Patch format.
+	PatchDocument *[]webapi.JsonPatchOperation
+	// (required) The repository ID of the pull request’s target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// Lock or Unlock a branch.
+func (client *ClientImpl) UpdateRef(ctx context.Context, args UpdateRefArgs) (*GitRef, error) {
+	if args.NewRefInfo == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.NewRefInfo"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+
+	queryParams := url.Values{}
+	if args.Filter == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "filter"}
+	}
+	queryParams.Add("filter", *args.Filter)
+	if args.ProjectId != nil {
+		queryParams.Add("projectId", *args.ProjectId)
+	}
+	body, marshalErr := json.Marshal(*args.NewRefInfo)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("2d874a60-a811-4f62-9c9f-963a6ea0a55b")
+	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitRef
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the UpdateRef function
+type UpdateRefArgs struct {
+	// (required) The ref update action (lock/unlock) to perform
+	NewRefInfo *GitRefUpdate
+	// (required) The name or ID of the repository.
+	RepositoryId *string
+	// (required) The name of the branch to lock/unlock
+	Filter *string
+	// (optional) Project ID or project name
+	Project *string
+	// (optional) ID or name of the team project. Optional if specifying an ID for repository.
+	ProjectId *string
+}
+
+// Creating, updating, or deleting refs(branches).
+func (client *ClientImpl) UpdateRefs(ctx context.Context, args UpdateRefsArgs) (*[]GitRefUpdateResult, error) {
+	if args.RefUpdates == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RefUpdates"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+
+	queryParams := url.Values{}
+	if args.ProjectId != nil {
+		queryParams.Add("projectId", *args.ProjectId)
+	}
+	body, marshalErr := json.Marshal(*args.RefUpdates)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("2d874a60-a811-4f62-9c9f-963a6ea0a55b")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", routeValues, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue []GitRefUpdateResult
+	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the UpdateRefs function
+type UpdateRefsArgs struct {
+	// (required) List of ref updates to attempt to perform
+	RefUpdates *[]GitRefUpdate
+	// (required) The name or ID of the repository.
+	RepositoryId *string
+	// (optional) Project ID or project name
+	Project *string
+	// (optional) ID or name of the team project. Optional if specifying an ID for repository.
+	ProjectId *string
+}
+
+// Updates the Git repository with either a new repo name or a new default branch.
+func (client *ClientImpl) UpdateRepository(ctx context.Context, args UpdateRepositoryArgs) (*GitRepository, error) {
+	if args.NewRepositoryInfo == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.NewRepositoryInfo"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = (*args.RepositoryId).String()
+
+	body, marshalErr := json.Marshal(*args.NewRepositoryInfo)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("225f7195-f9c7-4d14-ab28-a83f7ff77e1f")
+	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitRepository
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the UpdateRepository function
+type UpdateRepositoryArgs struct {
+	// (required) Specify a new repo name or a new default branch of the repository
+	NewRepositoryInfo *GitRepository
+	// (required) The name or ID of the repository.
+	RepositoryId *uuid.UUID
+	// (optional) Project ID or project name
+	Project *string
+}
+
+// Update a thread in a pull request.
+func (client *ClientImpl) UpdateThread(ctx context.Context, args UpdateThreadArgs) (*GitPullRequestCommentThread, error) {
+	if args.CommentThread == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CommentThread"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project != nil && *args.Project != "" {
+		routeValues["project"] = *args.Project
+	}
+	if args.RepositoryId == nil || *args.RepositoryId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepositoryId"}
+	}
+	routeValues["repositoryId"] = *args.RepositoryId
+	if args.PullRequestId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PullRequestId"}
+	}
+	routeValues["pullRequestId"] = strconv.Itoa(*args.PullRequestId)
+	if args.ThreadId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.ThreadId"}
+	}
+	routeValues["threadId"] = strconv.Itoa(*args.ThreadId)
+
+	body, marshalErr := json.Marshal(*args.CommentThread)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("ab6e2e5d-a0b7-4153-b64a-a4efe0d49449")
+	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GitPullRequestCommentThread
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the UpdateThread function
+type UpdateThreadArgs struct {
+	// (required) The thread content that should be updated.
+	CommentThread *GitPullRequestCommentThread
+	// (required) The repository ID of the pull request's target branch.
+	RepositoryId *string
+	// (required) ID of the pull request.
+	PullRequestId *int
+	// (required) ID of the thread to update.
+	ThreadId *int
+	// (optional) Project ID or project name
+	Project *string
 }

@@ -24,29 +24,29 @@ var ResourceAreaId, _ = uuid.Parse("7ae6d0a6-cda5-44cf-a261-28c392bed25c")
 
 type Client interface {
 	CreateAgentGroup(context.Context, CreateAgentGroupArgs) (*testservice.AgentGroup, error)
-	GetAgentGroups(context.Context, GetAgentGroupsArgs) (interface{}, error)
+	CreateTestDefinition(context.Context, CreateTestDefinitionArgs) (*testservice.TestDefinition, error)
+	CreateTestDrop(context.Context, CreateTestDropArgs) (*testservice.TestDrop, error)
+	CreateTestRun(context.Context, CreateTestRunArgs) (*testservice.TestRun, error)
 	DeleteStaticAgent(context.Context, DeleteStaticAgentArgs) (*string, error)
-	GetStaticAgents(context.Context, GetStaticAgentsArgs) (interface{}, error)
+	GetAgentGroups(context.Context, GetAgentGroupsArgs) (interface{}, error)
 	GetApplication(context.Context, GetApplicationArgs) (*testservice.Application, error)
+	GetApplicationCounters(context.Context, GetApplicationCountersArgs) (*[]testservice.ApplicationCounters, error)
 	GetApplications(context.Context, GetApplicationsArgs) (*[]testservice.Application, error)
 	GetCounters(context.Context, GetCountersArgs) (*[]testservice.TestRunCounterInstance, error)
-	GetApplicationCounters(context.Context, GetApplicationCountersArgs) (*[]testservice.ApplicationCounters, error)
 	GetCounterSamples(context.Context, GetCounterSamplesArgs) (*testservice.CounterSamplesResult, error)
+	GetLoadTestResult(context.Context, GetLoadTestResultArgs) (*testservice.TestResults, error)
 	GetLoadTestRunErrors(context.Context, GetLoadTestRunErrorsArgs) (*testservice.LoadTestErrors, error)
-	GetTestRunMessages(context.Context, GetTestRunMessagesArgs) (*[]testservice.TestRunMessage, error)
 	GetPlugin(context.Context, GetPluginArgs) (*testservice.ApplicationType, error)
 	GetPlugins(context.Context, GetPluginsArgs) (*[]testservice.ApplicationType, error)
-	GetLoadTestResult(context.Context, GetLoadTestResultArgs) (*testservice.TestResults, error)
-	CreateTestDefinition(context.Context, CreateTestDefinitionArgs) (*testservice.TestDefinition, error)
+	GetStaticAgents(context.Context, GetStaticAgentsArgs) (interface{}, error)
 	GetTestDefinition(context.Context, GetTestDefinitionArgs) (*testservice.TestDefinition, error)
 	GetTestDefinitions(context.Context, GetTestDefinitionsArgs) (*[]testservice.TestDefinitionBasic, error)
-	UpdateTestDefinition(context.Context, UpdateTestDefinitionArgs) (*testservice.TestDefinition, error)
-	CreateTestDrop(context.Context, CreateTestDropArgs) (*testservice.TestDrop, error)
 	GetTestDrop(context.Context, GetTestDropArgs) (*testservice.TestDrop, error)
-	CreateTestRun(context.Context, CreateTestRunArgs) (*testservice.TestRun, error)
 	GetTestRun(context.Context, GetTestRunArgs) (*testservice.TestRun, error)
+	GetTestRunMessages(context.Context, GetTestRunMessagesArgs) (*[]testservice.TestRunMessage, error)
 	// Returns test runs based on the filter specified. Returns all runs of the tenant if there is no filter.
 	GetTestRuns(context.Context, GetTestRunsArgs) (interface{}, error)
+	UpdateTestDefinition(context.Context, UpdateTestDefinitionArgs) (*testservice.TestDefinition, error)
 	UpdateTestRun(context.Context, UpdateTestRunArgs) error
 }
 
@@ -87,6 +87,112 @@ func (client *ClientImpl) CreateAgentGroup(ctx context.Context, args CreateAgent
 type CreateAgentGroupArgs struct {
 	// (required) Agent group to be created
 	Group *testservice.AgentGroup
+}
+
+func (client *ClientImpl) CreateTestDefinition(ctx context.Context, args CreateTestDefinitionArgs) (*testservice.TestDefinition, error) {
+	if args.TestDefinition == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestDefinition"}
+	}
+	body, marshalErr := json.Marshal(*args.TestDefinition)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("a8f9b135-f604-41ea-9d74-d9a5fd32fcd8")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue testservice.TestDefinition
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreateTestDefinition function
+type CreateTestDefinitionArgs struct {
+	// (required) Test definition to be created
+	TestDefinition *testservice.TestDefinition
+}
+
+func (client *ClientImpl) CreateTestDrop(ctx context.Context, args CreateTestDropArgs) (*testservice.TestDrop, error) {
+	if args.WebTestDrop == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WebTestDrop"}
+	}
+	body, marshalErr := json.Marshal(*args.WebTestDrop)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("d89d0e08-505c-4357-96f6-9729311ce8ad")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue testservice.TestDrop
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreateTestDrop function
+type CreateTestDropArgs struct {
+	// (required) Test drop to be created
+	WebTestDrop *testservice.TestDrop
+}
+
+func (client *ClientImpl) CreateTestRun(ctx context.Context, args CreateTestRunArgs) (*testservice.TestRun, error) {
+	if args.WebTestRun == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WebTestRun"}
+	}
+	body, marshalErr := json.Marshal(*args.WebTestRun)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("b41a84ff-ff03-4ac1-b76e-e7ea25c92aba")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue testservice.TestRun
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreateTestRun function
+type CreateTestRunArgs struct {
+	// (required)
+	WebTestRun *testservice.TestRun
+}
+
+func (client *ClientImpl) DeleteStaticAgent(ctx context.Context, args DeleteStaticAgentArgs) (*string, error) {
+	routeValues := make(map[string]string)
+	if args.AgentGroupId == nil || *args.AgentGroupId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.AgentGroupId"}
+	}
+	routeValues["agentGroupId"] = *args.AgentGroupId
+
+	queryParams := url.Values{}
+	if args.AgentName == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "agentName"}
+	}
+	queryParams.Add("agentName", *args.AgentName)
+	locationId, _ := uuid.Parse("87e4b63d-7142-4b50-801e-72ba9ff8ee9b")
+	resp, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue string
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the DeleteStaticAgent function
+type DeleteStaticAgentArgs struct {
+	// (required) The agent group identifier
+	AgentGroupId *string
+	// (required) Name of the static agent
+	AgentName *string
 }
 
 func (client *ClientImpl) GetAgentGroups(ctx context.Context, args GetAgentGroupsArgs) (interface{}, error) {
@@ -133,67 +239,6 @@ type GetAgentGroupsArgs struct {
 	AgentGroupName *string
 }
 
-func (client *ClientImpl) DeleteStaticAgent(ctx context.Context, args DeleteStaticAgentArgs) (*string, error) {
-	routeValues := make(map[string]string)
-	if args.AgentGroupId == nil || *args.AgentGroupId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.AgentGroupId"}
-	}
-	routeValues["agentGroupId"] = *args.AgentGroupId
-
-	queryParams := url.Values{}
-	if args.AgentName == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "agentName"}
-	}
-	queryParams.Add("agentName", *args.AgentName)
-	locationId, _ := uuid.Parse("87e4b63d-7142-4b50-801e-72ba9ff8ee9b")
-	resp, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue string
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the DeleteStaticAgent function
-type DeleteStaticAgentArgs struct {
-	// (required) The agent group identifier
-	AgentGroupId *string
-	// (required) Name of the static agent
-	AgentName *string
-}
-
-func (client *ClientImpl) GetStaticAgents(ctx context.Context, args GetStaticAgentsArgs) (interface{}, error) {
-	routeValues := make(map[string]string)
-	if args.AgentGroupId == nil || *args.AgentGroupId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.AgentGroupId"}
-	}
-	routeValues["agentGroupId"] = *args.AgentGroupId
-
-	queryParams := url.Values{}
-	if args.AgentName != nil {
-		queryParams.Add("agentName", *args.AgentName)
-	}
-	locationId, _ := uuid.Parse("87e4b63d-7142-4b50-801e-72ba9ff8ee9b")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue interface{}
-	err = client.Client.UnmarshalBody(resp, responseValue)
-	return responseValue, err
-}
-
-// Arguments for the GetStaticAgents function
-type GetStaticAgentsArgs struct {
-	// (required) The agent group identifier
-	AgentGroupId *string
-	// (optional) Name of the static agent
-	AgentName *string
-}
-
 func (client *ClientImpl) GetApplication(ctx context.Context, args GetApplicationArgs) (*testservice.Application, error) {
 	routeValues := make(map[string]string)
 	if args.ApplicationId == nil || *args.ApplicationId == "" {
@@ -216,6 +261,33 @@ func (client *ClientImpl) GetApplication(ctx context.Context, args GetApplicatio
 type GetApplicationArgs struct {
 	// (required) Filter by APM application identifier.
 	ApplicationId *string
+}
+
+func (client *ClientImpl) GetApplicationCounters(ctx context.Context, args GetApplicationCountersArgs) (*[]testservice.ApplicationCounters, error) {
+	queryParams := url.Values{}
+	if args.ApplicationId != nil {
+		queryParams.Add("applicationId", *args.ApplicationId)
+	}
+	if args.Plugintype != nil {
+		queryParams.Add("plugintype", *args.Plugintype)
+	}
+	locationId, _ := uuid.Parse("c1275ce9-6d26-4bc6-926b-b846502e812d")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue []testservice.ApplicationCounters
+	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the GetApplicationCounters function
+type GetApplicationCountersArgs struct {
+	// (optional) Filter by APM application identifier.
+	ApplicationId *string
+	// (optional) Currently ApplicationInsights is the only available plugin type.
+	Plugintype *string
 }
 
 func (client *ClientImpl) GetApplications(ctx context.Context, args GetApplicationsArgs) (*[]testservice.Application, error) {
@@ -276,33 +348,6 @@ type GetCountersArgs struct {
 	IncludeSummary *bool
 }
 
-func (client *ClientImpl) GetApplicationCounters(ctx context.Context, args GetApplicationCountersArgs) (*[]testservice.ApplicationCounters, error) {
-	queryParams := url.Values{}
-	if args.ApplicationId != nil {
-		queryParams.Add("applicationId", *args.ApplicationId)
-	}
-	if args.Plugintype != nil {
-		queryParams.Add("plugintype", *args.Plugintype)
-	}
-	locationId, _ := uuid.Parse("c1275ce9-6d26-4bc6-926b-b846502e812d")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", nil, queryParams, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue []testservice.ApplicationCounters
-	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the GetApplicationCounters function
-type GetApplicationCountersArgs struct {
-	// (optional) Filter by APM application identifier.
-	ApplicationId *string
-	// (optional) Currently ApplicationInsights is the only available plugin type.
-	Plugintype *string
-}
-
 func (client *ClientImpl) GetCounterSamples(ctx context.Context, args GetCounterSamplesArgs) (*testservice.CounterSamplesResult, error) {
 	if args.CounterSampleQueryDetails == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CounterSampleQueryDetails"}
@@ -332,6 +377,30 @@ func (client *ClientImpl) GetCounterSamples(ctx context.Context, args GetCounter
 type GetCounterSamplesArgs struct {
 	// (required)
 	CounterSampleQueryDetails *azuredevops.VssJsonCollectionWrapper
+	// (required) The test run identifier
+	TestRunId *string
+}
+
+func (client *ClientImpl) GetLoadTestResult(ctx context.Context, args GetLoadTestResultArgs) (*testservice.TestResults, error) {
+	routeValues := make(map[string]string)
+	if args.TestRunId == nil || *args.TestRunId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.TestRunId"}
+	}
+	routeValues["testRunId"] = *args.TestRunId
+
+	locationId, _ := uuid.Parse("5ed69bd8-4557-4cec-9b75-1ad67d0c257b")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue testservice.TestResults
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the GetLoadTestResult function
+type GetLoadTestResultArgs struct {
 	// (required) The test run identifier
 	TestRunId *string
 }
@@ -376,30 +445,6 @@ type GetLoadTestRunErrorsArgs struct {
 	Detailed *bool
 }
 
-func (client *ClientImpl) GetTestRunMessages(ctx context.Context, args GetTestRunMessagesArgs) (*[]testservice.TestRunMessage, error) {
-	routeValues := make(map[string]string)
-	if args.TestRunId == nil || *args.TestRunId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.TestRunId"}
-	}
-	routeValues["testRunId"] = *args.TestRunId
-
-	locationId, _ := uuid.Parse("2e7ba122-f522-4205-845b-2d270e59850a")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue []testservice.TestRunMessage
-	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the GetTestRunMessages function
-type GetTestRunMessagesArgs struct {
-	// (required) Id of the test run
-	TestRunId *string
-}
-
 func (client *ClientImpl) GetPlugin(ctx context.Context, args GetPluginArgs) (*testservice.ApplicationType, error) {
 	routeValues := make(map[string]string)
 	if args.Type == nil || *args.Type == "" {
@@ -440,53 +485,34 @@ func (client *ClientImpl) GetPlugins(ctx context.Context, args GetPluginsArgs) (
 type GetPluginsArgs struct {
 }
 
-func (client *ClientImpl) GetLoadTestResult(ctx context.Context, args GetLoadTestResultArgs) (*testservice.TestResults, error) {
+func (client *ClientImpl) GetStaticAgents(ctx context.Context, args GetStaticAgentsArgs) (interface{}, error) {
 	routeValues := make(map[string]string)
-	if args.TestRunId == nil || *args.TestRunId == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.TestRunId"}
+	if args.AgentGroupId == nil || *args.AgentGroupId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.AgentGroupId"}
 	}
-	routeValues["testRunId"] = *args.TestRunId
+	routeValues["agentGroupId"] = *args.AgentGroupId
 
-	locationId, _ := uuid.Parse("5ed69bd8-4557-4cec-9b75-1ad67d0c257b")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+	queryParams := url.Values{}
+	if args.AgentName != nil {
+		queryParams.Add("agentName", *args.AgentName)
+	}
+	locationId, _ := uuid.Parse("87e4b63d-7142-4b50-801e-72ba9ff8ee9b")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var responseValue testservice.TestResults
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
+	var responseValue interface{}
+	err = client.Client.UnmarshalBody(resp, responseValue)
+	return responseValue, err
 }
 
-// Arguments for the GetLoadTestResult function
-type GetLoadTestResultArgs struct {
-	// (required) The test run identifier
-	TestRunId *string
-}
-
-func (client *ClientImpl) CreateTestDefinition(ctx context.Context, args CreateTestDefinitionArgs) (*testservice.TestDefinition, error) {
-	if args.TestDefinition == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestDefinition"}
-	}
-	body, marshalErr := json.Marshal(*args.TestDefinition)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("a8f9b135-f604-41ea-9d74-d9a5fd32fcd8")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue testservice.TestDefinition
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreateTestDefinition function
-type CreateTestDefinitionArgs struct {
-	// (required) Test definition to be created
-	TestDefinition *testservice.TestDefinition
+// Arguments for the GetStaticAgents function
+type GetStaticAgentsArgs struct {
+	// (required) The agent group identifier
+	AgentGroupId *string
+	// (optional) Name of the static agent
+	AgentName *string
 }
 
 func (client *ClientImpl) GetTestDefinition(ctx context.Context, args GetTestDefinitionArgs) (*testservice.TestDefinition, error) {
@@ -545,56 +571,6 @@ type GetTestDefinitionsArgs struct {
 	Top *int
 }
 
-func (client *ClientImpl) UpdateTestDefinition(ctx context.Context, args UpdateTestDefinitionArgs) (*testservice.TestDefinition, error) {
-	if args.TestDefinition == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestDefinition"}
-	}
-	body, marshalErr := json.Marshal(*args.TestDefinition)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("a8f9b135-f604-41ea-9d74-d9a5fd32fcd8")
-	resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue testservice.TestDefinition
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the UpdateTestDefinition function
-type UpdateTestDefinitionArgs struct {
-	// (required)
-	TestDefinition *testservice.TestDefinition
-}
-
-func (client *ClientImpl) CreateTestDrop(ctx context.Context, args CreateTestDropArgs) (*testservice.TestDrop, error) {
-	if args.WebTestDrop == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WebTestDrop"}
-	}
-	body, marshalErr := json.Marshal(*args.WebTestDrop)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("d89d0e08-505c-4357-96f6-9729311ce8ad")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue testservice.TestDrop
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreateTestDrop function
-type CreateTestDropArgs struct {
-	// (required) Test drop to be created
-	WebTestDrop *testservice.TestDrop
-}
-
 func (client *ClientImpl) GetTestDrop(ctx context.Context, args GetTestDropArgs) (*testservice.TestDrop, error) {
 	routeValues := make(map[string]string)
 	if args.TestDropId == nil || *args.TestDropId == "" {
@@ -619,31 +595,6 @@ type GetTestDropArgs struct {
 	TestDropId *string
 }
 
-func (client *ClientImpl) CreateTestRun(ctx context.Context, args CreateTestRunArgs) (*testservice.TestRun, error) {
-	if args.WebTestRun == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.WebTestRun"}
-	}
-	body, marshalErr := json.Marshal(*args.WebTestRun)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("b41a84ff-ff03-4ac1-b76e-e7ea25c92aba")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue testservice.TestRun
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreateTestRun function
-type CreateTestRunArgs struct {
-	// (required)
-	WebTestRun *testservice.TestRun
-}
-
 func (client *ClientImpl) GetTestRun(ctx context.Context, args GetTestRunArgs) (*testservice.TestRun, error) {
 	routeValues := make(map[string]string)
 	if args.TestRunId == nil || *args.TestRunId == "" {
@@ -665,6 +616,30 @@ func (client *ClientImpl) GetTestRun(ctx context.Context, args GetTestRunArgs) (
 // Arguments for the GetTestRun function
 type GetTestRunArgs struct {
 	// (required) Unique ID of the test run
+	TestRunId *string
+}
+
+func (client *ClientImpl) GetTestRunMessages(ctx context.Context, args GetTestRunMessagesArgs) (*[]testservice.TestRunMessage, error) {
+	routeValues := make(map[string]string)
+	if args.TestRunId == nil || *args.TestRunId == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.TestRunId"}
+	}
+	routeValues["testRunId"] = *args.TestRunId
+
+	locationId, _ := uuid.Parse("2e7ba122-f522-4205-845b-2d270e59850a")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue []testservice.TestRunMessage
+	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the GetTestRunMessages function
+type GetTestRunMessagesArgs struct {
+	// (required) Id of the test run
 	TestRunId *string
 }
 
@@ -734,6 +709,31 @@ type GetTestRunsArgs struct {
 	Runsourceidentifier *string
 	// (optional)
 	RetentionState *string
+}
+
+func (client *ClientImpl) UpdateTestDefinition(ctx context.Context, args UpdateTestDefinitionArgs) (*testservice.TestDefinition, error) {
+	if args.TestDefinition == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.TestDefinition"}
+	}
+	body, marshalErr := json.Marshal(*args.TestDefinition)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("a8f9b135-f604-41ea-9d74-d9a5fd32fcd8")
+	resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue testservice.TestDefinition
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the UpdateTestDefinition function
+type UpdateTestDefinitionArgs struct {
+	// (required)
+	TestDefinition *testservice.TestDefinition
 }
 
 func (client *ClientImpl) UpdateTestRun(ctx context.Context, args UpdateTestRunArgs) error {

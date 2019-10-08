@@ -24,10 +24,6 @@ var ResourceAreaId, _ = uuid.Parse("af607f94-69ba-4821-8159-f04e37b66350")
 type Client interface {
 	// [Preview API] Check the availability of symbol service. This includes checking for feature flag, and possibly license in future. Note this is NOT an anonymous endpoint, and the caller will be redirected to authentication before hitting it.
 	CheckAvailability(context.Context, CheckAvailabilityArgs) error
-	// [Preview API] Get the client package.
-	GetClient(context.Context, GetClientArgs) (interface{}, error)
-	// [Preview API] Get client version information.
-	HeadClient(context.Context, HeadClientArgs) error
 	// [Preview API] Create a new symbol request.
 	CreateRequests(context.Context, CreateRequestsArgs) (*Request, error)
 	// [Preview API] Create debug entries for a symbol request as specified by its identifier.
@@ -38,16 +34,20 @@ type Client interface {
 	DeleteRequestsRequestId(context.Context, DeleteRequestsRequestIdArgs) error
 	// [Preview API] Delete a symbol request by request name.
 	DeleteRequestsRequestName(context.Context, DeleteRequestsRequestNameArgs) error
+	// [Preview API] Get the client package.
+	GetClient(context.Context, GetClientArgs) (interface{}, error)
 	// [Preview API] Get a symbol request by request identifier.
 	GetRequestsRequestId(context.Context, GetRequestsRequestIdArgs) (*Request, error)
 	// [Preview API] Get a symbol request by request name.
 	GetRequestsRequestName(context.Context, GetRequestsRequestNameArgs) (*Request, error)
+	// [Preview API] Given a client key, returns the best matched debug entry.
+	GetSymSrvDebugEntryClientKey(context.Context, GetSymSrvDebugEntryClientKeyArgs) error
+	// [Preview API] Get client version information.
+	HeadClient(context.Context, HeadClientArgs) error
 	// [Preview API] Update a symbol request by request identifier.
 	UpdateRequestsRequestId(context.Context, UpdateRequestsRequestIdArgs) (*Request, error)
 	// [Preview API] Update a symbol request by request name.
 	UpdateRequestsRequestName(context.Context, UpdateRequestsRequestNameArgs) (*Request, error)
-	// [Preview API] Given a client key, returns the best matched debug entry.
-	GetSymSrvDebugEntryClientKey(context.Context, GetSymSrvDebugEntryClientKeyArgs) error
 }
 
 type ClientImpl struct {
@@ -77,46 +77,6 @@ func (client *ClientImpl) CheckAvailability(ctx context.Context, args CheckAvail
 
 // Arguments for the CheckAvailability function
 type CheckAvailabilityArgs struct {
-}
-
-// [Preview API] Get the client package.
-func (client *ClientImpl) GetClient(ctx context.Context, args GetClientArgs) (interface{}, error) {
-	routeValues := make(map[string]string)
-	if args.ClientType == nil || *args.ClientType == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ClientType"}
-	}
-	routeValues["clientType"] = *args.ClientType
-
-	locationId, _ := uuid.Parse("79c83865-4de3-460c-8a16-01be238e0818")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue interface{}
-	err = client.Client.UnmarshalBody(resp, responseValue)
-	return responseValue, err
-}
-
-// Arguments for the GetClient function
-type GetClientArgs struct {
-	// (required) Either "EXE" for a zip file containing a Windows symbol client (a.k.a. symbol.exe) along with dependencies, or "TASK" for a VSTS task that can be run on a VSTS build agent. All the other values are invalid. The parameter is case-insensitive.
-	ClientType *string
-}
-
-// [Preview API] Get client version information.
-func (client *ClientImpl) HeadClient(ctx context.Context, args HeadClientArgs) error {
-	locationId, _ := uuid.Parse("79c83865-4de3-460c-8a16-01be238e0818")
-	_, err := client.Client.Send(ctx, http.MethodHead, locationId, "5.1-preview.1", nil, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the HeadClient function
-type HeadClientArgs struct {
 }
 
 // [Preview API] Create a new symbol request.
@@ -281,6 +241,31 @@ type DeleteRequestsRequestNameArgs struct {
 	Synchronous *bool
 }
 
+// [Preview API] Get the client package.
+func (client *ClientImpl) GetClient(ctx context.Context, args GetClientArgs) (interface{}, error) {
+	routeValues := make(map[string]string)
+	if args.ClientType == nil || *args.ClientType == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ClientType"}
+	}
+	routeValues["clientType"] = *args.ClientType
+
+	locationId, _ := uuid.Parse("79c83865-4de3-460c-8a16-01be238e0818")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue interface{}
+	err = client.Client.UnmarshalBody(resp, responseValue)
+	return responseValue, err
+}
+
+// Arguments for the GetClient function
+type GetClientArgs struct {
+	// (required) Either "EXE" for a zip file containing a Windows symbol client (a.k.a. symbol.exe) along with dependencies, or "TASK" for a VSTS task that can be run on a VSTS build agent. All the other values are invalid. The parameter is case-insensitive.
+	ClientType *string
+}
+
 // [Preview API] Get a symbol request by request identifier.
 func (client *ClientImpl) GetRequestsRequestId(ctx context.Context, args GetRequestsRequestIdArgs) (*Request, error) {
 	routeValues := make(map[string]string)
@@ -328,6 +313,44 @@ func (client *ClientImpl) GetRequestsRequestName(ctx context.Context, args GetRe
 type GetRequestsRequestNameArgs struct {
 	// (required) The symbol request name.
 	RequestName *string
+}
+
+// [Preview API] Given a client key, returns the best matched debug entry.
+func (client *ClientImpl) GetSymSrvDebugEntryClientKey(ctx context.Context, args GetSymSrvDebugEntryClientKeyArgs) error {
+	routeValues := make(map[string]string)
+	if args.DebugEntryClientKey == nil || *args.DebugEntryClientKey == "" {
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.DebugEntryClientKey"}
+	}
+	routeValues["debugEntryClientKey"] = *args.DebugEntryClientKey
+
+	locationId, _ := uuid.Parse("9648e256-c9f9-4f16-8a27-630b06396942")
+	_, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the GetSymSrvDebugEntryClientKey function
+type GetSymSrvDebugEntryClientKeyArgs struct {
+	// (required) A "client key" used by both ends of Microsoft's symbol protocol to identify a debug entry. The semantics of client key is governed by symsrv and is beyond the scope of this documentation.
+	DebugEntryClientKey *string
+}
+
+// [Preview API] Get client version information.
+func (client *ClientImpl) HeadClient(ctx context.Context, args HeadClientArgs) error {
+	locationId, _ := uuid.Parse("79c83865-4de3-460c-8a16-01be238e0818")
+	_, err := client.Client.Send(ctx, http.MethodHead, locationId, "5.1-preview.1", nil, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the HeadClient function
+type HeadClientArgs struct {
 }
 
 // [Preview API] Update a symbol request by request identifier.
@@ -395,27 +418,4 @@ type UpdateRequestsRequestNameArgs struct {
 	UpdateRequest *Request
 	// (required) The symbol request name.
 	RequestName *string
-}
-
-// [Preview API] Given a client key, returns the best matched debug entry.
-func (client *ClientImpl) GetSymSrvDebugEntryClientKey(ctx context.Context, args GetSymSrvDebugEntryClientKeyArgs) error {
-	routeValues := make(map[string]string)
-	if args.DebugEntryClientKey == nil || *args.DebugEntryClientKey == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.DebugEntryClientKey"}
-	}
-	routeValues["debugEntryClientKey"] = *args.DebugEntryClientKey
-
-	locationId, _ := uuid.Parse("9648e256-c9f9-4f16-8a27-630b06396942")
-	_, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the GetSymSrvDebugEntryClientKey function
-type GetSymSrvDebugEntryClientKeyArgs struct {
-	// (required) A "client key" used by both ends of Microsoft's symbol protocol to identify a debug entry. The semantics of client key is governed by symsrv and is beyond the scope of this documentation.
-	DebugEntryClientKey *string
 }

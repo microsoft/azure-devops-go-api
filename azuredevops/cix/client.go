@@ -19,16 +19,16 @@ import (
 )
 
 type Client interface {
-	// [Preview API] Gets a list of existing configuration files for the given repository.
-	GetConfigurations(context.Context, GetConfigurationsArgs) (*[]ConfigurationFile, error)
 	// [Preview API] Creates a new Pipeline connection between the provider installation and the specified project. Returns the PipelineConnection object created.
 	CreateProjectConnection(context.Context, CreateProjectConnectionArgs) (*PipelineConnection, error)
+	// [Preview API]
+	CreateResources(context.Context, CreateResourcesArgs) (*CreatedResources, error)
+	// [Preview API] Gets a list of existing configuration files for the given repository.
+	GetConfigurations(context.Context, GetConfigurationsArgs) (*[]ConfigurationFile, error)
 	// [Preview API] Returns a list of build frameworks that best match the given repository based on its contents.
 	GetDetectedBuildFrameworks(context.Context, GetDetectedBuildFrameworksArgs) (*[]DetectedBuildFramework, error)
 	// [Preview API] Returns a list of all YAML templates with weighting based on which would best fit the given repository.
 	GetTemplateRecommendations(context.Context, GetTemplateRecommendationsArgs) (*[]Template, error)
-	// [Preview API]
-	CreateResources(context.Context, CreateResourcesArgs) (*CreatedResources, error)
 	// [Preview API]
 	RenderTemplate(context.Context, RenderTemplateArgs) (*Template, error)
 }
@@ -42,6 +42,73 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) Client {
 	return &ClientImpl{
 		Client: *client,
 	}
+}
+
+// [Preview API] Creates a new Pipeline connection between the provider installation and the specified project. Returns the PipelineConnection object created.
+func (client *ClientImpl) CreateProjectConnection(ctx context.Context, args CreateProjectConnectionArgs) (*PipelineConnection, error) {
+	if args.CreateConnectionInputs == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CreateConnectionInputs"}
+	}
+	queryParams := url.Values{}
+	if args.Project == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "project"}
+	}
+	queryParams.Add("project", *args.Project)
+	body, marshalErr := json.Marshal(*args.CreateConnectionInputs)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("00df4879-9216-45d5-b38d-4a487b626b2c")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", nil, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue PipelineConnection
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreateProjectConnection function
+type CreateProjectConnectionArgs struct {
+	// (required)
+	CreateConnectionInputs *CreatePipelineConnectionInputs
+	// (required)
+	Project *string
+}
+
+// [Preview API]
+func (client *ClientImpl) CreateResources(ctx context.Context, args CreateResourcesArgs) (*CreatedResources, error) {
+	if args.CreationParameters == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CreationParameters"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project == nil || *args.Project == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
+	}
+	routeValues["project"] = *args.Project
+
+	body, marshalErr := json.Marshal(*args.CreationParameters)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("43201899-7690-4870-9c79-ab69605f21ed")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue CreatedResources
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreateResources function
+type CreateResourcesArgs struct {
+	// (required)
+	CreationParameters *map[string]ResourceCreationParameter
+	// (required) Project ID or project name
+	Project *string
 }
 
 // [Preview API] Gets a list of existing configuration files for the given repository.
@@ -88,39 +155,6 @@ type GetConfigurationsArgs struct {
 	Branch *string
 	// (optional) If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TfsGit (i.e. Azure Repos).
 	ServiceConnectionId *uuid.UUID
-}
-
-// [Preview API] Creates a new Pipeline connection between the provider installation and the specified project. Returns the PipelineConnection object created.
-func (client *ClientImpl) CreateProjectConnection(ctx context.Context, args CreateProjectConnectionArgs) (*PipelineConnection, error) {
-	if args.CreateConnectionInputs == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CreateConnectionInputs"}
-	}
-	queryParams := url.Values{}
-	if args.Project == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "project"}
-	}
-	queryParams.Add("project", *args.Project)
-	body, marshalErr := json.Marshal(*args.CreateConnectionInputs)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("00df4879-9216-45d5-b38d-4a487b626b2c")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", nil, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue PipelineConnection
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreateProjectConnection function
-type CreateProjectConnectionArgs struct {
-	// (required)
-	CreateConnectionInputs *CreatePipelineConnectionInputs
-	// (required)
-	Project *string
 }
 
 // [Preview API] Returns a list of build frameworks that best match the given repository based on its contents.
@@ -218,40 +252,6 @@ type GetTemplateRecommendationsArgs struct {
 	Branch *string
 	// (optional) If specified, the ID of the service endpoint to query. Can only be omitted for providers that do not use service endpoints, e.g. TfsGit (i.e. Azure Repos).
 	ServiceConnectionId *uuid.UUID
-}
-
-// [Preview API]
-func (client *ClientImpl) CreateResources(ctx context.Context, args CreateResourcesArgs) (*CreatedResources, error) {
-	if args.CreationParameters == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CreationParameters"}
-	}
-	routeValues := make(map[string]string)
-	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
-	}
-	routeValues["project"] = *args.Project
-
-	body, marshalErr := json.Marshal(*args.CreationParameters)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("43201899-7690-4870-9c79-ab69605f21ed")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue CreatedResources
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the CreateResources function
-type CreateResourcesArgs struct {
-	// (required)
-	CreationParameters *map[string]ResourceCreationParameter
-	// (required) Project ID or project name
-	Project *string
 }
 
 // [Preview API]

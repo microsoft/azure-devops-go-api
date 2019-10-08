@@ -20,12 +20,12 @@ import (
 var ResourceAreaId, _ = uuid.Parse("7658fa33-b1bf-4580-990f-fac5896773d3")
 
 type Client interface {
-	// [Preview API]
-	GetProjectLanguageAnalytics(context.Context, GetProjectLanguageAnalyticsArgs) (*ProjectLanguageAnalytics, error)
-	// [Preview API]
-	GetProjectActivityMetrics(context.Context, GetProjectActivityMetricsArgs) (*ProjectActivityMetrics, error)
 	// [Preview API] Retrieves git activity metrics for repositories matching a specified criteria.
 	GetGitRepositoriesActivityMetrics(context.Context, GetGitRepositoriesActivityMetricsArgs) (*[]RepositoryActivityMetrics, error)
+	// [Preview API]
+	GetProjectActivityMetrics(context.Context, GetProjectActivityMetricsArgs) (*ProjectActivityMetrics, error)
+	// [Preview API]
+	GetProjectLanguageAnalytics(context.Context, GetProjectLanguageAnalyticsArgs) (*ProjectLanguageAnalytics, error)
 	// [Preview API]
 	GetRepositoryActivityMetrics(context.Context, GetRepositoryActivityMetricsArgs) (*RepositoryActivityMetrics, error)
 }
@@ -42,69 +42,6 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client,
 	return &ClientImpl{
 		Client: *client,
 	}, nil
-}
-
-// [Preview API]
-func (client *ClientImpl) GetProjectLanguageAnalytics(ctx context.Context, args GetProjectLanguageAnalyticsArgs) (*ProjectLanguageAnalytics, error) {
-	routeValues := make(map[string]string)
-	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
-	}
-	routeValues["project"] = *args.Project
-
-	locationId, _ := uuid.Parse("5b02a779-1867-433f-90b7-d23ed5e33e57")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue ProjectLanguageAnalytics
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the GetProjectLanguageAnalytics function
-type GetProjectLanguageAnalyticsArgs struct {
-	// (required) Project ID or project name
-	Project *string
-}
-
-// [Preview API]
-func (client *ClientImpl) GetProjectActivityMetrics(ctx context.Context, args GetProjectActivityMetricsArgs) (*ProjectActivityMetrics, error) {
-	routeValues := make(map[string]string)
-	if args.Project == nil || *args.Project == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
-	}
-	routeValues["project"] = *args.Project
-
-	queryParams := url.Values{}
-	if args.FromDate == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "fromDate"}
-	}
-	queryParams.Add("fromDate", (*args.FromDate).String())
-	if args.AggregationType == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "aggregationType"}
-	}
-	queryParams.Add("aggregationType", string(*args.AggregationType))
-	locationId, _ := uuid.Parse("e40ae584-9ea6-4f06-a7c7-6284651b466b")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue ProjectActivityMetrics
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the GetProjectActivityMetrics function
-type GetProjectActivityMetricsArgs struct {
-	// (required) Project ID or project name
-	Project *string
-	// (required)
-	FromDate *azuredevops.Time
-	// (required)
-	AggregationType *AggregationType
 }
 
 // [Preview API] Retrieves git activity metrics for repositories matching a specified criteria.
@@ -155,6 +92,69 @@ type GetGitRepositoriesActivityMetricsArgs struct {
 	Skip *int
 	// (required) The number of repositories for which activity metrics are to be retrieved.
 	Top *int
+}
+
+// [Preview API]
+func (client *ClientImpl) GetProjectActivityMetrics(ctx context.Context, args GetProjectActivityMetricsArgs) (*ProjectActivityMetrics, error) {
+	routeValues := make(map[string]string)
+	if args.Project == nil || *args.Project == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
+	}
+	routeValues["project"] = *args.Project
+
+	queryParams := url.Values{}
+	if args.FromDate == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "fromDate"}
+	}
+	queryParams.Add("fromDate", (*args.FromDate).String())
+	if args.AggregationType == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "aggregationType"}
+	}
+	queryParams.Add("aggregationType", string(*args.AggregationType))
+	locationId, _ := uuid.Parse("e40ae584-9ea6-4f06-a7c7-6284651b466b")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue ProjectActivityMetrics
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the GetProjectActivityMetrics function
+type GetProjectActivityMetricsArgs struct {
+	// (required) Project ID or project name
+	Project *string
+	// (required)
+	FromDate *azuredevops.Time
+	// (required)
+	AggregationType *AggregationType
+}
+
+// [Preview API]
+func (client *ClientImpl) GetProjectLanguageAnalytics(ctx context.Context, args GetProjectLanguageAnalyticsArgs) (*ProjectLanguageAnalytics, error) {
+	routeValues := make(map[string]string)
+	if args.Project == nil || *args.Project == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
+	}
+	routeValues["project"] = *args.Project
+
+	locationId, _ := uuid.Parse("5b02a779-1867-433f-90b7-d23ed5e33e57")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue ProjectLanguageAnalytics
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the GetProjectLanguageAnalytics function
+type GetProjectLanguageAnalyticsArgs struct {
+	// (required) Project ID or project name
+	Project *string
 }
 
 // [Preview API]

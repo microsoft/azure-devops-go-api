@@ -26,34 +26,34 @@ var ResourceAreaId, _ = uuid.Parse("68ddce18-2501-45f1-a17b-7931a9922690")
 type Client interface {
 	// [Preview API] Create a group entitlement with license rule, extension rule.
 	AddGroupEntitlement(context.Context, AddGroupEntitlementArgs) (*GroupEntitlementOperationReference, error)
+	// [Preview API] Add a member to a Group.
+	AddMemberToGroup(context.Context, AddMemberToGroupArgs) error
+	// [Preview API] Add a user, assign license and extensions and make them a member of a project group in an account.
+	AddUserEntitlement(context.Context, AddUserEntitlementArgs) (*UserEntitlementsPostResponse, error)
 	// [Preview API] Delete a group entitlement.
 	DeleteGroupEntitlement(context.Context, DeleteGroupEntitlementArgs) (*GroupEntitlementOperationReference, error)
+	// [Preview API] Delete a user from the account.
+	DeleteUserEntitlement(context.Context, DeleteUserEntitlementArgs) error
 	// [Preview API] Get a group entitlement.
 	GetGroupEntitlement(context.Context, GetGroupEntitlementArgs) (*GroupEntitlement, error)
 	// [Preview API] Get the group entitlements for an account.
 	GetGroupEntitlements(context.Context, GetGroupEntitlementsArgs) (*[]GroupEntitlement, error)
-	// [Preview API] Update entitlements (License Rule, Extensions Rule, Project memberships etc.) for a group.
-	UpdateGroupEntitlement(context.Context, UpdateGroupEntitlementArgs) (*GroupEntitlementOperationReference, error)
-	// [Preview API] Add a member to a Group.
-	AddMemberToGroup(context.Context, AddMemberToGroupArgs) error
 	// [Preview API] Get direct members of a Group.
 	GetGroupMembers(context.Context, GetGroupMembersArgs) (*PagedGraphMemberList, error)
-	// [Preview API] Remove a member from a Group.
-	RemoveMemberFromGroup(context.Context, RemoveMemberFromGroupArgs) error
-	// [Preview API] Add a user, assign license and extensions and make them a member of a project group in an account.
-	AddUserEntitlement(context.Context, AddUserEntitlementArgs) (*UserEntitlementsPostResponse, error)
-	// [Preview API] Get a paged set of user entitlements matching the filter criteria. If no filter is is passed, a page from all the account users is returned.
-	GetUserEntitlements(context.Context, GetUserEntitlementsArgs) (*PagedGraphMemberList, error)
-	// [Preview API] Edit the entitlements (License, Extensions, Projects, Teams etc) for one or more users.
-	UpdateUserEntitlements(context.Context, UpdateUserEntitlementsArgs) (*UserEntitlementOperationReference, error)
-	// [Preview API] Delete a user from the account.
-	DeleteUserEntitlement(context.Context, DeleteUserEntitlementArgs) error
 	// [Preview API] Get User Entitlement for a user.
 	GetUserEntitlement(context.Context, GetUserEntitlementArgs) (*UserEntitlement, error)
-	// [Preview API] Edit the entitlements (License, Extensions, Projects, Teams etc) for a user.
-	UpdateUserEntitlement(context.Context, UpdateUserEntitlementArgs) (*UserEntitlementsPatchResponse, error)
+	// [Preview API] Get a paged set of user entitlements matching the filter criteria. If no filter is is passed, a page from all the account users is returned.
+	GetUserEntitlements(context.Context, GetUserEntitlementsArgs) (*PagedGraphMemberList, error)
 	// [Preview API] Get summary of Licenses, Extension, Projects, Groups and their assignments in the collection.
 	GetUsersSummary(context.Context, GetUsersSummaryArgs) (*UsersSummary, error)
+	// [Preview API] Remove a member from a Group.
+	RemoveMemberFromGroup(context.Context, RemoveMemberFromGroupArgs) error
+	// [Preview API] Update entitlements (License Rule, Extensions Rule, Project memberships etc.) for a group.
+	UpdateGroupEntitlement(context.Context, UpdateGroupEntitlementArgs) (*GroupEntitlementOperationReference, error)
+	// [Preview API] Edit the entitlements (License, Extensions, Projects, Teams etc) for a user.
+	UpdateUserEntitlement(context.Context, UpdateUserEntitlementArgs) (*UserEntitlementsPatchResponse, error)
+	// [Preview API] Edit the entitlements (License, Extensions, Projects, Teams etc) for one or more users.
+	UpdateUserEntitlements(context.Context, UpdateUserEntitlementsArgs) (*UserEntitlementOperationReference, error)
 }
 
 type ClientImpl struct {
@@ -102,6 +102,61 @@ type AddGroupEntitlementArgs struct {
 	RuleOption *licensingrule.RuleOption
 }
 
+// [Preview API] Add a member to a Group.
+func (client *ClientImpl) AddMemberToGroup(ctx context.Context, args AddMemberToGroupArgs) error {
+	routeValues := make(map[string]string)
+	if args.GroupId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.GroupId"}
+	}
+	routeValues["groupId"] = (*args.GroupId).String()
+	if args.MemberId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.MemberId"}
+	}
+	routeValues["memberId"] = (*args.MemberId).String()
+
+	locationId, _ := uuid.Parse("45a36e53-5286-4518-aa72-2d29f7acc5d8")
+	_, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the AddMemberToGroup function
+type AddMemberToGroupArgs struct {
+	// (required) Id of the Group.
+	GroupId *uuid.UUID
+	// (required) Id of the member to add.
+	MemberId *uuid.UUID
+}
+
+// [Preview API] Add a user, assign license and extensions and make them a member of a project group in an account.
+func (client *ClientImpl) AddUserEntitlement(ctx context.Context, args AddUserEntitlementArgs) (*UserEntitlementsPostResponse, error) {
+	if args.UserEntitlement == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UserEntitlement"}
+	}
+	body, marshalErr := json.Marshal(*args.UserEntitlement)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("387f832c-dbf2-4643-88e9-c1aa94dbb737")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.2", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue UserEntitlementsPostResponse
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the AddUserEntitlement function
+type AddUserEntitlementArgs struct {
+	// (required) UserEntitlement object specifying License, Extensions and Project/Team groups the user should be added to.
+	UserEntitlement *UserEntitlement
+}
+
 // [Preview API] Delete a group entitlement.
 func (client *ClientImpl) DeleteGroupEntitlement(ctx context.Context, args DeleteGroupEntitlementArgs) (*GroupEntitlementOperationReference, error) {
 	routeValues := make(map[string]string)
@@ -136,6 +191,29 @@ type DeleteGroupEntitlementArgs struct {
 	RuleOption *licensingrule.RuleOption
 	// (optional) Optional parameter that specifies whether the group with the given ID should be removed from all other groups
 	RemoveGroupMembership *bool
+}
+
+// [Preview API] Delete a user from the account.
+func (client *ClientImpl) DeleteUserEntitlement(ctx context.Context, args DeleteUserEntitlementArgs) error {
+	routeValues := make(map[string]string)
+	if args.UserId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.UserId"}
+	}
+	routeValues["userId"] = (*args.UserId).String()
+
+	locationId, _ := uuid.Parse("8480c6eb-ce60-47e9-88df-eca3c801638b")
+	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the DeleteUserEntitlement function
+type DeleteUserEntitlementArgs struct {
+	// (required) ID of the user.
+	UserId *uuid.UUID
 }
 
 // [Preview API] Get a group entitlement.
@@ -180,75 +258,6 @@ func (client *ClientImpl) GetGroupEntitlements(ctx context.Context, args GetGrou
 type GetGroupEntitlementsArgs struct {
 }
 
-// [Preview API] Update entitlements (License Rule, Extensions Rule, Project memberships etc.) for a group.
-func (client *ClientImpl) UpdateGroupEntitlement(ctx context.Context, args UpdateGroupEntitlementArgs) (*GroupEntitlementOperationReference, error) {
-	if args.Document == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Document"}
-	}
-	routeValues := make(map[string]string)
-	if args.GroupId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.GroupId"}
-	}
-	routeValues["groupId"] = (*args.GroupId).String()
-
-	queryParams := url.Values{}
-	if args.RuleOption != nil {
-		queryParams.Add("ruleOption", string(*args.RuleOption))
-	}
-	body, marshalErr := json.Marshal(*args.Document)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("2280bffa-58a2-49da-822e-0764a1bb44f7")
-	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/json-patch+json", "application/json", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var responseValue GroupEntitlementOperationReference
-	err = client.Client.UnmarshalBody(resp, &responseValue)
-	return &responseValue, err
-}
-
-// Arguments for the UpdateGroupEntitlement function
-type UpdateGroupEntitlementArgs struct {
-	// (required) JsonPatchDocument containing the operations to perform on the group.
-	Document *[]webapi.JsonPatchOperation
-	// (required) ID of the group.
-	GroupId *uuid.UUID
-	// (optional) RuleOption [ApplyGroupRule/TestApplyGroupRule] - specifies if the rules defined in group entitlement should be updated and the changes are applied to it’s members (default option) or just be tested
-	RuleOption *licensingrule.RuleOption
-}
-
-// [Preview API] Add a member to a Group.
-func (client *ClientImpl) AddMemberToGroup(ctx context.Context, args AddMemberToGroupArgs) error {
-	routeValues := make(map[string]string)
-	if args.GroupId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.GroupId"}
-	}
-	routeValues["groupId"] = (*args.GroupId).String()
-	if args.MemberId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.MemberId"}
-	}
-	routeValues["memberId"] = (*args.MemberId).String()
-
-	locationId, _ := uuid.Parse("45a36e53-5286-4518-aa72-2d29f7acc5d8")
-	_, err := client.Client.Send(ctx, http.MethodPut, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the AddMemberToGroup function
-type AddMemberToGroupArgs struct {
-	// (required) Id of the Group.
-	GroupId *uuid.UUID
-	// (required) Id of the member to add.
-	MemberId *uuid.UUID
-}
-
 // [Preview API] Get direct members of a Group.
 func (client *ClientImpl) GetGroupMembers(ctx context.Context, args GetGroupMembersArgs) (*PagedGraphMemberList, error) {
 	routeValues := make(map[string]string)
@@ -285,59 +294,29 @@ type GetGroupMembersArgs struct {
 	PagingToken *string
 }
 
-// [Preview API] Remove a member from a Group.
-func (client *ClientImpl) RemoveMemberFromGroup(ctx context.Context, args RemoveMemberFromGroupArgs) error {
+// [Preview API] Get User Entitlement for a user.
+func (client *ClientImpl) GetUserEntitlement(ctx context.Context, args GetUserEntitlementArgs) (*UserEntitlement, error) {
 	routeValues := make(map[string]string)
-	if args.GroupId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.GroupId"}
+	if args.UserId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UserId"}
 	}
-	routeValues["groupId"] = (*args.GroupId).String()
-	if args.MemberId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.MemberId"}
-	}
-	routeValues["memberId"] = (*args.MemberId).String()
+	routeValues["userId"] = (*args.UserId).String()
 
-	locationId, _ := uuid.Parse("45a36e53-5286-4518-aa72-2d29f7acc5d8")
-	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the RemoveMemberFromGroup function
-type RemoveMemberFromGroupArgs struct {
-	// (required) Id of the group.
-	GroupId *uuid.UUID
-	// (required) Id of the member to remove.
-	MemberId *uuid.UUID
-}
-
-// [Preview API] Add a user, assign license and extensions and make them a member of a project group in an account.
-func (client *ClientImpl) AddUserEntitlement(ctx context.Context, args AddUserEntitlementArgs) (*UserEntitlementsPostResponse, error) {
-	if args.UserEntitlement == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UserEntitlement"}
-	}
-	body, marshalErr := json.Marshal(*args.UserEntitlement)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("387f832c-dbf2-4643-88e9-c1aa94dbb737")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.2", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	locationId, _ := uuid.Parse("8480c6eb-ce60-47e9-88df-eca3c801638b")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/json", nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var responseValue UserEntitlementsPostResponse
+	var responseValue UserEntitlement
 	err = client.Client.UnmarshalBody(resp, &responseValue)
 	return &responseValue, err
 }
 
-// Arguments for the AddUserEntitlement function
-type AddUserEntitlementArgs struct {
-	// (required) UserEntitlement object specifying License, Extensions and Project/Team groups the user should be added to.
-	UserEntitlement *UserEntitlement
+// Arguments for the GetUserEntitlement function
+type GetUserEntitlementArgs struct {
+	// (required) ID of the user.
+	UserId *uuid.UUID
 }
 
 // [Preview API] Get a paged set of user entitlements matching the filter criteria. If no filter is is passed, a page from all the account users is returned.
@@ -378,48 +357,43 @@ type GetUserEntitlementsArgs struct {
 	SortOption *string
 }
 
-// [Preview API] Edit the entitlements (License, Extensions, Projects, Teams etc) for one or more users.
-func (client *ClientImpl) UpdateUserEntitlements(ctx context.Context, args UpdateUserEntitlementsArgs) (*UserEntitlementOperationReference, error) {
-	if args.Document == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Document"}
-	}
+// [Preview API] Get summary of Licenses, Extension, Projects, Groups and their assignments in the collection.
+func (client *ClientImpl) GetUsersSummary(ctx context.Context, args GetUsersSummaryArgs) (*UsersSummary, error) {
 	queryParams := url.Values{}
-	if args.DoNotSendInviteForNewUsers != nil {
-		queryParams.Add("doNotSendInviteForNewUsers", strconv.FormatBool(*args.DoNotSendInviteForNewUsers))
+	if args.Select != nil {
+		queryParams.Add("select", *args.Select)
 	}
-	body, marshalErr := json.Marshal(*args.Document)
-	if marshalErr != nil {
-		return nil, marshalErr
-	}
-	locationId, _ := uuid.Parse("387f832c-dbf2-4643-88e9-c1aa94dbb737")
-	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.2", nil, queryParams, bytes.NewReader(body), "application/json-patch+json", "application/json", nil)
+	locationId, _ := uuid.Parse("5ae55b13-c9dd-49d1-957e-6e76c152e3d9")
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var responseValue UserEntitlementOperationReference
+	var responseValue UsersSummary
 	err = client.Client.UnmarshalBody(resp, &responseValue)
 	return &responseValue, err
 }
 
-// Arguments for the UpdateUserEntitlements function
-type UpdateUserEntitlementsArgs struct {
-	// (required) JsonPatchDocument containing the operations to perform.
-	Document *[]webapi.JsonPatchOperation
-	// (optional) Whether to send email invites to new users or not
-	DoNotSendInviteForNewUsers *bool
+// Arguments for the GetUsersSummary function
+type GetUsersSummaryArgs struct {
+	// (optional) Comma (",") separated list of properties to select. Supported property names are {AccessLevels, Licenses, Extensions, Projects, Groups}.
+	Select *string
 }
 
-// [Preview API] Delete a user from the account.
-func (client *ClientImpl) DeleteUserEntitlement(ctx context.Context, args DeleteUserEntitlementArgs) error {
+// [Preview API] Remove a member from a Group.
+func (client *ClientImpl) RemoveMemberFromGroup(ctx context.Context, args RemoveMemberFromGroupArgs) error {
 	routeValues := make(map[string]string)
-	if args.UserId == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.UserId"}
+	if args.GroupId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.GroupId"}
 	}
-	routeValues["userId"] = (*args.UserId).String()
+	routeValues["groupId"] = (*args.GroupId).String()
+	if args.MemberId == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.MemberId"}
+	}
+	routeValues["memberId"] = (*args.MemberId).String()
 
-	locationId, _ := uuid.Parse("8480c6eb-ce60-47e9-88df-eca3c801638b")
-	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/json", nil)
+	locationId, _ := uuid.Parse("45a36e53-5286-4518-aa72-2d29f7acc5d8")
+	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
 	if err != nil {
 		return err
 	}
@@ -427,35 +401,52 @@ func (client *ClientImpl) DeleteUserEntitlement(ctx context.Context, args Delete
 	return nil
 }
 
-// Arguments for the DeleteUserEntitlement function
-type DeleteUserEntitlementArgs struct {
-	// (required) ID of the user.
-	UserId *uuid.UUID
+// Arguments for the RemoveMemberFromGroup function
+type RemoveMemberFromGroupArgs struct {
+	// (required) Id of the group.
+	GroupId *uuid.UUID
+	// (required) Id of the member to remove.
+	MemberId *uuid.UUID
 }
 
-// [Preview API] Get User Entitlement for a user.
-func (client *ClientImpl) GetUserEntitlement(ctx context.Context, args GetUserEntitlementArgs) (*UserEntitlement, error) {
-	routeValues := make(map[string]string)
-	if args.UserId == nil {
-		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.UserId"}
+// [Preview API] Update entitlements (License Rule, Extensions Rule, Project memberships etc.) for a group.
+func (client *ClientImpl) UpdateGroupEntitlement(ctx context.Context, args UpdateGroupEntitlementArgs) (*GroupEntitlementOperationReference, error) {
+	if args.Document == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Document"}
 	}
-	routeValues["userId"] = (*args.UserId).String()
+	routeValues := make(map[string]string)
+	if args.GroupId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.GroupId"}
+	}
+	routeValues["groupId"] = (*args.GroupId).String()
 
-	locationId, _ := uuid.Parse("8480c6eb-ce60-47e9-88df-eca3c801638b")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.2", routeValues, nil, nil, "", "application/json", nil)
+	queryParams := url.Values{}
+	if args.RuleOption != nil {
+		queryParams.Add("ruleOption", string(*args.RuleOption))
+	}
+	body, marshalErr := json.Marshal(*args.Document)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("2280bffa-58a2-49da-822e-0764a1bb44f7")
+	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, queryParams, bytes.NewReader(body), "application/json-patch+json", "application/json", nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var responseValue UserEntitlement
+	var responseValue GroupEntitlementOperationReference
 	err = client.Client.UnmarshalBody(resp, &responseValue)
 	return &responseValue, err
 }
 
-// Arguments for the GetUserEntitlement function
-type GetUserEntitlementArgs struct {
-	// (required) ID of the user.
-	UserId *uuid.UUID
+// Arguments for the UpdateGroupEntitlement function
+type UpdateGroupEntitlementArgs struct {
+	// (required) JsonPatchDocument containing the operations to perform on the group.
+	Document *[]webapi.JsonPatchOperation
+	// (required) ID of the group.
+	GroupId *uuid.UUID
+	// (optional) RuleOption [ApplyGroupRule/TestApplyGroupRule] - specifies if the rules defined in group entitlement should be updated and the changes are applied to it’s members (default option) or just be tested
+	RuleOption *licensingrule.RuleOption
 }
 
 // [Preview API] Edit the entitlements (License, Extensions, Projects, Teams etc) for a user.
@@ -492,25 +483,34 @@ type UpdateUserEntitlementArgs struct {
 	UserId *uuid.UUID
 }
 
-// [Preview API] Get summary of Licenses, Extension, Projects, Groups and their assignments in the collection.
-func (client *ClientImpl) GetUsersSummary(ctx context.Context, args GetUsersSummaryArgs) (*UsersSummary, error) {
-	queryParams := url.Values{}
-	if args.Select != nil {
-		queryParams.Add("select", *args.Select)
+// [Preview API] Edit the entitlements (License, Extensions, Projects, Teams etc) for one or more users.
+func (client *ClientImpl) UpdateUserEntitlements(ctx context.Context, args UpdateUserEntitlementsArgs) (*UserEntitlementOperationReference, error) {
+	if args.Document == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.Document"}
 	}
-	locationId, _ := uuid.Parse("5ae55b13-c9dd-49d1-957e-6e76c152e3d9")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
+	queryParams := url.Values{}
+	if args.DoNotSendInviteForNewUsers != nil {
+		queryParams.Add("doNotSendInviteForNewUsers", strconv.FormatBool(*args.DoNotSendInviteForNewUsers))
+	}
+	body, marshalErr := json.Marshal(*args.Document)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("387f832c-dbf2-4643-88e9-c1aa94dbb737")
+	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.2", nil, queryParams, bytes.NewReader(body), "application/json-patch+json", "application/json", nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var responseValue UsersSummary
+	var responseValue UserEntitlementOperationReference
 	err = client.Client.UnmarshalBody(resp, &responseValue)
 	return &responseValue, err
 }
 
-// Arguments for the GetUsersSummary function
-type GetUsersSummaryArgs struct {
-	// (optional) Comma (",") separated list of properties to select. Supported property names are {AccessLevels, Licenses, Extensions, Projects, Groups}.
-	Select *string
+// Arguments for the UpdateUserEntitlements function
+type UpdateUserEntitlementsArgs struct {
+	// (required) JsonPatchDocument containing the operations to perform.
+	Document *[]webapi.JsonPatchOperation
+	// (optional) Whether to send email invites to new users or not
+	DoNotSendInviteForNewUsers *bool
 }

@@ -21,6 +21,8 @@ import (
 )
 
 type Client interface {
+	// [Preview API]
+	DeleteServiceDefinition(context.Context, DeleteServiceDefinitionArgs) error
 	// [Preview API] This was copied and adapted from TeamFoundationConnectionService.Connect()
 	GetConnectionData(context.Context, GetConnectionDataArgs) (*ConnectionData, error)
 	// [Preview API]
@@ -31,8 +33,6 @@ type Client interface {
 	GetResourceAreas(context.Context, GetResourceAreasArgs) (*[]ResourceAreaInfo, error)
 	// [Preview API]
 	GetResourceAreasByHost(context.Context, GetResourceAreasByHostArgs) (*[]ResourceAreaInfo, error)
-	// [Preview API]
-	DeleteServiceDefinition(context.Context, DeleteServiceDefinitionArgs) error
 	// [Preview API] Finds a given service definition.
 	GetServiceDefinition(context.Context, GetServiceDefinitionArgs) (*ServiceDefinition, error)
 	// [Preview API]
@@ -50,6 +50,35 @@ func NewClient(ctx context.Context, connection *azuredevops.Connection) Client {
 	return &ClientImpl{
 		Client: *client,
 	}
+}
+
+// [Preview API]
+func (client *ClientImpl) DeleteServiceDefinition(ctx context.Context, args DeleteServiceDefinitionArgs) error {
+	routeValues := make(map[string]string)
+	if args.ServiceType == nil || *args.ServiceType == "" {
+		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ServiceType"}
+	}
+	routeValues["serviceType"] = *args.ServiceType
+	if args.Identifier == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.Identifier"}
+	}
+	routeValues["identifier"] = (*args.Identifier).String()
+
+	locationId, _ := uuid.Parse("d810a47d-f4f4-4a62-a03f-fa1860585c4c")
+	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the DeleteServiceDefinition function
+type DeleteServiceDefinitionArgs struct {
+	// (required)
+	ServiceType *string
+	// (required)
+	Identifier *uuid.UUID
 }
 
 // [Preview API] This was copied and adapted from TeamFoundationConnectionService.Connect()
@@ -203,35 +232,6 @@ func (client *ClientImpl) GetResourceAreasByHost(ctx context.Context, args GetRe
 type GetResourceAreasByHostArgs struct {
 	// (required)
 	HostId *uuid.UUID
-}
-
-// [Preview API]
-func (client *ClientImpl) DeleteServiceDefinition(ctx context.Context, args DeleteServiceDefinitionArgs) error {
-	routeValues := make(map[string]string)
-	if args.ServiceType == nil || *args.ServiceType == "" {
-		return &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.ServiceType"}
-	}
-	routeValues["serviceType"] = *args.ServiceType
-	if args.Identifier == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.Identifier"}
-	}
-	routeValues["identifier"] = (*args.Identifier).String()
-
-	locationId, _ := uuid.Parse("d810a47d-f4f4-4a62-a03f-fa1860585c4c")
-	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the DeleteServiceDefinition function
-type DeleteServiceDefinitionArgs struct {
-	// (required)
-	ServiceType *string
-	// (required)
-	Identifier *uuid.UUID
 }
 
 // [Preview API] Finds a given service definition.
