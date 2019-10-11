@@ -385,6 +385,9 @@ func (client *ClientImpl) GetChangesetChanges(ctx context.Context, args GetChang
 	if args.Top != nil {
 		queryParams.Add("$top", strconv.Itoa(*args.Top))
 	}
+	if args.ContinuationToken != nil {
+		queryParams.Add("continuationToken", *args.ContinuationToken)
+	}
 	locationId, _ := uuid.Parse("f32b86f2-15b9-4fe6-81b1-6f8938617ee5")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
 	if err != nil {
@@ -405,6 +408,8 @@ type GetChangesetChangesArgs struct {
 	Skip *int
 	// (optional) The maximum number of results to return. Default: null
 	Top *int
+	// (optional) Return the next page of results. Default: null
+	ContinuationToken *string
 }
 
 // Return type for the GetChangesetChanges function

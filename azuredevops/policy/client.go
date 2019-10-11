@@ -252,6 +252,12 @@ func (client *ClientImpl) GetPolicyConfigurations(ctx context.Context, args GetP
 	if args.Scope != nil {
 		queryParams.Add("scope", *args.Scope)
 	}
+	if args.Top != nil {
+		queryParams.Add("$top", strconv.Itoa(*args.Top))
+	}
+	if args.ContinuationToken != nil {
+		queryParams.Add("continuationToken", *args.ContinuationToken)
+	}
 	if args.PolicyType != nil {
 		queryParams.Add("policyType", (*args.PolicyType).String())
 	}
@@ -273,6 +279,10 @@ type GetPolicyConfigurationsArgs struct {
 	Project *string
 	// (optional) [Provided for legacy reasons] The scope on which a subset of policies is defined.
 	Scope *string
+	// (optional) Maximum number of policies to return.
+	Top *int
+	// (optional) The continuation token used for pagination.
+	ContinuationToken *string
 	// (optional) Filter returned policies to only this type
 	PolicyType *uuid.UUID
 }
