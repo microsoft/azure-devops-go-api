@@ -1892,7 +1892,7 @@ func (client *ClientImpl) UpdateTeamDaysOff(ctx context.Context, args UpdateTeam
 
 // Arguments for the UpdateTeamDaysOff function
 type UpdateTeamDaysOffArgs struct {
-	// (required) Team's days off patch containting a list of start and end dates
+	// (required) Team's days off patch containing a list of start and end dates
 	DaysOffPatch *TeamSettingsDaysOffPatch
 	// (required) Project ID or project name
 	Project *string
