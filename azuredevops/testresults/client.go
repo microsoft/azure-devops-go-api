@@ -2729,25 +2729,25 @@ type QueryTestRunsArgs struct {
 	MaxLastUpdatedDate *azuredevops.Time
 	// (optional) Current state of the Runs to be queried.
 	State *test.TestRunState
-	// (optional) Plan Ids of the Runs to be queried, comma seperated list of valid ids.
+	// (optional) Plan Ids of the Runs to be queried, comma separated list of valid ids.
 	PlanIds *[]int
 	// (optional) Automation type of the Runs to be queried.
 	IsAutomated *bool
 	// (optional) PublishContext of the Runs to be queried.
 	PublishContext *test.TestRunPublishContext
-	// (optional) Build Ids of the Runs to be queried, comma seperated list of valid ids.
+	// (optional) Build Ids of the Runs to be queried, comma separated list of valid ids.
 	BuildIds *[]int
-	// (optional) Build Definition Ids of the Runs to be queried, comma seperated list of valid ids.
+	// (optional) Build Definition Ids of the Runs to be queried, comma separated list of valid ids.
 	BuildDefIds *[]int
 	// (optional) Source Branch name of the Runs to be queried.
 	BranchName *string
-	// (optional) Release Ids of the Runs to be queried, comma seperated list of valid ids.
+	// (optional) Release Ids of the Runs to be queried, comma separated list of valid ids.
 	ReleaseIds *[]int
-	// (optional) Release Definition Ids of the Runs to be queried, comma seperated list of valid ids.
+	// (optional) Release Definition Ids of the Runs to be queried, comma separated list of valid ids.
 	ReleaseDefIds *[]int
-	// (optional) Release Environment Ids of the Runs to be queried, comma seperated list of valid ids.
+	// (optional) Release Environment Ids of the Runs to be queried, comma separated list of valid ids.
 	ReleaseEnvIds *[]int
-	// (optional) Release Environment Definition Ids of the Runs to be queried, comma seperated list of valid ids.
+	// (optional) Release Environment Definition Ids of the Runs to be queried, comma separated list of valid ids.
 	ReleaseEnvDefIds *[]int
 	// (optional) Run Title of the Runs to be queried.
 	RunTitle *string

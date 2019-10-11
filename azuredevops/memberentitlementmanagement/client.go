@@ -290,7 +290,7 @@ type GetGroupMembersArgs struct {
 	GroupId *uuid.UUID
 	// (optional) Maximum number of results to retrieve.
 	MaxResults *int
-	// (optional) Paging Token from the previous page fetched. If the 'pagingToken' is null, the results would be fetched from the begining of the Members List.
+	// (optional) Paging Token from the previous page fetched. If the 'pagingToken' is null, the results would be fetched from the beginning of the Members List.
 	PagingToken *string
 }
 

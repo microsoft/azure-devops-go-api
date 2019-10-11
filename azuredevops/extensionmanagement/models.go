@@ -202,7 +202,7 @@ type ContributionConstraint struct {
 	Name *string `json:"name,omitempty"`
 	// Properties that are fed to the contribution filter class
 	Properties interface{} `json:"properties,omitempty"`
-	// Constraints can be optionally be applied to one or more of the relationships defined in the contribution. If no relationships are defined then all relationships are associated with the constraint. This means the default behaviour will elimiate the contribution from the tree completely if the constraint is applied.
+	// Constraints can be optionally be applied to one or more of the relationships defined in the contribution. If no relationships are defined then all relationships are associated with the constraint. This means the default behaviour will eliminate the contribution from the tree completely if the constraint is applied.
 	Relationships *[]string `json:"relationships,omitempty"`
 }
 

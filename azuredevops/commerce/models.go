@@ -30,7 +30,7 @@ var AccountProviderNamespaceValues = accountProviderNamespaceValuesType{
 	OnPremise:          "onPremise",
 }
 
-// Encapsulates azure specific plan structure, using a publisher defined publisher name, offer name, and plan name These are all specified by the publisher and can vary from other meta data we store about the extension internally therefore need to be tracked seperately for purposes of interacting with Azure
+// Encapsulates azure specific plan structure, using a publisher defined publisher name, offer name, and plan name These are all specified by the publisher and can vary from other meta data we store about the extension internally therefore need to be tracked separately for purposes of interacting with Azure
 type AzureOfferPlanDefinition struct {
 	// Determines whether or not this plan is visible to all users
 	IsPublic *bool `json:"isPublic,omitempty"`
@@ -192,7 +192,7 @@ type IOfferSubscription struct {
 	AzureSubscriptionName *string `json:"azureSubscriptionName,omitempty"`
 	// The azure subscription state
 	AzureSubscriptionState *SubscriptionStatus `json:"azureSubscriptionState,omitempty"`
-	// Quantity commited by the user, when resources is commitment based.
+	// Quantity committed by the user, when resources is commitment based.
 	CommittedQuantity *int `json:"committedQuantity,omitempty"`
 	// A enumeration value indicating why the resource was disabled.
 	DisabledReason *ResourceStatusReason `json:"disabledReason,omitempty"`
@@ -276,7 +276,7 @@ type ISubscriptionAccount struct {
 
 // Information about a resource associated with a subscription.
 type ISubscriptionResource struct {
-	// Quantity commited by the user, when resources is commitment based.
+	// Quantity committed by the user, when resources is commitment based.
 	CommittedQuantity *int `json:"committedQuantity,omitempty"`
 	// A enumeration value indicating why the resource was disabled.
 	DisabledReason *ResourceStatusReason `json:"disabledReason,omitempty"`
@@ -408,7 +408,7 @@ type OfferMeter struct {
 	BillingState *MeterBillingState `json:"billingState,omitempty"`
 	// Category.
 	Category *MeterCategory `json:"category,omitempty"`
-	// Quantity commited by the user, when resources is commitment based.
+	// Quantity committed by the user, when resources is commitment based.
 	CommittedQuantity *int `json:"committedQuantity,omitempty"`
 	// Quantity used by the user, when resources is pay as you go or commitment based.
 	CurrentQuantity *int `json:"currentQuantity,omitempty"`
@@ -503,7 +503,7 @@ type OfferSubscription struct {
 	AzureSubscriptionName *string `json:"azureSubscriptionName,omitempty"`
 	// The azure subscription state
 	AzureSubscriptionState *SubscriptionStatus `json:"azureSubscriptionState,omitempty"`
-	// Quantity commited by the user, when resources is commitment based.
+	// Quantity committed by the user, when resources is commitment based.
 	CommittedQuantity *int `json:"committedQuantity,omitempty"`
 	// A enumeration value indicating why the resource was disabled.
 	DisabledReason *ResourceStatusReason `json:"disabledReason,omitempty"`
@@ -541,7 +541,7 @@ type OfferSubscription struct {
 
 // The Purchasable offer meter.
 type PurchasableOfferMeter struct {
-	// Currecny code for meter pricing
+	// Currency code for meter pricing
 	CurrencyCode *string `json:"currencyCode,omitempty"`
 	// Gets or sets the estimated renewal date.
 	EstimatedRenewalDate *azuredevops.Time `json:"estimatedRenewalDate,omitempty"`
@@ -766,7 +766,7 @@ type SubscriptionAccount struct {
 
 // Information about a resource associated with a subscription.
 type SubscriptionResource struct {
-	// Quantity commited by the user, when resources is commitment based.
+	// Quantity committed by the user, when resources is commitment based.
 	CommittedQuantity *int `json:"committedQuantity,omitempty"`
 	// A enumeration value indicating why the resource was disabled.
 	DisabledReason *ResourceStatusReason `json:"disabledReason,omitempty"`
@@ -835,7 +835,7 @@ type UsageEvent struct {
 	BillableDate *azuredevops.Time `json:"billableDate,omitempty"`
 	// Unique event identifier
 	EventId *string `json:"eventId,omitempty"`
-	// Recieving Timestamp of the billing event by metering service
+	// Receiving Timestamp of the billing event by metering service
 	EventTimestamp *azuredevops.Time `json:"eventTimestamp,omitempty"`
 	// Gets or sets the event unique identifier.
 	EventUniqueId *uuid.UUID `json:"eventUniqueId,omitempty"`

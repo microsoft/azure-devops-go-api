@@ -19,7 +19,7 @@ func TestModels_Unmarshal_Time(t *testing.T) {
 
 	err := json.Unmarshal(text, &testModel)
 	if err != nil {
-		t.Errorf("Error occured during deserialization: %v", err)
+		t.Errorf("Error occurred during deserialization: %v", err)
 	}
 	if (testModel.Time1.Time != time.Time{}) {
 		t.Errorf("Expecting deserialized time to equal default time.  Actual time: %v", testModel.Time1)

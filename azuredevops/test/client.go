@@ -1338,7 +1338,7 @@ type GetTestRunByIdArgs struct {
 	Project *string
 	// (required) ID of the run to get.
 	RunId *int
-	// (optional) Defualt value is true. It includes details like run statistics,release,build,Test enviornment,Post process state and more
+	// (optional) Default value is true. It includes details like run statistics,release,build,Test environment,Post process state and more
 	IncludeDetails *bool
 }
 
@@ -1823,25 +1823,25 @@ type QueryTestRunsArgs struct {
 	MaxLastUpdatedDate *azuredevops.Time
 	// (optional) Current state of the Runs to be queried.
 	State *TestRunState
-	// (optional) Plan Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).
+	// (optional) Plan Ids of the Runs to be queried, comma separated list of valid ids (limit no. of ids 10).
 	PlanIds *[]int
 	// (optional) Automation type of the Runs to be queried.
 	IsAutomated *bool
 	// (optional) PublishContext of the Runs to be queried.
 	PublishContext *TestRunPublishContext
-	// (optional) Build Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).
+	// (optional) Build Ids of the Runs to be queried, comma separated list of valid ids (limit no. of ids 10).
 	BuildIds *[]int
-	// (optional) Build Definition Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).
+	// (optional) Build Definition Ids of the Runs to be queried, comma separated list of valid ids (limit no. of ids 10).
 	BuildDefIds *[]int
 	// (optional) Source Branch name of the Runs to be queried.
 	BranchName *string
-	// (optional) Release Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).
+	// (optional) Release Ids of the Runs to be queried, comma separated list of valid ids (limit no. of ids 10).
 	ReleaseIds *[]int
-	// (optional) Release Definition Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).
+	// (optional) Release Definition Ids of the Runs to be queried, comma separated list of valid ids (limit no. of ids 10).
 	ReleaseDefIds *[]int
-	// (optional) Release Environment Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).
+	// (optional) Release Environment Ids of the Runs to be queried, comma separated list of valid ids (limit no. of ids 10).
 	ReleaseEnvIds *[]int
-	// (optional) Release Environment Definition Ids of the Runs to be queried, comma seperated list of valid ids (limit no. of ids 10).
+	// (optional) Release Environment Definition Ids of the Runs to be queried, comma separated list of valid ids (limit no. of ids 10).
 	ReleaseEnvDefIds *[]int
 	// (optional) Run Title of the Runs to be queried.
 	RunTitle *string
