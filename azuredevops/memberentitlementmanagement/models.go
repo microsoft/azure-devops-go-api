@@ -315,7 +315,7 @@ type TeamRef struct {
 	Name *string `json:"name,omitempty"`
 }
 
-// A user entity with additional properties including thier license, extensions, and project membership
+// A user entity with additional properties including their license, extensions, and project membership
 type UserEntitlement struct {
 	// User's access level denoted by a license.
 	AccessLevel *licensing.AccessLevel `json:"accessLevel,omitempty"`

@@ -897,7 +897,7 @@ type SubscriptionChannelWithAddress struct {
 	UseCustomAddress *bool   `json:"useCustomAddress,omitempty"`
 }
 
-// Contains all the diagonstics settings for a subscription.
+// Contains all the diagnostics settings for a subscription.
 type SubscriptionDiagnostics struct {
 	// Diagnostics settings for retaining delivery results.  Used for Service Hooks subscriptions.
 	DeliveryResults *SubscriptionTracing `json:"deliveryResults,omitempty"`

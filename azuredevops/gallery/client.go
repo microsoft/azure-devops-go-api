@@ -838,7 +838,7 @@ func (client *ClientImpl) DeleteReview(ctx context.Context, args DeleteReviewArg
 
 // Arguments for the DeleteReview function
 type DeleteReviewArgs struct {
-	// (required) Name of the pubilsher who published the extension
+	// (required) Name of the publisher who published the extension
 	PubName *string
 	// (required) Name of the extension
 	ExtName *string
@@ -3153,7 +3153,7 @@ func (client *ClientImpl) UpdateReview(ctx context.Context, args UpdateReviewArg
 type UpdateReviewArgs struct {
 	// (required) ReviewPatch object which contains the changes to be applied to the review
 	ReviewPatch *ReviewPatch
-	// (required) Name of the pubilsher who published the extension
+	// (required) Name of the publisher who published the extension
 	PubName *string
 	// (required) Name of the extension
 	ExtName *string

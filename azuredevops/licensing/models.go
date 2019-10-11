@@ -158,7 +158,7 @@ type ExtensionSource struct {
 	AssignmentSource *AssignmentSource `json:"assignmentSource,omitempty"`
 	// extension Identifier
 	ExtensionGalleryId *string `json:"extensionGalleryId,omitempty"`
-	// The licensing source of the extension. Account, Msdn, ect.
+	// The licensing source of the extension. Account, Msdn, etc.
 	LicensingSource *LicensingSource `json:"licensingSource,omitempty"`
 }
 

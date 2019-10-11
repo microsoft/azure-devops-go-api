@@ -1066,7 +1066,7 @@ func (client *ClientImpl) CreateRepository(ctx context.Context, args CreateRepos
 
 // Arguments for the CreateRepository function
 type CreateRepositoryArgs struct {
-	// (required) Specify the repo name, team project and/or parent repository. Team project information can be ommitted from gitRepositoryToCreate if the request is project-scoped (i.e., includes project Id).
+	// (required) Specify the repo name, team project and/or parent repository. Team project information can be omitted from gitRepositoryToCreate if the request is project-scoped (i.e., includes project Id).
 	GitRepositoryToCreate *GitRepositoryCreateOptions
 	// (optional) Project ID or project name
 	Project *string

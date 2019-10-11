@@ -313,7 +313,7 @@ type Publisher struct {
 
 // Wrapper around an event which is being published
 type PublisherEvent struct {
-	// Add key/value pairs which will be stored with a published notification in the SH service DB.  This key/value pairs are for diagnostic purposes only and will have not effect on the delivery of a notificaton.
+	// Add key/value pairs which will be stored with a published notification in the SH service DB.  This key/value pairs are for diagnostic purposes only and will have not effect on the delivery of a notification.
 	Diagnostics *map[string]string `json:"diagnostics,omitempty"`
 	// The event being published
 	Event *Event `json:"event,omitempty"`

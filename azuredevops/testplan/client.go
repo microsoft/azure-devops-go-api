@@ -58,7 +58,7 @@ type Client interface {
 	GetSuitesByTestCaseId(context.Context, GetSuitesByTestCaseIdArgs) (*[]TestSuite, error)
 	// [Preview API] Get Test Cases For a Suite.
 	GetTestCase(context.Context, GetTestCaseArgs) (*[]TestCase, error)
-	// [Preview API] Get Test Case List return those test cases which have all the configuration Ids as mentioned in the optional paramter. If configuration Ids is null, it return all the test cases
+	// [Preview API] Get Test Case List return those test cases which have all the configuration Ids as mentioned in the optional parameter. If configuration Ids is null, it return all the test cases
 	GetTestCaseList(context.Context, GetTestCaseListArgs) (*GetTestCaseListResponseValue, error)
 	// [Preview API] Get a test configuration
 	GetTestConfigurationById(context.Context, GetTestConfigurationByIdArgs) (*TestConfiguration, error)
@@ -822,7 +822,7 @@ type GetTestCaseArgs struct {
 	ReturnIdentityRef *bool
 }
 
-// [Preview API] Get Test Case List return those test cases which have all the configuration Ids as mentioned in the optional paramter. If configuration Ids is null, it return all the test cases
+// [Preview API] Get Test Case List return those test cases which have all the configuration Ids as mentioned in the optional parameter. If configuration Ids is null, it return all the test cases
 func (client *ClientImpl) GetTestCaseList(ctx context.Context, args GetTestCaseListArgs) (*GetTestCaseListResponseValue, error) {
 	routeValues := make(map[string]string)
 	if args.Project == nil || *args.Project == "" {

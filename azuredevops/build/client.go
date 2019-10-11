@@ -3299,7 +3299,7 @@ func (client *ClientImpl) UpdateDefinition(ctx context.Context, args UpdateDefin
 
 // Arguments for the UpdateDefinition function
 type UpdateDefinitionArgs struct {
-	// (required) The new version of the defintion.
+	// (required) The new version of the definition.
 	Definition *BuildDefinition
 	// (required) Project ID or project name
 	Project *string

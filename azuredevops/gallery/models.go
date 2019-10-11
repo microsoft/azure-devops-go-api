@@ -296,7 +296,7 @@ type ExtensionCategory struct {
 	CategoryId         *int      `json:"categoryId,omitempty"`
 	// This is the internal name for a category
 	CategoryName *string `json:"categoryName,omitempty"`
-	// This parameter is obsolete. Refer to LanguageTitles for langauge specific titles
+	// This parameter is obsolete. Refer to LanguageTitles for language specific titles
 	Language *string `json:"language,omitempty"`
 	// The list of all the titles of this category in various languages
 	LanguageTitles *[]CategoryLanguageTitle `json:"languageTitles,omitempty"`
@@ -561,9 +561,9 @@ var ExtensionQueryFilterTypeValues = extensionQueryFilterTypeValuesType{
 	SearchText: "searchText",
 	// Query for extensions that are featured in their own category, The filterValue for this is name of category of extensions.
 	FeaturedInCategory: "featuredInCategory",
-	// When retrieving extensions from a query, exclude the extensions which are having the given flags. The value specified for this filter should be a string representing the integer values of the flags to be excluded. In case of mulitple flags to be specified, a logical OR of the interger values should be given as value for this filter This should be at most one filter of this type. This only acts as a restrictive filter after. In case of having a particular flag in both IncludeWithFlags and ExcludeWithFlags, excludeFlags will remove the included extensions giving empty result for that flag.
+	// When retrieving extensions from a query, exclude the extensions which are having the given flags. The value specified for this filter should be a string representing the integer values of the flags to be excluded. In case of multiple flags to be specified, a logical OR of the interger values should be given as value for this filter This should be at most one filter of this type. This only acts as a restrictive filter after. In case of having a particular flag in both IncludeWithFlags and ExcludeWithFlags, excludeFlags will remove the included extensions giving empty result for that flag.
 	ExcludeWithFlags: "excludeWithFlags",
-	// When retrieving extensions from a query, include the extensions which are having the given flags. The value specified for this filter should be a string representing the integer values of the flags to be included. In case of mulitple flags to be specified, a logical OR of the integer values should be given as value for this filter This should be at most one filter of this type. This only acts as a restrictive filter after. In case of having a particular flag in both IncludeWithFlags and ExcludeWithFlags, excludeFlags will remove the included extensions giving empty result for that flag. In case of multiple flags given in IncludeWithFlags in ORed fashion, extensions having any of the given flags will be included.
+	// When retrieving extensions from a query, include the extensions which are having the given flags. The value specified for this filter should be a string representing the integer values of the flags to be included. In case of multiple flags to be specified, a logical OR of the integer values should be given as value for this filter This should be at most one filter of this type. This only acts as a restrictive filter after. In case of having a particular flag in both IncludeWithFlags and ExcludeWithFlags, excludeFlags will remove the included extensions giving empty result for that flag. In case of multiple flags given in IncludeWithFlags in ORed fashion, extensions having any of the given flags will be included.
 	IncludeWithFlags: "includeWithFlags",
 	// Filter the extensions based on the LCID values applicable. Any extensions which are not having any LCID values will also be filtered. This is currently only supported for VS extensions.
 	Lcid: "lcid",
@@ -577,7 +577,7 @@ var ExtensionQueryFilterTypeValues = extensionQueryFilterTypeValuesType{
 	PublisherName: "publisherName",
 	// Filter to get extensions published by all publishers having supplied display name
 	PublisherDisplayName: "publisherDisplayName",
-	// When retrieving extensions from a query, include the extensions which have a publisher having the given flags. The value specified for this filter should be a string representing the integer values of the flags to be included. In case of mulitple flags to be specified, a logical OR of the integer values should be given as value for this filter There should be at most one filter of this type. This only acts as a restrictive filter after. In case of multiple flags given in IncludeWithFlags in ORed fashion, extensions having any of the given flags will be included.
+	// When retrieving extensions from a query, include the extensions which have a publisher having the given flags. The value specified for this filter should be a string representing the integer values of the flags to be included. In case of multiple flags to be specified, a logical OR of the integer values should be given as value for this filter There should be at most one filter of this type. This only acts as a restrictive filter after. In case of multiple flags given in IncludeWithFlags in ORed fashion, extensions having any of the given flags will be included.
 	IncludeWithPublisherFlags: "includeWithPublisherFlags",
 	// Filter to get extensions shared with particular organization
 	OrganizationSharedWith: "organizationSharedWith",
@@ -1145,7 +1145,7 @@ type QueryFilter struct {
 	PageNumber *int `json:"pageNumber,omitempty"`
 	// The page size defines the number of results the caller wants for this filter. The count can't exceed the overall query size limits.
 	PageSize *int `json:"pageSize,omitempty"`
-	// The paging token is a distinct type of filter and the other filter fields are ignored. The paging token represents the continuation of a previously executed query. The information about where in the result and what fields are being filtered are embeded in the token.
+	// The paging token is a distinct type of filter and the other filter fields are ignored. The paging token represents the continuation of a previously executed query. The information about where in the result and what fields are being filtered are embedded in the token.
 	PagingToken *string `json:"pagingToken,omitempty"`
 	// Defines the type of sorting to be applied on the results. The page slice is cut of the sorted results only.
 	SortBy *int `json:"sortBy,omitempty"`
