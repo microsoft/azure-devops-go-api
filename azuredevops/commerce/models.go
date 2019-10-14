@@ -30,7 +30,7 @@ var AccountProviderNamespaceValues = accountProviderNamespaceValuesType{
 	OnPremise:          "onPremise",
 }
 
-// Encapsulates azure specific plan structure, using a publisher defined publisher name, offer name, and plan name These are all specified by the publisher and can vary from other meta data we store about the extension internally therefore need to be tracked separately for purposes of interacting with Azure
+// Encapsulates Azure specific plan structure, using a publisher defined publisher name, offer name, and plan name. These are all specified by the publisher and can vary from other meta data we store about the extension internally therefore need to be tracked separately for purposes of interacting with Azure.
 type AzureOfferPlanDefinition struct {
 	// Determines whether or not this plan is visible to all users
 	IsPublic *bool `json:"isPublic,omitempty"`

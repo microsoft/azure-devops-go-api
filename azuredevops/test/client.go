@@ -1338,7 +1338,7 @@ type GetTestRunByIdArgs struct {
 	Project *string
 	// (required) ID of the run to get.
 	RunId *int
-	// (optional) Default value is true. It includes details like run statistics,release,build,Test environment,Post process state and more
+	// (optional) Default value is true. It includes details like run statistics, release, build, test environment, post process state, and more.
 	IncludeDetails *bool
 }
 
