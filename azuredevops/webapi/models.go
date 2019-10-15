@@ -92,9 +92,13 @@ type EventScope struct {
 }
 
 type IdentityRef struct {
+	// This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
+	Links map[string]ReferenceLink `json:"_links,omitempty"`
 	// Deprecated - Can be retrieved by querying the Graph user referenced in the "self" entry of the IdentityRef "_links" dictionary
 	DirectoryAlias *string `json:"directoryAlias,omitempty"`
-	Id             *string `json:"id,omitempty"`
+	// This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
+	DisplayName *string `json:"displayName,omitempty"`
+	Id          *string `json:"id,omitempty"`
 	// Deprecated - Available in the "avatar" entry of the IdentityRef "_links" dictionary
 	ImageUrl *string `json:"imageUrl,omitempty"`
 	// Deprecated - Can be retrieved by querying the Graph membership state referenced in the "membershipState" entry of the GraphUser "_links" dictionary
