@@ -526,7 +526,7 @@ func (client *ClientImpl) ListGroups(ctx context.Context, args ListGroupsArgs) (
 	}
 
 	var responseBodyValue []GraphGroup
-	err = client.Client.UnmarshalBody(resp, &responseBodyValue)
+	err = client.Client.UnmarshalCollectionBody(resp, &responseBodyValue)
 
 	var responseValue *PagedGraphGroups
 	if err == nil {
@@ -602,7 +602,7 @@ func (client *ClientImpl) ListUsers(ctx context.Context, args ListUsersArgs) (*P
 	}
 
 	var responseBodyValue []GraphUser
-	err = client.Client.UnmarshalBody(resp, &responseBodyValue)
+	err = client.Client.UnmarshalCollectionBody(resp, &responseBodyValue)
 
 	var responseValue *PagedGraphUsers
 	if err == nil {

@@ -393,7 +393,7 @@ func (client *ClientImpl) GetWidgets(ctx context.Context, args GetWidgetsArgs) (
 	}
 
 	var responseBodyValue []Widget
-	err = client.Client.UnmarshalBody(resp, &responseBodyValue)
+	err = client.Client.UnmarshalCollectionBody(resp, &responseBodyValue)
 
 	var responseValue *WidgetsVersionedList
 	if err == nil {
@@ -617,7 +617,7 @@ func (client *ClientImpl) ReplaceWidgets(ctx context.Context, args ReplaceWidget
 	}
 
 	var responseBodyValue []Widget
-	err = client.Client.UnmarshalBody(resp, &responseBodyValue)
+	err = client.Client.UnmarshalCollectionBody(resp, &responseBodyValue)
 
 	var responseValue *WidgetsVersionedList
 	if err == nil {
@@ -728,7 +728,7 @@ func (client *ClientImpl) UpdateWidgets(ctx context.Context, args UpdateWidgetsA
 	}
 
 	var responseBodyValue []Widget
-	err = client.Client.UnmarshalBody(resp, &responseBodyValue)
+	err = client.Client.UnmarshalCollectionBody(resp, &responseBodyValue)
 
 	var responseValue *WidgetsVersionedList
 	if err == nil {

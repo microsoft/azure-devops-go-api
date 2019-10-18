@@ -3299,7 +3299,7 @@ func (client *ClientImpl) GetPolicyConfigurations(ctx context.Context, args GetP
 	}
 
 	var responseBodyValue []policy.PolicyConfiguration
-	err = client.Client.UnmarshalBody(resp, &responseBodyValue)
+	err = client.Client.UnmarshalCollectionBody(resp, &responseBodyValue)
 
 	var responseValue *GitPolicyConfigurationResponse
 	xmsContinuationTokenHeader := resp.Header.Get("x-ms-continuationtoken")
