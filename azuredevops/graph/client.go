@@ -12,14 +12,17 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
+	"net/http"
+	"net/url"
+	"reflect"
+	"strconv"
+	"strings"
+
 	"github.com/google/uuid"
 	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/profile"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"net/http"
-	"net/url"
-	"strconv"
-	"strings"
 )
 
 var ResourceAreaId, _ = uuid.Parse("bb1e7ec9-e901-4b68-999a-de7012b920f8")
@@ -162,7 +165,17 @@ func (client *ClientImpl) CreateGroup(ctx context.Context, args CreateGroupArgs)
 		listAsString := strings.Join((*args.GroupDescriptors)[:], ",")
 		queryParams.Add("groupDescriptors", listAsString)
 	}
-	body, marshalErr := json.Marshal(*args.CreationContext)
+
+	t := reflect.TypeOf(args.CreationContext)
+	if (t.Kind() == reflect.Ptr) {
+		t = t.Elem()
+	}	
+	if (t != reflect.TypeOf((*GraphGroupMailAddressCreationContext)(nil)).Elem() && 
+		t != reflect.TypeOf((*GraphGroupOriginIdCreationContext)(nil)).Elem() && 
+		t != reflect.TypeOf((*GraphGroupVstsCreationContext)(nil)).Elem()) {
+		return nil, fmt.Errorf("Unsupported group creation context: %T", t)
+	}
+	body, marshalErr := json.Marshal(args.CreationContext)
 	if marshalErr != nil {
 		return nil, marshalErr
 	}
@@ -180,7 +193,7 @@ func (client *ClientImpl) CreateGroup(ctx context.Context, args CreateGroupArgs)
 // Arguments for the CreateGroup function
 type CreateGroupArgs struct {
 	// (required) The subset of the full graph group used to uniquely find the graph subject in an external provider.
-	CreationContext *GraphGroupCreationContext
+	CreationContext interface{}
 	// (optional) A descriptor referencing the scope (collection, project) in which the group should be created. If omitted, will be created in the scope of the enclosing account or organization. Valid only for VSTS groups.
 	ScopeDescriptor *string
 	// (optional) A comma separated list of descriptors referencing groups you want the graph group to join
@@ -197,7 +210,18 @@ func (client *ClientImpl) CreateUser(ctx context.Context, args CreateUserArgs) (
 		listAsString := strings.Join((*args.GroupDescriptors)[:], ",")
 		queryParams.Add("groupDescriptors", listAsString)
 	}
-	body, marshalErr := json.Marshal(*args.CreationContext)
+
+	t := reflect.TypeOf(args.CreationContext)
+	if (t.Kind() == reflect.Ptr) {
+		t = t.Elem()
+	}	
+	if (t != reflect.TypeOf((*GraphUserOriginIdCreationContext)(nil)).Elem() && 
+		t != reflect.TypeOf((*GraphUserMailAddressCreationContext)(nil)).Elem() && 
+		t != reflect.TypeOf((*GraphUserMailAddressCreationContext)(nil)).Elem()) {
+		return nil, fmt.Errorf("Unsupported user creation context: %T", t)
+	}
+
+	body, marshalErr := json.Marshal(args.CreationContext)
 	if marshalErr != nil {
 		return nil, marshalErr
 	}
@@ -215,7 +239,7 @@ func (client *ClientImpl) CreateUser(ctx context.Context, args CreateUserArgs) (
 // Arguments for the CreateUser function
 type CreateUserArgs struct {
 	// (required) The subset of the full graph user used to uniquely find the graph subject in an external provider.
-	CreationContext *GraphUserCreationContext
+	CreationContext interface{}
 	// (optional) A comma separated list of descriptors of groups you want the graph user to join
 	GroupDescriptors *[]string
 }
