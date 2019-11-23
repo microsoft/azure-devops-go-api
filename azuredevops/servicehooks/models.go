@@ -10,9 +10,9 @@ package servicehooks
 
 import (
 	"github.com/google/uuid"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/forminput"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 // Enumerates consumer authentication types.
@@ -86,7 +86,7 @@ type ConsumerAction struct {
 // Encapsulates the properties of an event.
 type Event struct {
 	// Gets or sets the UTC-based date and time that this event was created.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// Gets or sets the detailed message associated with this event.
 	DetailedMessage *FormattedEventMessage `json:"detailedMessage,omitempty"`
 	// Gets or sets the type of this event.
@@ -148,7 +148,7 @@ type FormattedEventMessage struct {
 // Defines the data contract of the result of processing an event for a subscription.
 type Notification struct {
 	// Gets or sets date and time that this result was created.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// Details about this notification (if available)
 	Details *NotificationDetails `json:"details,omitempty"`
 	// The event id associated with this notification
@@ -156,7 +156,7 @@ type Notification struct {
 	// The notification id
 	Id *int `json:"id,omitempty"`
 	// Gets or sets date and time that this result was last modified.
-	ModifiedDate *time.Time `json:"modifiedDate,omitempty"`
+	ModifiedDate *azuredevops.Time `json:"modifiedDate,omitempty"`
 	// Result of the notification
 	Result *NotificationResult `json:"result,omitempty"`
 	// Status of the notification
@@ -170,7 +170,7 @@ type Notification struct {
 // Defines the data contract of notification details.
 type NotificationDetails struct {
 	// Gets or sets the time that this notification was completed (response received from the consumer)
-	CompletedDate *time.Time `json:"completedDate,omitempty"`
+	CompletedDate *azuredevops.Time `json:"completedDate,omitempty"`
 	// Gets or sets this notification detail's consumer action identifier.
 	ConsumerActionId *string `json:"consumerActionId,omitempty"`
 	// Gets or sets this notification detail's consumer identifier.
@@ -178,7 +178,7 @@ type NotificationDetails struct {
 	// Gets or sets this notification detail's consumer inputs.
 	ConsumerInputs *map[string]string `json:"consumerInputs,omitempty"`
 	// Gets or sets the time that this notification was dequeued for processing
-	DequeuedDate *time.Time `json:"dequeuedDate,omitempty"`
+	DequeuedDate *azuredevops.Time `json:"dequeuedDate,omitempty"`
 	// Gets or sets this notification detail's error detail.
 	ErrorDetail *string `json:"errorDetail,omitempty"`
 	// Gets or sets this notification detail's error message.
@@ -188,13 +188,13 @@ type NotificationDetails struct {
 	// Gets or sets this notification detail's event type.
 	EventType *string `json:"eventType,omitempty"`
 	// Gets or sets the time that this notification was finished processing (just before the request is sent to the consumer)
-	ProcessedDate *time.Time `json:"processedDate,omitempty"`
+	ProcessedDate *azuredevops.Time `json:"processedDate,omitempty"`
 	// Gets or sets this notification detail's publisher identifier.
 	PublisherId *string `json:"publisherId,omitempty"`
 	// Gets or sets this notification detail's publisher inputs.
 	PublisherInputs *map[string]string `json:"publisherInputs,omitempty"`
 	// Gets or sets the time that this notification was queued (created)
-	QueuedDate *time.Time `json:"queuedDate,omitempty"`
+	QueuedDate *azuredevops.Time `json:"queuedDate,omitempty"`
 	// Gets or sets this notification detail's request.
 	Request *string `json:"request,omitempty"`
 	// Number of requests attempted to be sent to the consumer
@@ -241,13 +241,13 @@ type NotificationsQuery struct {
 	// If true, we will return all notification history for the query provided; otherwise, the summary is returned.
 	IncludeDetails *bool `json:"includeDetails,omitempty"`
 	// Optional maximum date at which the notification was created
-	MaxCreatedDate *time.Time `json:"maxCreatedDate,omitempty"`
+	MaxCreatedDate *azuredevops.Time `json:"maxCreatedDate,omitempty"`
 	// Optional maximum number of overall results to include
 	MaxResults *int `json:"maxResults,omitempty"`
 	// Optional maximum number of results for each subscription. Only takes effect when a list of subscription ids is supplied in the query.
 	MaxResultsPerSubscription *int `json:"maxResultsPerSubscription,omitempty"`
 	// Optional minimum date at which the notification was created
-	MinCreatedDate *time.Time `json:"minCreatedDate,omitempty"`
+	MinCreatedDate *azuredevops.Time `json:"minCreatedDate,omitempty"`
 	// Optional publisher id to restrict the results to
 	PublisherId *string `json:"publisherId,omitempty"`
 	// Results from the query
@@ -313,7 +313,7 @@ type Publisher struct {
 
 // Wrapper around an event which is being published
 type PublisherEvent struct {
-	// Add key/value pairs which will be stored with a published notification in the SH service DB.  This key/value pairs are for diagnostic purposes only and will have not effect on the delivery of a notificaton.
+	// Add key/value pairs which will be stored with a published notification in the SH service DB.  This key/value pairs are for diagnostic purposes only and will have not effect on the delivery of a notification.
 	Diagnostics *map[string]string `json:"diagnostics,omitempty"`
 	// The event being published
 	Event *Event `json:"event,omitempty"`
@@ -358,7 +358,7 @@ type SessionToken struct {
 	// The access token
 	Token *string `json:"token,omitempty"`
 	// The expiration date in UTC
-	ValidTo *time.Time `json:"validTo,omitempty"`
+	ValidTo *azuredevops.Time `json:"validTo,omitempty"`
 }
 
 // Encapsulates an event subscription.
@@ -371,12 +371,12 @@ type Subscription struct {
 	// Consumer input values
 	ConsumerInputs   *map[string]string  `json:"consumerInputs,omitempty"`
 	CreatedBy        *webapi.IdentityRef `json:"createdBy,omitempty"`
-	CreatedDate      *time.Time          `json:"createdDate,omitempty"`
+	CreatedDate      *azuredevops.Time   `json:"createdDate,omitempty"`
 	EventDescription *string             `json:"eventDescription,omitempty"`
 	EventType        *string             `json:"eventType,omitempty"`
 	Id               *uuid.UUID          `json:"id,omitempty"`
 	ModifiedBy       *webapi.IdentityRef `json:"modifiedBy,omitempty"`
-	ModifiedDate     *time.Time          `json:"modifiedDate,omitempty"`
+	ModifiedDate     *azuredevops.Time   `json:"modifiedDate,omitempty"`
 	ProbationRetries *byte               `json:"probationRetries,omitempty"`
 	PublisherId      *string             `json:"publisherId,omitempty"`
 	// Publisher input values

@@ -17,22 +17,27 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("cdeb6c7d-6b25-4d6f-b664-c2e3ede202e8")
 
-type Client struct {
+type Client interface {
+	// [Preview API] Get a time-limited session token representing the current user, with permissions scoped to the read/write of Artifacts.
+	GetPersonalAccessToken(context.Context, GetPersonalAccessTokenArgs) (*FeedSessionToken, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
 // [Preview API] Get a time-limited session token representing the current user, with permissions scoped to the read/write of Artifacts.
-func (client *Client) GetPersonalAccessToken(ctx context.Context, args GetPersonalAccessTokenArgs) (*FeedSessionToken, error) {
+func (client *ClientImpl) GetPersonalAccessToken(ctx context.Context, args GetPersonalAccessTokenArgs) (*FeedSessionToken, error) {
 	routeValues := make(map[string]string)
 	if args.FeedName != nil && *args.FeedName != "" {
 		routeValues["feedName"] = *args.FeedName

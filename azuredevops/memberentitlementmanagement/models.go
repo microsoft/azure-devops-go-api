@@ -15,7 +15,6 @@ import (
 	"github.com/microsoft/azure-devops-go-api/azuredevops/graph"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/licensing"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/licensingrule"
-	"time"
 )
 
 type BaseOperationResult struct {
@@ -60,7 +59,7 @@ type ExtensionSummaryData struct {
 	// Days remaining for the Trial to expire.
 	RemainingTrialDays *int `json:"remainingTrialDays,omitempty"`
 	// Date on which the Trial expires.
-	TrialExpiryDate *time.Time `json:"trialExpiryDate,omitempty"`
+	TrialExpiryDate *azuredevops.Time `json:"trialExpiryDate,omitempty"`
 }
 
 // Project Group (e.g. Contributor, Reader etc.)
@@ -80,7 +79,7 @@ type GroupEntitlement struct {
 	// The unique identifier which matches the Id of the GraphMember.
 	Id *uuid.UUID `json:"id,omitempty"`
 	// [Readonly] The last time the group licensing rule was executed (regardless of whether any changes were made).
-	LastExecuted *time.Time `json:"lastExecuted,omitempty"`
+	LastExecuted *azuredevops.Time `json:"lastExecuted,omitempty"`
 	// License Rule.
 	LicenseRule *licensing.AccessLevel `json:"licenseRule,omitempty"`
 	// Group members. Only used when creating a new group.
@@ -159,7 +158,7 @@ type LicenseSummaryData struct {
 	// Type of MSDN License.
 	MsdnLicenseType *licensing.MsdnLicenseType `json:"msdnLicenseType,omitempty"`
 	// Specifies the date when billing will charge for paid licenses
-	NextBillingDate *time.Time `json:"nextBillingDate,omitempty"`
+	NextBillingDate *azuredevops.Time `json:"nextBillingDate,omitempty"`
 	// Source of the License.
 	Source *licensing.LicensingSource `json:"source,omitempty"`
 	// Total license count after next billing cycle
@@ -171,7 +170,7 @@ type MemberEntitlement struct {
 	// User's access level denoted by a license.
 	AccessLevel *licensing.AccessLevel `json:"accessLevel,omitempty"`
 	// [Readonly] Date the user was added to the collection.
-	DateCreated *time.Time `json:"dateCreated,omitempty"`
+	DateCreated *azuredevops.Time `json:"dateCreated,omitempty"`
 	// User's extensions.
 	Extensions *[]Extension `json:"extensions,omitempty"`
 	// [Readonly] GroupEntitlements that this user belongs to.
@@ -179,7 +178,7 @@ type MemberEntitlement struct {
 	// The unique identifier which matches the Id of the Identity associated with the GraphMember.
 	Id *uuid.UUID `json:"id,omitempty"`
 	// [Readonly] Date the user last accessed the collection.
-	LastAccessedDate *time.Time `json:"lastAccessedDate,omitempty"`
+	LastAccessedDate *azuredevops.Time `json:"lastAccessedDate,omitempty"`
 	// Relation between a project and the user's effective permissions in that project.
 	ProjectEntitlements *[]ProjectEntitlement `json:"projectEntitlements,omitempty"`
 	// User reference.
@@ -316,12 +315,12 @@ type TeamRef struct {
 	Name *string `json:"name,omitempty"`
 }
 
-// A user entity with additional properties including thier license, extensions, and project membership
+// A user entity with additional properties including their license, extensions, and project membership
 type UserEntitlement struct {
 	// User's access level denoted by a license.
 	AccessLevel *licensing.AccessLevel `json:"accessLevel,omitempty"`
 	// [Readonly] Date the user was added to the collection.
-	DateCreated *time.Time `json:"dateCreated,omitempty"`
+	DateCreated *azuredevops.Time `json:"dateCreated,omitempty"`
 	// User's extensions.
 	Extensions *[]Extension `json:"extensions,omitempty"`
 	// [Readonly] GroupEntitlements that this user belongs to.
@@ -329,7 +328,7 @@ type UserEntitlement struct {
 	// The unique identifier which matches the Id of the Identity associated with the GraphMember.
 	Id *uuid.UUID `json:"id,omitempty"`
 	// [Readonly] Date the user last accessed the collection.
-	LastAccessedDate *time.Time `json:"lastAccessedDate,omitempty"`
+	LastAccessedDate *azuredevops.Time `json:"lastAccessedDate,omitempty"`
 	// Relation between a project and the user's effective permissions in that project.
 	ProjectEntitlements *[]ProjectEntitlement `json:"projectEntitlements,omitempty"`
 	// User reference.

@@ -10,9 +10,9 @@ package notification
 
 import (
 	"github.com/google/uuid"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/forminput"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 type ActorFilter struct {
@@ -141,15 +141,15 @@ var EvaluationOperationStatusValues = evaluationOperationStatusValuesType{
 }
 
 type EventBacklogStatus struct {
-	CaptureTime             *time.Time `json:"captureTime,omitempty"`
-	JobId                   *uuid.UUID `json:"jobId,omitempty"`
-	LastEventBatchStartTime *time.Time `json:"lastEventBatchStartTime,omitempty"`
-	LastEventProcessedTime  *time.Time `json:"lastEventProcessedTime,omitempty"`
-	LastJobBatchStartTime   *time.Time `json:"lastJobBatchStartTime,omitempty"`
-	LastJobProcessedTime    *time.Time `json:"lastJobProcessedTime,omitempty"`
-	OldestPendingEventTime  *time.Time `json:"oldestPendingEventTime,omitempty"`
-	Publisher               *string    `json:"publisher,omitempty"`
-	UnprocessedEvents       *int       `json:"unprocessedEvents,omitempty"`
+	CaptureTime             *azuredevops.Time `json:"captureTime,omitempty"`
+	JobId                   *uuid.UUID        `json:"jobId,omitempty"`
+	LastEventBatchStartTime *azuredevops.Time `json:"lastEventBatchStartTime,omitempty"`
+	LastEventProcessedTime  *azuredevops.Time `json:"lastEventProcessedTime,omitempty"`
+	LastJobBatchStartTime   *azuredevops.Time `json:"lastJobBatchStartTime,omitempty"`
+	LastJobProcessedTime    *azuredevops.Time `json:"lastJobProcessedTime,omitempty"`
+	OldestPendingEventTime  *azuredevops.Time `json:"oldestPendingEventTime,omitempty"`
+	Publisher               *string           `json:"publisher,omitempty"`
+	UnprocessedEvents       *int              `json:"unprocessedEvents,omitempty"`
 }
 
 type EventBatch struct {
@@ -167,10 +167,10 @@ type EventBatch struct {
 
 type EventProcessingLog struct {
 	// Identifier used for correlating to other diagnostics that may have been recorded elsewhere.
-	ActivityId  *uuid.UUID `json:"activityId,omitempty"`
-	Description *string    `json:"description,omitempty"`
-	EndTime     *time.Time `json:"endTime,omitempty"`
-	Errors      *int       `json:"errors,omitempty"`
+	ActivityId  *uuid.UUID        `json:"activityId,omitempty"`
+	Description *string           `json:"description,omitempty"`
+	EndTime     *azuredevops.Time `json:"endTime,omitempty"`
+	Errors      *int              `json:"errors,omitempty"`
 	// Unique instance identifier.
 	Id         *uuid.UUID                          `json:"id,omitempty"`
 	LogType    *string                             `json:"logType,omitempty"`
@@ -178,7 +178,7 @@ type EventProcessingLog struct {
 	Properties *map[string]string                  `json:"properties,omitempty"`
 	// This identifier depends on the logType.  For notification jobs, this will be the job Id. For subscription tracing, this will be a special root Guid with the subscription Id encoded.
 	Source         *uuid.UUID                 `json:"source,omitempty"`
-	StartTime      *time.Time                 `json:"startTime,omitempty"`
+	StartTime      *azuredevops.Time          `json:"startTime,omitempty"`
 	Warnings       *int                       `json:"warnings,omitempty"`
 	Result         *string                    `json:"result,omitempty"`
 	Stats          *map[string]map[string]int `json:"stats,omitempty"`
@@ -299,15 +299,24 @@ type GroupSubscriptionChannel struct {
 
 // Abstraction interface for the diagnostic log.  Primarily for deserialization.
 type INotificationDiagnosticLog struct {
-	ActivityId  *uuid.UUID                          `json:"activityId,omitempty"`
-	Description *string                             `json:"description,omitempty"`
-	EndTime     *time.Time                          `json:"endTime,omitempty"`
-	Id          *uuid.UUID                          `json:"id,omitempty"`
-	LogType     *string                             `json:"logType,omitempty"`
-	Messages    *[]NotificationDiagnosticLogMessage `json:"messages,omitempty"`
-	Properties  *map[string]string                  `json:"properties,omitempty"`
-	Source      *uuid.UUID                          `json:"source,omitempty"`
-	StartTime   *time.Time                          `json:"startTime,omitempty"`
+	// Identifier used for correlating to other diagnostics that may have been recorded elsewhere.
+	ActivityId *uuid.UUID `json:"activityId,omitempty"`
+	// Description of what subscription or notification job is being logged.
+	Description *string `json:"description,omitempty"`
+	// Time the log ended.
+	EndTime *azuredevops.Time `json:"endTime,omitempty"`
+	// Unique instance identifier.
+	Id *uuid.UUID `json:"id,omitempty"`
+	// Type of information being logged.
+	LogType *string `json:"logType,omitempty"`
+	// List of log messages.
+	Messages *[]NotificationDiagnosticLogMessage `json:"messages,omitempty"`
+	// Dictionary of log properties and settings for the job.
+	Properties *map[string]string `json:"properties,omitempty"`
+	// This identifier depends on the logType.  For notification jobs, this will be the job Id. For subscription tracing, this will be a special root Guid with the subscription Id encoded.
+	Source *uuid.UUID `json:"source,omitempty"`
+	// Time the log started.
+	StartTime *azuredevops.Time `json:"startTime,omitempty"`
 }
 
 type ISubscriptionChannel struct {
@@ -338,15 +347,15 @@ type NotificationAdminSettingsUpdateParameters struct {
 }
 
 type NotificationBacklogStatus struct {
-	CaptureTime                    *time.Time `json:"captureTime,omitempty"`
-	Channel                        *string    `json:"channel,omitempty"`
-	JobId                          *uuid.UUID `json:"jobId,omitempty"`
-	LastJobBatchStartTime          *time.Time `json:"lastJobBatchStartTime,omitempty"`
-	LastJobProcessedTime           *time.Time `json:"lastJobProcessedTime,omitempty"`
-	LastNotificationBatchStartTime *time.Time `json:"lastNotificationBatchStartTime,omitempty"`
-	LastNotificationProcessedTime  *time.Time `json:"lastNotificationProcessedTime,omitempty"`
-	OldestPendingNotificationTime  *time.Time `json:"oldestPendingNotificationTime,omitempty"`
-	Publisher                      *string    `json:"publisher,omitempty"`
+	CaptureTime                    *azuredevops.Time `json:"captureTime,omitempty"`
+	Channel                        *string           `json:"channel,omitempty"`
+	JobId                          *uuid.UUID        `json:"jobId,omitempty"`
+	LastJobBatchStartTime          *azuredevops.Time `json:"lastJobBatchStartTime,omitempty"`
+	LastJobProcessedTime           *azuredevops.Time `json:"lastJobProcessedTime,omitempty"`
+	LastNotificationBatchStartTime *azuredevops.Time `json:"lastNotificationBatchStartTime,omitempty"`
+	LastNotificationProcessedTime  *azuredevops.Time `json:"lastNotificationProcessedTime,omitempty"`
+	OldestPendingNotificationTime  *azuredevops.Time `json:"oldestPendingNotificationTime,omitempty"`
+	Publisher                      *string           `json:"publisher,omitempty"`
 	// Null status is unprocessed
 	Status                   *string `json:"status,omitempty"`
 	UnprocessedNotifications *int    `json:"unprocessedNotifications,omitempty"`
@@ -362,10 +371,10 @@ type NotificationBatch struct {
 
 type NotificationDeliveryLog struct {
 	// Identifier used for correlating to other diagnostics that may have been recorded elsewhere.
-	ActivityId  *uuid.UUID `json:"activityId,omitempty"`
-	Description *string    `json:"description,omitempty"`
-	EndTime     *time.Time `json:"endTime,omitempty"`
-	Errors      *int       `json:"errors,omitempty"`
+	ActivityId  *uuid.UUID        `json:"activityId,omitempty"`
+	Description *string           `json:"description,omitempty"`
+	EndTime     *azuredevops.Time `json:"endTime,omitempty"`
+	Errors      *int              `json:"errors,omitempty"`
 	// Unique instance identifier.
 	Id         *uuid.UUID                          `json:"id,omitempty"`
 	LogType    *string                             `json:"logType,omitempty"`
@@ -373,7 +382,7 @@ type NotificationDeliveryLog struct {
 	Properties *map[string]string                  `json:"properties,omitempty"`
 	// This identifier depends on the logType.  For notification jobs, this will be the job Id. For subscription tracing, this will be a special root Guid with the subscription Id encoded.
 	Source    *uuid.UUID                 `json:"source,omitempty"`
-	StartTime *time.Time                 `json:"startTime,omitempty"`
+	StartTime *azuredevops.Time          `json:"startTime,omitempty"`
 	Warnings  *int                       `json:"warnings,omitempty"`
 	Result    *string                    `json:"result,omitempty"`
 	Stats     *map[string]map[string]int `json:"stats,omitempty"`
@@ -383,19 +392,19 @@ type NotificationDeliveryLog struct {
 // Abstract base class for all of the diagnostic logs.
 type NotificationDiagnosticLog struct {
 	// Identifier used for correlating to other diagnostics that may have been recorded elsewhere.
-	ActivityId  *uuid.UUID `json:"activityId,omitempty"`
-	Description *string    `json:"description,omitempty"`
-	EndTime     *time.Time `json:"endTime,omitempty"`
-	Errors      *int       `json:"errors,omitempty"`
+	ActivityId  *uuid.UUID        `json:"activityId,omitempty"`
+	Description *string           `json:"description,omitempty"`
+	EndTime     *azuredevops.Time `json:"endTime,omitempty"`
+	Errors      *int              `json:"errors,omitempty"`
 	// Unique instance identifier.
 	Id         *uuid.UUID                          `json:"id,omitempty"`
 	LogType    *string                             `json:"logType,omitempty"`
 	Messages   *[]NotificationDiagnosticLogMessage `json:"messages,omitempty"`
 	Properties *map[string]string                  `json:"properties,omitempty"`
 	// This identifier depends on the logType.  For notification jobs, this will be the job Id. For subscription tracing, this will be a special root Guid with the subscription Id encoded.
-	Source    *uuid.UUID `json:"source,omitempty"`
-	StartTime *time.Time `json:"startTime,omitempty"`
-	Warnings  *int       `json:"warnings,omitempty"`
+	Source    *uuid.UUID        `json:"source,omitempty"`
+	StartTime *azuredevops.Time `json:"startTime,omitempty"`
+	Warnings  *int              `json:"warnings,omitempty"`
 }
 
 type NotificationDiagnosticLogMessage struct {
@@ -493,10 +502,10 @@ type NotificationEventTypeCategory struct {
 
 type NotificationJobDiagnosticLog struct {
 	// Identifier used for correlating to other diagnostics that may have been recorded elsewhere.
-	ActivityId  *uuid.UUID `json:"activityId,omitempty"`
-	Description *string    `json:"description,omitempty"`
-	EndTime     *time.Time `json:"endTime,omitempty"`
-	Errors      *int       `json:"errors,omitempty"`
+	ActivityId  *uuid.UUID        `json:"activityId,omitempty"`
+	Description *string           `json:"description,omitempty"`
+	EndTime     *azuredevops.Time `json:"endTime,omitempty"`
+	Errors      *int              `json:"errors,omitempty"`
 	// Unique instance identifier.
 	Id         *uuid.UUID                          `json:"id,omitempty"`
 	LogType    *string                             `json:"logType,omitempty"`
@@ -504,7 +513,7 @@ type NotificationJobDiagnosticLog struct {
 	Properties *map[string]string                  `json:"properties,omitempty"`
 	// This identifier depends on the logType.  For notification jobs, this will be the job Id. For subscription tracing, this will be a special root Guid with the subscription Id encoded.
 	Source    *uuid.UUID                 `json:"source,omitempty"`
-	StartTime *time.Time                 `json:"startTime,omitempty"`
+	StartTime *azuredevops.Time          `json:"startTime,omitempty"`
 	Warnings  *int                       `json:"warnings,omitempty"`
 	Result    *string                    `json:"result,omitempty"`
 	Stats     *map[string]map[string]int `json:"stats,omitempty"`
@@ -573,7 +582,7 @@ type NotificationsEvaluationResult struct {
 }
 
 type NotificationStatistic struct {
-	Date     *time.Time                 `json:"date,omitempty"`
+	Date     *azuredevops.Time          `json:"date,omitempty"`
 	HitCount *int                       `json:"hitCount,omitempty"`
 	Path     *string                    `json:"path,omitempty"`
 	Type     *NotificationStatisticType `json:"type,omitempty"`
@@ -585,10 +594,10 @@ type NotificationStatisticsQuery struct {
 }
 
 type NotificationStatisticsQueryConditions struct {
-	EndDate         *time.Time                 `json:"endDate,omitempty"`
+	EndDate         *azuredevops.Time          `json:"endDate,omitempty"`
 	HitCountMinimum *int                       `json:"hitCountMinimum,omitempty"`
 	Path            *string                    `json:"path,omitempty"`
-	StartDate       *time.Time                 `json:"startDate,omitempty"`
+	StartDate       *azuredevops.Time          `json:"startDate,omitempty"`
 	Type            *NotificationStatisticType `json:"type,omitempty"`
 	User            *webapi.IdentityRef        `json:"user,omitempty"`
 }
@@ -681,11 +690,14 @@ type notificationSubscriberDeliveryPreferenceValuesType struct {
 }
 
 var NotificationSubscriberDeliveryPreferenceValues = notificationSubscriberDeliveryPreferenceValuesType{
+	// Do not send notifications by default. Note: notifications can still be delivered to this subscriber, for example via a custom subscription.
 	NoDelivery: "noDelivery",
 	// Deliver notifications to the subscriber's preferred email address.
 	PreferredEmailAddress: "preferredEmailAddress",
-	EachMember:            "eachMember",
-	UseDefault:            "useDefault",
+	// Deliver notifications to each member of the group representing the subscriber. Only applicable when the subscriber is a group.
+	EachMember: "eachMember",
+	// Use default
+	UseDefault: "useDefault",
 }
 
 // Updates to a subscriber. Typically used to change (or set) a preferred email address or default delivery preference.
@@ -719,7 +731,7 @@ type NotificationSubscription struct {
 	// User that last modified (or created) the subscription.
 	LastModifiedBy *webapi.IdentityRef `json:"lastModifiedBy,omitempty"`
 	// Date when the subscription was last modified. If the subscription has not been updated since it was created, this value will indicate when the subscription was created.
-	ModifiedDate *time.Time `json:"modifiedDate,omitempty"`
+	ModifiedDate *azuredevops.Time `json:"modifiedDate,omitempty"`
 	// The permissions the user have for this subscriptions.
 	Permissions *SubscriptionPermissions `json:"permissions,omitempty"`
 	// The container in which events must be published from in order to be matched by the subscription. If empty, the scope is the current host (typically an account or project collection). For example, a subscription scoped to project A will not produce notifications for events published from project B.
@@ -885,9 +897,13 @@ type SubscriptionChannelWithAddress struct {
 	UseCustomAddress *bool   `json:"useCustomAddress,omitempty"`
 }
 
+// Contains all the diagnostics settings for a subscription.
 type SubscriptionDiagnostics struct {
-	DeliveryResults   *SubscriptionTracing `json:"deliveryResults,omitempty"`
-	DeliveryTracing   *SubscriptionTracing `json:"deliveryTracing,omitempty"`
+	// Diagnostics settings for retaining delivery results.  Used for Service Hooks subscriptions.
+	DeliveryResults *SubscriptionTracing `json:"deliveryResults,omitempty"`
+	// Diagnostics settings for troubleshooting notification delivery.
+	DeliveryTracing *SubscriptionTracing `json:"deliveryTracing,omitempty"`
+	// Diagnostics settings for troubleshooting event matching.
 	EvaluationTracing *SubscriptionTracing `json:"evaluationTracing,omitempty"`
 }
 
@@ -905,7 +921,7 @@ type SubscriptionEvaluationClause struct {
 // Encapsulates the properties of a SubscriptionEvaluationRequest. It defines the subscription to be evaluated and time interval for events used in evaluation.
 type SubscriptionEvaluationRequest struct {
 	// The min created date for the events used for matching in UTC. Use all events created since this date
-	MinEventsCreatedDate *time.Time `json:"minEventsCreatedDate,omitempty"`
+	MinEventsCreatedDate *azuredevops.Time `json:"minEventsCreatedDate,omitempty"`
 	// User or group that will receive notifications for events matching the subscription's filter criteria. If not specified, defaults to the calling user.
 	SubscriptionCreateParameters *NotificationSubscriptionCreateParameters `json:"subscriptionCreateParameters,omitempty"`
 }
@@ -1176,19 +1192,19 @@ var SubscriptionTemplateTypeValues = subscriptionTemplateTypeValuesType{
 
 type SubscriptionTraceDiagnosticLog struct {
 	// Identifier used for correlating to other diagnostics that may have been recorded elsewhere.
-	ActivityId  *uuid.UUID `json:"activityId,omitempty"`
-	Description *string    `json:"description,omitempty"`
-	EndTime     *time.Time `json:"endTime,omitempty"`
-	Errors      *int       `json:"errors,omitempty"`
+	ActivityId  *uuid.UUID        `json:"activityId,omitempty"`
+	Description *string           `json:"description,omitempty"`
+	EndTime     *azuredevops.Time `json:"endTime,omitempty"`
+	Errors      *int              `json:"errors,omitempty"`
 	// Unique instance identifier.
 	Id         *uuid.UUID                          `json:"id,omitempty"`
 	LogType    *string                             `json:"logType,omitempty"`
 	Messages   *[]NotificationDiagnosticLogMessage `json:"messages,omitempty"`
 	Properties *map[string]string                  `json:"properties,omitempty"`
 	// This identifier depends on the logType.  For notification jobs, this will be the job Id. For subscription tracing, this will be a special root Guid with the subscription Id encoded.
-	Source    *uuid.UUID `json:"source,omitempty"`
-	StartTime *time.Time `json:"startTime,omitempty"`
-	Warnings  *int       `json:"warnings,omitempty"`
+	Source    *uuid.UUID        `json:"source,omitempty"`
+	StartTime *azuredevops.Time `json:"startTime,omitempty"`
+	Warnings  *int              `json:"warnings,omitempty"`
 	// Indicates the job Id that processed or delivered this subscription
 	JobId *uuid.UUID `json:"jobId,omitempty"`
 	// Indicates unique instance identifier for the job that processed or delivered this subscription
@@ -1198,19 +1214,19 @@ type SubscriptionTraceDiagnosticLog struct {
 
 type SubscriptionTraceEventProcessingLog struct {
 	// Identifier used for correlating to other diagnostics that may have been recorded elsewhere.
-	ActivityId  *uuid.UUID `json:"activityId,omitempty"`
-	Description *string    `json:"description,omitempty"`
-	EndTime     *time.Time `json:"endTime,omitempty"`
-	Errors      *int       `json:"errors,omitempty"`
+	ActivityId  *uuid.UUID        `json:"activityId,omitempty"`
+	Description *string           `json:"description,omitempty"`
+	EndTime     *azuredevops.Time `json:"endTime,omitempty"`
+	Errors      *int              `json:"errors,omitempty"`
 	// Unique instance identifier.
 	Id         *uuid.UUID                          `json:"id,omitempty"`
 	LogType    *string                             `json:"logType,omitempty"`
 	Messages   *[]NotificationDiagnosticLogMessage `json:"messages,omitempty"`
 	Properties *map[string]string                  `json:"properties,omitempty"`
 	// This identifier depends on the logType.  For notification jobs, this will be the job Id. For subscription tracing, this will be a special root Guid with the subscription Id encoded.
-	Source    *uuid.UUID `json:"source,omitempty"`
-	StartTime *time.Time `json:"startTime,omitempty"`
-	Warnings  *int       `json:"warnings,omitempty"`
+	Source    *uuid.UUID        `json:"source,omitempty"`
+	StartTime *azuredevops.Time `json:"startTime,omitempty"`
+	Warnings  *int              `json:"warnings,omitempty"`
 	// Indicates the job Id that processed or delivered this subscription
 	JobId *uuid.UUID `json:"jobId,omitempty"`
 	// Indicates unique instance identifier for the job that processed or delivered this subscription
@@ -1225,19 +1241,19 @@ type SubscriptionTraceEventProcessingLog struct {
 
 type SubscriptionTraceNotificationDeliveryLog struct {
 	// Identifier used for correlating to other diagnostics that may have been recorded elsewhere.
-	ActivityId  *uuid.UUID `json:"activityId,omitempty"`
-	Description *string    `json:"description,omitempty"`
-	EndTime     *time.Time `json:"endTime,omitempty"`
-	Errors      *int       `json:"errors,omitempty"`
+	ActivityId  *uuid.UUID        `json:"activityId,omitempty"`
+	Description *string           `json:"description,omitempty"`
+	EndTime     *azuredevops.Time `json:"endTime,omitempty"`
+	Errors      *int              `json:"errors,omitempty"`
 	// Unique instance identifier.
 	Id         *uuid.UUID                          `json:"id,omitempty"`
 	LogType    *string                             `json:"logType,omitempty"`
 	Messages   *[]NotificationDiagnosticLogMessage `json:"messages,omitempty"`
 	Properties *map[string]string                  `json:"properties,omitempty"`
 	// This identifier depends on the logType.  For notification jobs, this will be the job Id. For subscription tracing, this will be a special root Guid with the subscription Id encoded.
-	Source    *uuid.UUID `json:"source,omitempty"`
-	StartTime *time.Time `json:"startTime,omitempty"`
-	Warnings  *int       `json:"warnings,omitempty"`
+	Source    *uuid.UUID        `json:"source,omitempty"`
+	StartTime *azuredevops.Time `json:"startTime,omitempty"`
+	Warnings  *int              `json:"warnings,omitempty"`
 	// Indicates the job Id that processed or delivered this subscription
 	JobId *uuid.UUID `json:"jobId,omitempty"`
 	// Indicates unique instance identifier for the job that processed or delivered this subscription
@@ -1246,14 +1262,16 @@ type SubscriptionTraceNotificationDeliveryLog struct {
 	Notifications  *[]DiagnosticNotification `json:"notifications,omitempty"`
 }
 
+// Data controlling a single diagnostic setting for a subscription.
 type SubscriptionTracing struct {
+	// Indicates whether the diagnostic tracing is enabled or not.
 	Enabled *bool `json:"enabled,omitempty"`
 	// Trace until the specified end date.
-	EndDate *time.Time `json:"endDate,omitempty"`
+	EndDate *azuredevops.Time `json:"endDate,omitempty"`
 	// The maximum number of result details to trace.
 	MaxTracedEntries *int `json:"maxTracedEntries,omitempty"`
 	// The date and time tracing started.
-	StartDate *time.Time `json:"startDate,omitempty"`
+	StartDate *azuredevops.Time `json:"startDate,omitempty"`
 	// Trace until remaining count reaches 0.
 	TracedEntries *int `json:"tracedEntries,omitempty"`
 }
@@ -1273,13 +1291,19 @@ type UnsupportedSubscriptionChannel struct {
 	Type *string `json:"type,omitempty"`
 }
 
+// Parameters to update diagnostics settings for a subscription.
 type UpdateSubscripitonDiagnosticsParameters struct {
-	DeliveryResults   *UpdateSubscripitonTracingParameters `json:"deliveryResults,omitempty"`
-	DeliveryTracing   *UpdateSubscripitonTracingParameters `json:"deliveryTracing,omitempty"`
+	// Diagnostics settings for retaining delivery results.  Used for Service Hooks subscriptions.
+	DeliveryResults *UpdateSubscripitonTracingParameters `json:"deliveryResults,omitempty"`
+	// Diagnostics settings for troubleshooting notification delivery.
+	DeliveryTracing *UpdateSubscripitonTracingParameters `json:"deliveryTracing,omitempty"`
+	// Diagnostics settings for troubleshooting event matching.
 	EvaluationTracing *UpdateSubscripitonTracingParameters `json:"evaluationTracing,omitempty"`
 }
 
+// Parameters to update a specific diagnostic setting.
 type UpdateSubscripitonTracingParameters struct {
+	// Indicates whether to enable to disable the diagnostic tracing.
 	Enabled *bool `json:"enabled,omitempty"`
 }
 

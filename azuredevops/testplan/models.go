@@ -9,10 +9,10 @@
 package testplan
 
 import (
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/core"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/test"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 // The build definition reference resource
@@ -28,9 +28,9 @@ type CloneOperationCommonResponse struct {
 	// Various statistics related to the clone operation
 	CloneStatistics *test.CloneStatistics `json:"cloneStatistics,omitempty"`
 	// Completion data of the operation
-	CompletionDate *time.Time `json:"completionDate,omitempty"`
+	CompletionDate *azuredevops.Time `json:"completionDate,omitempty"`
 	// Creation data of the operation
-	CreationDate *time.Time `json:"creationDate,omitempty"`
+	CreationDate *azuredevops.Time `json:"creationDate,omitempty"`
 	// Reference links
 	Links interface{} `json:"links,omitempty"`
 	// Message related to the job
@@ -104,7 +104,7 @@ type DestinationTestPlanCloneParams struct {
 	// Description of the test plan.
 	Description *string `json:"description,omitempty"`
 	// End date for the test plan.
-	EndDate *time.Time `json:"endDate,omitempty"`
+	EndDate *azuredevops.Time `json:"endDate,omitempty"`
 	// Iteration path of the test plan.
 	Iteration *string `json:"iteration,omitempty"`
 	// Name of the test plan.
@@ -114,7 +114,7 @@ type DestinationTestPlanCloneParams struct {
 	// Release Environment to be used to deploy the build and run automated tests from this test plan.
 	ReleaseEnvironmentDefinition *test.ReleaseEnvironmentDefinitionReference `json:"releaseEnvironmentDefinition,omitempty"`
 	// Start date for the test plan.
-	StartDate *time.Time `json:"startDate,omitempty"`
+	StartDate *azuredevops.Time `json:"startDate,omitempty"`
 	// State of the test plan.
 	State *string `json:"state,omitempty"`
 	// Value to configure how same tests across test suites under a test plan need to behave
@@ -470,7 +470,7 @@ type TestPlan struct {
 	// Description of the test plan.
 	Description *string `json:"description,omitempty"`
 	// End date for the test plan.
-	EndDate *time.Time `json:"endDate,omitempty"`
+	EndDate *azuredevops.Time `json:"endDate,omitempty"`
 	// Iteration path of the test plan.
 	Iteration *string `json:"iteration,omitempty"`
 	// Name of the test plan.
@@ -480,7 +480,7 @@ type TestPlan struct {
 	// Release Environment to be used to deploy the build and run automated tests from this test plan.
 	ReleaseEnvironmentDefinition *test.ReleaseEnvironmentDefinitionReference `json:"releaseEnvironmentDefinition,omitempty"`
 	// Start date for the test plan.
-	StartDate *time.Time `json:"startDate,omitempty"`
+	StartDate *azuredevops.Time `json:"startDate,omitempty"`
 	// State of the test plan.
 	State *string `json:"state,omitempty"`
 	// Value to configure how same tests across test suites under a test plan need to behave
@@ -500,7 +500,7 @@ type TestPlan struct {
 	// Identity Reference for the last update of the test plan
 	UpdatedBy *webapi.IdentityRef `json:"updatedBy,omitempty"`
 	// Updated date of the test plan
-	UpdatedDate *time.Time `json:"updatedDate,omitempty"`
+	UpdatedDate *azuredevops.Time `json:"updatedDate,omitempty"`
 }
 
 // The test plan create parameters.
@@ -514,7 +514,7 @@ type TestPlanCreateParams struct {
 	// Description of the test plan.
 	Description *string `json:"description,omitempty"`
 	// End date for the test plan.
-	EndDate *time.Time `json:"endDate,omitempty"`
+	EndDate *azuredevops.Time `json:"endDate,omitempty"`
 	// Iteration path of the test plan.
 	Iteration *string `json:"iteration,omitempty"`
 	// Name of the test plan.
@@ -524,7 +524,7 @@ type TestPlanCreateParams struct {
 	// Release Environment to be used to deploy the build and run automated tests from this test plan.
 	ReleaseEnvironmentDefinition *test.ReleaseEnvironmentDefinitionReference `json:"releaseEnvironmentDefinition,omitempty"`
 	// Start date for the test plan.
-	StartDate *time.Time `json:"startDate,omitempty"`
+	StartDate *azuredevops.Time `json:"startDate,omitempty"`
 	// State of the test plan.
 	State *string `json:"state,omitempty"`
 	// Value to configure how same tests across test suites under a test plan need to behave
@@ -540,13 +540,13 @@ type TestPlanDetailedReference struct {
 	// Area of the test plan.
 	AreaPath *string `json:"areaPath,omitempty"`
 	// End date for the test plan.
-	EndDate *time.Time `json:"endDate,omitempty"`
+	EndDate *azuredevops.Time `json:"endDate,omitempty"`
 	// Iteration path of the test plan.
 	Iteration *string `json:"iteration,omitempty"`
 	// Root Suite Id
 	RootSuiteId *int `json:"rootSuiteId,omitempty"`
 	// Start date for the test plan.
-	StartDate *time.Time `json:"startDate,omitempty"`
+	StartDate *azuredevops.Time `json:"startDate,omitempty"`
 }
 
 // The test plan reference resource.
@@ -584,7 +584,7 @@ type TestPlanUpdateParams struct {
 	// Description of the test plan.
 	Description *string `json:"description,omitempty"`
 	// End date for the test plan.
-	EndDate *time.Time `json:"endDate,omitempty"`
+	EndDate *azuredevops.Time `json:"endDate,omitempty"`
 	// Iteration path of the test plan.
 	Iteration *string `json:"iteration,omitempty"`
 	// Name of the test plan.
@@ -594,7 +594,7 @@ type TestPlanUpdateParams struct {
 	// Release Environment to be used to deploy the build and run automated tests from this test plan.
 	ReleaseEnvironmentDefinition *test.ReleaseEnvironmentDefinitionReference `json:"releaseEnvironmentDefinition,omitempty"`
 	// Start date for the test plan.
-	StartDate *time.Time `json:"startDate,omitempty"`
+	StartDate *azuredevops.Time `json:"startDate,omitempty"`
 	// State of the test plan.
 	State *string `json:"state,omitempty"`
 	// Value to configure how same tests across test suites under a test plan need to behave
@@ -616,11 +616,11 @@ type TestPoint struct {
 	// Is the Test Point for Automated Test Case or Manual
 	IsAutomated *bool `json:"isAutomated,omitempty"`
 	// Last Reset to Active Time Stamp for the Test Point
-	LastResetToActive *time.Time `json:"lastResetToActive,omitempty"`
+	LastResetToActive *azuredevops.Time `json:"lastResetToActive,omitempty"`
 	// Last Updated details for the Test Point
 	LastUpdatedBy *webapi.IdentityRef `json:"lastUpdatedBy,omitempty"`
 	// Last Update Time Stamp for the Test Point
-	LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
+	LastUpdatedDate *azuredevops.Time `json:"lastUpdatedDate,omitempty"`
 	// Reference links
 	Links interface{} `json:"links,omitempty"`
 	// Project under which the Test Point is
@@ -710,11 +710,11 @@ type TestSuite struct {
 	// Last error for test suite.
 	LastError *string `json:"lastError,omitempty"`
 	// Last populated date.
-	LastPopulatedDate *time.Time `json:"lastPopulatedDate,omitempty"`
+	LastPopulatedDate *azuredevops.Time `json:"lastPopulatedDate,omitempty"`
 	// IdentityRef of user who has updated test suite recently.
 	LastUpdatedBy *webapi.IdentityRef `json:"lastUpdatedBy,omitempty"`
 	// Last update date.
-	LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
+	LastUpdatedDate *azuredevops.Time `json:"lastUpdatedDate,omitempty"`
 	// Test plan to which the test suite belongs.
 	Plan *TestPlanReference `json:"plan,omitempty"`
 	// Test suite project shallow reference.

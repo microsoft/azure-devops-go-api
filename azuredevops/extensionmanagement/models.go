@@ -10,9 +10,9 @@ package extensionmanagement
 
 import (
 	"github.com/google/uuid"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/gallery"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 // How the acquisition is assigned
@@ -202,7 +202,7 @@ type ContributionConstraint struct {
 	Name *string `json:"name,omitempty"`
 	// Properties that are fed to the contribution filter class
 	Properties interface{} `json:"properties,omitempty"`
-	// Constraints can be optionally be applied to one or more of the relationships defined in the contribution. If no relationships are defined then all relationships are associated with the constraint. This means the default behaviour will elimiate the contribution from the tree completely if the constraint is applied.
+	// Constraints can be optionally be applied to one or more of the relationships defined in the contribution. If no relationships are defined then all relationships are associated with the constraint. This means the default behaviour will eliminate the contribution from the tree completely if the constraint is applied.
 	Relationships *[]string `json:"relationships,omitempty"`
 }
 
@@ -427,7 +427,7 @@ type ExtensionAuditLogEntry struct {
 	// Change that was made to extension
 	AuditAction *string `json:"auditAction,omitempty"`
 	// Date at which the change was made
-	AuditDate *time.Time `json:"auditDate,omitempty"`
+	AuditDate *azuredevops.Time `json:"auditDate,omitempty"`
 	// Extra information about the change
 	Comment *string `json:"comment,omitempty"`
 	// Represents the user who made the change
@@ -566,7 +566,7 @@ type ExtensionRequest struct {
 	// Required message supplied if the request is rejected
 	RejectMessage *string `json:"rejectMessage,omitempty"`
 	// Date at which the request was made
-	RequestDate *time.Time `json:"requestDate,omitempty"`
+	RequestDate *azuredevops.Time `json:"requestDate,omitempty"`
 	// Represents the user who made the request
 	RequestedBy *webapi.IdentityRef `json:"requestedBy,omitempty"`
 	// Optional message supplied by the requester justifying the request
@@ -574,7 +574,7 @@ type ExtensionRequest struct {
 	// Represents the state of the request
 	RequestState *ExtensionRequestState `json:"requestState,omitempty"`
 	// Date at which the request was resolved
-	ResolveDate *time.Time `json:"resolveDate,omitempty"`
+	ResolveDate *azuredevops.Time `json:"resolveDate,omitempty"`
 	// Represents the user who resolved the request
 	ResolvedBy *webapi.IdentityRef `json:"resolvedBy,omitempty"`
 }
@@ -657,12 +657,12 @@ type ExtensionState struct {
 	// List of installation issues
 	InstallationIssues *[]InstalledExtensionStateIssue `json:"installationIssues,omitempty"`
 	// The time at which this installation was last updated
-	LastUpdated   *time.Time `json:"lastUpdated,omitempty"`
-	ExtensionName *string    `json:"extensionName,omitempty"`
+	LastUpdated   *azuredevops.Time `json:"lastUpdated,omitempty"`
+	ExtensionName *string           `json:"extensionName,omitempty"`
 	// The time at which the version was last checked
-	LastVersionCheck *time.Time `json:"lastVersionCheck,omitempty"`
-	PublisherName    *string    `json:"publisherName,omitempty"`
-	Version          *string    `json:"version,omitempty"`
+	LastVersionCheck *azuredevops.Time `json:"lastVersionCheck,omitempty"`
+	PublisherName    *string           `json:"publisherName,omitempty"`
+	Version          *string           `json:"version,omitempty"`
 }
 
 // [Flags] States of an extension Note:  If you add value to this enum, you need to do 2 other things.  First add the back compat enum in value src\Vssf\Sdk\Server\Contributions\InstalledExtensionMessage.cs.  Second, you can not send the new value on the message bus.  You need to remove it from the message bus event prior to being sent.
@@ -775,7 +775,7 @@ type InstalledExtension struct {
 	// Information about this particular installation of the extension
 	InstallState *InstalledExtensionState `json:"installState,omitempty"`
 	// This represents the date/time the extensions was last updated in the gallery. This doesnt mean this version was updated the value represents changes to any and all versions of the extension.
-	LastPublished *time.Time `json:"lastPublished,omitempty"`
+	LastPublished *azuredevops.Time `json:"lastPublished,omitempty"`
 	// Unique id of the publisher of this extension
 	PublisherId *string `json:"publisherId,omitempty"`
 	// The display name of the publisher
@@ -798,7 +798,7 @@ type InstalledExtensionState struct {
 	// List of installation issues
 	InstallationIssues *[]InstalledExtensionStateIssue `json:"installationIssues,omitempty"`
 	// The time at which this installation was last updated
-	LastUpdated *time.Time `json:"lastUpdated,omitempty"`
+	LastUpdated *azuredevops.Time `json:"lastUpdated,omitempty"`
 }
 
 // Represents an installation issue

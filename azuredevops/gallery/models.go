@@ -12,7 +12,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 // How the acquisition is assigned
@@ -181,7 +180,7 @@ type CategoryLanguageTitle struct {
 // The structure of a Concern Rather than defining a separate data structure having same fields as QnAItem, we are inheriting from the QnAItem.
 type Concern struct {
 	// Time when the review was first created
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// Unique identifier of a QnA item
 	Id *uint64 `json:"id,omitempty"`
 	// Get status of item
@@ -189,7 +188,7 @@ type Concern struct {
 	// Text description of the QnA item
 	Text *string `json:"text,omitempty"`
 	// Time when the review was edited/updated
-	UpdatedDate *time.Time `json:"updatedDate,omitempty"`
+	UpdatedDate *azuredevops.Time `json:"updatedDate,omitempty"`
 	// User details for the item.
 	User *UserIdentityRef `json:"user,omitempty"`
 	// Category of the concern
@@ -215,7 +214,7 @@ type CustomerLastContact struct {
 	// account for which customer was last contacted
 	Account *string `json:"account,omitempty"`
 	// Date on which the customer was last contacted
-	LastContactDate *time.Time `json:"lastContactDate,omitempty"`
+	LastContactDate *azuredevops.Time `json:"lastContactDate,omitempty"`
 }
 
 type DraftPatchOperation string
@@ -297,7 +296,7 @@ type ExtensionCategory struct {
 	CategoryId         *int      `json:"categoryId,omitempty"`
 	// This is the internal name for a category
 	CategoryName *string `json:"categoryName,omitempty"`
-	// This parameter is obsolete. Refer to LanguageTitles for langauge specific titles
+	// This parameter is obsolete. Refer to LanguageTitles for language specific titles
 	Language *string `json:"language,omitempty"`
 	// The list of all the titles of this category in various languages
 	LanguageTitles *[]CategoryLanguageTitle `json:"languageTitles,omitempty"`
@@ -311,7 +310,7 @@ type ExtensionDailyStat struct {
 	// Generic key/value pair to store extended statistics. Used for sending paid extension stats like Upgrade, Downgrade, Cancel trend etc.
 	ExtendedStats *map[string]interface{} `json:"extendedStats,omitempty"`
 	// Timestamp of this data point
-	StatisticDate *time.Time `json:"statisticDate,omitempty"`
+	StatisticDate *azuredevops.Time `json:"statisticDate,omitempty"`
 	// Version of the extension
 	Version *string `json:"version,omitempty"`
 }
@@ -347,11 +346,11 @@ var ExtensionDeploymentTechnologyValues = extensionDeploymentTechnologyValuesTyp
 
 type ExtensionDraft struct {
 	Assets             *[]ExtensionDraftAsset      `json:"assets,omitempty"`
-	CreatedDate        *time.Time                  `json:"createdDate,omitempty"`
+	CreatedDate        *azuredevops.Time           `json:"createdDate,omitempty"`
 	DraftState         *DraftStateType             `json:"draftState,omitempty"`
 	ExtensionName      *string                     `json:"extensionName,omitempty"`
 	Id                 *uuid.UUID                  `json:"id,omitempty"`
-	LastUpdated        *time.Time                  `json:"lastUpdated,omitempty"`
+	LastUpdated        *azuredevops.Time           `json:"lastUpdated,omitempty"`
 	Payload            *ExtensionPayload           `json:"payload,omitempty"`
 	Product            *string                     `json:"product,omitempty"`
 	PublisherName      *string                     `json:"publisherName,omitempty"`
@@ -376,7 +375,7 @@ type ExtensionEvent struct {
 	Id         *uint64     `json:"id,omitempty"`
 	Properties interface{} `json:"properties,omitempty"`
 	// Timestamp of when the event occurred
-	StatisticDate *time.Time `json:"statisticDate,omitempty"`
+	StatisticDate *azuredevops.Time `json:"statisticDate,omitempty"`
 	// Version of the extension
 	Version *string `json:"version,omitempty"`
 }
@@ -562,9 +561,9 @@ var ExtensionQueryFilterTypeValues = extensionQueryFilterTypeValuesType{
 	SearchText: "searchText",
 	// Query for extensions that are featured in their own category, The filterValue for this is name of category of extensions.
 	FeaturedInCategory: "featuredInCategory",
-	// When retrieving extensions from a query, exclude the extensions which are having the given flags. The value specified for this filter should be a string representing the integer values of the flags to be excluded. In case of mulitple flags to be specified, a logical OR of the interger values should be given as value for this filter This should be at most one filter of this type. This only acts as a restrictive filter after. In case of having a particular flag in both IncludeWithFlags and ExcludeWithFlags, excludeFlags will remove the included extensions giving empty result for that flag.
+	// When retrieving extensions from a query, exclude the extensions which are having the given flags. The value specified for this filter should be a string representing the integer values of the flags to be excluded. In case of multiple flags to be specified, a logical OR of the interger values should be given as value for this filter This should be at most one filter of this type. This only acts as a restrictive filter after. In case of having a particular flag in both IncludeWithFlags and ExcludeWithFlags, excludeFlags will remove the included extensions giving empty result for that flag.
 	ExcludeWithFlags: "excludeWithFlags",
-	// When retrieving extensions from a query, include the extensions which are having the given flags. The value specified for this filter should be a string representing the integer values of the flags to be included. In case of mulitple flags to be specified, a logical OR of the integer values should be given as value for this filter This should be at most one filter of this type. This only acts as a restrictive filter after. In case of having a particular flag in both IncludeWithFlags and ExcludeWithFlags, excludeFlags will remove the included extensions giving empty result for that flag. In case of multiple flags given in IncludeWithFlags in ORed fashion, extensions having any of the given flags will be included.
+	// When retrieving extensions from a query, include the extensions which are having the given flags. The value specified for this filter should be a string representing the integer values of the flags to be included. In case of multiple flags to be specified, a logical OR of the integer values should be given as value for this filter This should be at most one filter of this type. This only acts as a restrictive filter after. In case of having a particular flag in both IncludeWithFlags and ExcludeWithFlags, excludeFlags will remove the included extensions giving empty result for that flag. In case of multiple flags given in IncludeWithFlags in ORed fashion, extensions having any of the given flags will be included.
 	IncludeWithFlags: "includeWithFlags",
 	// Filter the extensions based on the LCID values applicable. Any extensions which are not having any LCID values will also be filtered. This is currently only supported for VS extensions.
 	Lcid: "lcid",
@@ -578,7 +577,7 @@ var ExtensionQueryFilterTypeValues = extensionQueryFilterTypeValuesType{
 	PublisherName: "publisherName",
 	// Filter to get extensions published by all publishers having supplied display name
 	PublisherDisplayName: "publisherDisplayName",
-	// When retrieving extensions from a query, include the extensions which have a publisher having the given flags. The value specified for this filter should be a string representing the integer values of the flags to be included. In case of mulitple flags to be specified, a logical OR of the integer values should be given as value for this filter There should be at most one filter of this type. This only acts as a restrictive filter after. In case of multiple flags given in IncludeWithFlags in ORed fashion, extensions having any of the given flags will be included.
+	// When retrieving extensions from a query, include the extensions which have a publisher having the given flags. The value specified for this filter should be a string representing the integer values of the flags to be included. In case of multiple flags to be specified, a logical OR of the integer values should be given as value for this filter There should be at most one filter of this type. This only acts as a restrictive filter after. In case of multiple flags given in IncludeWithFlags in ORed fashion, extensions having any of the given flags will be included.
 	IncludeWithPublisherFlags: "includeWithPublisherFlags",
 	// Filter to get extensions shared with particular organization
 	OrganizationSharedWith: "organizationSharedWith",
@@ -704,7 +703,7 @@ type ExtensionVersion struct {
 	FallbackAssetUri        *string                     `json:"fallbackAssetUri,omitempty"`
 	Files                   *[]ExtensionFile            `json:"files,omitempty"`
 	Flags                   *ExtensionVersionFlags      `json:"flags,omitempty"`
-	LastUpdated             *time.Time                  `json:"lastUpdated,omitempty"`
+	LastUpdated             *azuredevops.Time           `json:"lastUpdated,omitempty"`
 	Properties              *[]azuredevops.KeyValuePair `json:"properties,omitempty"`
 	ValidationResultMessage *string                     `json:"validationResultMessage,omitempty"`
 	Version                 *string                     `json:"version,omitempty"`
@@ -816,13 +815,13 @@ type PublishedExtension struct {
 	ExtensionName       *string                        `json:"extensionName,omitempty"`
 	Flags               *PublishedExtensionFlags       `json:"flags,omitempty"`
 	InstallationTargets *[]InstallationTarget          `json:"installationTargets,omitempty"`
-	LastUpdated         *time.Time                     `json:"lastUpdated,omitempty"`
+	LastUpdated         *azuredevops.Time              `json:"lastUpdated,omitempty"`
 	LongDescription     *string                        `json:"longDescription,omitempty"`
 	// Date on which the extension was first uploaded.
-	PublishedDate *time.Time      `json:"publishedDate,omitempty"`
-	Publisher     *PublisherFacts `json:"publisher,omitempty"`
+	PublishedDate *azuredevops.Time `json:"publishedDate,omitempty"`
+	Publisher     *PublisherFacts   `json:"publisher,omitempty"`
 	// Date on which the extension first went public.
-	ReleaseDate      *time.Time            `json:"releaseDate,omitempty"`
+	ReleaseDate      *azuredevops.Time     `json:"releaseDate,omitempty"`
 	SharedWith       *[]ExtensionShare     `json:"sharedWith,omitempty"`
 	ShortDescription *string               `json:"shortDescription,omitempty"`
 	Statistics       *[]ExtensionStatistic `json:"statistics,omitempty"`
@@ -886,7 +885,7 @@ type Publisher struct {
 	EmailAddress     *[]string             `json:"emailAddress,omitempty"`
 	Extensions       *[]PublishedExtension `json:"extensions,omitempty"`
 	Flags            *PublisherFlags       `json:"flags,omitempty"`
-	LastUpdated      *time.Time            `json:"lastUpdated,omitempty"`
+	LastUpdated      *azuredevops.Time     `json:"lastUpdated,omitempty"`
 	LongDescription  *string               `json:"longDescription,omitempty"`
 	PublisherId      *uuid.UUID            `json:"publisherId,omitempty"`
 	PublisherName    *string               `json:"publisherName,omitempty"`
@@ -901,7 +900,7 @@ type PublisherBase struct {
 	EmailAddress     *[]string             `json:"emailAddress,omitempty"`
 	Extensions       *[]PublishedExtension `json:"extensions,omitempty"`
 	Flags            *PublisherFlags       `json:"flags,omitempty"`
-	LastUpdated      *time.Time            `json:"lastUpdated,omitempty"`
+	LastUpdated      *azuredevops.Time     `json:"lastUpdated,omitempty"`
 	LongDescription  *string               `json:"longDescription,omitempty"`
 	PublisherId      *uuid.UUID            `json:"publisherId,omitempty"`
 	PublisherName    *string               `json:"publisherName,omitempty"`
@@ -1106,7 +1105,7 @@ type PublisherUserRoleAssignmentRef struct {
 // The core structure of a QnA item
 type QnAItem struct {
 	// Time when the review was first created
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// Unique identifier of a QnA item
 	Id *uint64 `json:"id,omitempty"`
 	// Get status of item
@@ -1114,7 +1113,7 @@ type QnAItem struct {
 	// Text description of the QnA item
 	Text *string `json:"text,omitempty"`
 	// Time when the review was edited/updated
-	UpdatedDate *time.Time `json:"updatedDate,omitempty"`
+	UpdatedDate *azuredevops.Time `json:"updatedDate,omitempty"`
 	// User details for the item.
 	User *UserIdentityRef `json:"user,omitempty"`
 }
@@ -1146,7 +1145,7 @@ type QueryFilter struct {
 	PageNumber *int `json:"pageNumber,omitempty"`
 	// The page size defines the number of results the caller wants for this filter. The count can't exceed the overall query size limits.
 	PageSize *int `json:"pageSize,omitempty"`
-	// The paging token is a distinct type of filter and the other filter fields are ignored. The paging token represents the continuation of a previously executed query. The information about where in the result and what fields are being filtered are embeded in the token.
+	// The paging token is a distinct type of filter and the other filter fields are ignored. The paging token represents the continuation of a previously executed query. The information about where in the result and what fields are being filtered are embedded in the token.
 	PagingToken *string `json:"pagingToken,omitempty"`
 	// Defines the type of sorting to be applied on the results. The page slice is cut of the sorted results only.
 	SortBy *int `json:"sortBy,omitempty"`
@@ -1157,7 +1156,7 @@ type QueryFilter struct {
 // The structure of the question / thread
 type Question struct {
 	// Time when the review was first created
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// Unique identifier of a QnA item
 	Id *uint64 `json:"id,omitempty"`
 	// Get status of item
@@ -1165,7 +1164,7 @@ type Question struct {
 	// Text description of the QnA item
 	Text *string `json:"text,omitempty"`
 	// Time when the review was edited/updated
-	UpdatedDate *time.Time `json:"updatedDate,omitempty"`
+	UpdatedDate *azuredevops.Time `json:"updatedDate,omitempty"`
 	// User details for the item.
 	User *UserIdentityRef `json:"user,omitempty"`
 	// List of answers in for the question / thread
@@ -1189,7 +1188,7 @@ type RatingCountPerRating struct {
 // The structure of a response
 type Response struct {
 	// Time when the review was first created
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// Unique identifier of a QnA item
 	Id *uint64 `json:"id,omitempty"`
 	// Get status of item
@@ -1197,7 +1196,7 @@ type Response struct {
 	// Text description of the QnA item
 	Text *string `json:"text,omitempty"`
 	// Time when the review was edited/updated
-	UpdatedDate *time.Time `json:"updatedDate,omitempty"`
+	UpdatedDate *azuredevops.Time `json:"updatedDate,omitempty"`
 	// User details for the item.
 	User *UserIdentityRef `json:"user,omitempty"`
 }
@@ -1256,7 +1255,7 @@ type Review struct {
 	// Title of the review
 	Title *string `json:"title,omitempty"`
 	// Time when the review was edited/updated
-	UpdatedDate *time.Time `json:"updatedDate,omitempty"`
+	UpdatedDate *azuredevops.Time `json:"updatedDate,omitempty"`
 	// Name of the user
 	UserDisplayName *string `json:"userDisplayName,omitempty"`
 	// Id of the user who submitted the review
@@ -1289,7 +1288,7 @@ type ReviewEventProperties struct {
 	// Rating at the time of event
 	Rating *int `json:"rating,omitempty"`
 	// Reply update date
-	ReplyDate *time.Time `json:"replyDate,omitempty"`
+	ReplyDate *azuredevops.Time `json:"replyDate,omitempty"`
 	// Publisher reply text or admin reply text
 	ReplyText *string `json:"replyText,omitempty"`
 	// User who responded to the review
@@ -1297,7 +1296,7 @@ type ReviewEventProperties struct {
 	// Review Event Type - Review
 	ResourceType *ReviewResourceType `json:"resourceType,omitempty"`
 	// Review update date
-	ReviewDate *time.Time `json:"reviewDate,omitempty"`
+	ReviewDate *azuredevops.Time `json:"reviewDate,omitempty"`
 	// ReviewId of the review  on which the operation is performed
 	ReviewId *uint64 `json:"reviewId,omitempty"`
 	// Text in Review Text
@@ -1376,7 +1375,7 @@ type ReviewReply struct {
 	// Title of the reply
 	Title *string `json:"title,omitempty"`
 	// Date the reply was submitted or updated
-	UpdatedDate *time.Time `json:"updatedDate,omitempty"`
+	UpdatedDate *azuredevops.Time `json:"updatedDate,omitempty"`
 	// Id of the user who left the reply
 	UserId *uuid.UUID `json:"userId,omitempty"`
 }
@@ -1526,7 +1525,7 @@ type UserReportedConcern struct {
 	// Id of the review which was reported
 	ReviewId *uint64 `json:"reviewId,omitempty"`
 	// Date the report was submitted
-	SubmittedDate *time.Time `json:"submittedDate,omitempty"`
+	SubmittedDate *azuredevops.Time `json:"submittedDate,omitempty"`
 	// Id of the user who reported a review
 	UserId *uuid.UUID `json:"userId,omitempty"`
 }

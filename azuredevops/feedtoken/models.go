@@ -9,11 +9,11 @@
 package feedtoken
 
 import (
-	"time"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 )
 
 // A cut-down version of SessionToken that just has what FeedSessionTokenController needs to serve the UI and which actually generates a TypeScript type for the UI to use
 type FeedSessionToken struct {
-	Token   *string    `json:"token,omitempty"`
-	ValidTo *time.Time `json:"validTo,omitempty"`
+	Token   *string           `json:"token,omitempty"`
+	ValidTo *azuredevops.Time `json:"validTo,omitempty"`
 }

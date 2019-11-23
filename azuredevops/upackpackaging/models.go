@@ -9,7 +9,7 @@
 package upackpackaging
 
 import (
-	"time"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 )
 
 // Describes UPack batch operation types.
@@ -75,7 +75,7 @@ type UPackPackagePushMetadata struct {
 // Deletion state of a Universal package.
 type UPackPackageVersionDeletionState struct {
 	// UTC date the package was deleted.
-	DeletedDate *time.Time `json:"deletedDate,omitempty"`
+	DeletedDate *azuredevops.Time `json:"deletedDate,omitempty"`
 	// Name of the package.
 	Name *string `json:"name,omitempty"`
 	// Version of the package.

@@ -10,8 +10,8 @@ package wiki
 
 import (
 	"github.com/google/uuid"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/git"
-	"time"
 )
 
 // Defines a wiki repository which encapsulates the git repository backing the wiki.
@@ -155,7 +155,7 @@ type WikiPageViewStats struct {
 	// Wiki page view count.
 	Count *int `json:"count,omitempty"`
 	// Wiki page last viewed time.
-	LastViewedTime *time.Time `json:"lastViewedTime,omitempty"`
+	LastViewedTime *azuredevops.Time `json:"lastViewedTime,omitempty"`
 	// Wiki page path.
 	Path *string `json:"path,omitempty"`
 }

@@ -11,7 +11,6 @@ package accounts
 import (
 	"github.com/google/uuid"
 	"github.com/microsoft/azure-devops-go-api/azuredevops"
-	"time"
 )
 
 type Account struct {
@@ -30,12 +29,12 @@ type Account struct {
 	// Who created the account
 	CreatedBy *uuid.UUID `json:"createdBy,omitempty"`
 	// Date account was created
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
-	HasMoved    *bool      `json:"hasMoved,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
+	HasMoved    *bool             `json:"hasMoved,omitempty"`
 	// Identity of last person to update the account
 	LastUpdatedBy *uuid.UUID `json:"lastUpdatedBy,omitempty"`
 	// Date account was last updated
-	LastUpdatedDate *time.Time `json:"lastUpdatedDate,omitempty"`
+	LastUpdatedDate *azuredevops.Time `json:"lastUpdatedDate,omitempty"`
 	// Namespace for an account
 	NamespaceId     *uuid.UUID `json:"namespaceId,omitempty"`
 	NewCollectionId *uuid.UUID `json:"newCollectionId,omitempty"`

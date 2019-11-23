@@ -11,7 +11,6 @@ package commerce
 import (
 	"github.com/google/uuid"
 	"github.com/microsoft/azure-devops-go-api/azuredevops"
-	"time"
 )
 
 // The subscription account namespace. Denotes the 'category' of the account.
@@ -31,7 +30,7 @@ var AccountProviderNamespaceValues = accountProviderNamespaceValuesType{
 	OnPremise:          "onPremise",
 }
 
-// Encapsulates azure specific plan structure, using a publisher defined publisher name, offer name, and plan name These are all specified by the publisher and can vary from other meta data we store about the extension internally therefore need to be tracked seperately for purposes of interacting with Azure
+// Encapsulates Azure specific plan structure, using a publisher defined publisher name, offer name, and plan name. These are all specified by the publisher and can vary from other meta data we store about the extension internally therefore need to be tracked separately for purposes of interacting with Azure.
 type AzureOfferPlanDefinition struct {
 	// Determines whether or not this plan is visible to all users
 	IsPublic *bool `json:"isPublic,omitempty"`
@@ -132,9 +131,9 @@ type ConnectedServerAuthorization struct {
 
 type IAzureSubscription struct {
 	AnniversaryDay *int                      `json:"anniversaryDay,omitempty"`
-	Created        *time.Time                `json:"created,omitempty"`
+	Created        *azuredevops.Time         `json:"created,omitempty"`
 	Id             *uuid.UUID                `json:"id,omitempty"`
-	LastUpdated    *time.Time                `json:"lastUpdated,omitempty"`
+	LastUpdated    *azuredevops.Time         `json:"lastUpdated,omitempty"`
 	Namespace      *AccountProviderNamespace `json:"namespace,omitempty"`
 	OfferType      *AzureOfferType           `json:"offerType,omitempty"`
 	Source         *SubscriptionSource       `json:"source,omitempty"`
@@ -149,31 +148,31 @@ type ICommerceEvent struct {
 	// Quantity for current billing cycle
 	CommittedQuantity *int `json:"committedQuantity,omitempty"`
 	// Quantity for next billing cycle
-	CurrentQuantity *int       `json:"currentQuantity,omitempty"`
-	EffectiveDate   *time.Time `json:"effectiveDate,omitempty"`
+	CurrentQuantity *int              `json:"currentQuantity,omitempty"`
+	EffectiveDate   *azuredevops.Time `json:"effectiveDate,omitempty"`
 	// Onpremise or hosted
-	Environment              *string    `json:"environment,omitempty"`
-	EventId                  *string    `json:"eventId,omitempty"`
-	EventName                *string    `json:"eventName,omitempty"`
-	EventSource              *string    `json:"eventSource,omitempty"`
-	EventTime                *time.Time `json:"eventTime,omitempty"`
-	GalleryId                *string    `json:"galleryId,omitempty"`
-	IncludedQuantity         *int       `json:"includedQuantity,omitempty"`
-	MaxQuantity              *int       `json:"maxQuantity,omitempty"`
-	MeterName                *string    `json:"meterName,omitempty"`
-	OrganizationId           *uuid.UUID `json:"organizationId,omitempty"`
-	OrganizationName         *string    `json:"organizationName,omitempty"`
-	PreviousIncludedQuantity *int       `json:"previousIncludedQuantity,omitempty"`
-	PreviousMaxQuantity      *int       `json:"previousMaxQuantity,omitempty"`
+	Environment              *string           `json:"environment,omitempty"`
+	EventId                  *string           `json:"eventId,omitempty"`
+	EventName                *string           `json:"eventName,omitempty"`
+	EventSource              *string           `json:"eventSource,omitempty"`
+	EventTime                *azuredevops.Time `json:"eventTime,omitempty"`
+	GalleryId                *string           `json:"galleryId,omitempty"`
+	IncludedQuantity         *int              `json:"includedQuantity,omitempty"`
+	MaxQuantity              *int              `json:"maxQuantity,omitempty"`
+	MeterName                *string           `json:"meterName,omitempty"`
+	OrganizationId           *uuid.UUID        `json:"organizationId,omitempty"`
+	OrganizationName         *string           `json:"organizationName,omitempty"`
+	PreviousIncludedQuantity *int              `json:"previousIncludedQuantity,omitempty"`
+	PreviousMaxQuantity      *int              `json:"previousMaxQuantity,omitempty"`
 	// Previous quantity in case of upgrade/downgrade
-	PreviousQuantity *int       `json:"previousQuantity,omitempty"`
-	RenewalGroup     *string    `json:"renewalGroup,omitempty"`
-	ServiceIdentity  *uuid.UUID `json:"serviceIdentity,omitempty"`
-	SubscriptionId   *uuid.UUID `json:"subscriptionId,omitempty"`
-	TrialEndDate     *time.Time `json:"trialEndDate,omitempty"`
-	TrialStartDate   *time.Time `json:"trialStartDate,omitempty"`
-	UserIdentity     *uuid.UUID `json:"userIdentity,omitempty"`
-	Version          *string    `json:"version,omitempty"`
+	PreviousQuantity *int              `json:"previousQuantity,omitempty"`
+	RenewalGroup     *string           `json:"renewalGroup,omitempty"`
+	ServiceIdentity  *uuid.UUID        `json:"serviceIdentity,omitempty"`
+	SubscriptionId   *uuid.UUID        `json:"subscriptionId,omitempty"`
+	TrialEndDate     *azuredevops.Time `json:"trialEndDate,omitempty"`
+	TrialStartDate   *azuredevops.Time `json:"trialStartDate,omitempty"`
+	UserIdentity     *uuid.UUID        `json:"userIdentity,omitempty"`
+	Version          *string           `json:"version,omitempty"`
 }
 
 // Encapsulates the state of offer meter definitions and purchases
@@ -193,7 +192,7 @@ type IOfferSubscription struct {
 	AzureSubscriptionName *string `json:"azureSubscriptionName,omitempty"`
 	// The azure subscription state
 	AzureSubscriptionState *SubscriptionStatus `json:"azureSubscriptionState,omitempty"`
-	// Quantity commited by the user, when resources is commitment based.
+	// Quantity committed by the user, when resources is commitment based.
 	CommittedQuantity *int `json:"committedQuantity,omitempty"`
 	// A enumeration value indicating why the resource was disabled.
 	DisabledReason *ResourceStatusReason `json:"disabledReason,omitempty"`
@@ -220,11 +219,11 @@ type IOfferSubscription struct {
 	// Gets the renewal group.
 	RenewalGroup *ResourceRenewalGroup `json:"renewalGroup,omitempty"`
 	// Returns a Date of UTC kind indicating when the next reset of quantities is going to happen. On this day at UTC 2:00 AM is when the reset will occur.
-	ResetDate *time.Time `json:"resetDate,omitempty"`
+	ResetDate *azuredevops.Time `json:"resetDate,omitempty"`
 	// Gets or sets the start date for this resource. First install date in any state.
-	StartDate *time.Time `json:"startDate,omitempty"`
+	StartDate *azuredevops.Time `json:"startDate,omitempty"`
 	// Gets or sets the trial expiry date.
-	TrialExpiryDate *time.Time `json:"trialExpiryDate,omitempty"`
+	TrialExpiryDate *azuredevops.Time `json:"trialExpiryDate,omitempty"`
 }
 
 // The subscription account. Add Sub Type and Owner email later.
@@ -277,7 +276,7 @@ type ISubscriptionAccount struct {
 
 // Information about a resource associated with a subscription.
 type ISubscriptionResource struct {
-	// Quantity commited by the user, when resources is commitment based.
+	// Quantity committed by the user, when resources is commitment based.
 	CommittedQuantity *int `json:"committedQuantity,omitempty"`
 	// A enumeration value indicating why the resource was disabled.
 	DisabledReason *ResourceStatusReason `json:"disabledReason,omitempty"`
@@ -294,17 +293,17 @@ type ISubscriptionResource struct {
 	// Gets the name of this resource.
 	Name *ResourceName `json:"name,omitempty"`
 	// Returns a Date of UTC kind indicating when the next reset of quantities is going to happen. On this day at UTC 2:00 AM is when the reset will occur.
-	ResetDate *time.Time `json:"resetDate,omitempty"`
+	ResetDate *azuredevops.Time `json:"resetDate,omitempty"`
 }
 
 // Represents the aggregated usage of a resource over a time span
 type IUsageEventAggregate struct {
 	// Gets or sets end time of the aggregated value, exclusive
-	EndTime *time.Time `json:"endTime,omitempty"`
+	EndTime *azuredevops.Time `json:"endTime,omitempty"`
 	// Gets or sets resource that the aggregated value represents
 	Resource *ResourceName `json:"resource,omitempty"`
 	// Gets or sets start time of the aggregated value, inclusive
-	StartTime *time.Time `json:"startTime,omitempty"`
+	StartTime *azuredevops.Time `json:"startTime,omitempty"`
 	// Gets or sets quantity of the resource used from start time to end time
 	Value *int `json:"value,omitempty"`
 }
@@ -404,12 +403,12 @@ type OfferMeter struct {
 	// Gets or sets the billing mode of the resource
 	BillingMode *ResourceBillingMode `json:"billingMode,omitempty"`
 	// Gets or sets the billing start date. If TrialDays + PreviewGraceDays > then, on 'BillingStartDate' it starts the preview Grace and/or trial period.
-	BillingStartDate *time.Time `json:"billingStartDate,omitempty"`
+	BillingStartDate *azuredevops.Time `json:"billingStartDate,omitempty"`
 	// Gets or sets the state of the billing.
 	BillingState *MeterBillingState `json:"billingState,omitempty"`
 	// Category.
 	Category *MeterCategory `json:"category,omitempty"`
-	// Quantity commited by the user, when resources is commitment based.
+	// Quantity committed by the user, when resources is commitment based.
 	CommittedQuantity *int `json:"committedQuantity,omitempty"`
 	// Quantity used by the user, when resources is pay as you go or commitment based.
 	CurrentQuantity *int `json:"currentQuantity,omitempty"`
@@ -504,7 +503,7 @@ type OfferSubscription struct {
 	AzureSubscriptionName *string `json:"azureSubscriptionName,omitempty"`
 	// The azure subscription state
 	AzureSubscriptionState *SubscriptionStatus `json:"azureSubscriptionState,omitempty"`
-	// Quantity commited by the user, when resources is commitment based.
+	// Quantity committed by the user, when resources is commitment based.
 	CommittedQuantity *int `json:"committedQuantity,omitempty"`
 	// A enumeration value indicating why the resource was disabled.
 	DisabledReason *ResourceStatusReason `json:"disabledReason,omitempty"`
@@ -533,19 +532,19 @@ type OfferSubscription struct {
 	// Gets the renewal group.
 	RenewalGroup *ResourceRenewalGroup `json:"renewalGroup,omitempty"`
 	// Returns a Date of UTC kind indicating when the next reset of quantities is going to happen. On this day at UTC 2:00 AM is when the reset will occur.
-	ResetDate *time.Time `json:"resetDate,omitempty"`
+	ResetDate *azuredevops.Time `json:"resetDate,omitempty"`
 	// Gets or sets the start date for this resource. First install date in any state.
-	StartDate *time.Time `json:"startDate,omitempty"`
+	StartDate *azuredevops.Time `json:"startDate,omitempty"`
 	// Gets or sets the trial expiry date.
-	TrialExpiryDate *time.Time `json:"trialExpiryDate,omitempty"`
+	TrialExpiryDate *azuredevops.Time `json:"trialExpiryDate,omitempty"`
 }
 
 // The Purchasable offer meter.
 type PurchasableOfferMeter struct {
-	// Currecny code for meter pricing
+	// Currency code for meter pricing
 	CurrencyCode *string `json:"currencyCode,omitempty"`
 	// Gets or sets the estimated renewal date.
-	EstimatedRenewalDate *time.Time `json:"estimatedRenewalDate,omitempty"`
+	EstimatedRenewalDate *azuredevops.Time `json:"estimatedRenewalDate,omitempty"`
 	// Locale for azure subscription
 	LocaleCode *string `json:"localeCode,omitempty"`
 	// Gets or sets the meter pricing (GraduatedPrice)
@@ -767,7 +766,7 @@ type SubscriptionAccount struct {
 
 // Information about a resource associated with a subscription.
 type SubscriptionResource struct {
-	// Quantity commited by the user, when resources is commitment based.
+	// Quantity committed by the user, when resources is commitment based.
 	CommittedQuantity *int `json:"committedQuantity,omitempty"`
 	// A enumeration value indicating why the resource was disabled.
 	DisabledReason *ResourceStatusReason `json:"disabledReason,omitempty"`
@@ -784,7 +783,7 @@ type SubscriptionResource struct {
 	// Gets or sets the name of this resource.
 	Name *ResourceName `json:"name,omitempty"`
 	// Returns a Date of UTC kind indicating when the next reset of quantities is going to happen. On this day at UTC 2:00 AM is when the reset will occur.
-	ResetDate *time.Time `json:"resetDate,omitempty"`
+	ResetDate *azuredevops.Time `json:"resetDate,omitempty"`
 }
 
 type SubscriptionSource string
@@ -833,11 +832,11 @@ type UsageEvent struct {
 	// User GUID associated with the usage event
 	AssociatedUser *uuid.UUID `json:"associatedUser,omitempty"`
 	// Timestamp when this billing event is billable
-	BillableDate *time.Time `json:"billableDate,omitempty"`
+	BillableDate *azuredevops.Time `json:"billableDate,omitempty"`
 	// Unique event identifier
 	EventId *string `json:"eventId,omitempty"`
-	// Recieving Timestamp of the billing event by metering service
-	EventTimestamp *time.Time `json:"eventTimestamp,omitempty"`
+	// Receiving Timestamp of the billing event by metering service
+	EventTimestamp *azuredevops.Time `json:"eventTimestamp,omitempty"`
 	// Gets or sets the event unique identifier.
 	EventUniqueId *uuid.UUID `json:"eventUniqueId,omitempty"`
 	// Meter Id.

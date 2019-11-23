@@ -18,22 +18,29 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("8ccfef3d-2b87-4e99-8ccb-66e343d2daa8")
 
-type Client struct {
+type Client interface {
+	// [Preview API] Lookup up country/region based on provided IPv4, null if using the remote IPv4 address.
+	GetGeoRegion(context.Context, GetGeoRegionArgs) (*GeoRegion, error)
+	// [Preview API]
+	GetRegions(context.Context, GetRegionsArgs) (*ProfileRegions, error)
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
 // [Preview API] Lookup up country/region based on provided IPv4, null if using the remote IPv4 address.
-func (client *Client) GetGeoRegion(ctx context.Context, args GetGeoRegionArgs) (*GeoRegion, error) {
+func (client *ClientImpl) GetGeoRegion(ctx context.Context, args GetGeoRegionArgs) (*GeoRegion, error) {
 	queryParams := url.Values{}
 	if args.Ip == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "ip"}
@@ -57,7 +64,7 @@ type GetGeoRegionArgs struct {
 }
 
 // [Preview API]
-func (client *Client) GetRegions(ctx context.Context, args GetRegionsArgs) (*ProfileRegions, error) {
+func (client *ClientImpl) GetRegions(ctx context.Context, args GetRegionsArgs) (*ProfileRegions, error) {
 	locationId, _ := uuid.Parse("b129ca90-999d-47bb-ab37-0dcf784ee633")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", nil, nil, nil, "", "application/json", nil)
 	if err != nil {

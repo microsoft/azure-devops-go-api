@@ -10,8 +10,8 @@ package workitemtracking
 
 import (
 	"github.com/google/uuid"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 type AccountMyWorkResult struct {
@@ -24,11 +24,11 @@ type AccountMyWorkResult struct {
 // Represents Work Item Recent Activity
 type AccountRecentActivityWorkItemModel struct {
 	// Date of the last Activity by the user
-	ActivityDate *time.Time `json:"activityDate,omitempty"`
+	ActivityDate *azuredevops.Time `json:"activityDate,omitempty"`
 	// Type of the activity
 	ActivityType *WorkItemRecentActivityType `json:"activityType,omitempty"`
 	// Last changed date of the work item
-	ChangedDate *time.Time `json:"changedDate,omitempty"`
+	ChangedDate *azuredevops.Time `json:"changedDate,omitempty"`
 	// Work Item Id
 	Id *int `json:"id,omitempty"`
 	// TeamFoundationId of the user this activity belongs to
@@ -48,11 +48,11 @@ type AccountRecentActivityWorkItemModel struct {
 // Represents Work Item Recent Activity
 type AccountRecentActivityWorkItemModel2 struct {
 	// Date of the last Activity by the user
-	ActivityDate *time.Time `json:"activityDate,omitempty"`
+	ActivityDate *azuredevops.Time `json:"activityDate,omitempty"`
 	// Type of the activity
 	ActivityType *WorkItemRecentActivityType `json:"activityType,omitempty"`
 	// Last changed date of the work item
-	ChangedDate *time.Time `json:"changedDate,omitempty"`
+	ChangedDate *azuredevops.Time `json:"changedDate,omitempty"`
 	// Work Item Id
 	Id *int `json:"id,omitempty"`
 	// TeamFoundationId of the user this activity belongs to
@@ -72,11 +72,11 @@ type AccountRecentActivityWorkItemModel2 struct {
 // Represents Work Item Recent Activity
 type AccountRecentActivityWorkItemModelBase struct {
 	// Date of the last Activity by the user
-	ActivityDate *time.Time `json:"activityDate,omitempty"`
+	ActivityDate *azuredevops.Time `json:"activityDate,omitempty"`
 	// Type of the activity
 	ActivityType *WorkItemRecentActivityType `json:"activityType,omitempty"`
 	// Last changed date of the work item
-	ChangedDate *time.Time `json:"changedDate,omitempty"`
+	ChangedDate *azuredevops.Time `json:"changedDate,omitempty"`
 	// Work Item Id
 	Id *int `json:"id,omitempty"`
 	// TeamFoundationId of the user this activity belongs to
@@ -98,7 +98,7 @@ type AccountRecentMentionWorkItemModel struct {
 	// Work Item Id
 	Id *int `json:"id,omitempty"`
 	// Latest date that the user were mentioned
-	MentionedDateField *time.Time `json:"mentionedDateField,omitempty"`
+	MentionedDateField *azuredevops.Time `json:"mentionedDateField,omitempty"`
 	// State of the work item
 	State *string `json:"state,omitempty"`
 	// Team project the work item belongs to
@@ -110,13 +110,13 @@ type AccountRecentMentionWorkItemModel struct {
 }
 
 type AccountWorkWorkItemModel struct {
-	AssignedTo   *string    `json:"assignedTo,omitempty"`
-	ChangedDate  *time.Time `json:"changedDate,omitempty"`
-	Id           *int       `json:"id,omitempty"`
-	State        *string    `json:"state,omitempty"`
-	TeamProject  *string    `json:"teamProject,omitempty"`
-	Title        *string    `json:"title,omitempty"`
-	WorkItemType *string    `json:"workItemType,omitempty"`
+	AssignedTo   *string           `json:"assignedTo,omitempty"`
+	ChangedDate  *azuredevops.Time `json:"changedDate,omitempty"`
+	Id           *int              `json:"id,omitempty"`
+	State        *string           `json:"state,omitempty"`
+	TeamProject  *string           `json:"teamProject,omitempty"`
+	Title        *string           `json:"title,omitempty"`
+	WorkItemType *string           `json:"workItemType,omitempty"`
 }
 
 // Contains criteria for querying work items based on artifact URI.
@@ -157,9 +157,9 @@ type Comment struct {
 	// IdentityRef of the creator of the comment.
 	CreatedBy *webapi.IdentityRef `json:"createdBy,omitempty"`
 	// The creation date of the comment.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// Effective Date/time value for adding the comment. Can be optionally different from CreatedDate.
-	CreatedOnBehalfDate *time.Time `json:"createdOnBehalfDate,omitempty"`
+	CreatedOnBehalfDate *azuredevops.Time `json:"createdOnBehalfDate,omitempty"`
 	// Identity on whose behalf this comment has been added. Can be optionally different from CreatedBy.
 	CreatedOnBehalfOf *webapi.IdentityRef `json:"createdOnBehalfOf,omitempty"`
 	// The id assigned to the comment.
@@ -171,7 +171,7 @@ type Comment struct {
 	// IdentityRef of the user who last modified the comment.
 	ModifiedBy *webapi.IdentityRef `json:"modifiedBy,omitempty"`
 	// The last modification date of the comment.
-	ModifiedDate *time.Time `json:"modifiedDate,omitempty"`
+	ModifiedDate *azuredevops.Time `json:"modifiedDate,omitempty"`
 	// The reactions of the comment.
 	Reactions *[]CommentReaction `json:"reactions,omitempty"`
 	// The text of the comment.
@@ -308,9 +308,9 @@ type CommentVersion struct {
 	// IdentityRef of the creator of the comment.
 	CreatedBy *webapi.IdentityRef `json:"createdBy,omitempty"`
 	// The creation date of the comment.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// Effective Date/time value for adding the comment. Can be optionally different from CreatedDate.
-	CreatedOnBehalfDate *time.Time `json:"createdOnBehalfDate,omitempty"`
+	CreatedOnBehalfDate *azuredevops.Time `json:"createdOnBehalfDate,omitempty"`
 	// Identity on whose behalf this comment has been added. Can be optionally different from CreatedBy.
 	CreatedOnBehalfOf *webapi.IdentityRef `json:"createdOnBehalfOf,omitempty"`
 	// The id assigned to the comment.
@@ -320,7 +320,7 @@ type CommentVersion struct {
 	// IdentityRef of the user who modified the comment at this version.
 	ModifiedBy *webapi.IdentityRef `json:"modifiedBy,omitempty"`
 	// The modification date of the comment for this version.
-	ModifiedDate *time.Time `json:"modifiedDate,omitempty"`
+	ModifiedDate *azuredevops.Time `json:"modifiedDate,omitempty"`
 	// The rendered content of the comment at this version.
 	RenderedText *string `json:"renderedText,omitempty"`
 	// The text of the comment at this version.
@@ -587,7 +587,7 @@ type QueryHierarchyItem struct {
 	// The identity who created the query item.
 	CreatedBy *IdentityReference `json:"createdBy,omitempty"`
 	// When the query item was created.
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// The link query mode.
 	FilterOptions *LinkQueryMode `json:"filterOptions,omitempty"`
 	// If this is a query folder, indicates if it contains any children.
@@ -605,11 +605,11 @@ type QueryHierarchyItem struct {
 	// The identity who last ran the query.
 	LastExecutedBy *IdentityReference `json:"lastExecutedBy,omitempty"`
 	// When the query was last run.
-	LastExecutedDate *time.Time `json:"lastExecutedDate,omitempty"`
+	LastExecutedDate *azuredevops.Time `json:"lastExecutedDate,omitempty"`
 	// The identity who last modified the query item.
 	LastModifiedBy *IdentityReference `json:"lastModifiedBy,omitempty"`
 	// When the query item was last modified.
-	LastModifiedDate *time.Time `json:"lastModifiedDate,omitempty"`
+	LastModifiedDate *azuredevops.Time `json:"lastModifiedDate,omitempty"`
 	// The link query clause.
 	LinkClauses *WorkItemQueryClause `json:"linkClauses,omitempty"`
 	// The name of the query item.
@@ -829,7 +829,7 @@ type WorkItemBatchGetRequest struct {
 	// The expand parameters for work item attributes. Possible options are { None, Relations, Fields, Links, All }
 	Expand *WorkItemExpand `json:"$expand,omitempty"`
 	// AsOf UTC date time string
-	AsOf *time.Time `json:"asOf,omitempty"`
+	AsOf *azuredevops.Time `json:"asOf,omitempty"`
 	// The flag to control error policy in a bulk get work items request. Possible options are {Fail, Omit}.
 	ErrorPolicy *WorkItemErrorPolicy `json:"errorPolicy,omitempty"`
 	// The requested fields
@@ -869,7 +869,7 @@ type WorkItemComment struct {
 	// Identity of user who added the comment.
 	RevisedBy *IdentityReference `json:"revisedBy,omitempty"`
 	// The date of comment.
-	RevisedDate *time.Time `json:"revisedDate,omitempty"`
+	RevisedDate *azuredevops.Time `json:"revisedDate,omitempty"`
 	// The work item revision number.
 	Revision *int `json:"revision,omitempty"`
 	// The text of the comment.
@@ -1070,7 +1070,7 @@ type WorkItemHistory struct {
 	Links       interface{}        `json:"_links,omitempty"`
 	Rev         *int               `json:"rev,omitempty"`
 	RevisedBy   *IdentityReference `json:"revisedBy,omitempty"`
-	RevisedDate *time.Time         `json:"revisedDate,omitempty"`
+	RevisedDate *azuredevops.Time  `json:"revisedDate,omitempty"`
 	Value       *string            `json:"value,omitempty"`
 }
 
@@ -1125,7 +1125,7 @@ type WorkItemQueryClause struct {
 // The result of a work item query.
 type WorkItemQueryResult struct {
 	// The date the query was run in the context of.
-	AsOf *time.Time `json:"asOf,omitempty"`
+	AsOf *azuredevops.Time `json:"asOf,omitempty"`
 	// The columns of the query.
 	Columns *[]WorkItemFieldReference `json:"columns,omitempty"`
 	// The result type
@@ -1467,7 +1467,7 @@ type WorkItemUpdate struct {
 	// Identity for the work item update.
 	RevisedBy *IdentityReference `json:"revisedBy,omitempty"`
 	// The work item updates revision date.
-	RevisedDate *time.Time `json:"revisedDate,omitempty"`
+	RevisedDate *azuredevops.Time `json:"revisedDate,omitempty"`
 	// The work item ID.
 	WorkItemId *int `json:"workItemId,omitempty"`
 }

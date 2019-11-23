@@ -21,22 +21,55 @@ import (
 
 var ResourceAreaId, _ = uuid.Parse("af68438b-ed04-4407-9eb6-f1dbae3f922e")
 
-type Client struct {
+type Client interface {
+	// [Preview API] Creates a revocation rule to prevent the further usage of any OAuth authorizations that were created before the current point in time and which match the conditions in the rule.
+	CreateRevocationRule(context.Context, CreateRevocationRuleArgs) error
+	// [Preview API] Lists of all the session token details of the personal access tokens (PATs) for a particular user.
+	ListPersonalAccessTokens(context.Context, ListPersonalAccessTokensArgs) (*TokenAdminPagedSessionTokens, error)
+	// [Preview API] Revokes the listed OAuth authorizations.
+	RevokeAuthorizations(context.Context, RevokeAuthorizationsArgs) error
+}
+
+type ClientImpl struct {
 	Client azuredevops.Client
 }
 
-func NewClient(ctx context.Context, connection *azuredevops.Connection) (*Client, error) {
+func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
 	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
+	return &ClientImpl{
 		Client: *client,
 	}, nil
 }
 
+// [Preview API] Creates a revocation rule to prevent the further usage of any OAuth authorizations that were created before the current point in time and which match the conditions in the rule.
+func (client *ClientImpl) CreateRevocationRule(ctx context.Context, args CreateRevocationRuleArgs) error {
+	if args.RevocationRule == nil {
+		return &azuredevops.ArgumentNilError{ArgumentName: "args.RevocationRule"}
+	}
+	body, marshalErr := json.Marshal(*args.RevocationRule)
+	if marshalErr != nil {
+		return marshalErr
+	}
+	locationId, _ := uuid.Parse("ee4afb16-e7ab-4ed8-9d4b-4ef3e78f97e4")
+	_, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Arguments for the CreateRevocationRule function
+type CreateRevocationRuleArgs struct {
+	// (required) The revocation rule to create. The rule must specify a space-separated list of scopes, after which preexisting OAuth authorizations that match that any of the scopes will be rejected. For a list of all OAuth scopes supported by VSTS, see: https://docs.microsoft.com/en-us/vsts/integrate/get-started/authentication/oauth?view=vsts#scopes The rule may also specify the time before which to revoke tokens.
+	RevocationRule *TokenAdminRevocationRule
+}
+
 // [Preview API] Lists of all the session token details of the personal access tokens (PATs) for a particular user.
-func (client *Client) ListPersonalAccessTokens(ctx context.Context, args ListPersonalAccessTokensArgs) (*TokenAdminPagedSessionTokens, error) {
+func (client *ClientImpl) ListPersonalAccessTokens(ctx context.Context, args ListPersonalAccessTokensArgs) (*TokenAdminPagedSessionTokens, error) {
 	routeValues := make(map[string]string)
 	if args.SubjectDescriptor == nil || *args.SubjectDescriptor == "" {
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.SubjectDescriptor"}
@@ -76,32 +109,8 @@ type ListPersonalAccessTokensArgs struct {
 	IsPublic *bool
 }
 
-// [Preview API] Creates a revocation rule to prevent the further usage of any OAuth authorizations that were created before the current point in time and which match the conditions in the rule.
-func (client *Client) CreateRevocationRule(ctx context.Context, args CreateRevocationRuleArgs) error {
-	if args.RevocationRule == nil {
-		return &azuredevops.ArgumentNilError{ArgumentName: "args.RevocationRule"}
-	}
-	body, marshalErr := json.Marshal(*args.RevocationRule)
-	if marshalErr != nil {
-		return marshalErr
-	}
-	locationId, _ := uuid.Parse("ee4afb16-e7ab-4ed8-9d4b-4ef3e78f97e4")
-	_, err := client.Client.Send(ctx, http.MethodPost, locationId, "5.1-preview.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Arguments for the CreateRevocationRule function
-type CreateRevocationRuleArgs struct {
-	// (required) The revocation rule to create. The rule must specify a space-separated list of scopes, after which preexisting OAuth authorizations that match that any of the scopes will be rejected. For a list of all OAuth scopes supported by VSTS, see: https://docs.microsoft.com/en-us/vsts/integrate/get-started/authentication/oauth?view=vsts#scopes The rule may also specify the time before which to revoke tokens.
-	RevocationRule *TokenAdminRevocationRule
-}
-
 // [Preview API] Revokes the listed OAuth authorizations.
-func (client *Client) RevokeAuthorizations(ctx context.Context, args RevokeAuthorizationsArgs) error {
+func (client *ClientImpl) RevokeAuthorizations(ctx context.Context, args RevokeAuthorizationsArgs) error {
 	if args.Revocations == nil {
 		return &azuredevops.ArgumentNilError{ArgumentName: "args.Revocations"}
 	}

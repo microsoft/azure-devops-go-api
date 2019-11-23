@@ -9,15 +9,15 @@
 package testservice
 
 import (
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"time"
 )
 
 type AgentGroup struct {
 	// User that created the agent group
 	CreatedBy *webapi.IdentityRef `json:"createdBy,omitempty"`
 	// Time agent group was created
-	CreationTime *time.Time `json:"creationTime,omitempty"`
+	CreationTime *azuredevops.Time `json:"creationTime,omitempty"`
 	// Id of the agent group
 	GroupId *string `json:"groupId,omitempty"`
 	// The name of the agent group
@@ -109,21 +109,21 @@ type CounterInstanceSamples struct {
 	Count             *int    `json:"count,omitempty"`
 	CounterInstanceId *string `json:"counterInstanceId,omitempty"`
 	// The time of next refresh
-	NextRefreshTime *time.Time       `json:"nextRefreshTime,omitempty"`
-	Values          *[]CounterSample `json:"values,omitempty"`
+	NextRefreshTime *azuredevops.Time `json:"nextRefreshTime,omitempty"`
+	Values          *[]CounterSample  `json:"values,omitempty"`
 }
 
 type CounterSample struct {
-	BaseValue         *uint64    `json:"baseValue,omitempty"`
-	ComputedValue     *int       `json:"computedValue,omitempty"`
-	CounterFrequency  *uint64    `json:"counterFrequency,omitempty"`
-	CounterInstanceId *string    `json:"counterInstanceId,omitempty"`
-	CounterType       *string    `json:"counterType,omitempty"`
-	IntervalEndDate   *time.Time `json:"intervalEndDate,omitempty"`
-	IntervalNumber    *int       `json:"intervalNumber,omitempty"`
-	RawValue          *uint64    `json:"rawValue,omitempty"`
-	SystemFrequency   *uint64    `json:"systemFrequency,omitempty"`
-	TimeStamp         *uint64    `json:"timeStamp,omitempty"`
+	BaseValue         *uint64           `json:"baseValue,omitempty"`
+	ComputedValue     *int              `json:"computedValue,omitempty"`
+	CounterFrequency  *uint64           `json:"counterFrequency,omitempty"`
+	CounterInstanceId *string           `json:"counterInstanceId,omitempty"`
+	CounterType       *string           `json:"counterType,omitempty"`
+	IntervalEndDate   *azuredevops.Time `json:"intervalEndDate,omitempty"`
+	IntervalNumber    *int              `json:"intervalNumber,omitempty"`
+	RawValue          *uint64           `json:"rawValue,omitempty"`
+	SystemFrequency   *uint64           `json:"systemFrequency,omitempty"`
+	TimeStamp         *uint64           `json:"timeStamp,omitempty"`
 }
 
 type CounterSampleQueryDetails struct {
@@ -145,9 +145,9 @@ type CounterSamplesResult struct {
 }
 
 type Diagnostics struct {
-	DiagnosticStoreConnectionString *string    `json:"diagnosticStoreConnectionString,omitempty"`
-	LastModifiedTime                *time.Time `json:"lastModifiedTime,omitempty"`
-	RelativePathToDiagnosticFiles   *string    `json:"relativePathToDiagnosticFiles,omitempty"`
+	DiagnosticStoreConnectionString *string           `json:"diagnosticStoreConnectionString,omitempty"`
+	LastModifiedTime                *azuredevops.Time `json:"lastModifiedTime,omitempty"`
+	RelativePathToDiagnosticFiles   *string           `json:"relativePathToDiagnosticFiles,omitempty"`
 }
 
 type DropAccessData struct {
@@ -157,13 +157,13 @@ type DropAccessData struct {
 }
 
 type ErrorDetails struct {
-	LastErrorDate *time.Time `json:"lastErrorDate,omitempty"`
-	MessageText   *string    `json:"messageText,omitempty"`
-	Occurrences   *int       `json:"occurrences,omitempty"`
-	Request       *string    `json:"request,omitempty"`
-	ScenarioName  *string    `json:"scenarioName,omitempty"`
-	StackTrace    *string    `json:"stackTrace,omitempty"`
-	TestCaseName  *string    `json:"testCaseName,omitempty"`
+	LastErrorDate *azuredevops.Time `json:"lastErrorDate,omitempty"`
+	MessageText   *string           `json:"messageText,omitempty"`
+	Occurrences   *int              `json:"occurrences,omitempty"`
+	Request       *string           `json:"request,omitempty"`
+	ScenarioName  *string           `json:"scenarioName,omitempty"`
+	StackTrace    *string           `json:"stackTrace,omitempty"`
+	TestCaseName  *string           `json:"testCaseName,omitempty"`
 }
 
 type LoadGenerationGeoLocation struct {
@@ -190,15 +190,15 @@ type LoadTestDefinition struct {
 }
 
 type LoadTestErrorDetails struct {
-	LastErrorDate *time.Time `json:"lastErrorDate,omitempty"`
-	MessageText   *string    `json:"messageText,omitempty"`
-	Occurrences   *int       `json:"occurrences,omitempty"`
-	Request       *string    `json:"request,omitempty"`
-	ScenarioName  *string    `json:"scenarioName,omitempty"`
-	StackTrace    *string    `json:"stackTrace,omitempty"`
-	SubType       *string    `json:"subType,omitempty"`
-	TestCaseName  *string    `json:"testCaseName,omitempty"`
-	Type          *string    `json:"type,omitempty"`
+	LastErrorDate *azuredevops.Time `json:"lastErrorDate,omitempty"`
+	MessageText   *string           `json:"messageText,omitempty"`
+	Occurrences   *int              `json:"occurrences,omitempty"`
+	Request       *string           `json:"request,omitempty"`
+	ScenarioName  *string           `json:"scenarioName,omitempty"`
+	StackTrace    *string           `json:"stackTrace,omitempty"`
+	SubType       *string           `json:"subType,omitempty"`
+	TestCaseName  *string           `json:"testCaseName,omitempty"`
+	Type          *string           `json:"type,omitempty"`
 }
 
 type LoadTestErrors struct {
@@ -347,11 +347,11 @@ type ScenarioSummary struct {
 }
 
 type StaticAgent struct {
-	AgentGroupId   *string    `json:"agentGroupId,omitempty"`
-	AgentGroupName *string    `json:"agentGroupName,omitempty"`
-	LastHeartBeat  *time.Time `json:"lastHeartBeat,omitempty"`
-	Name           *string    `json:"name,omitempty"`
-	State          *string    `json:"state,omitempty"`
+	AgentGroupId   *string           `json:"agentGroupId,omitempty"`
+	AgentGroupName *string           `json:"agentGroupName,omitempty"`
+	LastHeartBeat  *azuredevops.Time `json:"lastHeartBeat,omitempty"`
+	Name           *string           `json:"name,omitempty"`
+	State          *string           `json:"state,omitempty"`
 }
 
 type StaticAgentRunSetting struct {
@@ -376,10 +376,10 @@ type TestDefinition struct {
 	// Data for accessing the drop and not persisted in storage
 	AccessData       *DropAccessData     `json:"accessData,omitempty"`
 	CreatedBy        *webapi.IdentityRef `json:"createdBy,omitempty"`
-	CreatedDate      *time.Time          `json:"createdDate,omitempty"`
+	CreatedDate      *azuredevops.Time   `json:"createdDate,omitempty"`
 	Id               *string             `json:"id,omitempty"`
 	LastModifiedBy   *webapi.IdentityRef `json:"lastModifiedBy,omitempty"`
-	LastModifiedDate *time.Time          `json:"lastModifiedDate,omitempty"`
+	LastModifiedDate *azuredevops.Time   `json:"lastModifiedDate,omitempty"`
 	LoadTestType     *LoadTestTypes      `json:"loadTestType,omitempty"`
 	Name             *string             `json:"name,omitempty"`
 	Description      *string             `json:"description,omitempty"`
@@ -395,10 +395,10 @@ type TestDefinitionBasic struct {
 	// Data for accessing the drop and not persisted in storage
 	AccessData       *DropAccessData     `json:"accessData,omitempty"`
 	CreatedBy        *webapi.IdentityRef `json:"createdBy,omitempty"`
-	CreatedDate      *time.Time          `json:"createdDate,omitempty"`
+	CreatedDate      *azuredevops.Time   `json:"createdDate,omitempty"`
 	Id               *string             `json:"id,omitempty"`
 	LastModifiedBy   *webapi.IdentityRef `json:"lastModifiedBy,omitempty"`
-	LastModifiedDate *time.Time          `json:"lastModifiedDate,omitempty"`
+	LastModifiedDate *azuredevops.Time   `json:"lastModifiedDate,omitempty"`
 	LoadTestType     *LoadTestTypes      `json:"loadTestType,omitempty"`
 	Name             *string             `json:"name,omitempty"`
 }
@@ -407,7 +407,7 @@ type TestDrop struct {
 	// Data for accessing the drop and not persisted in storage
 	AccessData *DropAccessData `json:"accessData,omitempty"`
 	// Time at which the drop is created
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// Identifies the type of drop
 	DropType *string `json:"dropType,omitempty"`
 	// Drop Id
@@ -452,13 +452,13 @@ type TestRun struct {
 	// Vss User identity who created the test run.
 	CreatedBy *webapi.IdentityRef `json:"createdBy,omitempty"`
 	// Gets the creation time of the test run
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// Vss User identity who deleted the test run.
 	DeletedBy *webapi.IdentityRef `json:"deletedBy,omitempty"`
 	// Gets the deleted time of the test run
-	DeletedDate *time.Time `json:"deletedDate,omitempty"`
+	DeletedDate *azuredevops.Time `json:"deletedDate,omitempty"`
 	// Gets the finish time of the test run
-	FinishedDate *time.Time `json:"finishedDate,omitempty"`
+	FinishedDate *azuredevops.Time `json:"finishedDate,omitempty"`
 	// Gets the unique identifier for the test run definition.
 	Id                         *string                      `json:"id,omitempty"`
 	LoadGenerationGeoLocations *[]LoadGenerationGeoLocation `json:"loadGenerationGeoLocations,omitempty"`
@@ -488,11 +488,11 @@ type TestRun struct {
 	// Test run description.
 	Description *string `json:"description,omitempty"`
 	// Gets the time when the test run execution finished
-	ExecutionFinishedDate *time.Time `json:"executionFinishedDate,omitempty"`
+	ExecutionFinishedDate *azuredevops.Time `json:"executionFinishedDate,omitempty"`
 	// Gets the time when the test run warmup finished(if warmup was specified) and load test started
-	ExecutionStartedDate *time.Time `json:"executionStartedDate,omitempty"`
+	ExecutionStartedDate *azuredevops.Time `json:"executionStartedDate,omitempty"`
 	// Gets the time when the test run was queued
-	QueuedDate *time.Time `json:"queuedDate,omitempty"`
+	QueuedDate *azuredevops.Time `json:"queuedDate,omitempty"`
 	// Retention state of the run
 	RetentionState      *TestRunRetentionState `json:"retentionState,omitempty"`
 	RunSourceIdentifier *string                `json:"runSourceIdentifier,omitempty"`
@@ -501,7 +501,7 @@ type TestRun struct {
 	// Vss User identity who created the test run.
 	StartedBy *webapi.IdentityRef `json:"startedBy,omitempty"`
 	// When the test run started execution.
-	StartedDate *time.Time `json:"startedDate,omitempty"`
+	StartedDate *azuredevops.Time `json:"startedDate,omitempty"`
 	// Vss User identity who created the test run.
 	StoppedBy *webapi.IdentityRef `json:"stoppedBy,omitempty"`
 	// SubState is more granular description of the state
@@ -512,30 +512,30 @@ type TestRun struct {
 	// The Test settings for the test run
 	TestSettings *TestSettings `json:"testSettings,omitempty"`
 	// Gets the time when the test run warmup started
-	WarmUpStartedDate *time.Time `json:"warmUpStartedDate,omitempty"`
+	WarmUpStartedDate *azuredevops.Time `json:"warmUpStartedDate,omitempty"`
 	// The uri to the vso detailed result.
 	WebResultUrl *string `json:"webResultUrl,omitempty"`
 }
 
 type TestRunAbortMessage struct {
-	Action     *string    `json:"action,omitempty"`
-	Cause      *string    `json:"cause,omitempty"`
-	Details    *[]string  `json:"details,omitempty"`
-	LoggedDate *time.Time `json:"loggedDate,omitempty"`
-	Source     *string    `json:"source,omitempty"`
+	Action     *string           `json:"action,omitempty"`
+	Cause      *string           `json:"cause,omitempty"`
+	Details    *[]string         `json:"details,omitempty"`
+	LoggedDate *azuredevops.Time `json:"loggedDate,omitempty"`
+	Source     *string           `json:"source,omitempty"`
 }
 
 type TestRunBasic struct {
 	// Vss User identity who created the test run.
 	CreatedBy *webapi.IdentityRef `json:"createdBy,omitempty"`
 	// Gets the creation time of the test run
-	CreatedDate *time.Time `json:"createdDate,omitempty"`
+	CreatedDate *azuredevops.Time `json:"createdDate,omitempty"`
 	// Vss User identity who deleted the test run.
 	DeletedBy *webapi.IdentityRef `json:"deletedBy,omitempty"`
 	// Gets the deleted time of the test run
-	DeletedDate *time.Time `json:"deletedDate,omitempty"`
+	DeletedDate *azuredevops.Time `json:"deletedDate,omitempty"`
 	// Gets the finish time of the test run
-	FinishedDate *time.Time `json:"finishedDate,omitempty"`
+	FinishedDate *azuredevops.Time `json:"finishedDate,omitempty"`
 	// Gets the unique identifier for the test run definition.
 	Id                         *string                      `json:"id,omitempty"`
 	LoadGenerationGeoLocations *[]LoadGenerationGeoLocation `json:"loadGenerationGeoLocations,omitempty"`
@@ -581,10 +581,10 @@ type TestRunCounterInstance struct {
 
 type TestRunMessage struct {
 	// Agent Id
-	AgentId    *string    `json:"agentId,omitempty"`
-	ErrorCode  *string    `json:"errorCode,omitempty"`
-	LoggedDate *time.Time `json:"loggedDate,omitempty"`
-	Message    *string    `json:"message,omitempty"`
+	AgentId    *string           `json:"agentId,omitempty"`
+	ErrorCode  *string           `json:"errorCode,omitempty"`
+	LoggedDate *azuredevops.Time `json:"loggedDate,omitempty"`
+	Message    *string           `json:"message,omitempty"`
 	// Message Id
 	MessageId     *string        `json:"messageId,omitempty"`
 	MessageSource *MessageSource `json:"messageSource,omitempty"`
