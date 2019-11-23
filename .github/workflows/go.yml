@@ -24,5 +24,14 @@ jobs:
             dep ensure
         fi
 
-    - name: Build
+    - name: go build
       run: go build -v ./...
+
+    - name: go fmt
+      run: go fmt ./...
+
+    - name: go vet
+      run: go vet ./...
+
+    - name: go test
+      run: go test ./...
