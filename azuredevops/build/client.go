@@ -1518,7 +1518,7 @@ func (client *ClientImpl) GetBuilds(ctx context.Context, args GetBuildsArgs) (*G
 			stringList = append(stringList, strconv.Itoa(item))
 		}
 		listAsString := strings.Join((stringList)[:], ",")
-		queryParams.Add("definitions", listAsString)
+		queryParams.Add("queues", listAsString)
 	}
 	if args.BuildNumber != nil {
 		queryParams.Add("buildNumber", *args.BuildNumber)
@@ -1573,7 +1573,7 @@ func (client *ClientImpl) GetBuilds(ctx context.Context, args GetBuildsArgs) (*G
 			stringList = append(stringList, strconv.Itoa(item))
 		}
 		listAsString := strings.Join((stringList)[:], ",")
-		queryParams.Add("definitions", listAsString)
+		queryParams.Add("buildIds", listAsString)
 	}
 	if args.RepositoryId != nil {
 		queryParams.Add("repositoryId", *args.RepositoryId)
@@ -2098,7 +2098,7 @@ func (client *ClientImpl) GetDefinitions(ctx context.Context, args GetDefinition
 			stringList = append(stringList, strconv.Itoa(item))
 		}
 		listAsString := strings.Join((stringList)[:], ",")
-		queryParams.Add("definitions", listAsString)
+		queryParams.Add("definitionIds", listAsString)
 	}
 	if args.Path != nil {
 		queryParams.Add("path", *args.Path)
