@@ -291,7 +291,7 @@ func (client *ClientImpl) GetApprovals(ctx context.Context, args GetApprovalsArg
 			stringList = append(stringList, strconv.Itoa(item))
 		}
 		listAsString := strings.Join((stringList)[:], ",")
-		queryParams.Add("definitions", listAsString)
+		queryParams.Add("releaseIdsFilter", listAsString)
 	}
 	if args.TypeFilter != nil {
 		queryParams.Add("typeFilter", string(*args.TypeFilter))
@@ -1000,7 +1000,7 @@ func (client *ClientImpl) GetReleases(ctx context.Context, args GetReleasesArgs)
 			stringList = append(stringList, strconv.Itoa(item))
 		}
 		listAsString := strings.Join((stringList)[:], ",")
-		queryParams.Add("definitions", listAsString)
+		queryParams.Add("releaseIdFilter", listAsString)
 	}
 	if args.Path != nil {
 		queryParams.Add("path", *args.Path)

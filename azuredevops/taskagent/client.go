@@ -810,7 +810,7 @@ func (client *ClientImpl) GetAgentPoolsByIds(ctx context.Context, args GetAgentP
 		stringList = append(stringList, strconv.Itoa(item))
 	}
 	listAsString := strings.Join((stringList)[:], ",")
-	queryParams.Add("definitions", listAsString)
+	queryParams.Add("poolIds", listAsString)
 	if args.ActionFilter != nil {
 		queryParams.Add("actionFilter", string(*args.ActionFilter))
 	}
@@ -920,7 +920,7 @@ func (client *ClientImpl) GetAgentQueuesByIds(ctx context.Context, args GetAgent
 		stringList = append(stringList, strconv.Itoa(item))
 	}
 	listAsString := strings.Join((stringList)[:], ",")
-	queryParams.Add("definitions", listAsString)
+	queryParams.Add("queueIds", listAsString)
 	if args.ActionFilter != nil {
 		queryParams.Add("actionFilter", string(*args.ActionFilter))
 	}
@@ -1112,7 +1112,7 @@ func (client *ClientImpl) GetDeploymentGroups(ctx context.Context, args GetDeplo
 			stringList = append(stringList, strconv.Itoa(item))
 		}
 		listAsString := strings.Join((stringList)[:], ",")
-		queryParams.Add("definitions", listAsString)
+		queryParams.Add("ids", listAsString)
 	}
 	locationId, _ := uuid.Parse("083c4d89-ab35-45af-aa11-7cf66895c53e")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1446,7 +1446,7 @@ func (client *ClientImpl) GetVariableGroupsById(ctx context.Context, args GetVar
 		stringList = append(stringList, strconv.Itoa(item))
 	}
 	listAsString := strings.Join((stringList)[:], ",")
-	queryParams.Add("definitions", listAsString)
+	queryParams.Add("groupIds", listAsString)
 	locationId, _ := uuid.Parse("f5b09dd5-9d54-45a1-8b5a-1c8287d634cc")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
 	if err != nil {

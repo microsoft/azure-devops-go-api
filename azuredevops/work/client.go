@@ -615,7 +615,7 @@ func (client *ClientImpl) GetBoardMappingParentItems(ctx context.Context, args G
 		stringList = append(stringList, strconv.Itoa(item))
 	}
 	listAsString := strings.Join((stringList)[:], ",")
-	queryParams.Add("definitions", listAsString)
+	queryParams.Add("workitemIds", listAsString)
 	locationId, _ := uuid.Parse("186abea3-5c35-432f-9e28-7a15b4312a0e")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
 	if err != nil {
