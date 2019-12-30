@@ -7,15 +7,18 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"github.com/google/uuid"
+	"errors"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"reflect"
 	"regexp"
 	"runtime"
 	"strings"
 	"sync"
+
+	"github.com/google/uuid"
 )
 
 const (
@@ -317,17 +320,25 @@ func (client *Client) UnmarshalCollectionBody(response *http.Response, v interfa
 }
 
 func (client *Client) UnmarshalCollectionJson(jsonValue []byte, v interface{}) (err error) {
-	var wrappedResponse VssJsonCollectionWrapper
-	err = json.Unmarshal(jsonValue, &wrappedResponse)
+	t := reflect.TypeOf(v)
+	if t.Kind() == reflect.Ptr {
+		t = t.Elem()
+	} else {
+		return errors.New("value type must be a pointer")
+	}
+	sType := reflect.StructOf([]reflect.StructField{
+		{Name: "Count", Type: reflect.TypeOf(0)},
+		{Name: "Value", Type: t},
+	})
+	sv := reflect.New(sType)
+	err = json.Unmarshal(jsonValue, sv.Interface())
 	if err != nil {
 		return err
 	}
 
-	value, err := json.Marshal(wrappedResponse.Value) // todo: investigate better way to do this.
-	if err != nil {
-		return err
-	}
-	return json.Unmarshal(value, &v)
+	rv := reflect.ValueOf(v)
+	rv.Elem().Set(sv.Elem().FieldByName("Value"))
+	return nil
 }
 
 // Returns slice of body without utf-8 byte order mark.
