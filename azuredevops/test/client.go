@@ -1175,7 +1175,7 @@ func (client *ClientImpl) GetTestResults(ctx context.Context, args GetTestResult
 			stringList = append(stringList, string(item))
 		}
 		listAsString := strings.Join((stringList)[:], ",")
-		queryParams.Add("definitions", listAsString)
+		queryParams.Add("outcomes", listAsString)
 	}
 	locationId, _ := uuid.Parse("4637d869-3a76-4468-8057-0bb02aa385cf")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1733,7 +1733,7 @@ func (client *ClientImpl) QueryTestRuns(ctx context.Context, args QueryTestRunsA
 			stringList = append(stringList, strconv.Itoa(item))
 		}
 		listAsString := strings.Join((stringList)[:], ",")
-		queryParams.Add("definitions", listAsString)
+		queryParams.Add("planIds", listAsString)
 	}
 	if args.IsAutomated != nil {
 		queryParams.Add("isAutomated", strconv.FormatBool(*args.IsAutomated))
@@ -1747,7 +1747,7 @@ func (client *ClientImpl) QueryTestRuns(ctx context.Context, args QueryTestRunsA
 			stringList = append(stringList, strconv.Itoa(item))
 		}
 		listAsString := strings.Join((stringList)[:], ",")
-		queryParams.Add("definitions", listAsString)
+		queryParams.Add("buildIds", listAsString)
 	}
 	if args.BuildDefIds != nil {
 		var stringList []string
@@ -1755,7 +1755,7 @@ func (client *ClientImpl) QueryTestRuns(ctx context.Context, args QueryTestRunsA
 			stringList = append(stringList, strconv.Itoa(item))
 		}
 		listAsString := strings.Join((stringList)[:], ",")
-		queryParams.Add("definitions", listAsString)
+		queryParams.Add("buildDefIds", listAsString)
 	}
 	if args.BranchName != nil {
 		queryParams.Add("branchName", *args.BranchName)
@@ -1766,7 +1766,7 @@ func (client *ClientImpl) QueryTestRuns(ctx context.Context, args QueryTestRunsA
 			stringList = append(stringList, strconv.Itoa(item))
 		}
 		listAsString := strings.Join((stringList)[:], ",")
-		queryParams.Add("definitions", listAsString)
+		queryParams.Add("releaseIds", listAsString)
 	}
 	if args.ReleaseDefIds != nil {
 		var stringList []string
@@ -1774,7 +1774,7 @@ func (client *ClientImpl) QueryTestRuns(ctx context.Context, args QueryTestRunsA
 			stringList = append(stringList, strconv.Itoa(item))
 		}
 		listAsString := strings.Join((stringList)[:], ",")
-		queryParams.Add("definitions", listAsString)
+		queryParams.Add("releaseDefIds", listAsString)
 	}
 	if args.ReleaseEnvIds != nil {
 		var stringList []string
@@ -1782,7 +1782,7 @@ func (client *ClientImpl) QueryTestRuns(ctx context.Context, args QueryTestRunsA
 			stringList = append(stringList, strconv.Itoa(item))
 		}
 		listAsString := strings.Join((stringList)[:], ",")
-		queryParams.Add("definitions", listAsString)
+		queryParams.Add("releaseEnvIds", listAsString)
 	}
 	if args.ReleaseEnvDefIds != nil {
 		var stringList []string
@@ -1790,7 +1790,7 @@ func (client *ClientImpl) QueryTestRuns(ctx context.Context, args QueryTestRunsA
 			stringList = append(stringList, strconv.Itoa(item))
 		}
 		listAsString := strings.Join((stringList)[:], ",")
-		queryParams.Add("definitions", listAsString)
+		queryParams.Add("releaseEnvDefIds", listAsString)
 	}
 	if args.RunTitle != nil {
 		queryParams.Add("runTitle", *args.RunTitle)

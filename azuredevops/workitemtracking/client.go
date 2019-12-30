@@ -959,7 +959,7 @@ func (client *ClientImpl) GetClassificationNodes(ctx context.Context, args GetCl
 		stringList = append(stringList, strconv.Itoa(item))
 	}
 	listAsString := strings.Join((stringList)[:], ",")
-	queryParams.Add("definitions", listAsString)
+	queryParams.Add("ids", listAsString)
 	if args.Depth != nil {
 		queryParams.Add("$depth", strconv.Itoa(*args.Depth))
 	}
@@ -1152,7 +1152,7 @@ func (client *ClientImpl) GetCommentsBatch(ctx context.Context, args GetComments
 		stringList = append(stringList, strconv.Itoa(item))
 	}
 	listAsString := strings.Join((stringList)[:], ",")
-	queryParams.Add("definitions", listAsString)
+	queryParams.Add("ids", listAsString)
 	if args.IncludeDeleted != nil {
 		queryParams.Add("includeDeleted", strconv.FormatBool(*args.IncludeDeleted))
 	}
@@ -1310,7 +1310,7 @@ func (client *ClientImpl) GetDeletedWorkItems(ctx context.Context, args GetDelet
 		stringList = append(stringList, strconv.Itoa(item))
 	}
 	listAsString := strings.Join((stringList)[:], ",")
-	queryParams.Add("definitions", listAsString)
+	queryParams.Add("ids", listAsString)
 	locationId, _ := uuid.Parse("b70d8d39-926c-465e-b927-b1bf0e5ca0e0")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
 	if err != nil {
@@ -2208,7 +2208,7 @@ func (client *ClientImpl) GetWorkItemNextStatesOnCheckinAction(ctx context.Conte
 		stringList = append(stringList, strconv.Itoa(item))
 	}
 	listAsString := strings.Join((stringList)[:], ",")
-	queryParams.Add("definitions", listAsString)
+	queryParams.Add("ids", listAsString)
 	if args.Action != nil {
 		queryParams.Add("action", *args.Action)
 	}
@@ -2247,7 +2247,7 @@ func (client *ClientImpl) GetWorkItems(ctx context.Context, args GetWorkItemsArg
 		stringList = append(stringList, strconv.Itoa(item))
 	}
 	listAsString := strings.Join((stringList)[:], ",")
-	queryParams.Add("definitions", listAsString)
+	queryParams.Add("ids", listAsString)
 	if args.Fields != nil {
 		listAsString := strings.Join((*args.Fields)[:], ",")
 		queryParams.Add("fields", listAsString)

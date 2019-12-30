@@ -272,7 +272,7 @@ func (client *ClientImpl) GetServiceEndpoints(ctx context.Context, args GetServi
 			stringList = append(stringList, item.String())
 		}
 		listAsString := strings.Join((stringList)[:], ",")
-		queryParams.Add("definitions", listAsString)
+		queryParams.Add("endpointIds", listAsString)
 	}
 	if args.Owner != nil {
 		queryParams.Add("owner", *args.Owner)
