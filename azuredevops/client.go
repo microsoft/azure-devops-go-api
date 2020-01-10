@@ -19,6 +19,7 @@ import (
 	"sync"
 
 	"github.com/google/uuid"
+	"github.com/hashicorp/go-retryablehttp"
 )
 
 const (
@@ -48,13 +49,9 @@ var apiResourceLocationCacheLock = sync.RWMutex{}
 var baseUserAgent = "go/" + runtime.Version() + " (" + runtime.GOOS + " " + runtime.GOARCH + ") azure-devops-go-api/0.0.0" // todo: get real version
 
 func NewClient(connection *Connection, baseUrl string) *Client {
-	client := &http.Client{}
-	if connection.Timeout != nil {
-		client.Timeout = *connection.Timeout
-	}
 	return &Client{
 		baseUrl:                 baseUrl,
-		client:                  client,
+		client:                  retryablehttp.NewClient(),
 		authorization:           connection.AuthorizationString,
 		suppressFedAuthRedirect: connection.SuppressFedAuthRedirect,
 		forceMsaPassThrough:     connection.ForceMsaPassThrough,
@@ -64,7 +61,7 @@ func NewClient(connection *Connection, baseUrl string) *Client {
 
 type Client struct {
 	baseUrl                 string
-	client                  *http.Client
+	client                  *retryablehttp.Client
 	authorization           string
 	suppressFedAuthRedirect bool
 	forceMsaPassThrough     bool
@@ -72,7 +69,11 @@ type Client struct {
 }
 
 func (client *Client) SendRequest(request *http.Request) (response *http.Response, err error) {
-	resp, err := client.client.Do(request) // todo: add retry logic
+	rtreq, err := retryablehttp.FromRequest(request)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := client.client.Do(rtreq) // todo: add retry logic
 	if resp != nil && (resp.StatusCode < 200 || resp.StatusCode >= 300) {
 		err = client.UnwrapError(resp)
 	}
