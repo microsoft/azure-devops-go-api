@@ -118,6 +118,10 @@ func (client *Client) SendRequest(request *http.Request) (response *http.Respons
 	return resp, err
 }
 
+func (client *Client) GetLogger() *log.Logger {
+	return client.logger
+}
+
 func (client *Client) Send(ctx context.Context,
 	httpMethod string,
 	locationId uuid.UUID,
