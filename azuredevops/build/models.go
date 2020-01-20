@@ -289,6 +289,7 @@ type BuildCompletionTrigger struct {
 	// A reference to the definition that should trigger builds for this definition.
 	Definition              *DefinitionReference `json:"definition,omitempty"`
 	RequiresSuccessfulBuild *bool                `json:"requiresSuccessfulBuild,omitempty"`
+	TriggerType *DefinitionTriggerType `json:"triggerType,omitempty"`
 }
 
 type BuildController struct {
@@ -1127,6 +1128,7 @@ type ContinuousIntegrationTrigger struct {
 	// The ID of the job used to poll an external repository.
 	PollingJobId       *uuid.UUID `json:"pollingJobId,omitempty"`
 	SettingsSourceType *int       `json:"settingsSourceType,omitempty"`
+	TriggerType *DefinitionTriggerType `json:"triggerType,omitempty"`
 }
 
 type ControllerStatus string
@@ -1415,6 +1417,7 @@ type GatedCheckInTrigger struct {
 	RunContinuousIntegration *bool `json:"runContinuousIntegration,omitempty"`
 	// Indicates whether to take workspace mappings into account when determining whether a build should run.
 	UseWorkspaceMappings *bool `json:"useWorkspaceMappings,omitempty"`
+	TriggerType *DefinitionTriggerType `json:"triggerType,omitempty"`
 }
 
 type GetOption string
@@ -1576,6 +1579,7 @@ type PullRequestTrigger struct {
 	PathFilters                          *[]string `json:"pathFilters,omitempty"`
 	RequireCommentsForNonTeamMembersOnly *bool     `json:"requireCommentsForNonTeamMembersOnly,omitempty"`
 	SettingsSourceType                   *int      `json:"settingsSourceType,omitempty"`
+	TriggerType *DefinitionTriggerType `json:"triggerType,omitempty"`
 }
 
 type QueryDeletedOption string
@@ -1753,6 +1757,7 @@ var ScheduleDaysValues = scheduleDaysValuesType{
 // Represents a schedule trigger.
 type ScheduleTrigger struct {
 	Schedules *[]Schedule `json:"schedules,omitempty"`
+	TriggerType *DefinitionTriggerType `json:"triggerType,omitempty"`
 }
 
 // Represents a reference to a secure file.
