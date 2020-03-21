@@ -358,6 +358,9 @@ func (client *Client) UnmarshalCollectionBody(response *http.Response, v interfa
 
 		body = trimByteOrderMark(body)
 		err = client.UnmarshalCollectionJson(body, v)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
