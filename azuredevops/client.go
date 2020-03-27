@@ -381,6 +381,7 @@ func (client *Client) UnwrapError(response *http.Response) (err error) {
 
 	var wrappedError WrappedError
 	err = json.Unmarshal(body, &wrappedError)
+	wrappedError.StatusCode = &response.StatusCode
 	if err != nil {
 		return err
 	}
@@ -389,10 +390,9 @@ func (client *Client) UnwrapError(response *http.Response) (err error) {
 		var wrappedImproperError WrappedImproperError
 		err = json.Unmarshal(body, &wrappedImproperError)
 		if err == nil && wrappedImproperError.Value != nil && wrappedImproperError.Value.Message != nil {
-			statusCode := response.StatusCode
 			return &WrappedError{
 				Message:    wrappedImproperError.Value.Message,
-				StatusCode: &statusCode,
+				StatusCode: &response.StatusCode,
 			}
 		}
 	}
