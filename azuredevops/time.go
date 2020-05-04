@@ -32,7 +32,7 @@ func tryUnmarshalJSON(b []byte) (time.Time, error) {
 	return t, err
 }
 
-func makeTimeParseFunction(layout string) func(b []byte) (time.Time, error) {
+func makeTimeUnmarshalStrategyFunc(layout string) func(b []byte) (time.Time, error) {
 	return func(b []byte) (time.Time, error) {
 		s := strings.Trim(string(b), "\"")
 		if s == "null" {
@@ -58,21 +58,21 @@ func (t *Time) UnmarshalJSON(b []byte) error {
 	// The first "working" strategy is used.
 	strategies := []func([]byte) (time.Time, error){
 		tryUnmarshalJSON,
-		makeTimeParseFunction(time.ANSIC),
-		makeTimeParseFunction(time.UnixDate),
-		makeTimeParseFunction(time.RubyDate),
-		makeTimeParseFunction(time.RFC822),
-		makeTimeParseFunction(time.RFC822Z),
-		makeTimeParseFunction(time.RFC850),
-		makeTimeParseFunction(time.RFC1123),
-		makeTimeParseFunction(time.RFC1123Z),
-		makeTimeParseFunction(time.RFC3339),
-		makeTimeParseFunction(time.RFC3339Nano),
-		makeTimeParseFunction(time.Stamp),
-		makeTimeParseFunction(time.StampMilli),
-		makeTimeParseFunction(time.StampMicro),
-		makeTimeParseFunction(time.StampNano),
-		makeTimeParseFunction("2006-01-02T15:04:05.9999999"), // https://github.com/microsoft/azure-devops-go-api/issues/59
+		makeTimeUnmarshalStrategyFunc(time.ANSIC),
+		makeTimeUnmarshalStrategyFunc(time.UnixDate),
+		makeTimeUnmarshalStrategyFunc(time.RubyDate),
+		makeTimeUnmarshalStrategyFunc(time.RFC822),
+		makeTimeUnmarshalStrategyFunc(time.RFC822Z),
+		makeTimeUnmarshalStrategyFunc(time.RFC850),
+		makeTimeUnmarshalStrategyFunc(time.RFC1123),
+		makeTimeUnmarshalStrategyFunc(time.RFC1123Z),
+		makeTimeUnmarshalStrategyFunc(time.RFC3339),
+		makeTimeUnmarshalStrategyFunc(time.RFC3339Nano),
+		makeTimeUnmarshalStrategyFunc(time.Stamp),
+		makeTimeUnmarshalStrategyFunc(time.StampMilli),
+		makeTimeUnmarshalStrategyFunc(time.StampMicro),
+		makeTimeUnmarshalStrategyFunc(time.StampNano),
+		makeTimeUnmarshalStrategyFunc("2006-01-02T15:04:05.9999999"), // https://github.com/microsoft/azure-devops-go-api/issues/59
 	}
 
 	for _, strategy := range strategies {
