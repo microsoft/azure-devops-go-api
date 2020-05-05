@@ -16,7 +16,7 @@ type TimeTestStruct struct {
 	T Time
 }
 
-func getJSONBytes(timeStr string) []byte {
+func getJSONAsBytes(timeStr string) []byte {
 	return []byte(fmt.Sprintf("{ \"T\": \"%s\" }", timeStr))
 }
 
@@ -84,7 +84,7 @@ func TestTime_MarshallingRoundTripForSupportedCases(t *testing.T) {
 
 		t.Run(testCase.name, func(t *testing.T) {
 			s := TimeTestStruct{}
-			err := json.Unmarshal(getJSONBytes(testCase.timeStr), &s)
+			err := json.Unmarshal(getJSONAsBytes(testCase.timeStr), &s)
 			if err != nil {
 				t.Errorf("Unexpectedly could not unmarshal %s into a valid time struct: %+v", testCase.timeStr, err)
 			}
