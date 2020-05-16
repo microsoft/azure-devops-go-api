@@ -90,8 +90,8 @@ type ApplicationType struct {
 }
 
 type BrowserMix struct {
-	BrowserName       *string `json:"browserName,omitempty"`
-	BrowserPercentage *int    `json:"browserPercentage,omitempty"`
+	BrowserName       *string  `json:"browserName,omitempty"`
+	BrowserPercentage *float32 `json:"browserPercentage,omitempty"`
 }
 
 type CltCustomerIntelligenceData struct {
@@ -115,7 +115,7 @@ type CounterInstanceSamples struct {
 
 type CounterSample struct {
 	BaseValue         *uint64           `json:"baseValue,omitempty"`
-	ComputedValue     *int              `json:"computedValue,omitempty"`
+	ComputedValue     *float32          `json:"computedValue,omitempty"`
 	CounterFrequency  *uint64           `json:"counterFrequency,omitempty"`
 	CounterInstanceId *string           `json:"counterInstanceId,omitempty"`
 	CounterType       *string           `json:"counterType,omitempty"`

@@ -16,8 +16,8 @@ import (
 )
 
 type Activity struct {
-	CapacityPerDay *int    `json:"capacityPerDay,omitempty"`
-	Name           *string `json:"name,omitempty"`
+	CapacityPerDay *float32 `json:"capacityPerDay,omitempty"`
+	Name           *string  `json:"name,omitempty"`
 }
 
 type attribute struct {
