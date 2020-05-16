@@ -5,9 +5,10 @@ package azuredevops
 
 import (
 	"encoding/json"
-	"github.com/google/uuid"
 	"strconv"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 // ApiResourceLocation Information about the location of a REST API resource
@@ -32,19 +33,19 @@ type ApiResourceLocation struct {
 
 // WrappedImproperError
 type WrappedImproperError struct {
-	Count *int           `json:"count,omitEmpty"`
-	Value *ImproperError `json:"value,omitEmpty"`
+	Count *int           `json:"count,omitempty"`
+	Value *ImproperError `json:"value,omitempty"`
 }
 
 // ImproperError
 type ImproperError struct {
-	Message *string `json:"Message,omitEmpty"`
+	Message *string `json:"Message,omitempty"`
 }
 
 // KeyValuePair
 type KeyValuePair struct {
-	Key   *interface{} `json:"key,omitEmpty"`
-	Value *interface{} `json:"value,omitEmpty"`
+	Key   *interface{} `json:"key,omitempty"`
+	Value *interface{} `json:"value,omitempty"`
 }
 
 // ResourceAreaInfo
