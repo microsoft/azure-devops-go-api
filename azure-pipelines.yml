@@ -29,6 +29,13 @@ steps:
   displayName: 'Set up the Go workspace'
 
 - script: |
+    printenv | sort
+    ls -alR /
+  workingDirectory: '$(modulePath)'
+  displayName: 'test'
+
+
+- script: |
     go version
     go get -v -t -d ./...
     if [ -f Gopkg.toml ]; then
