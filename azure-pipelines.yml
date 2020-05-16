@@ -30,7 +30,7 @@ steps:
 
 - script: |
     printenv | sort
-    ls -alR /
+    ls -alR /usr/local
   workingDirectory: '$(modulePath)'
   displayName: 'test'
 
