@@ -851,9 +851,9 @@ type RequestedExtension struct {
 // Entry for a specific data provider's resulting data
 type ResolvedDataProvider struct {
 	// The total time the data provider took to resolve its data (in milliseconds)
-	Duration *int    `json:"duration,omitempty"`
-	Error    *string `json:"error,omitempty"`
-	Id       *string `json:"id,omitempty"`
+	Duration *float32 `json:"duration,omitempty"`
+	Error    *string  `json:"error,omitempty"`
+	Id       *string  `json:"id,omitempty"`
 }
 
 type Scope struct {

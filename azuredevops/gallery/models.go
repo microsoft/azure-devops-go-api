@@ -247,7 +247,7 @@ var DraftStateTypeValues = draftStateTypeValuesType{
 
 type EventCounts struct {
 	// Average rating on the day for extension
-	AverageRating *int `json:"averageRating,omitempty"`
+	AverageRating *float32 `json:"averageRating,omitempty"`
 	// Number of times the extension was bought in hosted scenario (applies only to VSTS extensions)
 	BuyCount *int `json:"buyCount,omitempty"`
 	// Number of times the extension was bought in connected scenario (applies only to VSTS extensions)
@@ -1406,7 +1406,7 @@ type ReviewsResult struct {
 
 type ReviewSummary struct {
 	// Average Rating
-	AverageRating *int `json:"averageRating,omitempty"`
+	AverageRating *float32 `json:"averageRating,omitempty"`
 	// Count of total ratings
 	RatingCount *uint64 `json:"ratingCount,omitempty"`
 	// Split of count across rating
