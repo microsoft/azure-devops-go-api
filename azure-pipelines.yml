@@ -13,7 +13,6 @@ pool:
 steps:
 - script: |
     printenv | sort
-  workingDirectory: '$(modulePath)'
   displayName: 'Log Environment Variables'
 
 - script: |
