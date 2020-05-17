@@ -1,0 +1,13 @@
+# Set the default behavior (used when a rule below doesn't match)
+* text=auto
+
+# Go files
+*.go text eol=lf
+*.mod text eol=lf
+*.sum text eol=lf
+
+# Some Windows-specific files should always be CRLF
+*.bat text eol=crlf
+
+# Shell scripts
+*.sh text eol=lf
