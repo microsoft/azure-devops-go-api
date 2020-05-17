@@ -159,6 +159,10 @@ type JsonPatchOperation struct {
 }
 
 type JsonWebToken struct {
+	// Gets a value indicating whether or not this token has been successfully authenticated with the remote server.
+	IsAuthenticated *bool `json:"isAuthenticated,omitempty"`
+	// Metadata about the token in a collection of properties.
+	Properties *map[string]string `json:"properties,omitempty"`
 }
 
 type JWTAlgorithm string

@@ -71,6 +71,16 @@ var AgentArtifactTypeValues = agentArtifactTypeValuesType{
 }
 
 type AgentBasedDeployPhase struct {
+	// Gets and sets the name of deploy phase.
+	Name *string `json:"name,omitempty"`
+	// Indicates the deploy phase type.
+	PhaseType *DeployPhaseTypes `json:"phaseType,omitempty"`
+	// Gets and sets the rank of deploy phase.
+	Rank *int `json:"rank,omitempty"`
+	// Gets and sets the reference name of deploy phase.
+	RefName *string `json:"refName,omitempty"`
+	// Gets and sets the workflow tasks for the deploy phase.
+	WorkflowTasks *[]WorkflowTask `json:"workflowTasks,omitempty"`
 	// Gets and sets the agent job deployment input
 	DeploymentInput *AgentDeploymentInput `json:"deploymentInput,omitempty"`
 }
@@ -317,6 +327,8 @@ type ArtifactSourceReference struct {
 }
 
 type ArtifactSourceTrigger struct {
+	// Type of release trigger.
+	TriggerType *ReleaseTriggerType `json:"triggerType,omitempty"`
 	// Artifact source alias for Artifact Source trigger type
 	ArtifactAlias     *string           `json:"artifactAlias,omitempty"`
 	TriggerConditions *[]ArtifactFilter `json:"triggerConditions,omitempty"`
@@ -561,6 +573,8 @@ type Consumer struct {
 }
 
 type ContainerImageTrigger struct {
+	// Type of release trigger.
+	TriggerType *ReleaseTriggerType `json:"triggerType,omitempty"`
 	// Alias of the trigger.
 	Alias *string `json:"alias,omitempty"`
 	// List tag filters applied while trigger.
@@ -637,6 +651,13 @@ type DefinitionEnvironmentReference struct {
 	ReleaseDefinitionId *int `json:"releaseDefinitionId,omitempty"`
 	// ReleaseDefinition name.
 	ReleaseDefinitionName *string `json:"releaseDefinitionName,omitempty"`
+}
+
+type Demand struct {
+	// Gets and sets the name of demand.
+	Name *string `json:"name,omitempty"`
+	// Gets and sets the value of demand.
+	Value *string `json:"value,omitempty"`
 }
 
 type Deployment struct {
@@ -1010,6 +1031,19 @@ var DeploymentStatusValues = deploymentStatusValuesType{
 	All: "all",
 }
 
+type DeployPhase struct {
+	// Gets and sets the name of deploy phase.
+	Name *string `json:"name,omitempty"`
+	// Indicates the deploy phase type.
+	PhaseType *DeployPhaseTypes `json:"phaseType,omitempty"`
+	// Gets and sets the rank of deploy phase.
+	Rank *int `json:"rank,omitempty"`
+	// Gets and sets the reference name of deploy phase.
+	RefName *string `json:"refName,omitempty"`
+	// Gets and sets the workflow tasks for the deploy phase.
+	WorkflowTasks *[]WorkflowTask `json:"workflowTasks,omitempty"`
+}
+
 // [Flags]
 type DeployPhaseStatus string
 
@@ -1253,6 +1287,16 @@ type GatesDeploymentInput struct {
 }
 
 type GatesDeployPhase struct {
+	// Gets and sets the name of deploy phase.
+	Name *string `json:"name,omitempty"`
+	// Indicates the deploy phase type.
+	PhaseType *DeployPhaseTypes `json:"phaseType,omitempty"`
+	// Gets and sets the rank of deploy phase.
+	Rank *int `json:"rank,omitempty"`
+	// Gets and sets the reference name of deploy phase.
+	RefName *string `json:"refName,omitempty"`
+	// Gets and sets the workflow tasks for the deploy phase.
+	WorkflowTasks *[]WorkflowTask `json:"workflowTasks,omitempty"`
 	// Gets and sets the gate job input.
 	DeploymentInput *GatesDeploymentInput `json:"deploymentInput,omitempty"`
 }
@@ -1355,6 +1399,16 @@ type JenkinsArtifactDownloadInput struct {
 }
 
 type MachineGroupBasedDeployPhase struct {
+	// Gets and sets the name of deploy phase.
+	Name *string `json:"name,omitempty"`
+	// Indicates the deploy phase type.
+	PhaseType *DeployPhaseTypes `json:"phaseType,omitempty"`
+	// Gets and sets the rank of deploy phase.
+	Rank *int `json:"rank,omitempty"`
+	// Gets and sets the reference name of deploy phase.
+	RefName *string `json:"refName,omitempty"`
+	// Gets and sets the workflow tasks for the deploy phase.
+	WorkflowTasks *[]WorkflowTask `json:"workflowTasks,omitempty"`
 	// Gets and sets the deployment group job input
 	DeploymentInput *MachineGroupDeploymentInput `json:"deploymentInput,omitempty"`
 }
@@ -1521,6 +1575,8 @@ type MultiMachineInput struct {
 }
 
 type PackageTrigger struct {
+	// Type of release trigger.
+	TriggerType *ReleaseTriggerType `json:"triggerType,omitempty"`
 	// Package trigger alias.
 	Alias *string `json:"alias,omitempty"`
 }
@@ -1619,6 +1675,8 @@ var PullRequestSystemTypeValues = pullRequestSystemTypeValuesType{
 }
 
 type PullRequestTrigger struct {
+	// Type of release trigger.
+	TriggerType *ReleaseTriggerType `json:"triggerType,omitempty"`
 	// Artifact alias trigger is linked to.
 	ArtifactAlias *string `json:"artifactAlias,omitempty"`
 	// Code reference details of pull request.
@@ -2604,6 +2662,11 @@ type ReleaseTasksUpdatedEvent struct {
 	Tasks                *[]ReleaseTask `json:"tasks,omitempty"`
 }
 
+type ReleaseTriggerBase struct {
+	// Type of release trigger.
+	TriggerType *ReleaseTriggerType `json:"triggerType,omitempty"`
+}
+
 type ReleaseTriggerType string
 
 type releaseTriggerTypeValuesType struct {
@@ -2683,6 +2746,16 @@ type RetentionSettings struct {
 }
 
 type RunOnServerDeployPhase struct {
+	// Gets and sets the name of deploy phase.
+	Name *string `json:"name,omitempty"`
+	// Indicates the deploy phase type.
+	PhaseType *DeployPhaseTypes `json:"phaseType,omitempty"`
+	// Gets and sets the rank of deploy phase.
+	Rank *int `json:"rank,omitempty"`
+	// Gets and sets the reference name of deploy phase.
+	RefName *string `json:"refName,omitempty"`
+	// Gets and sets the workflow tasks for the deploy phase.
+	WorkflowTasks *[]WorkflowTask `json:"workflowTasks,omitempty"`
 	// Gets and sets the agentless job input.
 	DeploymentInput *ServerDeploymentInput `json:"deploymentInput,omitempty"`
 }
@@ -2723,6 +2796,8 @@ var ScheduleDaysValues = scheduleDaysValuesType{
 }
 
 type ScheduledReleaseTrigger struct {
+	// Type of release trigger.
+	TriggerType *ReleaseTriggerType `json:"triggerType,omitempty"`
 	// Release schedule for Scheduled Release trigger type.
 	Schedule *ReleaseSchedule `json:"schedule,omitempty"`
 }
@@ -2790,6 +2865,8 @@ type SourcePullRequestVersion struct {
 }
 
 type SourceRepoTrigger struct {
+	// Type of release trigger.
+	TriggerType *ReleaseTriggerType `json:"triggerType,omitempty"`
 	// Alias of the source repo trigger.
 	Alias         *string   `json:"alias,omitempty"`
 	BranchFilters *[]string `json:"branchFilters,omitempty"`
