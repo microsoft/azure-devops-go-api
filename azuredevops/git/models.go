@@ -533,6 +533,25 @@ type GitBranchStats struct {
 	Name *string `json:"name,omitempty"`
 }
 
+type GitChange struct {
+	// The type of change that was made to the item.
+	ChangeType *VersionControlChangeType `json:"changeType,omitempty"`
+	// Current version.
+	Item interface{} `json:"item,omitempty"`
+	// Content of the item after the change.
+	NewContent *ItemContent `json:"newContent,omitempty"`
+	// Path of the item on the server.
+	SourceServerItem *string `json:"sourceServerItem,omitempty"`
+	// URL to retrieve the item.
+	Url *string `json:"url,omitempty"`
+	// ID of the change within the group of changes.
+	ChangeId *int `json:"changeId,omitempty"`
+	// New Content template to be used when pushing new changes.
+	NewContentTemplate *GitTemplate `json:"newContentTemplate,omitempty"`
+	// Original path of item if different from current path.
+	OriginalPath *string `json:"originalPath,omitempty"`
+}
+
 // This object is returned from Cherry Pick operations and provides the id and status of the operation
 type GitCherryPick struct {
 	Links          interface{}                     `json:"_links,omitempty"`
@@ -1422,6 +1441,22 @@ type GitPullRequest struct {
 
 // Change made in a pull request.
 type GitPullRequestChange struct {
+	// The type of change that was made to the item.
+	ChangeType *VersionControlChangeType `json:"changeType,omitempty"`
+	// Current version.
+	Item interface{} `json:"item,omitempty"`
+	// Content of the item after the change.
+	NewContent *ItemContent `json:"newContent,omitempty"`
+	// Path of the item on the server.
+	SourceServerItem *string `json:"sourceServerItem,omitempty"`
+	// URL to retrieve the item.
+	Url *string `json:"url,omitempty"`
+	// ID of the change within the group of changes.
+	ChangeId *int `json:"changeId,omitempty"`
+	// New Content template to be used when pushing new changes.
+	NewContentTemplate *GitTemplate `json:"newContentTemplate,omitempty"`
+	// Original path of item if different from current path.
+	OriginalPath *string `json:"originalPath,omitempty"`
 	// ID used to track files through multiple changes.
 	ChangeTrackingId *int `json:"changeTrackingId,omitempty"`
 }
@@ -2770,6 +2805,16 @@ type TfvcBranchRef struct {
 }
 
 type TfvcChange struct {
+	// The type of change that was made to the item.
+	ChangeType *VersionControlChangeType `json:"changeType,omitempty"`
+	// Current version.
+	Item interface{} `json:"item,omitempty"`
+	// Content of the item after the change.
+	NewContent *ItemContent `json:"newContent,omitempty"`
+	// Path of the item on the server.
+	SourceServerItem *string `json:"sourceServerItem,omitempty"`
+	// URL to retrieve the item.
+	Url *string `json:"url,omitempty"`
 	// List of merge sources in case of rename or branch creation.
 	MergeSources *[]TfvcMergeSource `json:"mergeSources,omitempty"`
 	// Version at which a (shelved) change was pended against
@@ -2866,6 +2911,12 @@ type TfvcCheckinEventData struct {
 }
 
 type TfvcHistoryEntry struct {
+	// The Change list (changeset/commit/shelveset) for this point in history
+	ChangeList interface{} `json:"changeList,omitempty"`
+	// The change made to the item from this change list (only relevant for File history, not folders)
+	ItemChangeType *VersionControlChangeType `json:"itemChangeType,omitempty"`
+	// The path of the item at this point in history (only relevant for File history, not folders)
+	ServerItem *string `json:"serverItem,omitempty"`
 	// The encoding of the item at this point in history (only relevant for File history, not folders)
 	Encoding *int `json:"encoding,omitempty"`
 	// The file id of the item at this point in history (only relevant for File history, not folders)

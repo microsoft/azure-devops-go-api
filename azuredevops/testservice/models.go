@@ -703,6 +703,14 @@ type TransactionSummary struct {
 	TransactionName        *string                  `json:"transactionName,omitempty"`
 }
 
+type Type struct {
+	Count       *int       `json:"count,omitempty"`
+	Occurrences *int       `json:"occurrences,omitempty"`
+	SubTypes    *[]SubType `json:"subTypes,omitempty"`
+	TypeName    *string    `json:"typeName,omitempty"`
+	Url         *string    `json:"url,omitempty"`
+}
+
 type WebApiLoadTestMachineInput struct {
 	MachineGroupId     *string                `json:"machineGroupId,omitempty"`
 	MachineType        *LoadTestMachineType   `json:"machineType,omitempty"`

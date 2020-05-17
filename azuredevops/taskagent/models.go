@@ -261,13 +261,24 @@ type DataSourceDetails struct {
 	ResultSelector *string                `json:"resultSelector,omitempty"`
 }
 
+type Demand struct {
+	Name  *string `json:"name,omitempty"`
+	Value *string `json:"value,omitempty"`
+}
+
 type DemandEquals struct {
+	Name  *string `json:"name,omitempty"`
+	Value *string `json:"value,omitempty"`
 }
 
 type DemandExists struct {
+	Name  *string `json:"name,omitempty"`
+	Value *string `json:"value,omitempty"`
 }
 
 type DemandMinimumVersion struct {
+	Name  *string `json:"name,omitempty"`
+	Value *string `json:"value,omitempty"`
 }
 
 type DependencyBinding struct {
