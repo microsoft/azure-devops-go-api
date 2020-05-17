@@ -1074,6 +1074,26 @@ type GitForkSyncRequestParameters struct {
 }
 
 type GitForkTeamProjectReference struct {
+	// Project abbreviation.
+	Abbreviation *string `json:"abbreviation,omitempty"`
+	// Url to default team identity image.
+	DefaultTeamImageUrl *string `json:"defaultTeamImageUrl,omitempty"`
+	// The project's description (if any).
+	Description *string `json:"description,omitempty"`
+	// Project identifier.
+	Id *uuid.UUID `json:"id,omitempty"`
+	// Project last update time.
+	LastUpdateTime *azuredevops.Time `json:"lastUpdateTime,omitempty"`
+	// Project name.
+	Name *string `json:"name,omitempty"`
+	// Project revision.
+	Revision *uint64 `json:"revision,omitempty"`
+	// Project state.
+	State *core.ProjectState `json:"state,omitempty"`
+	// Url to the full version of the object.
+	Url *string `json:"url,omitempty"`
+	// Project visibility.
+	Visibility *core.ProjectVisibility `json:"visibility,omitempty"`
 }
 
 // Accepted types of version
@@ -2294,6 +2314,30 @@ type HistoryEntry struct {
 
 // Identity information including a vote on a pull request.
 type IdentityRefWithVote struct {
+	// This field contains zero or more interesting links about the graph subject. These links may be invoked to obtain additional relationships or more detailed information about this graph subject.
+	Links interface{} `json:"_links,omitempty"`
+	// The descriptor is the primary way to reference the graph subject while the system is running. This field will uniquely identify the same graph subject across both Accounts and Organizations.
+	Descriptor *string `json:"descriptor,omitempty"`
+	// This is the non-unique display name of the graph subject. To change this field, you must alter its value in the source provider.
+	DisplayName *string `json:"displayName,omitempty"`
+	// This url is the full route to the source resource of this graph subject.
+	Url *string `json:"url,omitempty"`
+	// Deprecated - Can be retrieved by querying the Graph user referenced in the "self" entry of the IdentityRef "_links" dictionary
+	DirectoryAlias *string `json:"directoryAlias,omitempty"`
+	Id             *string `json:"id,omitempty"`
+	// Deprecated - Available in the "avatar" entry of the IdentityRef "_links" dictionary
+	ImageUrl *string `json:"imageUrl,omitempty"`
+	// Deprecated - Can be retrieved by querying the Graph membership state referenced in the "membershipState" entry of the GraphUser "_links" dictionary
+	Inactive *bool `json:"inactive,omitempty"`
+	// Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsAadUserType/Descriptor.IsAadGroupType)
+	IsAadIdentity *bool `json:"isAadIdentity,omitempty"`
+	// Deprecated - Can be inferred from the subject type of the descriptor (Descriptor.IsGroupType)
+	IsContainer       *bool `json:"isContainer,omitempty"`
+	IsDeletedInOrigin *bool `json:"isDeletedInOrigin,omitempty"`
+	// Deprecated - not in use in most preexisting implementations of ToIdentityRef
+	ProfileUrl *string `json:"profileUrl,omitempty"`
+	// Deprecated - use Domain+PrincipalName instead
+	UniqueName *string `json:"uniqueName,omitempty"`
 	// Indicates if this is a required reviewer for this pull request. <br /> Branches can have policies that require particular reviewers are required for pull requests.
 	IsRequired *bool `json:"isRequired,omitempty"`
 	// URL to retrieve information about this identity
