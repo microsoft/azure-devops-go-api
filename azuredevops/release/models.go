@@ -2980,11 +2980,11 @@ type VariableGroup struct {
 	// Gets or sets name.
 	Name *string `json:"name,omitempty"`
 	// Gets or sets provider data.
-	ProviderData *VariableGroupProviderData `json:"providerData,omitempty"`
+	ProviderData interface{} `json:"providerData,omitempty"`
 	// Gets or sets type.
 	Type *string `json:"type,omitempty"`
 	// Gets and sets the dictionary of variables.
-	Variables *map[string]VariableValue `json:"variables,omitempty"`
+	Variables *map[string]interface{} `json:"variables,omitempty"`
 }
 
 // [Flags]
