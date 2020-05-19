@@ -740,9 +740,25 @@ var ReportingRevisionsExpandValues = reportingRevisionsExpandValuesType{
 }
 
 type ReportingWorkItemLinksBatch struct {
+	// ContinuationToken acts as a waterMark. Used while querying large results.
+	ContinuationToken *string `json:"continuationToken,omitempty"`
+	// Returns 'true' if it's last batch, 'false' otherwise.
+	IsLastBatch *bool `json:"isLastBatch,omitempty"`
+	// The next link for the work item.
+	NextLink *string `json:"nextLink,omitempty"`
+	// Values such as rel, sourceId, TargetId, ChangedDate, isActive.
+	Values *[]interface{} `json:"values,omitempty"`
 }
 
 type ReportingWorkItemRevisionsBatch struct {
+	// ContinuationToken acts as a waterMark. Used while querying large results.
+	ContinuationToken *string `json:"continuationToken,omitempty"`
+	// Returns 'true' if it's last batch, 'false' otherwise.
+	IsLastBatch *bool `json:"isLastBatch,omitempty"`
+	// The next link for the work item.
+	NextLink *string `json:"nextLink,omitempty"`
+	// Values such as rel, sourceId, TargetId, ChangedDate, isActive.
+	Values *[]interface{} `json:"values,omitempty"`
 }
 
 // The class represents the reporting work item revision filer.
