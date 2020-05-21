@@ -8,7 +8,7 @@ This repository contains Go APIs for interacting with and managing Azure DevOps.
 ## Get started
 To use the API, establish a connection using a [personal access token](https://docs.microsoft.com/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) and the URL to your Azure DevOps organization. Then get a client using the connection and make API calls.
 
-```
+```go
 package main
 
 import (
