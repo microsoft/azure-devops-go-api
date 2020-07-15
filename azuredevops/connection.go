@@ -6,10 +6,11 @@ package azuredevops
 import (
 	"context"
 	"encoding/base64"
-	"github.com/google/uuid"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 // Creates a new Azure DevOps connection instance using a personal access token.
@@ -53,26 +54,26 @@ func normalizeUrl(url string) string {
 	return strings.ToLower(strings.TrimRight(url, "/"))
 }
 
-func (connection *Connection) GetClientByResourceAreaId(ctx context.Context, resourceAreaID uuid.UUID) (*Client, error) {
+func (connection *Connection) GetClientByResourceAreaId(ctx context.Context, resourceAreaID uuid.UUID, options ...ClientOptionFunc) (*Client, error) {
 	resourceAreaInfo, err := connection.getResourceAreaInfo(ctx, resourceAreaID)
 	if err != nil {
 		return nil, err
 	}
 	var client *Client
 	if resourceAreaInfo != nil {
-		client = connection.GetClientByUrl(*resourceAreaInfo.LocationUrl)
+		client = connection.GetClientByUrl(*resourceAreaInfo.LocationUrl, options...)
 	} else {
 		// resourceAreaInfo will be nil for on prem servers
-		client = connection.GetClientByUrl(connection.BaseUrl)
+		client = connection.GetClientByUrl(connection.BaseUrl, options...)
 	}
 	return client, nil
 }
 
-func (connection *Connection) GetClientByUrl(baseUrl string) *Client {
+func (connection *Connection) GetClientByUrl(baseUrl string, options ...ClientOptionFunc) *Client {
 	normalizedUrl := normalizeUrl(baseUrl)
 	azureDevOpsClient, ok := connection.getClientCacheEntry(normalizedUrl)
 	if !ok {
-		azureDevOpsClient = NewClient(connection, normalizedUrl)
+		azureDevOpsClient = NewClientWithOptions(connection, normalizedUrl, options...)
 		connection.setClientCacheEntry(normalizedUrl, azureDevOpsClient)
 	}
 	return azureDevOpsClient

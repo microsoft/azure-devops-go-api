@@ -12,15 +12,16 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"io"
+	"net/http"
+	"net/url"
+	"strconv"
+
 	"github.com/google/uuid"
 	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/core"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/policy"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"io"
-	"net/http"
-	"net/url"
-	"strconv"
 )
 
 var ResourceAreaId, _ = uuid.Parse("4e080c62-fa21-4fbc-8fef-2a10a2b38049")
@@ -265,7 +266,11 @@ type ClientImpl struct {
 }
 
 func NewClient(ctx context.Context, connection *azuredevops.Connection) (Client, error) {
-	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId)
+	return NewClientWithOptions(ctx, connection)
+}
+
+func NewClientWithOptions(ctx context.Context, connection *azuredevops.Connection, options ...azuredevops.ClientOptionFunc) (Client, error) {
+	client, err := connection.GetClientByResourceAreaId(ctx, ResourceAreaId, options)
 	if err != nil {
 		return nil, err
 	}

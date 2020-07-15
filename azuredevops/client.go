@@ -10,15 +10,20 @@ import (
 	"errors"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"reflect"
 	"regexp"
 	"runtime"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/google/uuid"
+	"github.com/hashicorp/go-cleanhttp"
+	"github.com/hashicorp/go-retryablehttp"
 )
 
 const (
@@ -37,6 +42,13 @@ const (
 	MediaTypeApplicationJson = "application/json"
 )
 
+var (
+	defaultRetryWaitMin = 1 * time.Second
+	defaultRetryWaitMax = 30 * time.Second
+	defaultRetryMax     = 4
+	defaultLogger       = log.New(os.Stderr, "", log.LstdFlags)
+)
+
 // Unique session id to be used by all requests of this session.
 var SessionId = uuid.New().String()
 
@@ -51,35 +63,66 @@ var versionSuffix = " (dev)"
 var baseUserAgent = "go/" + runtime.Version() + " (" + runtime.GOOS + " " + runtime.GOARCH + ") azure-devops-go-api/" + version + versionSuffix
 
 func NewClient(connection *Connection, baseUrl string) *Client {
-	client := &http.Client{}
-	if connection.Timeout != nil {
-		client.Timeout = *connection.Timeout
+	return NewClientWithOptions(connection, baseUrl)
+}
+
+func NewClientWithOptions(connection *Connection, baseUrl string, options ...ClientOptionFunc) *Client {
+	client := &retryablehttp.Client{
+		ErrorHandler: retryablehttp.PassthroughErrorHandler,
+		HTTPClient:   cleanhttp.DefaultPooledClient(),
+		RetryWaitMin: defaultRetryWaitMin,
+		RetryWaitMax: defaultRetryWaitMax,
+		RetryMax:     defaultRetryMax,
+		Logger:       defaultLogger,
 	}
-	return &Client{
+
+	c := &Client{
 		baseUrl:                 baseUrl,
 		client:                  client,
 		authorization:           connection.AuthorizationString,
 		suppressFedAuthRedirect: connection.SuppressFedAuthRedirect,
 		forceMsaPassThrough:     connection.ForceMsaPassThrough,
 		userAgent:               connection.UserAgent,
+		logger:                  defaultLogger,
 	}
+
+	// Apply any given client options.
+	for _, fn := range options {
+		if fn == nil {
+			continue
+		}
+		fn(c)
+	}
+	return c
+
 }
 
 type Client struct {
-	baseUrl                 string
-	client                  *http.Client
+	baseUrl string
+	// HTTP client used to communicate with the API.
+	client                  *retryablehttp.Client
 	authorization           string
 	suppressFedAuthRedirect bool
 	forceMsaPassThrough     bool
 	userAgent               string
+	disableRetries          bool
+	logger                  *log.Logger
 }
 
 func (client *Client) SendRequest(request *http.Request) (response *http.Response, err error) {
-	resp, err := client.client.Do(request) // todo: add retry logic
+	rtreq, err := retryablehttp.FromRequest(request)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := client.client.Do(rtreq)
 	if resp != nil && (resp.StatusCode < 200 || resp.StatusCode >= 300) {
 		err = client.UnwrapError(resp)
 	}
 	return resp, err
+}
+
+func (client *Client) GetLogger() *log.Logger {
+	return client.logger
 }
 
 func (client *Client) Send(ctx context.Context,
