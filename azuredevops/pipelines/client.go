@@ -12,11 +12,12 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"github.com/google/uuid"
-	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"net/http"
 	"net/url"
 	"strconv"
+
+	"github.com/google/uuid"
+	"github.com/microsoft/azure-devops-go-api/azuredevops"
 )
 
 type Client interface {
@@ -36,6 +37,8 @@ type Client interface {
 	ListRuns(context.Context, ListRunsArgs) (*[]Run, error)
 	// [Preview API] Runs a pipeline.
 	RunPipeline(context.Context, RunPipelineArgs) (*Run, error)
+	// [Preview API] Updates pipeline permissions to access service endpoints.
+	UpdateEndpointPermissions(context.Context, UpdateEndpointPermissionsArgs) (*PipelineResourcePermissions, error)
 }
 
 type ClientImpl struct {
@@ -373,4 +376,52 @@ type RunPipelineArgs struct {
 	PipelineId *int
 	// (optional) The pipeline version
 	PipelineVersion *int
+}
+
+// [Preview API] Updates pipeline permissions to access service endpoints.
+func (client *ClientImpl) UpdateEndpointPermissions(ctx context.Context, args UpdateEndpointPermissionsArgs) (*PipelineResourcePermissions, error) {
+	if args.PermissionsParameters == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PermissionsParameters"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project == nil || *args.Project == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
+	}
+	routeValues["project"] = *args.Project
+	if args.PermissionsParameters.Resource == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PermissionsParameters.Resource"}
+	}
+	if args.PermissionsParameters.Resource.Id == nil || *args.PermissionsParameters.Resource.Id == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.PermissionsParameters.Resource.Id"}
+	}
+	if args.PermissionsParameters.AllPipelines.Authorized == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.PermissionsParameters.AllPipelines.Authorized"}
+	}
+	resourceType := "endpoint"
+	routeValues["resourceId"] = *args.PermissionsParameters.Resource.Id
+	routeValues["resourceType"] = resourceType
+
+	args.PermissionsParameters.Resource.Type = &resourceType
+	args.PermissionsParameters.Pipelines = &[]int{}
+
+	body, marshalErr := json.Marshal(*args.PermissionsParameters)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("b5b9a4a4-e6cd-4096-853c-ab7d8b0c4eb2")
+	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue PipelineResourcePermissions
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+type UpdateEndpointPermissionsArgs struct {
+	// (required) Pipeline resource permissions
+	PermissionsParameters *PipelineResourcePermissions
+	// (required) Project ID or project name
+	Project *string
 }

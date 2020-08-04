@@ -210,3 +210,28 @@ type Variable struct {
 	IsSecret *bool   `json:"isSecret,omitempty"`
 	Value    *string `json:"value,omitempty"`
 }
+
+type Resource struct {
+	Id   *string `json:"id,omitempty"`
+	Type *string `json:"type,omitempty"`
+	Name *string `json:"name,omitempty"`
+}
+
+type Member struct {
+	Id          *string `json:"id,omitempty"`
+	DisplayName *string `json:"displayName,omitempty"`
+	UniqueName  *string `json:"uniqueName,omitempty"`
+	Descriptor  *string `json:"descriptor,omitempty"`
+}
+
+type ResourcePermissions struct {
+	Authorized   *bool             `json:"authorized,omitempty"`
+	AuthorizedBy *Member           `json:"authorizedBy,omitempty"`
+	AuthorizedOn *azuredevops.Time `json:"authorizedOn,omitempty"`
+}
+
+type PipelineResourcePermissions struct {
+	Resource     *Resource            `json:"resource,omitempty"`
+	Pipelines    *[]int               `json:"pipelines,omitempty"`
+	AllPipelines *ResourcePermissions `json:"allPipelines,omitempty"`
+}
