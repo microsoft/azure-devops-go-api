@@ -45,37 +45,44 @@ var apiResourceLocationCache = make(map[string]*map[uuid.UUID]ApiResourceLocatio
 var apiResourceLocationCacheLock = sync.RWMutex{}
 
 var version = "1.1.0-b3" // todo: remove hardcoded version
-var versionSuffix = " (dev)"
+var versionSuffix = ""
 
 // Base user agent string.  The UserAgent set on the connection will be appended to this.
 var baseUserAgent = "go/" + runtime.Version() + " (" + runtime.GOOS + " " + runtime.GOARCH + ") azure-devops-go-api/" + version + versionSuffix
 
 func NewClient(connection *Connection, baseUrl string) *Client {
-	client := &http.Client{}
+	var client *http.Client
+
+	if connection.TlsConfig != nil {
+		client = &http.Client{Transport: &http.Transport{TLSClientConfig: connection.TlsConfig}}
+	} else {
+		client = &http.Client{}
+	}
+
 	if connection.Timeout != nil {
 		client.Timeout = *connection.Timeout
 	}
 	return &Client{
-		BaseUrl:                 baseUrl,
-		Client:                  client,
-		Authorization:           connection.AuthorizationString,
-		SuppressFedAuthRedirect: connection.SuppressFedAuthRedirect,
-		ForceMsaPassThrough:     connection.ForceMsaPassThrough,
-		UserAgent:               connection.UserAgent,
+		baseUrl:                 baseUrl,
+		client:                  client,
+		authorization:           connection.AuthorizationString,
+		suppressFedAuthRedirect: connection.SuppressFedAuthRedirect,
+		forceMsaPassThrough:     connection.ForceMsaPassThrough,
+		userAgent:               connection.UserAgent,
 	}
 }
 
 type Client struct {
-	BaseUrl                 string
-	Client                  *http.Client
-	Authorization           string
-	SuppressFedAuthRedirect bool
-	ForceMsaPassThrough     bool
-	UserAgent               string
+	baseUrl                 string
+	client                  *http.Client
+	authorization           string
+	suppressFedAuthRedirect bool
+	forceMsaPassThrough     bool
+	userAgent               string
 }
 
 func (client *Client) SendRequest(request *http.Request) (response *http.Response, err error) {
-	resp, err := client.Client.Do(request) // todo: add retry logic
+	resp, err := client.client.Do(request) // todo: add retry logic
 	if resp != nil && (resp.StatusCode < 200 || resp.StatusCode >= 300) {
 		err = client.UnwrapError(resp)
 	}
@@ -97,7 +104,7 @@ func (client *Client) Send(ctx context.Context,
 		return nil, err
 	}
 	generatedUrl := client.GenerateUrl(location, routeValues, queryParameters)
-	fullUrl := combineUrl(client.BaseUrl, generatedUrl)
+	fullUrl := combineUrl(client.baseUrl, generatedUrl)
 	negotiatedVersion, err := negotiateRequestVersion(location, apiVersion)
 	if err != nil {
 		return nil, err
@@ -153,8 +160,8 @@ func (client *Client) CreateRequestMessage(ctx context.Context,
 		req = req.WithContext(ctx)
 	}
 
-	if client.Authorization != "" {
-		req.Header.Add(headerKeyAuthorization, client.Authorization)
+	if client.authorization != "" {
+		req.Header.Add(headerKeyAuthorization, client.authorization)
 	}
 	accept := acceptMediaType
 	if apiVersion != "" {
@@ -164,10 +171,10 @@ func (client *Client) CreateRequestMessage(ctx context.Context,
 	if mediaType != "" {
 		req.Header.Add(headerKeyContentType, mediaType+";charset=utf-8")
 	}
-	if client.SuppressFedAuthRedirect {
+	if client.suppressFedAuthRedirect {
 		req.Header.Add(headerKeyFedAuthRedirect, "Suppress")
 	}
-	if client.ForceMsaPassThrough {
+	if client.forceMsaPassThrough {
 		req.Header.Add(headerKeyForceMsaPassThrough, "true")
 	}
 
@@ -178,8 +185,8 @@ func (client *Client) CreateRequestMessage(ctx context.Context,
 	}
 
 	userAgent := baseUserAgent
-	if client.UserAgent != "" {
-		userAgent += " " + client.UserAgent
+	if client.userAgent != "" {
+		userAgent += " " + client.userAgent
 	}
 	req.Header.Add(headerUserAgent, userAgent)
 
@@ -191,7 +198,7 @@ func (client *Client) CreateRequestMessage(ctx context.Context,
 }
 
 func (client *Client) getResourceLocation(ctx context.Context, locationId uuid.UUID) (*ApiResourceLocation, error) {
-	locationsMap, ok := getApiResourceLocationCache(client.BaseUrl)
+	locationsMap, ok := getApiResourceLocationCache(client.baseUrl)
 	if !ok {
 		locations, err := client.getResourceLocationsFromServer(ctx)
 		if err != nil {
@@ -203,7 +210,7 @@ func (client *Client) getResourceLocation(ctx context.Context, locationId uuid.U
 			(*locationsMap)[*locationEntry.Id] = locationEntry
 		}
 
-		setApiResourceLocationCache(client.BaseUrl, locationsMap)
+		setApiResourceLocationCache(client.baseUrl, locationsMap)
 	}
 
 	location, ok := (*locationsMap)[locationId]
@@ -211,7 +218,7 @@ func (client *Client) getResourceLocation(ctx context.Context, locationId uuid.U
 		return &location, nil
 	}
 
-	return nil, &LocationIdNotRegisteredError{locationId, client.BaseUrl}
+	return nil, &LocationIdNotRegisteredError{locationId, client.baseUrl}
 }
 
 func getApiResourceLocationCache(url string) (*map[uuid.UUID]ApiResourceLocation, bool) {
@@ -228,7 +235,7 @@ func setApiResourceLocationCache(url string, locationsMap *map[uuid.UUID]ApiReso
 }
 
 func (client *Client) getResourceLocationsFromServer(ctx context.Context) ([]ApiResourceLocation, error) {
-	optionsUri := combineUrl(client.BaseUrl, "_apis")
+	optionsUri := combineUrl(client.baseUrl, "_apis")
 	request, err := client.CreateRequestMessage(ctx, http.MethodOptions, optionsUri, "", nil, "", MediaTypeApplicationJson, nil)
 	if err != nil {
 		return nil, err
