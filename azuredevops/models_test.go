@@ -64,6 +64,21 @@ func TestModels_Marshal_Unmarshal_Time(t *testing.T) {
 	}
 }
 
+func TestModels_Time_AsQueryParameter(t *testing.T) {
+	tt := &Time{
+		// NOTE: set nsec to 0 to avoid precision loss
+		Time: time.Date(2006, 1, 2, 3, 4, 5, 0, time.UTC),
+	}
+	queryParameterValue := tt.AsQueryParameter()
+	parsedTime, err := time.Parse(time.RFC3339, queryParameterValue)
+	if err != nil {
+		t.Errorf("invalid query parameter %s value for time: %s", tt.Time, queryParameterValue)
+	}
+	if !tt.Time.Equal(parsedTime) {
+		t.Errorf("should convert back to original value: %s %s", tt.Time, parsedTime)
+	}
+}
+
 type TestModel struct {
 	Id     *uuid.UUID `json:"id,omitempty"`
 	Time1  *Time      `json:"time1,omitempty"`
