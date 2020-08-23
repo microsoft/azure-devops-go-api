@@ -51,7 +51,14 @@ var versionSuffix = " (dev)"
 var baseUserAgent = "go/" + runtime.Version() + " (" + runtime.GOOS + " " + runtime.GOARCH + ") azure-devops-go-api/" + version + versionSuffix
 
 func NewClient(connection *Connection, baseUrl string) *Client {
-	client := &http.Client{}
+	var client *http.Client
+
+	if connection.TlsConfig != nil {
+		client = &http.Client{Transport: &http.Transport{TLSClientConfig: connection.TlsConfig}}
+	} else {
+		client = &http.Client{}
+	}
+
 	if connection.Timeout != nil {
 		client.Timeout = *connection.Timeout
 	}
