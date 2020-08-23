@@ -2046,7 +2046,7 @@ func (client *ClientImpl) GetWorkItem(ctx context.Context, args GetWorkItemArgs)
 		queryParams.Add("fields", listAsString)
 	}
 	if args.AsOf != nil {
-		queryParams.Add("asOf", (*args.AsOf).String())
+		queryParams.Add("asOf", (*args.AsOf).AsQueryParameter())
 	}
 	if args.Expand != nil {
 		queryParams.Add("$expand", string(*args.Expand))
@@ -2253,7 +2253,7 @@ func (client *ClientImpl) GetWorkItems(ctx context.Context, args GetWorkItemsArg
 		queryParams.Add("fields", listAsString)
 	}
 	if args.AsOf != nil {
-		queryParams.Add("asOf", (*args.AsOf).String())
+		queryParams.Add("asOf", (*args.AsOf).AsQueryParameter())
 	}
 	if args.Expand != nil {
 		queryParams.Add("$expand", string(*args.Expand))
@@ -2338,7 +2338,7 @@ func (client *ClientImpl) GetWorkItemTemplate(ctx context.Context, args GetWorkI
 		queryParams.Add("fields", *args.Fields)
 	}
 	if args.AsOf != nil {
-		queryParams.Add("asOf", (*args.AsOf).String())
+		queryParams.Add("asOf", (*args.AsOf).AsQueryParameter())
 	}
 	if args.Expand != nil {
 		queryParams.Add("$expand", string(*args.Expand))

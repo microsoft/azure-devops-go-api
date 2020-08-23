@@ -2104,10 +2104,10 @@ func (client *ClientImpl) GetDefinitions(ctx context.Context, args GetDefinition
 		queryParams.Add("path", *args.Path)
 	}
 	if args.BuiltAfter != nil {
-		queryParams.Add("builtAfter", (*args.BuiltAfter).String())
+		queryParams.Add("builtAfter", (*args.BuiltAfter).AsQueryParameter())
 	}
 	if args.NotBuiltAfter != nil {
-		queryParams.Add("notBuiltAfter", (*args.NotBuiltAfter).String())
+		queryParams.Add("notBuiltAfter", (*args.NotBuiltAfter).AsQueryParameter())
 	}
 	if args.IncludeAllProperties != nil {
 		queryParams.Add("includeAllProperties", strconv.FormatBool(*args.IncludeAllProperties))

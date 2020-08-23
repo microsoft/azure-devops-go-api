@@ -56,7 +56,7 @@ func (client *ClientImpl) GetGitRepositoriesActivityMetrics(ctx context.Context,
 	if args.FromDate == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "fromDate"}
 	}
-	queryParams.Add("fromDate", (*args.FromDate).String())
+	queryParams.Add("fromDate", (*args.FromDate).AsQueryParameter())
 	if args.AggregationType == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "aggregationType"}
 	}
@@ -106,7 +106,7 @@ func (client *ClientImpl) GetProjectActivityMetrics(ctx context.Context, args Ge
 	if args.FromDate == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "fromDate"}
 	}
-	queryParams.Add("fromDate", (*args.FromDate).String())
+	queryParams.Add("fromDate", (*args.FromDate).AsQueryParameter())
 	if args.AggregationType == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "aggregationType"}
 	}
@@ -173,7 +173,7 @@ func (client *ClientImpl) GetRepositoryActivityMetrics(ctx context.Context, args
 	if args.FromDate == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "fromDate"}
 	}
-	queryParams.Add("fromDate", (*args.FromDate).String())
+	queryParams.Add("fromDate", (*args.FromDate).AsQueryParameter())
 	if args.AggregationType == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "aggregationType"}
 	}

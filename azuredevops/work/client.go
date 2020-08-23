@@ -860,10 +860,10 @@ func (client *ClientImpl) GetDeliveryTimelineData(ctx context.Context, args GetD
 		queryParams.Add("revision", strconv.Itoa(*args.Revision))
 	}
 	if args.StartDate != nil {
-		queryParams.Add("startDate", (*args.StartDate).String())
+		queryParams.Add("startDate", (*args.StartDate).AsQueryParameter())
 	}
 	if args.EndDate != nil {
-		queryParams.Add("endDate", (*args.EndDate).String())
+		queryParams.Add("endDate", (*args.EndDate).AsQueryParameter())
 	}
 	locationId, _ := uuid.Parse("bdd0834e-101f-49f0-a6ae-509f384a12b4")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1", routeValues, queryParams, nil, "", "application/json", nil)
