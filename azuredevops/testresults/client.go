@@ -2486,10 +2486,10 @@ func (client *ClientImpl) QueryTestResultsReportForRelease(ctx context.Context, 
 			queryParams.Add("releaseToCompare.environmentDefinitionName", *args.ReleaseToCompare.EnvironmentDefinitionName)
 		}
 		if args.ReleaseToCompare.CreationDate != nil {
-			queryParams.Add("releaseToCompare.creationDate", (*args.ReleaseToCompare.CreationDate).String())
+			queryParams.Add("releaseToCompare.creationDate", (*args.ReleaseToCompare.CreationDate).AsQueryParameter())
 		}
 		if args.ReleaseToCompare.EnvironmentCreationDate != nil {
-			queryParams.Add("releaseToCompare.environmentCreationDate", (*args.ReleaseToCompare.EnvironmentCreationDate).String())
+			queryParams.Add("releaseToCompare.environmentCreationDate", (*args.ReleaseToCompare.EnvironmentCreationDate).AsQueryParameter())
 		}
 		if args.ReleaseToCompare.Attempt != nil {
 			queryParams.Add("releaseToCompare.attempt", strconv.Itoa(*args.ReleaseToCompare.Attempt))
@@ -2576,7 +2576,7 @@ func (client *ClientImpl) QueryTestResultWorkItems(ctx context.Context, args Que
 		queryParams.Add("testCaseId", strconv.Itoa(*args.TestCaseId))
 	}
 	if args.MaxCompleteDate != nil {
-		queryParams.Add("maxCompleteDate", (*args.MaxCompleteDate).String())
+		queryParams.Add("maxCompleteDate", (*args.MaxCompleteDate).AsQueryParameter())
 	}
 	if args.Days != nil {
 		queryParams.Add("days", strconv.Itoa(*args.Days))
@@ -2625,11 +2625,11 @@ func (client *ClientImpl) QueryTestRuns(ctx context.Context, args QueryTestRunsA
 	if args.MinLastUpdatedDate == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "minLastUpdatedDate"}
 	}
-	queryParams.Add("minLastUpdatedDate", (*args.MinLastUpdatedDate).String())
+	queryParams.Add("minLastUpdatedDate", (*args.MinLastUpdatedDate).AsQueryParameter())
 	if args.MaxLastUpdatedDate == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "maxLastUpdatedDate"}
 	}
-	queryParams.Add("maxLastUpdatedDate", (*args.MaxLastUpdatedDate).String())
+	queryParams.Add("maxLastUpdatedDate", (*args.MaxLastUpdatedDate).AsQueryParameter())
 	if args.State != nil {
 		queryParams.Add("state", string(*args.State))
 	}

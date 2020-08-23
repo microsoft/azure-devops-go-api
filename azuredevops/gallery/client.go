@@ -1532,7 +1532,7 @@ func (client *ClientImpl) GetExtensionDailyStats(ctx context.Context, args GetEx
 		queryParams.Add("aggregate", string(*args.Aggregate))
 	}
 	if args.AfterDate != nil {
-		queryParams.Add("afterDate", (*args.AfterDate).String())
+		queryParams.Add("afterDate", (*args.AfterDate).AsQueryParameter())
 	}
 	locationId, _ := uuid.Parse("ae06047e-51c5-4fb4-ab65-7be488544416")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1613,7 +1613,7 @@ func (client *ClientImpl) GetExtensionEvents(ctx context.Context, args GetExtens
 		queryParams.Add("count", strconv.Itoa(*args.Count))
 	}
 	if args.AfterDate != nil {
-		queryParams.Add("afterDate", (*args.AfterDate).String())
+		queryParams.Add("afterDate", (*args.AfterDate).AsQueryParameter())
 	}
 	if args.Include != nil {
 		queryParams.Add("include", *args.Include)
@@ -1668,7 +1668,7 @@ func (client *ClientImpl) GetExtensionReports(ctx context.Context, args GetExten
 		queryParams.Add("count", strconv.Itoa(*args.Count))
 	}
 	if args.AfterDate != nil {
-		queryParams.Add("afterDate", (*args.AfterDate).String())
+		queryParams.Add("afterDate", (*args.AfterDate).AsQueryParameter())
 	}
 	locationId, _ := uuid.Parse("79e0c74f-157f-437e-845f-74fbb4121d4c")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1857,7 +1857,7 @@ func (client *ClientImpl) GetQuestions(ctx context.Context, args GetQuestionsArg
 		queryParams.Add("page", strconv.Itoa(*args.Page))
 	}
 	if args.AfterDate != nil {
-		queryParams.Add("afterDate", (*args.AfterDate).String())
+		queryParams.Add("afterDate", (*args.AfterDate).AsQueryParameter())
 	}
 	locationId, _ := uuid.Parse("c010d03d-812c-4ade-ae07-c1862475eda5")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1904,10 +1904,10 @@ func (client *ClientImpl) GetReviews(ctx context.Context, args GetReviewsArgs) (
 		queryParams.Add("filterOptions", string(*args.FilterOptions))
 	}
 	if args.BeforeDate != nil {
-		queryParams.Add("beforeDate", (*args.BeforeDate).String())
+		queryParams.Add("beforeDate", (*args.BeforeDate).AsQueryParameter())
 	}
 	if args.AfterDate != nil {
-		queryParams.Add("afterDate", (*args.AfterDate).String())
+		queryParams.Add("afterDate", (*args.AfterDate).AsQueryParameter())
 	}
 	locationId, _ := uuid.Parse("5b3f819f-f247-42ad-8c00-dd9ab9ab246d")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
@@ -1950,10 +1950,10 @@ func (client *ClientImpl) GetReviewsSummary(ctx context.Context, args GetReviews
 
 	queryParams := url.Values{}
 	if args.BeforeDate != nil {
-		queryParams.Add("beforeDate", (*args.BeforeDate).String())
+		queryParams.Add("beforeDate", (*args.BeforeDate).AsQueryParameter())
 	}
 	if args.AfterDate != nil {
-		queryParams.Add("afterDate", (*args.AfterDate).String())
+		queryParams.Add("afterDate", (*args.AfterDate).AsQueryParameter())
 	}
 	locationId, _ := uuid.Parse("b7b44e21-209e-48f0-ae78-04727fc37d77")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
