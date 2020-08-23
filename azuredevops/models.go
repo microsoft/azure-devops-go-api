@@ -97,7 +97,7 @@ func (t *Time) MarshalJSON() ([]byte, error) {
 
 // AsQueryParameter formats time value for query parameter usage.
 func (t Time) AsQueryParameter() string {
-	return t.Time.Format(time.RFC3339)
+	return t.Time.Format(time.RFC3339Nano)
 }
 
 func (t Time) String() string {

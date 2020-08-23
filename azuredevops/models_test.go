@@ -25,7 +25,7 @@ func TestModels_Unmarshal_Time(t *testing.T) {
 		t.Errorf("Expecting deserialized time to equal default time.  Actual time: %v", testModel.Time1)
 	}
 
-	parsedTime, err := time.Parse(time.RFC3339, "2019-09-01T00:07:26Z")
+	parsedTime, err := time.Parse(time.RFC3339Nano, "2019-09-01T00:07:26Z")
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -70,7 +70,7 @@ func TestModels_Time_AsQueryParameter(t *testing.T) {
 		Time: time.Date(2006, 1, 2, 3, 4, 5, 0, time.UTC),
 	}
 	queryParameterValue := tt.AsQueryParameter()
-	parsedTime, err := time.Parse(time.RFC3339, queryParameterValue)
+	parsedTime, err := time.Parse(time.RFC3339Nano, queryParameterValue)
 	if err != nil {
 		t.Errorf("invalid query parameter %s value for time: %s", tt.Time, queryParameterValue)
 	}
