@@ -21,7 +21,7 @@ func TestClient_NewClient(t *testing.T) {
 		t.Errorf("Expected baseURL: %v  Actual baseURL: %v", baseURL, client.baseUrl)
 	}
 	if actualTLSConfig := client.client.Transport.(*http.Transport).TLSClientConfig; actualTLSConfig != tlsConfig {
-		t.Errorf("Expected tlsConfig: %v  Actual tlsConfig: %v", tlsConfig, *actualTLSConfig)
+		t.Errorf("Expected tlsConfig: %v  Actual tlsConfig: %v", tlsConfig, actualTLSConfig)
 	}
 }
 
