@@ -9,10 +9,10 @@
 package testplan
 
 import (
-    "github.com/microsoft/azure-devops-go-api/azuredevops"
-    "github.com/microsoft/azure-devops-go-api/azuredevops/core"
-    "github.com/microsoft/azure-devops-go-api/azuredevops/test"
-    "github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
+    "github.com/microsoft/azure-devops-go-api/v60"
+    "github.com/microsoft/azure-devops-go-api/v60/core"
+    "github.com/microsoft/azure-devops-go-api/v60/test"
+    "github.com/microsoft/azure-devops-go-api/v60/webapi"
 )
 
 // The build definition reference resource

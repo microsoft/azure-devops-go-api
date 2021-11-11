@@ -10,8 +10,8 @@ package symbol
 
 import (
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/azuredevops"
-    "github.com/microsoft/azure-devops-go-api/azuredevops/symbolcommon"
+    "github.com/microsoft/azure-devops-go-api/v60"
+    "github.com/microsoft/azure-devops-go-api/v60/symbolcommon"
 )
 
 // A dual-purpose data object, the debug entry is used by the client to publish the symbol file (with file's blob identifier, which can be calculated from VSTS hashing algorithm) or query the file (with a client key). Since the symbol server tries to return a matched symbol file with the richest information level, it may not always point to the same symbol file for different queries with same client key.
