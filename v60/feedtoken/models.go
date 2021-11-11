@@ -9,7 +9,7 @@
 package feedtoken
 
 import (
-	"github.com/microsoft/azure-devops-go-api/v60"
+	"github.com/microsoft/azure-devops-go-api/azuredevops/v60"
 )
 
 // A cut-down version of SessionToken that just has what FeedSessionTokenController needs to serve the UI and which actually generates a TypeScript type for the UI to use

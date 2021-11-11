@@ -10,7 +10,7 @@ package search
 
 import (
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/v60/searchshared"
+    "github.com/microsoft/azure-devops-go-api/azuredevops/v60/searchshared"
 )
 
 // Defines the Board result that matched a Board search request.

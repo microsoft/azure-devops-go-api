@@ -10,8 +10,8 @@ package wiki
 
 import (
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/v60"
-    "github.com/microsoft/azure-devops-go-api/v60/git"
+    "github.com/microsoft/azure-devops-go-api/azuredevops/v60"
+    "github.com/microsoft/azure-devops-go-api/azuredevops/v60/git"
 )
 
 // Defines a wiki repository which encapsulates the git repository backing the wiki.

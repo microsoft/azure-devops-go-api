@@ -10,8 +10,8 @@ package workitemtracking
 
 import (
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/v60"
-    "github.com/microsoft/azure-devops-go-api/v60/webapi"
+    "github.com/microsoft/azure-devops-go-api/azuredevops/v60"
+    "github.com/microsoft/azure-devops-go-api/azuredevops/v60/webapi"
 )
 
 type AccountMyWorkResult struct {

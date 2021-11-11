@@ -1,4 +1,4 @@
-module github.com/microsoft/azure-devops-go-api/v60
+module github.com/microsoft/azure-devops-go-api/azuredevops/v60
 
 go 1.12
 

@@ -10,7 +10,7 @@ package accounts
 
 import (
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/v60"
+    "github.com/microsoft/azure-devops-go-api/azuredevops/v60"
 )
 
 type Account struct {

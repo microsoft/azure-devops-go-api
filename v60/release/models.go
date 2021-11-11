@@ -10,10 +10,10 @@ package release
 
 import (
     "github.com/google/uuid"
-    "github.com/microsoft/azure-devops-go-api/v60"
-    "github.com/microsoft/azure-devops-go-api/v60/distributedtaskcommon"
-    "github.com/microsoft/azure-devops-go-api/v60/forminput"
-    "github.com/microsoft/azure-devops-go-api/v60/webapi"
+    "github.com/microsoft/azure-devops-go-api/azuredevops/v60"
+    "github.com/microsoft/azure-devops-go-api/azuredevops/v60/distributedtaskcommon"
+    "github.com/microsoft/azure-devops-go-api/azuredevops/v60/forminput"
+    "github.com/microsoft/azure-devops-go-api/azuredevops/v60/webapi"
 )
 
 type AgentArtifactDefinition struct {
