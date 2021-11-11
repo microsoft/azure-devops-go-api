@@ -288,6 +288,64 @@ type SessionToken struct {
     ValidTo *azuredevops.Time `json:"validTo,omitempty"`
 }
 
+type SessionTokenError string
+
+type sessionTokenErrorValuesType struct {
+    None SessionTokenError
+    DisplayNameRequired SessionTokenError
+    InvalidDisplayName SessionTokenError
+    InvalidValidTo SessionTokenError
+    InvalidScope SessionTokenError
+    UserIdRequired SessionTokenError
+    InvalidUserId SessionTokenError
+    InvalidUserType SessionTokenError
+    AccessDenied SessionTokenError
+    FailedToIssueAccessToken SessionTokenError
+    InvalidClient SessionTokenError
+    InvalidClientType SessionTokenError
+    InvalidClientId SessionTokenError
+    InvalidTargetAccounts SessionTokenError
+    HostAuthorizationNotFound SessionTokenError
+    AuthorizationNotFound SessionTokenError
+    FailedToUpdateAccessToken SessionTokenError
+    SourceNotSupported SessionTokenError
+    InvalidSourceIP SessionTokenError
+    InvalidSource SessionTokenError
+    DuplicateHash SessionTokenError
+    SshPolicyDisabled SessionTokenError
+}
+
+var SessionTokenErrorValues = sessionTokenErrorValuesType{
+    None: "none",
+    DisplayNameRequired: "displayNameRequired",
+    InvalidDisplayName: "invalidDisplayName",
+    InvalidValidTo: "invalidValidTo",
+    InvalidScope: "invalidScope",
+    UserIdRequired: "userIdRequired",
+    InvalidUserId: "invalidUserId",
+    InvalidUserType: "invalidUserType",
+    AccessDenied: "accessDenied",
+    FailedToIssueAccessToken: "failedToIssueAccessToken",
+    InvalidClient: "invalidClient",
+    InvalidClientType: "invalidClientType",
+    InvalidClientId: "invalidClientId",
+    InvalidTargetAccounts: "invalidTargetAccounts",
+    HostAuthorizationNotFound: "hostAuthorizationNotFound",
+    AuthorizationNotFound: "authorizationNotFound",
+    FailedToUpdateAccessToken: "failedToUpdateAccessToken",
+    SourceNotSupported: "sourceNotSupported",
+    InvalidSourceIP: "invalidSourceIP",
+    InvalidSource: "invalidSource",
+    DuplicateHash: "duplicateHash",
+    SshPolicyDisabled: "sshPolicyDisabled",
+}
+
+type SessionTokenResult struct {
+    HasError *bool `json:"hasError,omitempty"`
+    SessionToken *SessionToken `json:"sessionToken,omitempty"`
+    SessionTokenError *SessionTokenError `json:"sessionTokenError,omitempty"`
+}
+
 type TokenError string
 
 type tokenErrorValuesType struct {
