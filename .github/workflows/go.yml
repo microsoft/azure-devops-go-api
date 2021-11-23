@@ -19,12 +19,7 @@ jobs:
       id: go
 
     - name: Get dependencies
-      run: |
-        go get -v -t -d ./...
-        if [ -f Gopkg.toml ]; then
-            curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-            dep ensure
-        fi
+      run: go get github.com/google/uuid
 
     - name: go build
       run: go build -v ./...
