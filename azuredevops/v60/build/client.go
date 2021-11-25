@@ -2767,11 +2767,15 @@ func (client *ClientImpl) GetRetentionLeasesByMinimalRetentionLeases(ctx context
     if args.LeasesToFetch == nil {
         return nil, &azuredevops.ArgumentNilError{ArgumentName: "leasesToFetch"}
     }
-    var stringList []string
-    for _, item := range *args.LeasesToFetch {
-        stringList = append(stringList, )
-    }
-    listAsString := strings.Join((stringList)[:], ",")
+	var stringList []string
+	for _, item := range *args.LeasesToFetch {
+		lease, err := json.Marshal(item)
+		if err != nil {
+			return nil, err
+		}
+		stringList = append(stringList, string(lease))
+	}
+	listAsString := strings.Join((stringList)[:], "|")
     queryParams.Add("leasesToFetch", listAsString)
     locationId, _ := uuid.Parse("272051e4-9af1-45b5-ae22-8d960a5539d4")
 resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "6.0-preview.1", routeValues, queryParams, nil, "", "application/json", nil)
