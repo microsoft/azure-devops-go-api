@@ -279,10 +279,27 @@ type ExpressionFilterModel struct {
 }
 
 type FieldInputValues struct {
+    // The default value to use for this input
+    DefaultValue *string `json:"defaultValue,omitempty"`
+    // Errors encountered while computing dynamic values.
+    Error *forminput.InputValuesError `json:"error,omitempty"`
+    // The id of the input
+    InputId *string `json:"inputId,omitempty"`
+    // Should this input be disabled
+    IsDisabled *bool `json:"isDisabled,omitempty"`
+    // Should the value be restricted to one of the values in the PossibleValues (True) or are the values in PossibleValues just a suggestion (False)
+    IsLimitedToPossibleValues *bool `json:"isLimitedToPossibleValues,omitempty"`
+    // Should this input be made read-only
+    IsReadOnly *bool `json:"isReadOnly,omitempty"`
+    // Possible values that this input can take
+    PossibleValues *[]forminput.InputValue `json:"possibleValues,omitempty"`
     Operators *[]byte `json:"operators,omitempty"`
 }
 
 type FieldValuesQuery struct {
+    CurrentValues *map[string]string `json:"currentValues,omitempty"`
+    // Subscription containing information about the publisher/consumer and the current input values
+    Resource interface{} `json:"resource,omitempty"`
     InputValues *[]FieldInputValues `json:"inputValues,omitempty"`
     Scope *string `json:"scope,omitempty"`
 }
@@ -1092,6 +1109,12 @@ var SubscriptionQueryFlagsValues = subscriptionQueryFlagsValuesType{
 
 // A resource, typically an account or project, in which events are published from.
 type SubscriptionScope struct {
+    // Required: This is the identity of the scope for the type.
+    Id *uuid.UUID `json:"id,omitempty"`
+    // Optional: The display name of the scope
+    Name *string `json:"name,omitempty"`
+    // Required: The event specific type of a scope.
+    Type *string `json:"type,omitempty"`
 }
 
 // Subscription status values. A value greater than or equal to zero indicates the subscription is enabled. A negative value indicates the subscription is disabled.

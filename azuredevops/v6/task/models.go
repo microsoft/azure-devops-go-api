@@ -338,7 +338,7 @@ type TimelineRecord struct {
     State *TimelineRecordState `json:"state,omitempty"`
     Task *TaskReference `json:"task,omitempty"`
     Type *string `json:"type,omitempty"`
-    Variables *map[string]VariableValue `json:"variables,omitempty"`
+    Variables *map[string]interface{} `json:"variables,omitempty"`
     WarningCount *int `json:"warningCount,omitempty"`
     WorkerName *string `json:"workerName,omitempty"`
 }

@@ -11,6 +11,7 @@ package taskagent
 import (
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azuredevops/v6"
+    "github.com/microsoft/azure-devops-go-api/azuredevops/v6/distributedtaskcommon"
     "github.com/microsoft/azure-devops-go-api/azuredevops/v6/forminput"
     "github.com/microsoft/azure-devops-go-api/azuredevops/v6/webapi"
 )
@@ -220,6 +221,32 @@ type DataSource struct {
 }
 
 type DataSourceBinding struct {
+    // Pagination format supported by this data source(ContinuationToken/SkipTop).
+    CallbackContextTemplate *string `json:"callbackContextTemplate,omitempty"`
+    // Subsequent calls needed?
+    CallbackRequiredTemplate *string `json:"callbackRequiredTemplate,omitempty"`
+    // Gets or sets the name of the data source.
+    DataSourceName *string `json:"dataSourceName,omitempty"`
+    // Gets or sets the endpoint Id.
+    EndpointId *string `json:"endpointId,omitempty"`
+    // Gets or sets the url of the service endpoint.
+    EndpointUrl *string `json:"endpointUrl,omitempty"`
+    // Gets or sets the authorization headers.
+    Headers *[]distributedtaskcommon.AuthorizationHeader `json:"headers,omitempty"`
+    // Defines the initial value of the query params
+    InitialContextTemplate *string `json:"initialContextTemplate,omitempty"`
+    // Gets or sets the parameters for the data source.
+    Parameters *map[string]string `json:"parameters,omitempty"`
+    // Gets or sets http request body
+    RequestContent *string `json:"requestContent,omitempty"`
+    // Gets or sets http request verb
+    RequestVerb *string `json:"requestVerb,omitempty"`
+    // Gets or sets the result selector.
+    ResultSelector *string `json:"resultSelector,omitempty"`
+    // Gets or sets the result template.
+    ResultTemplate *string `json:"resultTemplate,omitempty"`
+    // Gets or sets the target of the data source.
+    Target *string `json:"target,omitempty"`
 }
 
 type DataSourceDetails struct {
@@ -231,13 +258,24 @@ type DataSourceDetails struct {
     ResultSelector *string `json:"resultSelector,omitempty"`
 }
 
+type Demand struct {
+    Name *string `json:"name,omitempty"`
+    Value *string `json:"value,omitempty"`
+}
+
 type DemandEquals struct {
+    Name *string `json:"name,omitempty"`
+    Value *string `json:"value,omitempty"`
 }
 
 type DemandExists struct {
+    Name *string `json:"name,omitempty"`
+    Value *string `json:"value,omitempty"`
 }
 
 type DemandMinimumVersion struct {
+    Name *string `json:"name,omitempty"`
+    Value *string `json:"value,omitempty"`
     Source *DemandSource `json:"source,omitempty"`
 }
 
@@ -2414,6 +2452,18 @@ type TaskHubLicenseDetails struct {
 }
 
 type TaskInputDefinition struct {
+    Aliases *[]string `json:"aliases,omitempty"`
+    DefaultValue *string `json:"defaultValue,omitempty"`
+    GroupName *string `json:"groupName,omitempty"`
+    HelpMarkDown *string `json:"helpMarkDown,omitempty"`
+    Label *string `json:"label,omitempty"`
+    Name *string `json:"name,omitempty"`
+    Options *map[string]string `json:"options,omitempty"`
+    Properties *map[string]string `json:"properties,omitempty"`
+    Required *bool `json:"required,omitempty"`
+    Type *string `json:"type,omitempty"`
+    Validation *distributedtaskcommon.TaskInputValidation `json:"validation,omitempty"`
+    VisibleRule *string `json:"visibleRule,omitempty"`
 }
 
 type TaskInstance struct {
@@ -2618,6 +2668,11 @@ var TaskResultValues = taskResultValuesType{
 }
 
 type TaskSourceDefinition struct {
+    AuthKey *string `json:"authKey,omitempty"`
+    Endpoint *string `json:"endpoint,omitempty"`
+    KeySelector *string `json:"keySelector,omitempty"`
+    Selector *string `json:"selector,omitempty"`
+    Target *string `json:"target,omitempty"`
 }
 
 type TaskStartedEvent struct {
@@ -2680,7 +2735,7 @@ type TimelineRecord struct {
     State *TimelineRecordState `json:"state,omitempty"`
     Task *TaskReference `json:"task,omitempty"`
     Type *string `json:"type,omitempty"`
-    Variables *map[string]VariableValue `json:"variables,omitempty"`
+    Variables *map[string]interface{} `json:"variables,omitempty"`
     WarningCount *int `json:"warningCount,omitempty"`
     WorkerName *string `json:"workerName,omitempty"`
 }
@@ -2743,13 +2798,13 @@ type VariableGroup struct {
     // Gets or sets name of the variable group.
     Name *string `json:"name,omitempty"`
     // Gets or sets provider data.
-    ProviderData *VariableGroupProviderData `json:"providerData,omitempty"`
+    ProviderData interface{} `json:"providerData,omitempty"`
     // Gets or sets type of the variable group.
     Type *string `json:"type,omitempty"`
     // all project references where the variable group is shared with other projects.
     VariableGroupProjectReferences *[]VariableGroupProjectReference `json:"variableGroupProjectReferences,omitempty"`
     // Gets or sets variables contained in the variable group.
-    Variables *map[string]VariableValue `json:"variables,omitempty"`
+    Variables *map[string]interface{} `json:"variables,omitempty"`
 }
 
 // [Flags]
@@ -2773,12 +2828,12 @@ type VariableGroupParameters struct {
     // Sets name of the variable group.
     Name *string `json:"name,omitempty"`
     // Sets provider data.
-    ProviderData *VariableGroupProviderData `json:"providerData,omitempty"`
+    ProviderData interface{} `json:"providerData,omitempty"`
     // Sets type of the variable group.
     Type *string `json:"type,omitempty"`
     VariableGroupProjectReferences *[]VariableGroupProjectReference `json:"variableGroupProjectReferences,omitempty"`
     // Sets variables contained in the variable group.
-    Variables *map[string]VariableValue `json:"variables,omitempty"`
+    Variables *map[string]interface{} `json:"variables,omitempty"`
 }
 
 // A variable group reference is a shallow reference to variable group.

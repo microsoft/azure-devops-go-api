@@ -285,6 +285,8 @@ type BuildCompletedEvent struct {
 
 // Represents a build completion trigger.
 type BuildCompletionTrigger struct {
+    // The type of the trigger.
+    TriggerType *DefinitionTriggerType `json:"triggerType,omitempty"`
     BranchFilters *[]string `json:"branchFilters,omitempty"`
     // A reference to the definition that should trigger builds for this definition.
     Definition *DefinitionReference `json:"definition,omitempty"`
@@ -773,6 +775,12 @@ var BuildPhaseStatusValues = buildPhaseStatusValuesType{
     Succeeded: "succeeded",
 }
 
+// Represents a build process.
+type BuildProcess struct {
+    // The type of the process.
+    Type *int `json:"type,omitempty"`
+}
+
 // Represents resources used by a build process.
 type BuildProcessResources struct {
     Endpoints *[]ServiceEndpointReference `json:"endpoints,omitempty"`
@@ -1062,6 +1070,12 @@ type BuildTagsAddedEvent struct {
     NewTags *[]string `json:"newTags,omitempty"`
 }
 
+// Represents a trigger for a buld definition.
+type BuildTrigger struct {
+    // The type of the trigger.
+    TriggerType *DefinitionTriggerType `json:"triggerType,omitempty"`
+}
+
 type BuildUpdatedEvent struct {
     BuildId *int `json:"buildId,omitempty"`
     Build *Build `json:"build,omitempty"`
@@ -1119,6 +1133,8 @@ type ContinuousDeploymentDefinition struct {
 
 // Represents a continuous integration (CI) trigger.
 type ContinuousIntegrationTrigger struct {
+    // The type of the trigger.
+    TriggerType *DefinitionTriggerType `json:"triggerType,omitempty"`
     // Indicates whether changes should be batched while another CI build is running.
     BatchChanges *bool `json:"batchChanges,omitempty"`
     BranchFilters *[]string `json:"branchFilters,omitempty"`
@@ -1313,6 +1329,14 @@ var DeleteOptionsValues = deleteOptionsValuesType{
     All: "all",
 }
 
+// Represents a demand used by a definition or build.
+type Demand struct {
+    // The name of the capability referenced by the demand.
+    Name *string `json:"name,omitempty"`
+    // The demanded value.
+    Value *string `json:"value,omitempty"`
+}
+
 // Represents a dependency.
 type Dependency struct {
     // The event. The dependency is satisfied when the referenced object emits this event.
@@ -1346,6 +1370,8 @@ type DeploymentTest struct {
 
 // Represents a build process supported by the build definition designer.
 type DesignerProcess struct {
+    // The type of the process.
+    Type *int `json:"type,omitempty"`
     Phases *[]Phase `json:"phases,omitempty"`
     // The target for the build process.
     Target *DesignerProcessTarget `json:"target,omitempty"`
@@ -1358,6 +1384,8 @@ type DesignerProcessTarget struct {
 }
 
 type DockerProcess struct {
+    // The type of the process.
+    Type *int `json:"type,omitempty"`
     Target *DockerProcessTarget `json:"target,omitempty"`
 }
 
@@ -1413,6 +1441,8 @@ type Forks struct {
 
 // Represents a gated check-in trigger.
 type GatedCheckInTrigger struct {
+    // The type of the trigger.
+    TriggerType *DefinitionTriggerType `json:"triggerType,omitempty"`
     PathFilters *[]string `json:"pathFilters,omitempty"`
     // Indicates whether CI triggers should run after the gated check-in succeeds.
     RunContinuousIntegration *bool `json:"runContinuousIntegration,omitempty"`
@@ -1477,6 +1507,8 @@ var IssueTypeValues = issueTypeValuesType{
 }
 
 type JustInTimeProcess struct {
+    // The type of the process.
+    Type *int `json:"type,omitempty"`
 }
 
 // Represents an entry in a workspace mapping.
@@ -1619,6 +1651,8 @@ type PullRequest struct {
 
 // Represents a pull request trigger.
 type PullRequestTrigger struct {
+    // The type of the trigger.
+    TriggerType *DefinitionTriggerType `json:"triggerType,omitempty"`
     // Indicates if an update to a PR should delete current in-progress builds.
     AutoCancel *bool `json:"autoCancel,omitempty"`
     BranchFilters *[]string `json:"branchFilters,omitempty"`
@@ -1826,6 +1860,8 @@ var ScheduleDaysValues = scheduleDaysValuesType{
 
 // Represents a schedule trigger.
 type ScheduleTrigger struct {
+    // The type of the trigger.
+    TriggerType *DefinitionTriggerType `json:"triggerType,omitempty"`
     Schedules *[]Schedule `json:"schedules,omitempty"`
 }
 
@@ -2397,6 +2433,8 @@ type XamlDefinitionReference struct {
 
 // Represents a YAML process.
 type YamlProcess struct {
+    // The type of the process.
+    Type *int `json:"type,omitempty"`
     Errors *[]string `json:"errors,omitempty"`
     // The resources used by the build definition.
     Resources *BuildProcessResources `json:"resources,omitempty"`

@@ -15,6 +15,7 @@ import (
     "github.com/microsoft/azure-devops-go-api/azuredevops/v6/graph"
     "github.com/microsoft/azure-devops-go-api/azuredevops/v6/licensing"
     "github.com/microsoft/azure-devops-go-api/azuredevops/v6/licensingrule"
+    "github.com/microsoft/azure-devops-go-api/azuredevops/v6/operations"
 )
 
 type BaseOperationResult struct {
@@ -91,6 +92,14 @@ type GroupEntitlement struct {
 }
 
 type GroupEntitlementOperationReference struct {
+    // Unique identifier for the operation.
+    Id *uuid.UUID `json:"id,omitempty"`
+    // Unique identifier for the plugin.
+    PluginId *uuid.UUID `json:"pluginId,omitempty"`
+    // The current status of the operation.
+    Status *operations.OperationStatus `json:"status,omitempty"`
+    // URL to get the full operation object.
+    Url *string `json:"url,omitempty"`
     // Operation completed with success or failure.
     Completed *bool `json:"completed,omitempty"`
     // True if all operations were successful.
@@ -188,6 +197,14 @@ type MemberEntitlement struct {
 }
 
 type MemberEntitlementOperationReference struct {
+    // Unique identifier for the operation.
+    Id *uuid.UUID `json:"id,omitempty"`
+    // Unique identifier for the plugin.
+    PluginId *uuid.UUID `json:"pluginId,omitempty"`
+    // The current status of the operation.
+    Status *operations.OperationStatus `json:"status,omitempty"`
+    // URL to get the full operation object.
+    Url *string `json:"url,omitempty"`
     // Operation completed with success or failure
     Completed *bool `json:"completed,omitempty"`
     // True if all operations were successful
@@ -338,6 +355,14 @@ type UserEntitlement struct {
 }
 
 type UserEntitlementOperationReference struct {
+    // Unique identifier for the operation.
+    Id *uuid.UUID `json:"id,omitempty"`
+    // Unique identifier for the plugin.
+    PluginId *uuid.UUID `json:"pluginId,omitempty"`
+    // The current status of the operation.
+    Status *operations.OperationStatus `json:"status,omitempty"`
+    // URL to get the full operation object.
+    Url *string `json:"url,omitempty"`
     // Operation completed with success or failure.
     Completed *bool `json:"completed,omitempty"`
     // True if all operations were successful.

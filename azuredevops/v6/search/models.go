@@ -27,10 +27,26 @@ type BoardResult struct {
 
 // Defines a Board search request.
 type BoardSearchRequest struct {
+    // Filters to be applied. Set it to null if there are no filters to be applied.
+    Filters *map[string][]string `json:"filters,omitempty"`
+    // The search text.
+    SearchText *string `json:"searchText,omitempty"`
+    // Options for sorting search results. If set to null, the results will be returned sorted by relevance. If more than one sort option is provided, the results are sorted in the order specified in the OrderBy.
+    OrderBy *[]searchshared.SortOption `json:"$orderBy,omitempty"`
+    // Number of results to be skipped.
+    Skip *int `json:"$skip,omitempty"`
+    // Number of results to be returned.
+    Top *int `json:"$top,omitempty"`
+    // Flag to opt for faceting in the result. Default behavior is false.
+    IncludeFacets *bool `json:"includeFacets,omitempty"`
 }
 
 // Defines a Board search response item.
 type BoardSearchResponse struct {
+    // A dictionary storing an array of <code>Filter</code> object against each facet.
+    Facets *map[string][]searchshared.Filter `json:"facets,omitempty"`
+    // Numeric code indicating any additional information: 0 - Ok, 1 - Account is being reindexed, 2 - Account indexing has not started, 3 - Invalid Request, 4 - Prefix wildcard query not supported, 5 - MultiWords with code facet not supported, 6 - Account is being onboarded, 7 - Account is being onboarded or reindexed, 8 - Top value trimmed to maxresult allowed 9 - Branches are being indexed, 10 - Faceting not enabled, 11 - Work items not accessible, 19 - Phrase queries with code type filters not supported, 20 - Wildcard queries with code type filters not supported. Any other info code is used for internal purpose.
+    InfoCode *int `json:"infoCode,omitempty"`
     // Total number of matched Board documents.
     Count *int `json:"count,omitempty"`
     // List of top matched Board documents.
@@ -65,12 +81,28 @@ type CodeResult struct {
 
 // Defines a code search request.
 type CodeSearchRequest struct {
+    // Filters to be applied. Set it to null if there are no filters to be applied.
+    Filters *map[string][]string `json:"filters,omitempty"`
+    // The search text.
+    SearchText *string `json:"searchText,omitempty"`
+    // Options for sorting search results. If set to null, the results will be returned sorted by relevance. If more than one sort option is provided, the results are sorted in the order specified in the OrderBy.
+    OrderBy *[]searchshared.SortOption `json:"$orderBy,omitempty"`
+    // Number of results to be skipped.
+    Skip *int `json:"$skip,omitempty"`
+    // Number of results to be returned.
+    Top *int `json:"$top,omitempty"`
+    // Flag to opt for faceting in the result. Default behavior is false.
+    IncludeFacets *bool `json:"includeFacets,omitempty"`
     // Flag to opt for including matched code snippet in the result. Default behavior is false.
     IncludeSnippet *bool `json:"includeSnippet,omitempty"`
 }
 
 // Defines a code search response item.
 type CodeSearchResponse struct {
+    // A dictionary storing an array of <code>Filter</code> object against each facet.
+    Facets *map[string][]searchshared.Filter `json:"facets,omitempty"`
+    // Numeric code indicating any additional information: 0 - Ok, 1 - Account is being reindexed, 2 - Account indexing has not started, 3 - Invalid Request, 4 - Prefix wildcard query not supported, 5 - MultiWords with code facet not supported, 6 - Account is being onboarded, 7 - Account is being onboarded or reindexed, 8 - Top value trimmed to maxresult allowed 9 - Branches are being indexed, 10 - Faceting not enabled, 11 - Work items not accessible, 19 - Phrase queries with code type filters not supported, 20 - Wildcard queries with code type filters not supported. Any other info code is used for internal purpose.
+    InfoCode *int `json:"infoCode,omitempty"`
     // Total number of matched files.
     Count *int `json:"count,omitempty"`
     // List of matched files.
@@ -151,10 +183,26 @@ type WorkItemResult struct {
 
 // Defines a work item search request.
 type WorkItemSearchRequest struct {
+    // Filters to be applied. Set it to null if there are no filters to be applied.
+    Filters *map[string][]string `json:"filters,omitempty"`
+    // The search text.
+    SearchText *string `json:"searchText,omitempty"`
+    // Options for sorting search results. If set to null, the results will be returned sorted by relevance. If more than one sort option is provided, the results are sorted in the order specified in the OrderBy.
+    OrderBy *[]searchshared.SortOption `json:"$orderBy,omitempty"`
+    // Number of results to be skipped.
+    Skip *int `json:"$skip,omitempty"`
+    // Number of results to be returned.
+    Top *int `json:"$top,omitempty"`
+    // Flag to opt for faceting in the result. Default behavior is false.
+    IncludeFacets *bool `json:"includeFacets,omitempty"`
 }
 
 // Defines a response item that is returned for a work item search request.
 type WorkItemSearchResponse struct {
+    // A dictionary storing an array of <code>Filter</code> object against each facet.
+    Facets *map[string][]searchshared.Filter `json:"facets,omitempty"`
+    // Numeric code indicating any additional information: 0 - Ok, 1 - Account is being reindexed, 2 - Account indexing has not started, 3 - Invalid Request, 4 - Prefix wildcard query not supported, 5 - MultiWords with code facet not supported, 6 - Account is being onboarded, 7 - Account is being onboarded or reindexed, 8 - Top value trimmed to maxresult allowed 9 - Branches are being indexed, 10 - Faceting not enabled, 11 - Work items not accessible, 19 - Phrase queries with code type filters not supported, 20 - Wildcard queries with code type filters not supported. Any other info code is used for internal purpose.
+    InfoCode *int `json:"infoCode,omitempty"`
     // Total number of matched work items.
     Count *int `json:"count,omitempty"`
     // List of top matched work items.
