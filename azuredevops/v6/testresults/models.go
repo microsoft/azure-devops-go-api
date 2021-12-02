@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 // --------------------------------------------------------------------------------------------
@@ -8,9 +8,8 @@
 
 package testresults
 
-
 type Attachment struct {
-    CompressionType *string `json:"compressionType,omitempty"`
-    FileName *string `json:"fileName,omitempty"`
-    Stream interface{} `json:"stream,omitempty"`
+	CompressionType *string     `json:"compressionType,omitempty"`
+	FileName        *string     `json:"fileName,omitempty"`
+	Stream          interface{} `json:"stream,omitempty"`
 }

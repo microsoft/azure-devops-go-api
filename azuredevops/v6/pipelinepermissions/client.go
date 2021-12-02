@@ -59,7 +59,7 @@ func (client *ClientImpl) GetPipelinePermissionsForResource(ctx context.Context,
 	routeValues["resourceId"] = *args.ResourceId
 
 	locationId, _ := uuid.Parse("b5b9a4a4-e6cd-4096-853c-ab7d8b0c4eb2")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "5.1-preview.1", routeValues, nil, nil, "", "application/json", nil)
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "6.0-preview.1", routeValues, nil, nil, "", "application/json", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +103,7 @@ func (client *ClientImpl) UpdatePipelinePermisionsForResource(ctx context.Contex
 		return nil, marshalErr
 	}
 	locationId, _ := uuid.Parse("b5b9a4a4-e6cd-4096-853c-ab7d8b0c4eb2")
-	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "6.0-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -141,7 +141,7 @@ func (client *ClientImpl) UpdatePipelinePermisionsForResources(ctx context.Conte
 		return nil, marshalErr
 	}
 	locationId, _ := uuid.Parse("b5b9a4a4-e6cd-4096-853c-ab7d8b0c4eb2")
-	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "5.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	resp, err := client.Client.Send(ctx, http.MethodPatch, locationId, "6.0-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
 	if err != nil {
 		return nil, err
 	}
