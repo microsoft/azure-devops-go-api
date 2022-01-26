@@ -121,10 +121,10 @@ func (client *ClientImpl) DownloadLog(ctx context.Context, args DownloadLogArgs)
 	}
 	queryParams.Add("format", *args.Format)
 	if args.StartTime != nil {
-		queryParams.Add("startTime", (*args.StartTime).String())
+		queryParams.Add("startTime", (*args.StartTime).AsQueryParameter())
 	}
 	if args.EndTime != nil {
-		queryParams.Add("endTime", (*args.EndTime).String())
+		queryParams.Add("endTime", (*args.EndTime).AsQueryParameter())
 	}
 	locationId, _ := uuid.Parse("b7b98a76-04e8-4f4d-ac72-9d46492caaac")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "6.0-preview.1", nil, queryParams, nil, "", "application/octet-stream", nil)
@@ -189,10 +189,10 @@ type QueryAllStreamsArgs struct {
 func (client *ClientImpl) QueryLog(ctx context.Context, args QueryLogArgs) (*AuditLogQueryResult, error) {
 	queryParams := url.Values{}
 	if args.StartTime != nil {
-		queryParams.Add("startTime", (*args.StartTime).String())
+		queryParams.Add("startTime", (*args.StartTime).AsQueryParameter())
 	}
 	if args.EndTime != nil {
-		queryParams.Add("endTime", (*args.EndTime).String())
+		queryParams.Add("endTime", (*args.EndTime).AsQueryParameter())
 	}
 	if args.BatchSize != nil {
 		queryParams.Add("batchSize", strconv.Itoa(*args.BatchSize))

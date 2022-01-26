@@ -289,10 +289,10 @@ func (client *ClientImpl) ListLogs(ctx context.Context, args ListLogsArgs) (*[]I
 
 	queryParams := url.Values{}
 	if args.StartTime != nil {
-		queryParams.Add("startTime", (*args.StartTime).String())
+		queryParams.Add("startTime", (*args.StartTime).AsQueryParameter())
 	}
 	if args.EndTime != nil {
-		queryParams.Add("endTime", (*args.EndTime).String())
+		queryParams.Add("endTime", (*args.EndTime).AsQueryParameter())
 	}
 	locationId, _ := uuid.Parse("991842f3-eb16-4aea-ac81-81353ef2b75c")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "6.0", routeValues, queryParams, nil, "", "application/json", nil)
