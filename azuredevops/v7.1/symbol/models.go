@@ -11,7 +11,6 @@ package symbol
 import (
     "github.com/google/uuid"
     "github.com/microsoft/azure-devops-go-api/azuredevops/v7.1"
-    "github.com/microsoft/azure-devops-go-api/azuredevops/v7.1/IDomainId"
     "github.com/microsoft/azure-devops-go-api/azuredevops/v7.1/symbolcommon"
 )
 
@@ -36,7 +35,7 @@ type DebugEntry struct {
     // A key the client (debugger, for example) uses to find the debug entry. Note it is not unique for each different symbol file as it does not distinguish between those which only differ by information level.
     ClientKey *string `json:"clientKey,omitempty"`
     // The Domain Id where this debugEntry lives. This property should not be null.
-    DomainId *IDomainId.IDomainId `json:"domainId,omitempty"`
+    DomainId *string `json:"domainId,omitempty"`
     // The information level this debug entry contains.
     InformationLevel *symbolcommon.DebugInformationLevel `json:"informationLevel,omitempty"`
     // The identifier of symbol request to which this debug entry belongs.
@@ -126,7 +125,7 @@ type Request struct {
     // An optional human-facing description.
     Description *string `json:"description,omitempty"`
     // The Domain Id where this request lives. This property should not be null.
-    DomainId *IDomainId.IDomainId `json:"domainId,omitempty"`
+    DomainId *string `json:"domainId,omitempty"`
     // An optional expiration date for the request. The request will become inaccessible and get deleted after the date, regardless of its status.  On an HTTP POST, if expiration date is null/missing, the server will assign a default expiration data (30 days unless overwridden in the registry at the account level). On PATCH, if expiration date is null/missing, the behavior is to not change whatever the request's current expiration date is.
     ExpirationDate *azuredevops.Time `json:"expirationDate,omitempty"`
     // Indicates if request should be chunk dedup

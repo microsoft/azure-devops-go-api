@@ -13,6 +13,7 @@ import (
     "github.com/microsoft/azure-devops-go-api/azuredevops/v7.1"
     "github.com/microsoft/azure-devops-go-api/azuredevops/v7.1/forminput"
     "github.com/microsoft/azure-devops-go-api/azuredevops/v7.1/webapi"
+    "github.com/microsoft/azure-devops-go-api/azuredevops/v7.1/distributedtaskcommon"
 )
 
 type AadLoginPromptOption string
