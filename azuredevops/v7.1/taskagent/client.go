@@ -35,8 +35,10 @@ type Client interface {
 	AddDeploymentGroup(context.Context, AddDeploymentGroupArgs) (*DeploymentGroup, error)
 	// [Preview API] Create an environment.
 	AddEnvironment(context.Context, AddEnvironmentArgs) (*EnvironmentInstance, error)
-	// [Preview API]
-	AddKubernetesResource(context.Context, AddKubernetesResourceArgs) (*KubernetesResource, error)
+	// [Preview API] Add new kubernetes resource
+	AddKubernetesResourceNewEndpoint(ctx context.Context, args AddKubernetesResourceArgsNewEndpoint) (*KubernetesResource, error)
+	// [Preview API] Add existing kubernetes resource
+	AddKubernetesResourcExistingEndpoint(ctx context.Context, args AddKubernetesResourceArgsExistingEndpoint) (*KubernetesResource, error)
 	// [Preview API] Create a task group.
 	AddTaskGroup(context.Context, AddTaskGroupArgs) (*TaskGroup, error)
 	// [Preview API] Add a variable group.
@@ -345,7 +347,7 @@ type AddEnvironmentArgs struct {
 }
 
 // [Preview API]
-func (client *ClientImpl) AddKubernetesResource(ctx context.Context, args AddKubernetesResourceArgs) (*KubernetesResource, error) {
+func (client *ClientImpl) AddKubernetesResourceNewEndpoint(ctx context.Context, args AddKubernetesResourceArgsNewEndpoint) (*KubernetesResource, error) {
 	if args.CreateParameters == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CreateParameters"}
 	}
@@ -374,10 +376,50 @@ func (client *ClientImpl) AddKubernetesResource(ctx context.Context, args AddKub
 	return &responseValue, err
 }
 
-// Arguments for the AddKubernetesResource function
-type AddKubernetesResourceArgs struct {
+// [Preview API]
+func (client *ClientImpl) AddKubernetesResourcExistingEndpoint(ctx context.Context, args AddKubernetesResourceArgsExistingEndpoint) (*KubernetesResource, error) {
+	if args.CreateParameters == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CreateParameters"}
+	}
+	routeValues := make(map[string]string)
+	if args.Project == nil || *args.Project == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
+	}
+	routeValues["project"] = *args.Project
+	if args.EnvironmentId == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.EnvironmentId"}
+	}
+	routeValues["environmentId"] = strconv.Itoa(*args.EnvironmentId)
+
+	body, marshalErr := json.Marshal(*args.CreateParameters)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("73fba52f-15ab-42b3-a538-ce67a9223a04")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "7.1-preview.1", routeValues, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue KubernetesResource
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the AddKubernetesResourceNewEndpoint function
+type AddKubernetesResourceArgsNewEndpoint struct {
 	// (required)
-	CreateParameters *KubernetesResourceCreateParameters
+	CreateParameters *KubernetesResourceCreateParametersNewEndpoint
+	// (required) Project ID or project name
+	Project *string
+	// (required)
+	EnvironmentId *int
+}
+
+// Arguments for the AddKubernetesResourceExistingEndpoint function
+type AddKubernetesResourceArgsExistingEndpoint struct {
+	// (required)
+	CreateParameters *KubernetesResourceCreateParametersExistingEndpoint
 	// (required) Project ID or project name
 	Project *string
 	// (required)
