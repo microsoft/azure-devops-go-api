@@ -7,8 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: [ '1.13', '1.14', '1.17' ]
-        dir: [ './azuredevops', './azuredevops/v6']
+        go: [ '1.13', '1.14', '1.18' ]
+        dir: [ './azuredevops', './azuredevops/v6', './azuredevops/v7.1']
     steps:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
