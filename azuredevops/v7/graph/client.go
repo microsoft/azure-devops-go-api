@@ -28,7 +28,11 @@ type Client interface {
 	// [Preview API] Create a new membership between a container and subject.
 	AddMembership(context.Context, AddMembershipArgs) (*GraphMembership, error)
 	// [Preview API] Create a new Azure DevOps group or materialize an existing AAD group.
-	CreateGroup(context.Context, CreateGroupArgs) (*GraphGroup, error)
+	CreateGroupOriginId(context.Context, CreateGroupOriginIdArgs) (*GraphGroup, error)
+	// [Preview API] Create a new Azure DevOps group or materialize an existing AAD group.
+	CreateGroupMailAddress(context.Context, CreateGroupMailAddressArgs) (*GraphGroup, error)
+	// [Preview API] Create a new Azure DevOps group or materialize an existing AAD group.
+	CreateGroupVsts(context.Context, CreateGroupVstsArgs) (*GraphGroup, error)
 	// [Preview API] Materialize an existing AAD service principal into the ADO account.
 	CreateServicePrincipal(context.Context, CreateServicePrincipalArgs) (*GraphServicePrincipal, error)
 	// [Preview API] Materialize an existing AAD or MSA user into the ADO account.
@@ -135,7 +139,7 @@ type AddMembershipArgs struct {
 }
 
 // [Preview API] Create a new Azure DevOps group or materialize an existing AAD group.
-func (client *ClientImpl) CreateGroup(ctx context.Context, args CreateGroupArgs) (*GraphGroup, error) {
+func (client *ClientImpl) CreateGroupOriginId(ctx context.Context, args CreateGroupOriginIdArgs) (*GraphGroup, error) {
 	if args.CreationContext == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CreationContext"}
 	}
@@ -162,10 +166,86 @@ func (client *ClientImpl) CreateGroup(ctx context.Context, args CreateGroupArgs)
 	return &responseValue, err
 }
 
-// Arguments for the CreateGroup function
-type CreateGroupArgs struct {
+// [Preview API] Create a new Azure DevOps group or materialize an existing AAD group.
+func (client *ClientImpl) CreateGroupMailAddress(ctx context.Context, args CreateGroupMailAddressArgs) (*GraphGroup, error) {
+	if args.CreationContext == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CreationContext"}
+	}
+	queryParams := url.Values{}
+	if args.ScopeDescriptor != nil {
+		queryParams.Add("scopeDescriptor", *args.ScopeDescriptor)
+	}
+	if args.GroupDescriptors != nil {
+		listAsString := strings.Join((*args.GroupDescriptors)[:], ",")
+		queryParams.Add("groupDescriptors", listAsString)
+	}
+	body, marshalErr := json.Marshal(*args.CreationContext)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("ebbe6af8-0b91-4c13-8cf1-777c14858188")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "7.1-preview.1", nil, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GraphGroup
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// [Preview API] Create a new Azure DevOps group or materialize an existing AAD group.
+func (client *ClientImpl) CreateGroupVsts(ctx context.Context, args CreateGroupVstsArgs) (*GraphGroup, error) {
+	if args.CreationContext == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CreationContext"}
+	}
+	queryParams := url.Values{}
+	if args.ScopeDescriptor != nil {
+		queryParams.Add("scopeDescriptor", *args.ScopeDescriptor)
+	}
+	if args.GroupDescriptors != nil {
+		listAsString := strings.Join((*args.GroupDescriptors)[:], ",")
+		queryParams.Add("groupDescriptors", listAsString)
+	}
+	body, marshalErr := json.Marshal(*args.CreationContext)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("ebbe6af8-0b91-4c13-8cf1-777c14858188")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "7.1-preview.1", nil, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GraphGroup
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// Arguments for the CreateGroupOriginId function
+type CreateGroupOriginIdArgs struct {
 	// (required) The subset of the full graph group used to uniquely find the graph subject in an external provider.
-	CreationContext *GraphGroupCreationContext
+	CreationContext *GraphGroupOriginIdCreationContext
+	// (optional) A descriptor referencing the scope (collection, project) in which the group should be created. If omitted, will be created in the scope of the enclosing account or organization. Valid only for VSTS groups.
+	ScopeDescriptor *string
+	// (optional) A comma separated list of descriptors referencing groups you want the graph group to join
+	GroupDescriptors *[]string
+}
+
+// Arguments for the CreateGroupMailAddress function
+type CreateGroupMailAddressArgs struct {
+	// (required) The subset of the full graph group used to uniquely find the graph subject in an external provider.
+	CreationContext *GraphGroupMailAddressCreationContext
+	// (optional) A descriptor referencing the scope (collection, project) in which the group should be created. If omitted, will be created in the scope of the enclosing account or organization. Valid only for VSTS groups.
+	ScopeDescriptor *string
+	// (optional) A comma separated list of descriptors referencing groups you want the graph group to join
+	GroupDescriptors *[]string
+}
+
+// Arguments for the CreateGroupVsts function
+type CreateGroupVstsArgs struct {
+	// (required) The subset of the full graph group used to uniquely find the graph subject in an external provider.
+	CreationContext *GraphGroupVstsCreationContext
 	// (optional) A descriptor referencing the scope (collection, project) in which the group should be created. If omitted, will be created in the scope of the enclosing account or organization. Valid only for VSTS groups.
 	ScopeDescriptor *string
 	// (optional) A comma separated list of descriptors referencing groups you want the graph group to join
