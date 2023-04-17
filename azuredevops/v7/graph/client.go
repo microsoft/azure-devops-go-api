@@ -32,7 +32,11 @@ type Client interface {
 	// [Preview API] Materialize an existing AAD service principal into the ADO account.
 	CreateServicePrincipal(context.Context, CreateServicePrincipalArgs) (*GraphServicePrincipal, error)
 	// [Preview API] Materialize an existing AAD or MSA user into the ADO account.
-	CreateUser(context.Context, CreateUserArgs) (*GraphUser, error)
+	CreateUserOriginId(ctx context.Context, args CreateUserOriginIdArgs) (*GraphUser, error)
+	// [Preview API] Materialize an existing AAD or MSA user into the ADO account.
+	CreateUserMailAddress(ctx context.Context, args CreateUserMailAddressArgs) (*GraphUser, error)
+	// [Preview API] Materialize an existing AAD or MSA user into the ADO account.
+	CreateUserUserPrincipalName(ctx context.Context, args CreateUserUserPrincipalNameArgs) (*GraphUser, error)
 	// [Preview API]
 	DeleteAvatar(context.Context, DeleteAvatarArgs) error
 	// [Preview API] Removes an Azure DevOps group from all of its parent groups.
@@ -202,7 +206,7 @@ type CreateServicePrincipalArgs struct {
 }
 
 // [Preview API] Materialize an existing AAD or MSA user into the ADO account.
-func (client *ClientImpl) CreateUser(ctx context.Context, args CreateUserArgs) (*GraphUser, error) {
+func (client *ClientImpl) CreateUserOriginId(ctx context.Context, args CreateUserOriginIdArgs) (*GraphUser, error) {
 	if args.CreationContext == nil {
 		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CreationContext"}
 	}
@@ -226,13 +230,81 @@ func (client *ClientImpl) CreateUser(ctx context.Context, args CreateUserArgs) (
 	return &responseValue, err
 }
 
-// Arguments for the CreateUser function
-type CreateUserArgs struct {
+// [Preview API] Materialize an existing AAD or MSA user into the ADO account.
+func (client *ClientImpl) CreateUserUserPrincipalName(ctx context.Context, args CreateUserUserPrincipalNameArgs) (*GraphUser, error) {
+	if args.CreationContext == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CreationContext"}
+	}
+	queryParams := url.Values{}
+	if args.GroupDescriptors != nil {
+		listAsString := strings.Join((*args.GroupDescriptors)[:], ",")
+		queryParams.Add("groupDescriptors", listAsString)
+	}
+	body, marshalErr := json.Marshal(*args.CreationContext)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("005e26ec-6b77-4e4f-a986-b3827bf241f5")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "7.1-preview.1", nil, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GraphUser
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+// [Preview API] Materialize an existing AAD or MSA user into the ADO account.
+func (client *ClientImpl) CreateUserMailAddress(ctx context.Context, args CreateUserMailAddressArgs) (*GraphUser, error) {
+	if args.CreationContext == nil {
+		return nil, &azuredevops.ArgumentNilError{ArgumentName: "args.CreationContext"}
+	}
+	queryParams := url.Values{}
+	if args.GroupDescriptors != nil {
+		listAsString := strings.Join((*args.GroupDescriptors)[:], ",")
+		queryParams.Add("groupDescriptors", listAsString)
+	}
+	body, marshalErr := json.Marshal(*args.CreationContext)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+	locationId, _ := uuid.Parse("005e26ec-6b77-4e4f-a986-b3827bf241f5")
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "7.1-preview.1", nil, queryParams, bytes.NewReader(body), "application/json", "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var responseValue GraphUser
+	err = client.Client.UnmarshalBody(resp, &responseValue)
+	return &responseValue, err
+}
+
+
+// Arguments for the CreateUserOriginId function
+type CreateUserOriginIdArgs struct {
 	// (required) The subset of the full graph user used to uniquely find the graph subject in an external provider.
-	CreationContext *GraphUserCreationContext
+	CreationContext *GraphUserOriginIdCreationContext
 	// (optional) A comma separated list of descriptors of groups you want the graph user to join
 	GroupDescriptors *[]string
 }
+
+// Arguments for the CreateUserPrincipalName function
+type CreateUserUserPrincipalNameArgs struct {
+	// (required) The subset of the full graph user used to uniquely find the graph subject in an external provider.
+	CreationContext *GraphUserPrincipalNameCreationContext
+	// (optional) A comma separated list of descriptors of groups you want the graph user to join
+	GroupDescriptors *[]string
+}
+
+// Arguments for the CreateUserMailAddress function
+type CreateUserMailAddressArgs struct {
+	// (required) The subset of the full graph user used to uniquely find the graph subject in an external provider.
+	CreationContext *GraphUserMailAddressCreationContext
+	// (optional) A comma separated list of descriptors of groups you want the graph user to join
+	GroupDescriptors *[]string
+}
+
 
 // [Preview API]
 func (client *ClientImpl) DeleteAvatar(ctx context.Context, args DeleteAvatarArgs) error {
