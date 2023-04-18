@@ -13,14 +13,16 @@ package main
 
 import (
 	"context"
-	"github.com/microsoft/azure-devops-go-api/azuredevops"
-	"github.com/microsoft/azure-devops-go-api/azuredevops/core"
 	"log"
+	"strconv"
+
+	"github.com/microsoft/azure-devops-go-api/azuredevops/v7"
+	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/core"
 )
 
 func main() {
-	organizationUrl := "https://dev.azure.com/myorg"  // todo: replace value with your organization url
-	personalAccessToken := "XXXXXXXXXXXXXXXXXXXXXXX"  // todo: replace value with your PAT
+	organizationUrl := "https://dev.azure.com/myorg" // todo: replace value with your organization url
+	personalAccessToken := "XXXXXXXXXXXXXXXXXXXXXXX" // todo: replace value with your PAT
 
 	// Create a connection to your organization
 	connection := azuredevops.NewPatConnection(organizationUrl, personalAccessToken)
@@ -49,9 +51,15 @@ func main() {
 
 		// if continuationToken has a value, then there is at least one more page of projects to get
 		if responseValue.ContinuationToken != "" {
+
+			continuationToken, err := strconv.Atoi(responseValue.ContinuationToken)
+			if err != nil {
+				log.Fatal(err)
+			}
+
 			// Get next page of team projects
 			projectArgs := core.GetProjectsArgs{
-				ContinuationToken: &responseValue.ContinuationToken,
+				ContinuationToken: &continuationToken,
 			}
 			responseValue, err = coreClient.GetProjects(ctx, projectArgs)
 			if err != nil {
