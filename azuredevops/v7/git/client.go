@@ -3973,7 +3973,7 @@ func (client *ClientImpl) GetPullRequestProperties(ctx context.Context, args Get
 	}
 
 	var responseValue interface{}
-	err = client.Client.UnmarshalCollectionBody(resp, &responseValue)
+	err = client.Client.UnmarshalBody(resp, &responseValue)
 	return responseValue, err
 }
 
