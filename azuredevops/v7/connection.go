@@ -7,12 +7,18 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/base64"
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
+	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
+	"log"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/google/uuid"
 )
+
+const azureManagementUrl = "https://management.core.windows.net/"
 
 // Creates a new Azure DevOps connection instance using a personal access token.
 func NewPatConnection(organizationUrl string, personalAccessToken string) *Connection {
@@ -31,6 +37,106 @@ func NewAnonymousConnection(organizationUrl string) *Connection {
 		BaseUrl:                 organizationUrl,
 		SuppressFedAuthRedirect: true,
 	}
+}
+
+// NewOAuthGenericConnection Creates a new Azure DevOps connection instance using an OAuth token.
+func NewOAuthGenericConnection(organizationUrl string, OAuthToken string) *Connection {
+	authorizationString := CreateOAuthHeaderValue(OAuthToken)
+	organizationUrl = normalizeUrl(organizationUrl)
+	return &Connection{
+		AuthorizationString:     authorizationString,
+		BaseUrl:                 organizationUrl,
+		SuppressFedAuthRedirect: true,
+	}
+}
+
+func NewOAuthConnectionDefault(organizationUrl string, defaultOpts TokenOptions) *Connection {
+	scopes := []string{azureManagementUrl} // This scope is required to get an Azure Ad Access Token, so you can log in to Azure DevOps
+	defaultCred, err := azidentity.NewDefaultAzureCredential(defaultOpts.defaultOpts)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var adToken, _ = defaultCred.GetToken(context.Background(), policy.TokenRequestOptions{Scopes: scopes})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	authorizationString := CreateOAuthHeaderValue(adToken.Token)
+	organizationUrl = normalizeUrl(organizationUrl)
+	return &Connection{
+		AuthorizationString:     authorizationString,
+		BaseUrl:                 organizationUrl,
+		SuppressFedAuthRedirect: true,
+	}
+}
+
+func NewOAuthConnectionChainToken(organizationUrl string, tokenOpts TokenOptions) *Connection {
+
+	OAuthToken := requestChainAccessToken(tokenOpts)
+	authorizationString := CreateOAuthHeaderValue(OAuthToken.Token)
+	organizationUrl = normalizeUrl(organizationUrl)
+	return &Connection{
+		AuthorizationString:     authorizationString,
+		BaseUrl:                 organizationUrl,
+		SuppressFedAuthRedirect: true,
+	}
+}
+
+func CreateOAuthHeaderValue(token string) string {
+	return "Bearer " + token
+}
+
+// requestAzureChainCredential Create an Azure AD Access Token using the chained credential azure sdk returns a chained credential
+func requestAzureChainCredential(opts TokenOptions) *azidentity.ChainedTokenCredential {
+
+	azCLICred, err := azidentity.NewAzureCLICredential(opts.azCliOpts)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	mangedCred, err := azidentity.NewManagedIdentityCredential(opts.managedOpts)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// you will need the AZURE_TENANT_ID, AZURE_CLIENT_ID, AZURE_CLIENT_SECRET environment variables set for this to work correctly
+	environmentCred, err := azidentity.NewEnvironmentCredential(opts.envOpts)
+
+	chainCred, err := azidentity.NewChainedTokenCredential([]azcore.TokenCredential{azCLICred, mangedCred, environmentCred}, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return chainCred
+
+}
+
+// RequestChainAccessToken Creates an Azure AD Access Token using the chained credential azure sdk
+func requestChainAccessToken(tokenOptions TokenOptions) azcore.AccessToken {
+
+	chainCred := requestAzureChainCredential(tokenOptions)
+
+	// Scopes can only have one element in the array, so we are hard coding the scope
+	scopes := []string{azureManagementUrl} // This scope is required to get an Azure Ad Access Token, so you can log in to Azure DevOps
+
+	//var adToken, err = chainCred.GetToken(context.Background(), policy.TokenRequestOptions{Scopes: scopes})
+	var adToken, err = chainCred.GetToken(context.Background(), policy.TokenRequestOptions{Scopes: scopes})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return adToken
+}
+
+type TokenOptions struct {
+	azCliOpts   *azidentity.AzureCLICredentialOptions
+	managedOpts *azidentity.ManagedIdentityCredentialOptions
+	envOpts     *azidentity.EnvironmentCredentialOptions
+	defaultOpts *azidentity.DefaultAzureCredentialOptions
+}
+
+func NewTokenOptions() *TokenOptions {
+	return &TokenOptions{envOpts: nil, managedOpts: nil, azCliOpts: nil}
 }
 
 type Connection struct {

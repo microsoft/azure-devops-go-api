@@ -3,9 +3,13 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/microsoft/azure-devops-go-api)](https://goreportcard.com/report/github.com/microsoft/azure-devops-go-api)
 
 # Azure DevOps Go API
+
 This repository contains Go APIs for interacting with and managing Azure DevOps.
 
 ## Get started
+
+### Authenticate Using Azure PAT
+
 To use the API, establish a connection using a [personal access token](https://docs.microsoft.com/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) and the URL to your Azure DevOps organization. Then get a client using the connection and make API calls.
 
 ```go
@@ -72,14 +76,119 @@ func main() {
 }
 ```
 
+### Authenticate Using Azure AD Access Tokens (OAuth)
+
+When Authenticating using Azure AD Access Tokens, you can use either a default token credential or a connection chain token credential.
+- [Read more here about using Service Principals and Managed identity to call Azure DevOps](https://learn.microsoft.com/en-us/azure/devops/integrate/get-started/authentication/service-principal-managed-identity?toc=%2Fazure%2Fdevops%2Fmarketplace-extensibility%2Ftoc.json&view=azure-devops)
+
+
+#### Using a default token credential
+```go
+
+ connection := azuredevops.NewOAuthConnectionDefault(organizationUrl, azuredevops.TokenOptions{})
+ ctx := context.Background()
+
+ // Create a client to interact with the Core area
+ coreClient, err := core.NewClient(ctx, connection)
+ if err != nil {
+ log.Fatal(err)
+ }
+ 
+ // The rest of the code below remains the same
+```
+
+
+#### Using a connection chain token credential
+
+```go
+package main
+
+import (
+	"context"
+	"log"
+	"strconv"
+
+	"github.com/microsoft/azure-devops-go-api/azuredevops/v7"
+	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/core"
+)
+
+func main() {
+	organizationUrl := "https://dev.azure.com/MyOrg" // todo: replace value with your organization url
+
+	connection := azuredevops.NewOAuthConnectionChainToken(organizationUrl, azuredevops.TokenOptions{})
+
+
+	ctx := context.Background()
+
+	// Create a client to interact with the Core area
+	coreClient, err := core.NewClient(ctx, connection)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Get first page of the list of team projects for your organization
+	responseValue, err := coreClient.GetProjects(ctx, core.GetProjectsArgs{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	index := 0
+	for responseValue != nil {
+		// Log the page of team project names
+		for _, teamProjectReference := range (*responseValue).Value {
+			log.Printf("Name[%v] = %v", index, *teamProjectReference.Name)
+			index++
+		}
+
+		// if continuationToken has a value, then there is at least one more page of projects to get
+		if responseValue.ContinuationToken != "" {
+
+			continuationToken, err := strconv.Atoi(responseValue.ContinuationToken)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			// Get next page of team projects
+			projectArgs := core.GetProjectsArgs{
+				ContinuationToken: &continuationToken,
+			}
+			responseValue, err = coreClient.GetProjects(ctx, projectArgs)
+			if err != nil {
+				log.Fatal(err)
+			}
+		} else {
+			responseValue = nil
+		}
+	}
+}
+
+```
+
+
+### Authenticate using NewOauthGenericConnection
+
+```go
+
+// if you want to make the http call to get the token yourself, or you want to use a different library to get the token
+connection := azuredevops.NewOAuthGenericConnection(organizationUrl, OAuthToken)
+ctx := context.Background()
+
+// Create a client to interact with the Core area
+coreClient, err := core.NewClient(ctx, connection)
+if err != nil {
+log.Fatal(err)
+}
+// Rest of the code above remains the same
+
+```
+
 ## API documentation
 
 This Go library provides a thin wrapper around the Azure DevOps REST APIs. See the [Azure DevOps REST API reference](https://docs.microsoft.com/en-us/rest/api/azure/devops/?view=azure-devops-rest-5.1) for details on calling different APIs.
 
-
 # Contributing
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+This project welcomes contributions and suggestions. Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
 the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
 
