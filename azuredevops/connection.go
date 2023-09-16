@@ -25,6 +25,17 @@ func NewPatConnection(organizationUrl string, personalAccessToken string) *Conne
 	}
 }
 
+// Creates a new Azure DevOps connection instance using an OAuth token.
+func NewOAuthConnection(organizationUrl string, OAuthToken string) *Connection {
+	authorizationString := CreateOAuthHeaderValue(OAuthToken)
+	organizationUrl = normalizeUrl(organizationUrl)
+	return &Connection{
+		AuthorizationString:     authorizationString,
+		BaseUrl:                 organizationUrl,
+		SuppressFedAuthRedirect: true,
+	}
+}
+
 func NewAnonymousConnection(organizationUrl string) *Connection {
 	organizationUrl = normalizeUrl(organizationUrl)
 	return &Connection{
@@ -50,6 +61,10 @@ type Connection struct {
 func CreateBasicAuthHeaderValue(username, password string) string {
 	auth := username + ":" + password
 	return "Basic " + base64.StdEncoding.EncodeToString([]byte(auth))
+}
+
+func CreateOAuthHeaderValue(token string) string {
+	return "Bearer " + token
 }
 
 func normalizeUrl(url string) string {
