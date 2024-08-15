@@ -12,11 +12,12 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"github.com/google/uuid"
-	"github.com/microsoft/azure-devops-go-api/azuredevops/v7"
 	"net/http"
 	"net/url"
 	"strconv"
+
+	"github.com/google/uuid"
+	"github.com/microsoft/azure-devops-go-api/azuredevops/v7"
 )
 
 var ResourceAreaId, _ = uuid.Parse("55967393-20ef-45c6-a96c-b5d5d5986a9a")
@@ -58,8 +59,9 @@ func (client *ClientImpl) CreatePat(ctx context.Context, args CreatePatArgs) (*P
 	if marshalErr != nil {
 		return nil, marshalErr
 	}
+
 	locationId, _ := uuid.Parse("55967393-20ef-45c6-a96c-b5d5d5986a9a")
-	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "7.2-preview.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	resp, err := client.Client.Send(ctx, http.MethodPost, locationId, "7.1-preview.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +85,7 @@ func (client *ClientImpl) GetPat(ctx context.Context, args GetPatArgs) (*PatToke
 	queryParams := url.Values{}
 	queryParams.Add("authorizationId", (*args.AuthorizationId).String())
 	locationId, _ := uuid.Parse("55967393-20ef-45c6-a96c-b5d5d5986a9a")
-	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "7.2-preview.1", nil, queryParams, nil, "", "application/json", nil)
+	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "7.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +109,7 @@ func (client *ClientImpl) Revoke(ctx context.Context, args RevokeArgs) error {
 	queryParams := url.Values{}
 	queryParams.Add("authorizationId", (*args.AuthorizationId).String())
 	locationId, _ := uuid.Parse("55967393-20ef-45c6-a96c-b5d5d5986a9a")
-	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "7.2-preview.1", nil, queryParams, nil, "", "application/json", nil)
+	_, err := client.Client.Send(ctx, http.MethodDelete, locationId, "7.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
 	if err != nil {
 		return err
 	}
@@ -130,7 +132,7 @@ func (client *ClientImpl) UpdatePat(ctx context.Context, args UpdatePatArgs) (*P
 		return nil, marshalErr
 	}
 	locationId, _ := uuid.Parse("55967393-20ef-45c6-a96c-b5d5d5986a9a")
-	resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "7.2-preview.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
+	resp, err := client.Client.Send(ctx, http.MethodPut, locationId, "7.1-preview.1", nil, nil, bytes.NewReader(body), "application/json", "application/json", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -163,6 +165,7 @@ func (client *ClientImpl) ListPats(ctx context.Context, args ListPatsArgs) (*Pag
 	if args.Top != nil {
 		queryParams.Add("$top", strconv.Itoa(*args.Top))
 	}
+
 	locationId, _ := uuid.Parse("55967393-20ef-45c6-a96c-b5d5d5986a9a")
 	resp, err := client.Client.Send(ctx, http.MethodGet, locationId, "7.1-preview.1", nil, queryParams, nil, "", "application/json", nil)
 	if err != nil {
