@@ -1888,7 +1888,7 @@ func (client *ClientImpl) GetYamlSchema(ctx context.Context, args GetYamlSchemaA
 	}
 
 	var responseValue interface{}
-	err = client.Client.UnmarshalBody(resp, responseValue)
+	err = client.Client.UnmarshalBody(resp, &responseValue)
 	return responseValue, err
 }
 
