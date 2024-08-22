@@ -18,13 +18,13 @@ steps:
   inputs:
     command: 'get'
     arguments: '-d'
-    workingDirectory: '$(System.DefaultWorkingDirectory)'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/azuredevops'
 - task: Go@0
   inputs:
     command: 'build'
-    workingDirectory: '$(System.DefaultWorkingDirectory)'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/azuredevops'
 - task: Go@0
   inputs:
     command: 'test'
     arguments: '-v'
-    workingDirectory: '$(System.DefaultWorkingDirectory)'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/azuredevops'
