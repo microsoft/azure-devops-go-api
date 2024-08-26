@@ -3,9 +3,18 @@
 # Add steps that test, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/go
 
+# This pipeline is mostly for having a CodeQL scanning. We have similar one based in GitHub. Here is the link: https://github.com/microsoft/azure-devops-go-api/blob/master/.github/workflows/go.yml
+
 trigger:
-- master
 - dev
+
+schedules:
+  - cron: "0 2 15 * *"  # Runs at 2 AM UTC on the 15th of every month
+    displayName: "Monthly Run"
+    branches:
+      include:
+        - dev
+    always: true  # Run the pipeline even if there are no code changes
 
 pool:
   vmImage: 'ubuntu-latest'
