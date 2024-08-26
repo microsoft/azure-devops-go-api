@@ -6,7 +6,6 @@
 # This pipeline is mostly for having a CodeQL scanning. We have similar one based in GitHub. Here is the link: https://github.com/microsoft/azure-devops-go-api/blob/master/.github/workflows/go.yml
 
 trigger:
-- master
 - dev
 
 schedules:
@@ -14,7 +13,6 @@ schedules:
     displayName: "Monthly Run"
     branches:
       include:
-        - master
         - dev
     always: true  # Run the pipeline even if there are no code changes
 
