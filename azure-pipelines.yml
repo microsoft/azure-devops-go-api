@@ -22,8 +22,7 @@ extends:
     sdl:
       sourceAnalysisPool: 1ESPtTfsAgentBuildPoolSDL
     pool:
-      name: Azure-Pipelines-1ESPT-ExDShared
-      image: ubuntu-latest
+      vmImage: 'ubuntu-latest'
     customBuildTags:
     - ES365AIMigrationTooling
     stages:
