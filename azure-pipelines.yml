@@ -20,9 +20,10 @@ extends:
   template: azure-pipelines/MicroBuild.1ES.Official.yml@MicroBuildTemplate
   parameters:
     sdl:
-      sourceAnalysisPool: 1ESHostedPool
+      sourceAnalysisPool: 1ESPtTfsAgentBuildPoolSDL
     pool:
-      vmImage: 'ubuntu-latest'
+      name: Azure-Pipelines-1ESPT-ExDShared
+      image: ubuntu-latest
     customBuildTags:
     - ES365AIMigrationTooling
     stages:
