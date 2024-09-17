@@ -22,13 +22,15 @@ extends:
     sdl:
       sourceAnalysisPool: 1ES-Shared-Hosted-Pool_Windows-Server-2022
     pool:
-      vmImage: 'ubuntu-latest'
+      name: Azure-Pipelines-1ESPT-ExDShared
     customBuildTags:
     - ES365AIMigrationTooling
     stages:
     - stage: stage
       jobs:
       - job: job
+        pool:
+          name: 1ES-Shared-Hosted-Pool_Linux-Mariner-2
         steps:
         - task: GoTool@0
           inputs:
