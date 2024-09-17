@@ -20,7 +20,7 @@ extends:
   template: azure-pipelines/MicroBuild.1ES.Official.yml@MicroBuildTemplate
   parameters:
     sdl:
-      sourceAnalysisPool: 1ES-Shared-Hosted-Pool_Windows-Server-2022
+      sourceAnalysisPool: 1ESPtTfsAgentBuildPoolSDL
     pool:
       name: Azure-Pipelines-1ESPT-ExDShared
     customBuildTags:
@@ -31,6 +31,7 @@ extends:
       - job: job
         pool:
           name: 1ES-Shared-Hosted-Pool_Linux-Mariner-2
+          os: linux
         steps:
         - task: GoTool@0
           inputs:
