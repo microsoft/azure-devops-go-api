@@ -20,7 +20,7 @@ extends:
   template: azure-pipelines/MicroBuild.1ES.Official.yml@MicroBuildTemplate
   parameters:
     sdl:
-      sourceAnalysisPool: 1ESPtTfsAgentBuildPoolSDL
+      sourceAnalysisPool: 1ES-Shared-Hosted-Pool_Windows-Server-2022
     pool:
       vmImage: 'ubuntu-latest'
     customBuildTags:
