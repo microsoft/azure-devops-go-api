@@ -45,6 +45,7 @@ extends:
         - task: Go@0
           inputs:
             command: 'build'
+            arguments: '-a'
             workingDirectory: '$(System.DefaultWorkingDirectory)/azuredevops'
         - task: CopyFiles@2
           inputs:
