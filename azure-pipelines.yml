@@ -31,7 +31,6 @@ extends:
       - job: job
         pool:
           name: 1ES-Shared-Hosted-Pool_Linux-Mariner-2
-          os: linux
           vmImage: 'ubuntu-latest'
         steps:
         - task: GoTool@0
