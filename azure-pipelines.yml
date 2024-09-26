@@ -31,6 +31,7 @@ extends:
       - job: job
         pool:
           name: 1ES-Shared-Hosted-Pool_Linux-Mariner-2
+          os: linux
           vmImage: 'ubuntu-latest'
         steps:
         - task: GoTool@0
@@ -43,8 +44,9 @@ extends:
             workingDirectory: '$(System.DefaultWorkingDirectory)/azuredevops'
         - task: Go@0
           inputs:
+            command: 'clean'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/azuredevops'
+        - task: Go@0
+          inputs:
             command: 'build'
             workingDirectory: '$(System.DefaultWorkingDirectory)/azuredevops'
-        - task: CopyFiles@2
-          inputs:
-            TargetFolder: '$(Build.ArtifactStagingDirectory)'
