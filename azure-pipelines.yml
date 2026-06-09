@@ -55,14 +55,26 @@ extends:
           inputs:
             command: 'clean'
             workingDirectory: '$(System.DefaultWorkingDirectory)/azuredevops'
-        - task: CodeQL3000Init@0
-          inputs:
-            Language: go
-            BuildMode: autobuild
-            workingDirectory: '$(System.DefaultWorkingDirectory)/azuredevops'
-            #${{ if eq(variables['Build.SourceBranch'], 'refs/heads/PLACEHOLDER') }}:
-            Enabled: true
-            #${{ else }}:
-            #  Enabled: false
-        - task: CodeQL3000Finalize@0
-          condition: always()
+        # Static-binary workaround for CodeQL + Go >= 1.21 on Linux.
+        # Go 1.21 made the toolchain statically linked, so the CodeQL Go
+        # extractor's preload tracer can no longer intercept `go` calls and
+        # the database ends up empty. The 1ES-documented fix is to put a thin
+        # wrapper script ahead of the real `go` on PATH and invoke `go build`
+        # from the SAME script step. See:
+        # https://eng.ms/docs/coreai/devdiv/one-engineering-system-1es/1es-docs/codeql/troubleshooting/onboarding/language-compiled#go-121-and-higher-on-linux
+        - bash: |
+            set -euo pipefail
+            WORKAROUND_DIR="$AGENT_TEMPDIRECTORY/codeql-go-tracing"
+            mkdir -p "$WORKAROUND_DIR"
+            WHICH_GO="$(which go)"
+            cat > "$WORKAROUND_DIR/go" <<EOF
+            #!/bin/bash
+            exec "$WHICH_GO" "\$@"
+            EOF
+            chmod +x "$WORKAROUND_DIR/go"
+            export PATH="$WORKAROUND_DIR:$PATH"
+            echo "Using go wrapper at: $(which go)"
+            go version
+            go build ./...
+          workingDirectory: '$(System.DefaultWorkingDirectory)/azuredevops'
+          displayName: 'CodeQL Go wrapper + build (azuredevops module)'
