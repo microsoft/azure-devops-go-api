@@ -33,6 +33,11 @@ extends:
           name: 1ES-Shared-Hosted-Pool_Linux-Mariner-2
           os: linux
           vmImage: 'ubuntu-latest'
+        variables:
+          # The Mariner-2 hosted agent has no C toolchain / libc headers, so
+          # cgo-enabled builds fail with "stdlib.h: No such file or directory".
+          # This repo is pure Go, so disable cgo to use the pure-Go runtime.
+          CGO_ENABLED: 0
         steps:
         # Bumped to a Go toolchain supported by the CodeQL Go extractor (>= 1.21).
         # The repo's modules still declare `go 1.12` in go.mod, so library
