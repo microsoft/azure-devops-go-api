@@ -57,11 +57,9 @@ extends:
             workingDirectory: '$(System.DefaultWorkingDirectory)/azuredevops'
         # Static-binary workaround for CodeQL + Go >= 1.21 on Linux.
         # Go 1.21 made the toolchain statically linked, so the CodeQL Go
-        # extractor's preload tracer can no longer intercept `go` calls and
-        # the database ends up empty. The 1ES-documented fix is to put a thin
-        # wrapper script ahead of the real `go` on PATH and invoke `go build`
-        # from the SAME script step. See:
-        # https://eng.ms/docs/coreai/devdiv/one-engineering-system-1es/1es-docs/codeql/troubleshooting/onboarding/language-compiled#go-121-and-higher-on-linux
+        # the database ends up empty. The fix is to put a thin extractor's 
+        # preload tracer can no longer intercept `go` calls and wrapper script
+        # ahead of the real `go` on PATH and invoke `go build` from the SAME script step
         - bash: |
             set -euo pipefail
             WORKAROUND_DIR="$AGENT_TEMPDIRECTORY/codeql-go-tracing"
