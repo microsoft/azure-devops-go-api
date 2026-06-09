@@ -28,7 +28,7 @@ extends:
     stages:
     - stage: stage
       jobs:
-      - job: job
+      - job: codeql
         pool:
           name: 1ES-Shared-Hosted-Pool_Linux-Mariner-2
           os: linux
@@ -55,7 +55,14 @@ extends:
           inputs:
             command: 'clean'
             workingDirectory: '$(System.DefaultWorkingDirectory)/azuredevops'
-        - task: Go@0
+        - task: CodeQL3000Init@0
           inputs:
-            command: 'build'
+            Language: go
+            BuildMode: autobuild
             workingDirectory: '$(System.DefaultWorkingDirectory)/azuredevops'
+            #${{ if eq(variables['Build.SourceBranch'], 'refs/heads/PLACEHOLDER') }}:
+            Enabled: true
+            #${{ else }}:
+            #  Enabled: false
+        - task: CodeQL3000Finalize@0
+          condition: always()
