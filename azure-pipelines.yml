@@ -34,9 +34,13 @@ extends:
           os: linux
           vmImage: 'ubuntu-latest'
         steps:
+        # Bumped to a Go toolchain supported by the CodeQL Go extractor (>= 1.21).
+        # The repo's modules still declare `go 1.12` in go.mod, so library
+        # consumers on older Go are unaffected -- this is a build-time toolchain
+        # only and no source changes are required.
         - task: GoTool@0
           inputs:
-            version: '1.13.5'
+            version: '1.22.5'
         - task: Go@0
           inputs:
             command: 'get'
