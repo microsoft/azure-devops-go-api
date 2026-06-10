@@ -7,6 +7,7 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/base64"
+	"net/http"
 	"strings"
 	"sync"
 	"time"
@@ -16,21 +17,29 @@ import (
 
 // Creates a new Azure DevOps connection instance using a personal access token.
 func NewPatConnection(organizationUrl string, personalAccessToken string) *Connection {
-	authorizationString := CreateBasicAuthHeaderValue("", personalAccessToken)
-	organizationUrl = normalizeUrl(organizationUrl)
-	return &Connection{
-		AuthorizationString:     authorizationString,
-		BaseUrl:                 organizationUrl,
-		SuppressFedAuthRedirect: true,
-	}
+	return NewConnectionWithOptions(organizationUrl, WithConnectionPersonalAccessToken(personalAccessToken))
 }
 
+// NewAnonymousConnection creates a new connection without specifying any authentication. This
+// is equivalent to calling NewConnectionWithOptions without specifying any options.
 func NewAnonymousConnection(organizationUrl string) *Connection {
+	return NewConnectionWithOptions(organizationUrl)
+}
+
+// NewConnectionWithOptions creates a new connection using the specified options. See WithConnection*() functions.
+func NewConnectionWithOptions(organizationUrl string, options ...ConnectionOptionFunc) *Connection {
 	organizationUrl = normalizeUrl(organizationUrl)
-	return &Connection{
+	connection := &Connection{
 		BaseUrl:                 organizationUrl,
 		SuppressFedAuthRedirect: true,
+		httpClient:              &http.Client{},
 	}
+
+	for _, fn := range options {
+		fn(connection)
+	}
+
+	return connection
 }
 
 type Connection struct {
@@ -45,6 +54,7 @@ type Connection struct {
 	clientCacheLock         sync.RWMutex
 	resourceAreaCache       map[uuid.UUID]ResourceAreaInfo
 	resourceAreaCacheLock   sync.RWMutex
+	httpClient              *http.Client
 }
 
 func CreateBasicAuthHeaderValue(username, password string) string {
