@@ -28,15 +28,24 @@ extends:
     stages:
     - stage: stage
       jobs:
-      - job: job
+      - job: codeql
         pool:
           name: 1ES-Shared-Hosted-Pool_Linux-Mariner-2
           os: linux
           vmImage: 'ubuntu-latest'
+        variables:
+          # The Mariner-2 hosted agent has no C toolchain / libc headers, so
+          # cgo-enabled builds fail with "stdlib.h: No such file or directory".
+          # This repo is pure Go, so disable cgo to use the pure-Go runtime.
+          CGO_ENABLED: 0
         steps:
+        # Bumped to a Go toolchain supported by the CodeQL Go extractor (>= 1.21).
+        # The repo's modules still declare `go 1.12` in go.mod, so library
+        # consumers on older Go are unaffected -- this is a build-time toolchain
+        # only and no source changes are required.
         - task: GoTool@0
           inputs:
-            version: '1.13.5'
+            version: '1.22.5'
         - task: Go@0
           inputs:
             command: 'get'
@@ -46,7 +55,24 @@ extends:
           inputs:
             command: 'clean'
             workingDirectory: '$(System.DefaultWorkingDirectory)/azuredevops'
-        - task: Go@0
-          inputs:
-            command: 'build'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/azuredevops'
+        # Static-binary workaround for CodeQL + Go >= 1.21 on Linux.
+        # Go 1.21 made the toolchain statically linked, so the CodeQL Go
+        # the database ends up empty. The fix is to put a thin extractor's 
+        # preload tracer can no longer intercept `go` calls and wrapper script
+        # ahead of the real `go` on PATH and invoke `go build` from the SAME script step
+        - bash: |
+            set -euo pipefail
+            WORKAROUND_DIR="$AGENT_TEMPDIRECTORY/codeql-go-tracing"
+            mkdir -p "$WORKAROUND_DIR"
+            WHICH_GO="$(which go)"
+            cat > "$WORKAROUND_DIR/go" <<EOF
+            #!/bin/bash
+            exec "$WHICH_GO" "\$@"
+            EOF
+            chmod +x "$WORKAROUND_DIR/go"
+            export PATH="$WORKAROUND_DIR:$PATH"
+            echo "Using go wrapper at: $(which go)"
+            go version
+            go build ./...
+          workingDirectory: '$(System.DefaultWorkingDirectory)/azuredevops'
+          displayName: 'CodeQL Go wrapper + build (azuredevops module)'
