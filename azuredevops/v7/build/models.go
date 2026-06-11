@@ -2046,11 +2046,13 @@ type StageUpdateType string
 type stageUpdateTypeValuesType struct {
 	Cancel StageUpdateType
 	Retry  StageUpdateType
+	Run    StageUpdateType
 }
 
 var StageUpdateTypeValues = stageUpdateTypeValuesType{
 	Cancel: "cancel",
 	Retry:  "retry",
+	Run:    "run",
 }
 
 type SupportedTrigger struct {
