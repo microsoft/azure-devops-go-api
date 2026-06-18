@@ -345,7 +345,8 @@ type OperationResult struct {
 
 // A page of users
 type PagedGraphMemberList struct {
-	Members *[]UserEntitlement `json:"members,omitempty"`
+	Members           *[]UserEntitlement `json:"members,omitempty"`
+	ContinuationToken *string            `json:"continuationToken,omitempty"`
 }
 
 // Relation between a project and the user's effective permissions in that project.
