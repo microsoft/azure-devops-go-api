@@ -1613,6 +1613,10 @@ type PipelineGeneralSettings struct {
 	AuditEnforceSettableVar *bool `json:"auditEnforceSettableVar,omitempty"`
 	// Disable classic pipelines creation.
 	DisableClassicPipelineCreation *bool `json:"disableClassicPipelineCreation,omitempty"`
+	// Disable classic build pipeline creation
+	DisableClassicBuildPipelineCreation *bool `json:"disableClassicBuildPipelineCreation,omitempty"`
+	// Disable classic release pipeline creation
+	DisableClassicReleasePipelineCreation *bool `json:"disableClassicReleasePipelineCreation,omitempty"`
 	// If enabled, scope of access for all non-release pipelines reduces to the current project.
 	EnforceJobAuthScope *bool `json:"enforceJobAuthScope,omitempty"`
 	// If enabled, scope of access for all release pipelines reduces to the current project.
