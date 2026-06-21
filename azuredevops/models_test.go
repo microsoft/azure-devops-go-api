@@ -27,7 +27,7 @@ func TestModels_Unmarshal_Time(t *testing.T) {
 
 	parsedTime, err := time.Parse(time.RFC3339Nano, "2019-09-01T00:07:26Z")
 	if err != nil {
-		t.Errorf(err.Error())
+		t.Error(err.Error())
 	}
 	if testModel.Time2.Time != parsedTime {
 		t.Errorf("Expected time: %v  Actual time: %v", parsedTime, testModel.Time2.Time)
@@ -46,13 +46,13 @@ func TestModels_Marshal_Unmarshal_Time(t *testing.T) {
 	testModel1.Time1.Time = time.Now()
 	b, err := json.Marshal(testModel1)
 	if err != nil {
-		t.Errorf(err.Error())
+		t.Error(err.Error())
 	}
 
 	testModel2 := TestModel{}
 	err = json.Unmarshal(b, &testModel2)
 	if err != nil {
-		t.Errorf(err.Error())
+		t.Error(err.Error())
 	}
 
 	if testModel1.Time1 != testModel1.Time1 {
