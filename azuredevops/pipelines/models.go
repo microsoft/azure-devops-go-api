@@ -31,8 +31,15 @@ var ConfigurationTypeValues = configurationTypeValuesType{
 	DesignerHyphenJson: "designerHyphenJson",
 }
 
+type CreatePipelineRepositoryParameters struct {
+    Id      *string `json:"id,omitempty"`
+    Type    *string `json:"type,omitempty"`
+}
+
 type CreatePipelineConfigurationParameters struct {
 	Type *ConfigurationType `json:"type,omitempty"`
+	Repository *CreatePipelineRepositoryParameters `json:"repository,omitempty"`
+    Path *string `json:"path,omitempty"`
 }
 
 type CreatePipelineParameters struct {
