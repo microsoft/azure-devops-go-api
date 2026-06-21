@@ -381,7 +381,7 @@ func (client *ClientImpl) AddKubernetesResource(ctx context.Context, args AddKub
 // Arguments for the AddKubernetesResource function
 type AddKubernetesResourceArgs struct {
 	// (required)
-	CreateParameters *KubernetesResourceCreateParameters
+	CreateParameters *KubernetesResourceCreateParametersExistingEndpoint
 	// (required) Project ID or project name
 	Project *string
 	// (required)
