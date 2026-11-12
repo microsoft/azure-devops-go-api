@@ -8,6 +8,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -17,6 +18,7 @@ import (
 	"runtime"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -61,16 +63,16 @@ func NewClient(connection *Connection, baseUrl string) *Client {
 		httpClient.Timeout = *connection.Timeout
 	}
 
-	return NewClientWithOptions(connection, baseUrl, WithHTTPClient(httpClient))
+	return newClientWithOptions(connection, baseUrl, WithHTTPClient(httpClient))
 }
 
-// NewClientWithOptions returns an Azure DevOps client modified by the options
-func NewClientWithOptions(connection *Connection, baseUrl string, options ...ClientOptionFunc) *Client {
+// newClientWithOptions returns an Azure DevOps client modified by the options
+func newClientWithOptions(connection *Connection, baseUrl string, options ...ClientOptionFunc) *Client {
 	httpClient := &http.Client{}
 	client := &Client{
 		baseUrl:                 baseUrl,
 		client:                  httpClient,
-		authorization:           connection.AuthorizationString,
+		authProvider:            connection.AuthProvider,
 		suppressFedAuthRedirect: connection.SuppressFedAuthRedirect,
 		forceMsaPassThrough:     connection.ForceMsaPassThrough,
 		userAgent:               connection.UserAgent,
@@ -84,18 +86,110 @@ func NewClientWithOptions(connection *Connection, baseUrl string, options ...Cli
 type Client struct {
 	baseUrl                 string
 	client                  *http.Client
-	authorization           string
+	authProvider            AuthProvider
 	suppressFedAuthRedirect bool
 	forceMsaPassThrough     bool
 	userAgent               string
+	retryOptions            *RetryOptions
 }
 
 func (client *Client) SendRequest(request *http.Request) (response *http.Response, err error) {
-	resp, err := client.client.Do(request) // todo: add retry logic
-	if resp != nil && (resp.StatusCode < 200 || resp.StatusCode >= 300) {
-		err = client.UnwrapError(resp)
+	var (
+		maxRetries  = 3
+		retryDelay  = time.Second
+		isRetryable = DefaultIsRetryable
+	)
+
+	if opt := client.retryOptions; opt != nil {
+		maxRetries = opt.MaxRetries
+		if opt.Delay > 0 {
+			retryDelay = opt.Delay
+		}
+		if opt.IsRetryable != nil {
+			isRetryable = opt.IsRetryable
+		}
 	}
-	return resp, err
+
+	// Buffer the request body so it can be replayed on retries.
+	if maxRetries > 0 && request.Body != nil && request.GetBody == nil {
+		bodyBytes, readErr := io.ReadAll(request.Body)
+		request.Body.Close()
+		if readErr != nil {
+			return nil, readErr
+		}
+		request.Body = io.NopCloser(bytes.NewReader(bodyBytes))
+		request.GetBody = func() (io.ReadCloser, error) {
+			return io.NopCloser(bytes.NewReader(bodyBytes)), nil
+		}
+	}
+
+	for attempt := 0; ; attempt++ {
+		resp, doErr := client.client.Do(request)
+
+		if doErr != nil && attempt < maxRetries && isRetryable(resp, doErr) {
+			// Drain and close response body if present.
+			if resp != nil && resp.Body != nil {
+				io.Copy(io.Discard, resp.Body)
+				resp.Body.Close()
+			}
+			// Reset body for retry.
+			if request.GetBody != nil {
+				newBody, bodyErr := request.GetBody()
+				if bodyErr != nil {
+					return nil, bodyErr
+				}
+				request.Body = newBody
+			}
+			// Exponential backoff: delay * 2^attempt, respecting context cancellation.
+			delay := retryDelay * time.Duration(1<<uint(attempt))
+			select {
+			case <-time.After(delay):
+			case <-request.Context().Done():
+				return nil, request.Context().Err()
+			}
+			continue
+		}
+
+		// Break here
+		if resp != nil && (resp.StatusCode < 200 || resp.StatusCode >= 300) {
+			doErr = client.UnwrapError(resp)
+		}
+		return resp, doErr
+	}
+}
+
+// DefaultIsRetryable returns true for transient connection errors that are
+// safe to retry: connection resets, unexpected EOFs, closed connections, and
+// similar network-level failures. It returns false for context cancellation
+// and deadline exceeded errors.
+func DefaultIsRetryable(resp *http.Response, err error) bool {
+	if err == nil {
+		return false
+	}
+
+	// Retry on EOF / unexpected EOF.
+	if errors.Is(err, io.EOF) || errors.Is(err, io.ErrUnexpectedEOF) {
+		return true
+	}
+
+	// Check the error message for well-known transient patterns.
+	msg := strings.ToLower(err.Error())
+	transientPatterns := []string{
+		"connection reset by peer",
+		"connection was forcibly closed",
+		"peer connection closed",
+		"tls handshake timeout",
+		"i/o timeout",
+		"unexpected eof",
+		"use of closed network connection",
+	}
+	for _, pattern := range transientPatterns {
+		if strings.Contains(msg, pattern) {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (client *Client) Send(ctx context.Context,
@@ -169,9 +263,14 @@ func (client *Client) CreateRequestMessage(ctx context.Context,
 		req = req.WithContext(ctx)
 	}
 
-	if client.authorization != "" {
-		req.Header.Add(headerKeyAuthorization, client.authorization)
+	if client.authProvider != nil {
+		auth, err := client.authProvider.GetAuth(ctx)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get auth from auth cache: %v", err)
+		}
+		req.Header.Add(headerKeyAuthorization, auth)
 	}
+
 	accept := acceptMediaType
 	if apiVersion != "" {
 		accept += ";api-version=" + apiVersion
@@ -372,7 +471,7 @@ func trimByteOrderMark(body []byte) []byte {
 func (client *Client) UnwrapError(response *http.Response) (err error) {
 	if response.ContentLength == 0 {
 		message := "Request returned status: " + response.Status
-		return &WrappedError{
+		return WrappedError{
 			Message:    &message,
 			StatusCode: &response.StatusCode,
 		}
@@ -409,7 +508,7 @@ func (client *Client) UnwrapError(response *http.Response) (err error) {
 		var wrappedImproperError WrappedImproperError
 		err = json.Unmarshal(body, &wrappedImproperError)
 		if err == nil && wrappedImproperError.Value != nil && wrappedImproperError.Value.Message != nil {
-			return &WrappedError{
+			return WrappedError{
 				Message:    wrappedImproperError.Value.Message,
 				StatusCode: &response.StatusCode,
 			}
