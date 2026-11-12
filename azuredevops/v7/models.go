@@ -147,3 +147,13 @@ func (e WrappedError) Error() string {
 	}
 	return *e.Message
 }
+
+type CAEChallengeError struct {
+	ClaimsChallenge string
+	StatusCode      int
+	Message         string
+}
+
+func (e *CAEChallengeError) Error() string {
+	return e.Message
+}
